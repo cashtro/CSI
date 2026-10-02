@@ -5,6 +5,7 @@ const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 const { sendFullPriceProductOwnerEmail, sendEmail } = require('./emailService');
+const { slotWasClaimed, sumEntryCounts } = require('./booking');
 
 const handleRDVPayment = async (req, res, next) => {
   try {
@@ -28,11 +29,17 @@ const handleRDVPayment = async (req, res, next) => {
     // 1.Get availability price
     const { data: disponibilite, error } = await supabaseAuthed
       .from('disponibilites')
-      .select('price, id_prof')
+      .select('price, id_prof, taken')
       .eq('id', disponibilite_id)
       .single();
 
     if (error) throw new Error('Invalid availability slot');
+
+    // Reject up-front if the slot is already booked, so we never start a
+    // checkout (and charge) for a slot that can't be fulfilled.
+    if (disponibilite.taken) {
+      return res.status(409).json({ message: 'This time slot is no longer available' });
+    }
 
     // 2.Create Stripe session
     const session = await stripe.checkout.sessions.create({
@@ -98,23 +105,46 @@ const createRendezvous = async (req, res, next) => {
       }
     )
 
+    const dispoId = session.metadata.disponibilite_id;
+
+    // Atomically claim the slot BEFORE creating the rendez-vous:
+    // `UPDATE ... SET taken=true WHERE id=? AND taken=false` only affects a row
+    // when the slot was still free, so exactly one concurrent payer can win it.
+    const { data: claimedSlots, error: claimError } = await supabaseAuthed
+      .from('disponibilites')
+      .update({ taken: true })
+      .eq('id', dispoId)
+      .eq('taken', false)
+      .select('id');
+
+    if (claimError) throw claimError;
+
+    if (!slotWasClaimed(claimedSlots)) {
+      // Another payment already took this slot (double-booking). Do not create a
+      // duplicate rendez-vous. This payment must be refunded out-of-band.
+      console.error(`[rdv] slot ${dispoId} already booked; payment ${session.payment_intent} needs a refund.`);
+      return res.status(409).json({
+        error: 'Slot already booked',
+        disponibilite_id: dispoId,
+        payment_intent: session.payment_intent,
+      });
+    }
+
     //Create rendez-vous
     const { data, error } = await supabaseAuthed
       .from('rendez_vous')
       .insert([{
-        disponibilite_id: session.metadata.disponibilite_id,
+        disponibilite_id: dispoId,
         id_eleve: session.metadata.id_eleve,
         payment_id: session.payment_intent
       }]).select('*')
       .single();
 
-    if (error) throw error;
-    const { error: updateError } = await supabaseAuthed
-      .from('disponibilites')
-      .update({ taken: true })
-      .eq('id', session.metadata.disponibilite_id);
-
-    if (updateError) throw updateError;
+    if (error) {
+      // Roll back the claim so the slot isn't stuck as taken with no booking.
+      await supabaseAuthed.from('disponibilites').update({ taken: false }).eq('id', dispoId);
+      throw error;
+    }
     // Insérer la facture dans la base de données
     const { data: billData, error: billError } = await supabaseAuthed
       .from('bills')
@@ -552,10 +582,23 @@ const verifyStripePayment = async (req, res) => {
       console.error('Error inserting bill:', billError);
       return res.redirect(`${process.env.APP_URL}/luckydraw?error=bill_creation_failed`);
     }
- // After updating/inserting Entry, you may want to update totalEntries in Lottery
+ // Recompute the lottery's GLOBAL total from all entries. Previously this wrote
+    // `newTotal` (a single user's cumulative count) as the lottery-wide total,
+    // corrupting draw gating (minimumEntryNeeded). Sum every user's entryCount.
+    const { data: allEntries, error: entriesSumError } = await supabaseAuthed
+      .from('Entry')
+      .select('entryCount')
+      .eq('lotteryId', lotteryId);
+
+    if (entriesSumError) {
+      console.error('Error reading entries for total:', entriesSumError);
+      return res.redirect(`${process.env.APP_URL}/luckydraw?error=total_entries_update_failed`);
+    }
+
+    const globalTotalEntries = sumEntryCounts(allEntries);
     const { error: updateLotteryError } = await supabaseAuthed
       .from('Lottery')
-      .update({ totalEntries: newTotal })
+      .update({ totalEntries: globalTotalEntries })
       .eq('lotteryId', lotteryId);
 
     if (updateLotteryError) {
