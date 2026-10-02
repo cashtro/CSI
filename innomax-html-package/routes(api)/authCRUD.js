@@ -10,6 +10,16 @@ const { sendEmail } = require('./utils/emailService');
 const { encryptSecret, decryptSecret } = require('./utils/crypto2fa');
 const crypto = require('crypto');
 
+// C4: access/refresh tokens are always set as httpOnly cookies. They are ALSO
+// echoed in the JSON body for the current token-reading frontend. Setting
+// OMIT_BODY_TOKENS=true stops echoing them (reduces XSS token-theft surface);
+// enable it once the frontend authenticates via the cookies instead. Flag-gated
+// and default-off so it's a zero-risk change until the frontend is migrated.
+function tokenResponseFields(accessToken, refreshToken) {
+  if (process.env.OMIT_BODY_TOKENS === 'true') return {};
+  return { accessToken, refreshToken };
+}
+
 // Initialize stateless Supabase clients (see utils/supabaseUtil).
 const supabase = createSupabaseClient();
 const supabaseAdmin = createSupabaseAdmin();
@@ -270,8 +280,7 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
         await setAuthCookies(res, session.access_token, session.refresh_token, rememberMe);
         return res.status(200).json({
             message: "Connexion réussie !",
-            accessToken: session.access_token,
-            refreshToken: session.refresh_token
+            ...tokenResponseFields(session.access_token, session.refresh_token)
         });
 
     } catch (error) {
@@ -382,8 +391,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "2FA verification successful",
-            accessToken: accessToken,
-            refreshToken: refreshToken
+            ...tokenResponseFields(accessToken, refreshToken)
         });
 
     } catch (error) {
