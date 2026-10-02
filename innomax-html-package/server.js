@@ -176,6 +176,8 @@ app.use('/api/achats', achatRoutes);
 // Agent engine (agents/, MOTEUR-AGENTS.md): admin + 2FA, and client read-only.
 app.use('/api/admin/agents', agentsAdminRoutes);
 app.use('/api/agents', agentsClientRoutes);
+// Finances (FINANCES.md): admin + 2FA + CSRF; revenue computed on the server.
+app.use('/api/admin/finances', require('./routes(api)/financesAdmin.js'));
 // Espace entreprises (client space) and the admin console. Each router checks
 // membership / admin + 2FA on the server and requires the CSRF header.
 app.use('/api/espace', require('./routes(api)/espaceCRUD.js'));
