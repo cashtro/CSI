@@ -7,7 +7,7 @@ const DIR = path.join(__dirname, '..', '..', 'db');
 const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8');
 // SQL without "--" comments, to check what actually runs.
 const code = (f) => read(f).replace(/--.*$/gm, '');
-const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql'];
+const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_recherche_agents.sql'];
 
 describe('SQL migrations', () => {
   it('002 and 003 state the mandatory order 001, 002, 003', () => {
@@ -58,5 +58,13 @@ describe('SQL migrations', () => {
 
   it('no policy writes on behalf of the browser', () => {
     for (const f of FILES) expect(code(f)).not.toMatch(/for (insert|update|delete|all) to (anon|authenticated|public)/);
+  });
+
+  it('004 runs after 003 and allows the research job kind', () => {
+    const head = read('004_recherche_agents.sql').split('\n').slice(0, 10).join('\n');
+    expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE[\s\S]*003_moteur_agents\.sql/);
+    const sql = code('004_recherche_agents.sql');
+    expect(sql).toMatch(/drop constraint if exists agent_jobs_kind_check/);
+    expect(sql).toMatch(/check \(kind in \('order', 'debate', 'research'\)\)/);
   });
 });

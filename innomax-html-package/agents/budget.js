@@ -88,7 +88,11 @@ function createBudget({ db, getSettings, now = () => new Date() }) {
 
 // Wrap an LLM client so every call is checked against the budget, recorded,
 // and added to the job's running totals.
-function meteredLLM(llm, budget, totals = { costUsd: 0, tokensIn: 0, tokensOut: 0, calls: 0 }) {
+// Web searches are recorded on their own agent_usage row (model 'web_search')
+// so the usage page shows them apart; the budget sums every row.
+const WEB_SEARCH_MODEL = 'web_search';
+
+function meteredLLM(llm, budget, totals = { costUsd: 0, tokensIn: 0, tokensOut: 0, calls: 0, webSearches: 0 }) {
   return {
     totals,
     resolveModel: llm.resolveModel,
@@ -100,7 +104,10 @@ function meteredLLM(llm, budget, totals = { costUsd: 0, tokensIn: 0, tokensOut: 
         totals.tokensIn += out.usage.input_tokens;
         totals.tokensOut += out.usage.output_tokens;
         totals.calls += 1;
-        await budget.record({ model: out.model, tokensIn: out.usage.input_tokens, tokensOut: out.usage.output_tokens, costUsd: out.costUsd });
+        const searchCost = Number(out.searchCostUsd) || 0;
+        totals.webSearches = (totals.webSearches || 0) + (Number(out.webSearches) || 0);
+        await budget.record({ model: out.model, tokensIn: out.usage.input_tokens, tokensOut: out.usage.output_tokens, costUsd: out.costUsd - searchCost });
+        if (out.webSearches) await budget.record({ model: WEB_SEARCH_MODEL, tokensIn: 0, tokensOut: 0, costUsd: searchCost });
         return out;
       } finally {
         release();
@@ -109,4 +116,4 @@ function meteredLLM(llm, budget, totals = { costUsd: 0, tokensIn: 0, tokensOut: 
   };
 }
 
-module.exports = { createBudget, meteredLLM, monthStart, BudgetExceededError, _reserved: () => reserved };
+module.exports = { createBudget, meteredLLM, monthStart, BudgetExceededError, WEB_SEARCH_MODEL, _reserved: () => reserved };

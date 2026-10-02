@@ -16,10 +16,13 @@ const crypto = require('crypto');
 const logger = require('../routes(api)/utils/logger');
 const { createLLM, CircuitOpenError } = require('./llm');
 const { createBudget, meteredLLM, BudgetExceededError } = require('./budget');
-const { runOrder, runCouncil, CancelledError } = require('./protocol');
+const { runOrder, runResearch, runCouncil, CancelledError } = require('./protocol');
 const store = require('./store');
 
 const STALE_MINUTES = 15;
+const KIND_LABEL = { order: 'Ordre', debate: 'Conseil', research: 'Recherche' };
+const KIND_DONE = { order: 'Ordre terminé', debate: 'Conseil terminé', research: 'Recherche terminée' };
+const RUNNERS = { order: runOrder, debate: runCouncil, research: runResearch };
 
 function retryDelayMs(attempts) {
   return Math.min(30, 2 ** Math.max(0, attempts - 1)) * 60 * 1000; // 1, 2, 4 … 30 min
@@ -63,7 +66,7 @@ function createWorker({
   }
 
   async function processJob(job, settings) {
-    const totals = { costUsd: 0, tokensIn: 0, tokensOut: 0, calls: 0 };
+    const totals = { costUsd: 0, tokensIn: 0, tokensOut: 0, calls: 0, webSearches: 0 };
     const budget = createBudget({ db, getSettings: () => store.getSettings(db) });
     const llm = meteredLLM(llmFactory({ env, models: () => store.modelsFromSettings(settings) }), budget, totals);
     const money = () => ({ cost_usd: Number(totals.costUsd.toFixed(6)), tokens_in: totals.tokensIn, tokens_out: totals.tokensOut });
@@ -76,6 +79,7 @@ function createWorker({
     const deps = {
       job,
       llm,
+      env,
       getAgent: (id) => store.getAgent(db, id),
       concurrency: settings.concurrency,
       saveProgress: (result) => updateJob(job.id, { result, ...money() }),
@@ -92,14 +96,18 @@ function createWorker({
       onEvent: (phase) => store.logActivity(db, { job_id: job.id, kind: 'phase', message: `Conseil : ${phase}` }),
     };
 
-    await store.logActivity(db, { job_id: job.id, kind: 'job_started', message: `${job.kind === 'debate' ? 'Conseil' : 'Ordre'} démarré (tentative ${job.attempts})` });
-    const agentId = job.kind === 'order' && job.payload && job.payload.agent_id;
-    if (agentId) await db.from('agents').update({ status: 'working', current_task: String(job.payload.instruction || '').slice(0, 200) }).eq('id', agentId);
+    await store.logActivity(db, { job_id: job.id, kind: 'job_started', agent_id: (job.payload && job.payload.agent_id) || null, message: `${KIND_LABEL[job.kind] || 'Travail'} démarré (tentative ${job.attempts})` });
+    const agentId = job.kind !== 'debate' && job.payload && job.payload.agent_id;
+    const task = job.kind === 'research' ? `Recherche : ${job.payload.question || ''}` : job.payload && job.payload.instruction;
+    if (agentId) await db.from('agents').update({ status: 'working', current_task: String(task || '').slice(0, 200) }).eq('id', agentId);
 
     try {
-      const result = job.kind === 'debate' ? await runCouncil(deps) : await runOrder(deps);
+      const run = RUNNERS[job.kind];
+      if (!run) throw new Error(`Type de travail inconnu : ${job.kind}`);
+      const result = await run(deps);
       await updateJob(job.id, { status: 'done', result, error: null, finished_at: now().toISOString(), locked_by: null, ...money() });
-      await store.logActivity(db, { job_id: job.id, kind: 'job_done', message: `Terminé (${totals.calls} appels, ${totals.costUsd.toFixed(4)} $)` });
+      const searched = totals.webSearches ? `, ${totals.webSearches} recherche(s) web` : '';
+      await store.logActivity(db, { job_id: job.id, agent_id: agentId || null, kind: 'job_done', message: `${KIND_DONE[job.kind] || 'Travail terminé'} (${totals.calls} appels${searched}, ${totals.costUsd.toFixed(4)} $)` });
       return 'done';
     } catch (err) {
       if (err instanceof CancelledError) {

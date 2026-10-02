@@ -9,8 +9,10 @@
 // - Cost is computed from usage.input_tokens / output_tokens with a price
 //   table that env can override.
 //
-// The client only produces text. It declares no tools: the engine cannot send
-// an email, publish anything or act outside this process.
+// The client only produces text. The one tool it can declare is Anthropic's
+// server-side web search (research jobs): it READS the web on Anthropic's
+// servers and returns results as text blocks. No client-side tool exists, so
+// the engine cannot send an email, publish anything or act outside this process.
 
 const logger = require('../routes(api)/utils/logger');
 
@@ -43,6 +45,24 @@ const UNKNOWN_MODEL_PRICE = { in: 10, out: 50 };
 // default for the models that accept it; AGENTS_REFUSAL_FALLBACK=false turns it off.
 const FALLBACK_BETA = 'server-side-fallback-2026-07-01';
 const FALLBACK_MODELS = /^claude-(opus-5-5|sonnet-5-5)/;
+
+// Web search is billed per search on top of tokens. À VÉRIFIER sur
+// https://www.anthropic.com/pricing (10 $ / 1 000 recherches relevé le
+// 2026-10-02). Override with AGENTS_WEB_SEARCH_USD_PER_1000.
+const DEFAULT_SEARCH_USD_PER_1000 = 10;
+// Search results are fed back to the model as input tokens: the worst-case
+// estimate counts this many extra input tokens per allowed search.
+const SEARCH_INPUT_TOKENS = 8000;
+
+function searchPricePerCall(env = process.env) {
+  const n = Number(env.AGENTS_WEB_SEARCH_USD_PER_1000);
+  return (Number.isFinite(n) && n >= 0 ? n : DEFAULT_SEARCH_USD_PER_1000) / 1000;
+}
+
+function maxSearches(tools) {
+  return (tools || []).filter((t) => t && t.name === 'web_search')
+    .reduce((n, t) => n + (Number(t.max_uses) || 5), 0);
+}
 
 const RETRY_STATUSES = new Set([408, 429, 500, 502, 503, 504, 529]);
 
@@ -197,8 +217,11 @@ function createLLM(opts = {}) {
     }
   }
 
-  // { tier, model, system, messages, maxTokens } -> { text, model, usage, costUsd, stopReason }
-  async function complete({ tier = 'default', model, system, messages, maxTokens } = {}) {
+  const perSearch = searchPricePerCall(env);
+
+  // { tier, model, system, messages, maxTokens, tools }
+  //   -> { text, content, model, usage, costUsd, searchCostUsd, webSearches, stopReason }
+  async function complete({ tier = 'default', model, system, messages, maxTokens, tools } = {}) {
     if (!apiKey) throw new LLMError('ANTHROPIC_API_KEY absente', { code: 'no_api_key' });
     const useModel = model || resolveModel(tier);
     const body = {
@@ -207,6 +230,7 @@ function createLLM(opts = {}) {
       messages,
     };
     if (system) body.system = system;
+    if (tools && tools.length) body.tools = tools;
     const effort = env[`AGENTS_EFFORT_${String(tier).toUpperCase()}`];
     if (effort) body.output_config = { effort };
     const extraHeaders = {};
@@ -239,8 +263,19 @@ function createLLM(opts = {}) {
         const text = (data.content || []).filter((b) => b.type === 'text').map((b) => b.text).join('');
         const usage = { input_tokens: Number(data.usage && data.usage.input_tokens) || 0, output_tokens: Number(data.usage && data.usage.output_tokens) || 0 };
         const served = data.model || useModel;
+        const webSearches = Number(data.usage && data.usage.server_tool_use && data.usage.server_tool_use.web_search_requests) || 0;
+        const searchCostUsd = webSearches * perSearch;
         breaker.success();
-        return { text, model: served, usage, costUsd: costUsd(served, usage, prices), stopReason: data.stop_reason };
+        return {
+          text,
+          content: data.content || [],
+          model: served,
+          usage,
+          costUsd: costUsd(served, usage, prices) + searchCostUsd,
+          searchCostUsd,
+          webSearches,
+          stopReason: data.stop_reason,
+        };
       }
 
       const status = res.status;
@@ -265,11 +300,14 @@ function createLLM(opts = {}) {
   }
 
   // Worst-case cost of one call, used by the budget before calling.
-  function estimateCost({ tier = 'default', model, system = '', messages = [], maxTokens } = {}) {
+  // With web search: every allowed search is charged, plus its results read
+  // back as input tokens.
+  function estimateCost({ tier = 'default', model, system = '', messages = [], maxTokens, tools } = {}) {
     const useModel = model || resolveModel(tier);
     const chars = String(system).length + JSON.stringify(messages).length;
-    const usage = { input_tokens: Math.ceil(chars / 3), output_tokens: maxTokens || maxTokensFor(tier) };
-    return costUsd(useModel, usage, prices);
+    const searches = maxSearches(tools);
+    const usage = { input_tokens: Math.ceil(chars / 3) + searches * SEARCH_INPUT_TOKENS, output_tokens: maxTokens || maxTokensFor(tier) };
+    return costUsd(useModel, usage, prices) + searches * perSearch;
   }
 
   return { complete, estimateCost, resolveModel, breaker, hasKey: Boolean(apiKey) };
@@ -282,6 +320,9 @@ module.exports = {
   priceFor,
   loadPrices,
   parseRetryAfter,
+  searchPricePerCall,
+  maxSearches,
+  DEFAULT_SEARCH_USD_PER_1000,
   LLMError,
   CircuitOpenError,
   DEFAULT_MODELS,
