@@ -60,6 +60,12 @@ app.use((req, res, next) => {
 //ON MET SUREMENT LES ROUTES ICI
 //app.use('/auth',authroutes); //DONC NORMALEMENT LES ROUTES DEVIENNET /auth/login PAR EXEMPLE, à voir comment faire un global pour /api
 app.use(cookieParser());
+
+// Stripe webhook must receive the RAW body for signature verification, so it is
+// registered BEFORE the JSON body parser (which would otherwise consume it).
+const { stripeWebhookHandler } = require('./routes(api)/webhook');
+app.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 

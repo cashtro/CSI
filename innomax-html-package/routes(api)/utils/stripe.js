@@ -6,6 +6,7 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 const { sendFullPriceProductOwnerEmail, sendEmail } = require('./emailService');
 const { slotWasClaimed, sumEntryCounts } = require('./booking');
+const { claimFulfillment } = require('./fulfillment');
 
 const handleRDVPayment = async (req, res, next) => {
   try {
@@ -457,6 +458,7 @@ const handleLotteryPayment = async (req, res) => {
       }],
       mode: 'payment',
       metadata: {
+        type: 'lottery_entry',
         lotteryId,
         userId,
         entryQuantity,
@@ -540,6 +542,14 @@ const verifyStripePayment = async (req, res) => {
 
     if (!lottery.isActive || new Date(lottery.lotteryTime) <= new Date()) {
       return res.redirect(`${process.env.APP_URL}/luckydraw?error=lottery_closed`);
+    }
+
+    // Idempotency: dedupe replays of this verify redirect so a refreshed or
+    // shared success URL can't grant the same paid entry twice. Best-effort —
+    // if the ledger is unavailable we proceed (preserves prior behavior).
+    const entryClaim = await claimFulfillment(`lottery_entry:${session.id}`, 'lottery_entry');
+    if (entryClaim.alreadyProcessed) {
+      return res.redirect(`${process.env.APP_URL}/luckydraw?success=true&lotteryId=${lotteryId}&note=already_processed`);
     }
 
     // Get existing entries
