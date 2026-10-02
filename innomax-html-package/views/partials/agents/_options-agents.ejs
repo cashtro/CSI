@@ -1,0 +1,26 @@
+<%#
+  <option>s of the active agents, grouped by team.
+  locals: agents, teams, selected (agent id), withTeams (adds "Toute une équipe" values t:<key>)
+%>
+<% teams.forEach(function (t) {
+     const membres = agents.filter(function (a) { return a.team === t.key && a.active !== false; });
+     if (!membres.length) return; %>
+<optgroup label="<%= t.emoji %> <%= t.name %>">
+  <% membres.forEach(function (a) { %>
+  <option value="<%= withTeams ? 'a:' : '' %><%= a.id %>"<% if (selected === a.id) { %> selected<% } %>><%= a.name %><% if (a.role) { %> · <%= a.role %><% } %></option>
+  <% }) %>
+</optgroup>
+<% }) %>
+<% const autres = agents.filter(function (a) { return a.active !== false && !teams.some(function (t) { return t.key === a.team; }); });
+   if (autres.length) { %>
+<optgroup label="Autres agents">
+  <% autres.forEach(function (a) { %><option value="<%= withTeams ? 'a:' : '' %><%= a.id %>"<% if (selected === a.id) { %> selected<% } %>><%= a.name %></option><% }) %>
+</optgroup>
+<% } %>
+<% if (withTeams) { %>
+<optgroup label="Toute une équipe">
+  <% teams.forEach(function (t) { if (!agents.some(function (a) { return a.team === t.key && a.active !== false; })) return; %>
+  <option value="t:<%= t.key %>"><%= t.emoji %> Équipe <%= t.name %></option>
+  <% }) %>
+</optgroup>
+<% } %>

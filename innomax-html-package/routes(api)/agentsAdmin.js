@@ -17,7 +17,9 @@ const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { getRange } = require('./utils/pagination');
 const store = require('../agents/store');
 const { createBudget, monthStart } = require('../agents/budget');
-const { MAX_PROPOSERS, MAX_CHALLENGERS } = require('../agents/protocol');
+const { MAX_PROPOSERS, MAX_CHALLENGERS, RESEARCH_MAX_USES, webSearchTool } = require('../agents/protocol');
+const { createLLM } = require('../agents/llm');
+const catalog = require('../agents/catalog');
 
 const router = express.Router();
 
@@ -59,9 +61,9 @@ router.use(noStore, requireAdminMfa, requireCsrf);
 // ------------------------------------------------------------ validation
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-const MODEL = /^[a-z0-9][a-z0-9.\-]{1,80}$/;
-const AGENT_ID = /^[\p{L}\p{N}_.\-]{1,100}$/u;
-const TIERS = ['quick', 'default', 'complex'];
+const { MODEL, AGENT_ID, TIERS } = catalog;
+const KINDS = ['order', 'debate', 'research'];
+const KIND_LABEL = { order: 'Ordre', debate: 'Conseil', research: 'Recherche' };
 const STATUSES = ['queued', 'running', 'done', 'error', 'cancelled', 'budget_refused'];
 
 function bad(res, msg) { return res.status(400).json({ error: msg }); }
@@ -99,7 +101,7 @@ async function insertJob(req, res, kind, payload) {
     logger.error('[agents] job insert failed:', error.message);
     return res.status(500).json({ error: 'Création impossible' });
   }
-  await store.logActivity(db(), { job_id: data.id, kind: 'job_queued', message: `${kind === 'debate' ? 'Conseil' : 'Ordre'} mis en file` });
+  await store.logActivity(db(), { job_id: data.id, agent_id: payload.agent_id || null, kind: 'job_queued', message: `${KIND_LABEL[kind]} mis en file` });
   return res.status(201).json(data);
 }
 
@@ -115,8 +117,16 @@ router.get('/jobs', async (req, res) => {
     q = q.eq('status', req.query.status);
   }
   if (req.query.kind) {
-    if (!['order', 'debate'].includes(req.query.kind)) return bad(res, 'kind invalide');
+    if (!KINDS.includes(req.query.kind)) return bad(res, 'kind invalide');
     q = q.eq('kind', req.query.kind);
+  }
+  if (req.query.agent_id) {
+    if (!AGENT_ID.test(String(req.query.agent_id))) return bad(res, 'agent_id invalide');
+    q = q.eq('payload->>agent_id', String(req.query.agent_id));
+  }
+  if (req.query.entreprise_id) {
+    if (!UUID.test(String(req.query.entreprise_id))) return bad(res, 'entreprise_id invalide');
+    q = q.eq('entreprise_id', String(req.query.entreprise_id));
   }
   const { data, error } = await q;
   if (error) return res.status(500).json({ error: 'Lecture impossible' });
@@ -165,6 +175,40 @@ router.post('/jobs/council', createLimiter, async (req, res) => {
   });
 });
 
+// Web research by one agent (read only: Anthropic's server-side web search).
+// Refused up front when the month's budget cannot cover one worst-case
+// research; the worker checks again before each call.
+router.post('/jobs/research', createLimiter, async (req, res) => {
+  const b = req.body || {};
+  if (!isText(b.question, 2000)) return bad(res, 'question requise (2 000 caractères max)');
+  const agentId = b.agent_id == null || b.agent_id === '' ? catalog.DEFAULT_RESEARCH_AGENT : b.agent_id;
+  if (typeof agentId !== 'string' || !AGENT_ID.test(agentId)) return bad(res, 'agent_id invalide');
+  if (b.max_uses != null && !(Number.isInteger(b.max_uses) && b.max_uses >= 1 && b.max_uses <= RESEARCH_MAX_USES)) {
+    return bad(res, `max_uses entre 1 et ${RESEARCH_MAX_USES}`);
+  }
+  if (b.tier != null && !TIERS.includes(b.tier)) return bad(res, 'tier invalide');
+  const err = common(b);
+  if (err) return bad(res, err);
+  const missing = await unknownAgents([agentId]);
+  if (missing.length) return bad(res, `Agent inconnu : ${missing.join(', ')}`);
+
+  const settings = await store.getSettings(db());
+  const budget = await createBudget({ db: db(), getSettings: async () => settings }).status();
+  const estimate = createLLM({ apiKey: null, models: () => store.modelsFromSettings(settings) }).estimateCost({
+    tier: b.tier || 'default',
+    messages: [{ role: 'user', content: b.question }],
+    tools: [webSearchTool(process.env, b.max_uses)],
+  });
+  if (budget.spent + estimate > budget.budget) {
+    return res.status(402).json({
+      error: `Budget mensuel atteint : ${budget.spent.toFixed(2)} $ dépensés sur ${budget.budget.toFixed(2)} $. Une recherche peut coûter jusqu’à ${estimate.toFixed(2)} $.`,
+    });
+  }
+  return insertJob(req, res, 'research', {
+    agent_id: agentId, question: b.question, client: b.client ?? null, contexte: b.contexte ?? null, tier: b.tier || null, max_uses: b.max_uses || null,
+  });
+});
+
 router.get('/jobs/:id', async (req, res) => {
   if (!UUID.test(req.params.id)) return bad(res, 'id invalide');
   const { data, error } = await db().from('agent_jobs').select('*').eq('id', req.params.id).maybeSingle();
@@ -196,6 +240,77 @@ router.get('/tasks', async (req, res) => {
   const { data, error } = await q;
   if (error) return res.status(500).json({ error: 'Lecture impossible' });
   res.json(data || []);
+});
+
+// ------------------------------------------------------------ agents & activity
+
+router.get('/agents', async (req, res) => {
+  const { data, error } = await db().from('agents')
+    .select('id, name, team, role, method, tools, engine, model, active, status, current_task, updated_at').order('team').order('name');
+  if (error) return res.status(500).json({ error: 'Lecture impossible' });
+  res.json({ teams: catalog.TEAMS, agents: data || [] });
+});
+
+// Console KPIs: agents at work, jobs running / queued, Councils that reached
+// consensus.
+router.get('/summary', async (req, res) => {
+  const count = (status) => db().from('agent_jobs').select('id', { count: 'exact', head: true }).eq('status', status);
+  const [running, queued, agents, debates] = await Promise.all([
+    count('running'),
+    count('queued'),
+    db().from('agents').select('id, status, active'),
+    db().from('agent_jobs').select('result').eq('kind', 'debate').eq('status', 'done').order('created_at', { ascending: false }).limit(500),
+  ]);
+  if (running.error || queued.error || agents.error || debates.error) return res.status(500).json({ error: 'Lecture impossible' });
+  const list = agents.data || [];
+  res.json({
+    agents: list.filter((a) => a.active !== false).length,
+    working: list.filter((a) => a.status === 'working').length,
+    running: running.count || 0,
+    queued: queued.count || 0,
+    consensus: (debates.data || []).filter((d) => d.result && d.result.consensus === true).length,
+  });
+});
+
+// Emergency stop: engine off and every queued or running job cancelled (a
+// running job stops at its next step, see the worker).
+router.post('/emergency-stop', async (req, res) => {
+  const now = new Date().toISOString();
+  const { error: e1 } = await db().from('agent_settings').upsert({ id: 1, enabled: false, updated_at: now, updated_by: req.user.id }).select('id').single();
+  if (e1) return res.status(500).json({ error: 'Arrêt impossible' });
+  const { data, error: e2 } = await db().from('agent_jobs')
+    .update({ status: 'cancelled', finished_at: now, updated_at: now }).in('status', ['queued', 'running']).select('id');
+  if (e2) return res.status(500).json({ error: 'Moteur arrêté, mais les travaux n’ont pas pu être annulés' });
+  const cancelled = (data || []).length;
+  logger.warn(`[agents] emergency stop by ${req.user.id}: ${cancelled} job(s) cancelled`);
+  await store.logActivity(db(), { kind: 'emergency_stop', message: `Arrêt d’urgence : moteur coupé, ${cancelled} travail(s) annulé(s)` });
+  res.json({ enabled: false, cancelled });
+});
+
+// Polling fallback of the live stream: activity after the given id.
+router.get('/activity', async (req, res) => {
+  const after = parseInt(req.query.after, 10);
+  let q = db().from('agent_activity').select('id, job_id, agent_id, kind, message, created_at');
+  q = Number.isFinite(after) && after >= 0 ? q.gt('id', after).order('id', { ascending: true }).limit(100)
+    : q.order('id', { ascending: false }).limit(40);
+  const { data, error } = await q;
+  if (error) return res.status(500).json({ error: 'Lecture impossible' });
+  const rows = data || [];
+  res.json(Number.isFinite(after) && after >= 0 ? rows : rows.reverse());
+});
+
+// The 38 starting agents (db/seed_agents.json). Missing ones are added;
+// existing ones are left as the admin edited them.
+router.post('/seed', importLimiter, async (req, res) => {
+  let result;
+  try {
+    result = await catalog.seedAgents(db(), catalog.loadSeed());
+  } catch (err) {
+    logger.error('[agents] seed failed:', err.message);
+    return res.status(500).json({ error: 'Import des agents de départ impossible' });
+  }
+  await store.logActivity(db(), { kind: 'import', message: `Agents de départ : ${result.inserted} ajouté(s), ${result.skipped} déjà présent(s)` });
+  res.json(result);
 });
 
 // ------------------------------------------------------------ settings & usage
@@ -335,42 +450,7 @@ router.get('/stream', async (req, res) => {
 
 // ------------------------------------------------------------ import / export
 
-const ENGINES = ['claude', 'maison'];
-
-function slug(s) {
-  return String(s).normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 100);
-}
-
-// Accepts the artifact's field names (French or English).
-function normaliseAgent(a, i) {
-  if (!a || typeof a !== 'object' || Array.isArray(a)) return { error: `agent ${i + 1} : objet attendu` };
-  const name = a.name ?? a.nom;
-  if (!isText(name, 200)) return { error: `agent ${i + 1} : name requis` };
-  const id = a.id != null ? String(a.id) : slug(name);
-  if (!AGENT_ID.test(id)) return { error: `agent ${i + 1} : id invalide` };
-  const text = (v, max) => (v == null ? null : String(v).slice(0, max));
-  const tools = a.tools ?? a.outils ?? [];
-  const engine = a.engine ?? a.moteur ?? 'claude';
-  if (!ENGINES.includes(engine)) return { error: `agent ${i + 1} : engine doit être claude ou maison` };
-  const model = a.model ?? a.modele ?? null;
-  if (model != null && !(TIERS.includes(model) || MODEL.test(model))) return { error: `agent ${i + 1} : model invalide` };
-  if (!sizeOk(tools, 5000)) return { error: `agent ${i + 1} : tools trop volumineux` };
-  const active = a.active ?? a.actif;
-  return {
-    row: {
-      id,
-      name: String(name).slice(0, 200),
-      team: text(a.team ?? a.equipe, 200),
-      role: text(a.role ?? a.rôle, 4000),
-      method: text(a.method ?? a.methode ?? a.méthode, 8000),
-      tools: Array.isArray(tools) ? tools : [tools],
-      engine,
-      model,
-      active: active === undefined ? true : Boolean(active),
-      updated_at: new Date().toISOString(),
-    },
-  };
-}
+const { normaliseAgent } = catalog;
 
 router.get('/export', async (req, res) => {
   const { data, error } = await db().from('agents')
@@ -384,15 +464,9 @@ router.post('/import', importLimiter, async (req, res) => {
   const list = Array.isArray(req.body) ? req.body : req.body && req.body.agents;
   if (!Array.isArray(list) || !list.length) return bad(res, 'Envoyez { "agents": [...] }');
   if (list.length > 200) return bad(res, '200 agents au maximum par import');
-  const rows = [];
-  const errors = [];
-  list.forEach((a, i) => {
-    const r = normaliseAgent(a, i);
-    if (r.error) errors.push(r.error); else rows.push(r.row);
-  });
-  if (errors.length) return res.status(400).json({ error: 'Import refusé', details: errors.slice(0, 50) });
-  const ids = rows.map((r) => r.id);
-  if (new Set(ids).size !== ids.length) return bad(res, 'Identifiants en double dans l’import');
+  const { rows, errors } = catalog.normaliseList(list);
+  if (errors && errors[0] === 'Identifiants en double') return bad(res, 'Identifiants en double dans l’import');
+  if (errors) return res.status(400).json({ error: 'Import refusé', details: errors.slice(0, 50) });
   const { error } = await db().from('agents').upsert(rows, { onConflict: 'id' });
   if (error) {
     logger.error('[agents] import failed:', error.message);

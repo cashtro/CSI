@@ -4,7 +4,8 @@
 -- 002_espace_entreprises.sql, puis ce fichier (003). La regle de lecture des
 -- membres ci-dessous a besoin de public.membres et de public.mon_entreprise(),
 -- crees par 002. Execute avant 002, ce fichier saute cette regle : il faut
--- alors le relancer apres 002.
+-- alors le relancer apres 002. Ensuite : 004_protection_comptes.sql, puis
+-- 005_recherche_agents.sql.
 --
 -- Run once in the Supabase SQL editor BEFORE starting the worker. Safe to
 -- re-run: every statement is idempotent.

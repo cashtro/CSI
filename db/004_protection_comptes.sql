@@ -3,6 +3,7 @@
 -- ORDRE D'EXECUTION : 001_fulfillments.sql, puis 002_espace_entreprises.sql,
 -- puis 003_moteur_agents.sql, puis ce fichier (004). Safe to re-run: every
 -- statement is idempotent, and each block skips a table that does not exist.
+-- Ensuite : 005_recherche_agents.sql (recherche web des agents).
 --
 -- Why: the public anon key is in every page, so anyone can call Supabase
 -- directly with their own JWT. The server never relies on the browser to

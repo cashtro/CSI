@@ -82,9 +82,10 @@ Dans l'éditeur SQL de Supabase, un fichier à la fois :
 2. `db/002_espace_entreprises.sql`
 3. `db/003_moteur_agents.sql`
 4. `db/004_protection_comptes.sql` (nouveau, **fortement recommandé**)
+5. `db/005_recherche_agents.sql` (recherche web des agents, onglet Agents de l'admin)
 
 Chaque fichier peut être relancé sans danger. Si 003 a été exécuté avant 002, relancez 003.
-Les quatre fichiers ont été essayés dans cet ordre, deux fois de suite, sur PostgreSQL 16 avec
+Les cinq fichiers ont été essayés dans cet ordre, deux fois de suite, sur PostgreSQL 16 avec
 les rôles de Supabase.
 
 Ensuite, dans Supabase → Authentication → Policies, vérifiez que `anon` et `authenticated` ne

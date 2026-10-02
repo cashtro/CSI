@@ -1,0 +1,54 @@
+<%# ?vue=reglages-agents · engine on/off (emergency stop), budget, usage, models, import/export. %>
+<div class="ag pl-stack" data-agents-vue="reglages-agents">
+  <% if (agentsError) { %><p class="status is-error"><%= agentsError %></p><% } %>
+  <section class="panel ag-switch" aria-labelledby="ag-s-titre" data-engine-panel>
+    <div class="panel-head"><h2 id="ag-s-titre">🛑 Moteur des agents</h2><span class="badge" data-engine-badge>…</span></div>
+    <p data-engine-text>Lecture de l’état…</p>
+    <ul class="ag-checklist" data-engine-checks></ul>
+    <div class="actions">
+      <button class="btn btn--danger ag-stop" type="button" data-action="emergency-stop">🛑 Arrêt d’urgence</button>
+      <button class="btn" type="button" data-action="start" hidden>▶️ Remettre en marche</button>
+      <span class="status" data-status="engine" role="status"></span>
+    </div>
+    <p class="dim ag-note">L’arrêt d’urgence coupe le moteur et annule tous les travaux en file ou en cours. Le travail en cours s’arrête à sa prochaine étape.</p>
+  </section>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="ag-b-titre">
+      <div class="panel-head"><h2 id="ag-b-titre">💸 Budget du mois</h2><span class="tag" data-usage-month></span></div>
+      <div class="ag-meter" data-usage-meter role="meter" aria-label="Budget utilisé" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div>
+      <p data-usage-text class="num">…</p>
+      <ul class="items ag-usage" data-usage-rows></ul>
+      <form class="form" data-ag-form="budget" novalidate>
+        <div class="field"><label for="ag-s-budget">Budget mensuel (USD)</label><input id="ag-s-budget" name="monthly_budget_usd" type="number" min="0" max="10000" step="1" required></div>
+        <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer le budget</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="ag-m-titre">
+      <div class="panel-head"><h2 id="ag-m-titre">🧠 Modèles</h2></div>
+      <form class="form" data-ag-form="models" novalidate>
+        <div class="field"><label for="ag-s-quick">Rapide (votes)</label><input id="ag-s-quick" name="model_quick" type="text" maxlength="80" placeholder="par défaut" autocomplete="off"></div>
+        <div class="field"><label for="ag-s-default">Normal (ordres, recherches, propositions)</label><input id="ag-s-default" name="model_default" type="text" maxlength="80" placeholder="par défaut" autocomplete="off"></div>
+        <div class="field"><label for="ag-s-complex">Complexe (arbitre, révision finale)</label><input id="ag-s-complex" name="model_complex" type="text" maxlength="80" placeholder="par défaut" autocomplete="off"></div>
+        <div class="field"><label for="ag-s-conc">Appels en parallèle (1 à 6)</label><input id="ag-s-conc" name="concurrency" type="number" min="1" max="6" step="1"></div>
+        <span class="hint">Laisse vide pour le modèle par défaut (variables AGENTS_MODEL_*).</span>
+        <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer les modèles</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="ag-i-titre">
+    <div class="panel-head"><h2 id="ag-i-titre">👥 Agents</h2><span class="tag"><%= agents.length %> agent(s)</span></div>
+    <div class="actions">
+      <button class="btn btn--gold" type="button" data-action="seed">🌱 Importer les 38 agents de départ</button>
+      <a class="btn btn--ghost" href="/api/admin/agents/export" download="agents-pandora.json">⬇️ Exporter en JSON</a>
+      <span class="status" data-status="seed" role="status"></span>
+    </div>
+    <p class="dim ag-note">L’import de départ ajoute seulement les agents manquants : ceux que tu as modifiés restent tels quels.</p>
+    <form class="form" data-ag-form="import" novalidate>
+      <div class="field"><label for="ag-i-file">Importer un fichier JSON ({ "agents": [...] }, 200 agents au plus)</label><input id="ag-i-file" name="file" type="file" accept="application/json,.json" required></div>
+      <div class="actions"><button class="btn btn--ghost btn--sm" type="submit">Importer le fichier</button><span class="status" data-status role="status"></span></div>
+    </form>
+  </section>
+</div>

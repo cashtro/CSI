@@ -1,7 +1,19 @@
 // In-memory Supabase stand-in for the agent engine tests. Covers the query
 // builder calls the engine makes, plus rpc() through injectable handlers.
 
-function createMockDb(seed = {}, rpcHandlers = {}) {
+// Column value, with PostgREST JSON paths: 'payload->>agent_id'.
+function pick(row, col) {
+  if (!String(col).includes('->')) return row[col];
+  const [base, ...keys] = String(col).split(/->>?/);
+  let v = row[base];
+  for (const k of keys) v = v == null ? undefined : v[k];
+  return keys.length && String(col).includes('->>') && v != null ? String(v) : v;
+}
+
+// options.uuid: ids are random UUIDs (like gen_random_uuid()), for code
+// that validates them. options.defaults: { table: () => columns } applied on
+// insert, like the SQL column defaults (used by the local demo).
+function createMockDb(seed = {}, rpcHandlers = {}, options = {}) {
   const tables = {};
   for (const [k, v] of Object.entries(seed)) tables[k] = v.map((r) => ({ ...r }));
   let seq = 1000;
@@ -22,7 +34,7 @@ function createMockDb(seed = {}, rpcHandlers = {}) {
     upsert(rows, opts) { this.op = 'upsert'; this.payload = [].concat(rows); this.conflict = (opts && opts.onConflict) || null; return this; }
     update(patch) { this.op = 'update'; this.patch = patch; return this; }
     delete() { this.op = 'delete'; return this; }
-    eq(c, v) { this.filters.push((r) => r[c] === v); return this; }
+    eq(c, v) { this.filters.push((r) => pick(r, c) === v); return this; }
     gt(c, v) { this.filters.push((r) => r[c] > v); return this; }
     gte(c, v) { this.filters.push((r) => r[c] >= v); return this; }
     in(c, vs) { this.filters.push((r) => vs.includes(r[c])); return this; }
@@ -37,7 +49,9 @@ function createMockDb(seed = {}, rpcHandlers = {}) {
       const rows = this.rows();
       let data;
       if (this.op === 'insert') {
-        data = this.payload.map((r) => ({ id: r.id || (this.table === 'agent_activity' ? seq += 1 : `${this.table}-${seq += 1}`), created_at: new Date().toISOString(), ...r }));
+        const defaults = (options.defaults && options.defaults[this.table]) || (() => ({}));
+        const newId = () => (this.table === 'agent_activity' ? seq += 1 : options.uuid ? require('crypto').randomUUID() : `${this.table}-${seq += 1}`);
+        data = this.payload.map((r) => ({ id: r.id || newId(), created_at: new Date().toISOString(), ...defaults(), ...r }));
         rows.push(...data);
       } else if (this.op === 'upsert') {
         const key = this.conflict || (this.table === 'agent_workers' ? 'worker' : 'id');
@@ -110,4 +124,4 @@ const sqlLikeHandlers = (nowFn = () => Date.now()) => ({
   },
 });
 
-module.exports = { createMockDb, sqlLikeHandlers };
+module.exports = { createMockDb, sqlLikeHandlers, pick };

@@ -1,0 +1,42 @@
+<%# ?vue=conseil · submit a subject to the Council and follow the deliberations live. %>
+<% const PHASES = [['plan', 'Plan et tâches', '🗂️'], ['propositions', 'Propositions', '💡'], ['objections', 'Contradiction', '😈'], ['revisions', 'Révisions', '✏️'], ['vote', 'Vote', '🗳️'], ['revision_finale', 'Consensus', '✅']]; %>
+<div class="ag pl-stack" data-agents-vue="conseil">
+  <%- include('_absent') %>
+  <div class="ag-council">
+    <section class="panel" aria-labelledby="ag-c-titre">
+      <div class="panel-head"><h2 id="ag-c-titre">🧠 Soumettre un sujet au Conseil</h2><span class="tag">seuil de consensus 70 %</span></div>
+      <ol class="ag-frieze" aria-label="Étapes du Conseil">
+        <% PHASES.forEach(function (p) { %><li><span class="ag-node" aria-hidden="true"><%= p[2] %></span><span><%= p[1] %></span></li><% }) %>
+      </ol>
+      <p class="dim">La Planification découpe le sujet. Chaque équipe propose seule. Les Contradicteurs attaquent. Chacun révise. On vote, pondéré par la confiance, jusqu’à 3 tours. La Révision écrit la décision, la dissidence, et crée les tâches à valider.</p>
+      <form class="form" data-ag-form="council" novalidate>
+        <div class="field">
+          <label for="ag-c-sujet">Le sujet (écris ou dicte 🎤)</label>
+          <textarea id="ag-c-sujet" name="sujet" rows="4" maxlength="4000" required data-dictee placeholder="Ex. Quel nouveau concept Pandora doit lancer d’ici 90 jours pour se démarquer ?"></textarea>
+        </div>
+        <fieldset class="field ag-teams">
+          <legend class="label">Équipes qui proposent</legend>
+          <div class="ag-checks">
+            <% teams.filter(function (t) { return !t.delib; }).forEach(function (t) { %>
+            <label class="ag-check ag-t-<%= t.key %>"><input type="checkbox" name="equipes" value="<%= t.key %>" checked><i aria-hidden="true"></i><%= t.emoji %> <%= t.name %></label>
+            <% }) %>
+          </div>
+          <span class="hint">Un agent par équipe (deux si tu en choisis moins de 4), six au plus. Les Contradicteurs, la Planification et la Révision se joignent toujours.</span>
+        </fieldset>
+        <div class="form-row">
+          <div class="field"><label for="ag-c-client">Pour qui (facultatif)</label><select id="ag-c-client" name="entreprise_id"><%- include('_options-clients') %></select></div>
+        </div>
+        <details class="reveal">
+          <summary class="btn btn--ghost btn--sm">Ajouter du contexte</summary>
+          <div class="field"><label for="ag-c-contexte">Contexte (données, chiffres connus, contraintes)</label><textarea id="ag-c-contexte" name="contexte" rows="4" maxlength="20000" data-dictee></textarea></div>
+        </details>
+        <div class="actions"><button class="btn btn--gold" type="submit">Ouvrir le Conseil</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="ag-delib-titre">
+      <div class="panel-head"><h2 id="ag-delib-titre">🗳️ Délibérations</h2><span class="ag-live" data-live-state>Connexion…</span></div>
+      <div class="ag-list" data-debates><p class="empty">Chargement…</p></div>
+    </section>
+  </div>
+</div>
