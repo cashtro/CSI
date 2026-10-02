@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
 const upload = require('./utils/multerConfig'); // Multer config pour fichier
 //check if admin or connected
@@ -112,8 +113,8 @@ router.post('/portfolio', checkAdmin, upload.single('file'), async (req, res) =>
 
 // route pour get TOUT le portfolio
 router.get('/portfolio', async (req, res) => {
-  
-    const { data, error } = await supabase.from('Portfolio').select('*');
+    const { from, to } = getRange(req.query, { defaultLimit: 100, maxLimit: 200 });
+    const { data, error } = await supabase.from('Portfolio').select('*').range(from, to);
     if (error) return res.status(500).json({ error: error.message });
     res.json(data);
   });

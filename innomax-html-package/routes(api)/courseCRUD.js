@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
 const { handleCoursePayment, enrollStudent, handleSubscriptionPayment, confirmSubscription } = require('./utils/stripe');
 
@@ -213,13 +214,14 @@ router.post('/add-course', authenticateUser, upload.fields([
 //get all course (Admin like)
 router.get('/all-courses', async (req, res) => {
     try {
+        const { from, to } = getRange(req.query, { defaultLimit: 100, maxLimit: 200 });
         const { data, error } = await supabase
             .from('cours')
             .select(`
                 *,
                 Users: id_prof (username),
                 cours_students (student_id)
-            `).order('created_at', { ascending: false });;
+            `).order('created_at', { ascending: false }).range(from, to);
 
         if (error) throw error;
 

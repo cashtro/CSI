@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
 const upload = require('./utils/multerConfig');
 const { checkAdmin } = require('./utils/auth-middleware');
@@ -76,9 +77,11 @@ router.post('/', checkAdmin, upload.single('imageProduit'), async (req, res) => 
 // Add this GET route for fetching all shop items
 router.get('/', async (req, res) => {
     try {
+        const { from, to } = getRange(req.query, { defaultLimit: 100, maxLimit: 200 });
         const { data, error } = await supabase
             .from('Achat')
-            .select('*');
+            .select('*')
+            .range(from, to);
 
         if (error) {
             console.error('Supabase error:', error);

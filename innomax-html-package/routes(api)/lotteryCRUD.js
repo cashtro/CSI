@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
 const upload = require('./utils/multerConfig'); // Chemin corrigé
 const { handleLotteryPayment, verifyStripePayment, handleProductPurchase, verifyProductPurchase } = require('./utils/stripe');
@@ -187,10 +188,12 @@ router.get('/lotteryData', async (req, res) => {
         } = req.query;
 
         // 2. Construction et exécution de la requête
+        const { from, to } = getRange(req.query, { defaultLimit: 100, maxLimit: 200 });
         const { data, error } = await supabase
             .from('Lottery')
             .select('*')
             .order(sort, { ascending: order === 'asc' })
+            .range(from, to)
 
         if (error) throw error;
 
