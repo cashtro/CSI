@@ -178,6 +178,11 @@ router.post('/lotteryData',checkAdmin, upload.single('imageProduit'), async (req
     }
 });
 
+// Columns a client may sort lotteries by; anything else falls back to created_at
+// (the sort column used to come straight from the query string).
+const LOTTERY_SORTS = new Set(['created_at', 'lotteryTime', 'entrieCost', 'price', 'totalEntries', 'nomProduit']);
+const lotterySort = (value) => (LOTTERY_SORTS.has(value) ? value : 'created_at');
+
 // GET information sur la lottery (Image dans le storage, nom du produit, heure du tirage, participant sous forme de json?)
 router.get('/lotteryData', async (req, res) => { 
     try {
@@ -192,7 +197,7 @@ router.get('/lotteryData', async (req, res) => {
         const { data, error } = await supabase
             .from('Lottery')
             .select('*')
-            .order(sort, { ascending: order === 'asc' })
+            .order(lotterySort(sort), { ascending: order === 'asc' })
             .range(from, to)
 
         if (error) throw error;
@@ -297,7 +302,7 @@ router.get('/lotteryUserData', async (req, res) => {
         const { data: lotteries, error: lotteryError } = await supabase
             .from('Lottery')
             .select('*')
-            .order(sort, { ascending: order === 'asc' });
+            .order(lotterySort(sort), { ascending: order === 'asc' });
 
         if (lotteryError) {
             console.error('Erreur lors de la récupération des lotteries:', lotteryError);
