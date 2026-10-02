@@ -3,7 +3,7 @@ const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
-const { authenticateUser, setAuthCookies, twoFaLimiter } = require('./utils/auth-middleware');
+const { authenticateUser, setAuthCookies, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
 const { loginValidation, registrationValidation, validatePassword } = require('./utils/validation-middleware');
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
@@ -81,7 +81,7 @@ router.get('/validateToken', async (req, res) => {
  
 //TODO add validation (regex or express validator)
 // Registration route - modified to log out after registration
-router.post('/register', registrationValidation, async (req, res) => {
+router.post('/register', authLimiter, registrationValidation, async (req, res) => {
     const { username, email, age, password, confirmPassword } = req.body;
     const trimmedPassword = password ? password.trim() : '';
 
@@ -206,7 +206,7 @@ router.post('/logout', authenticateUser, async (req, res) => {
 });
 
 // Route pour la connexion
-router.post('/login', loginValidation, async (req, res) => {
+router.post('/login', authLimiter, loginValidation, async (req, res) => {
     const { email, password, rememberMe } = req.body;
 
     try {
@@ -230,8 +230,10 @@ router.post('/login', loginValidation, async (req, res) => {
 
 
 
-        // REQUIRED2FA-----------------------------------------------------------------
-        if (user2fa && !user2fa.enabled) {
+        // REQUIRED2FA (challenge): a 2FA row exists AND is enabled -> demand a TOTP code.
+        // Previously this gated on `!user2fa.enabled`, which let fully-enabled 2FA
+        // accounts skip the second factor entirely (auth bypass).
+        if (user2fa && user2fa.enabled) {
             // Create temporary session reference
             const tempSessionId = crypto.randomBytes(32).toString('hex');
             await storeTempSession(
@@ -680,8 +682,9 @@ router.post('/check-2fa', async (req, res) => {
             throw user2faError;
         }
 
-        // REQUIRED2FA-----------------------------------------------------------------
-        if (user2fa && !user2fa.enabled) {
+        // REQUIRED2FA (challenge): a 2FA row exists AND is enabled -> demand a TOTP code.
+        // Fixed inverted gate that previously let enabled-2FA accounts through.
+        if (user2fa && user2fa.enabled) {
             // Create temporary session reference
             const tempSessionId = crypto.randomBytes(32).toString('hex');
             await storeTempSession(
@@ -740,7 +743,7 @@ router.post('/check-2fa', async (req, res) => {
 });
 
 // EMAIL VERIFICATION
-router.post('/check-confirmation', async (req, res) => {
+router.post('/check-confirmation', authLimiter, async (req, res) => {
     const { email } = req.body;
     
     try {
@@ -752,35 +755,24 @@ router.post('/check-confirmation', async (req, res) => {
         // Find our specific user
         const user = users.find(u => u.email === email);
 
-        
+        // Never leak the raw admin user object (PII / auth metadata).
         if (!user) {
-            return res.json({ 
-                confirmed: false, 
-                exists: false,
-                rawData: null // For debugging
-            });
+            return res.json({ confirmed: false, exists: false });
         }
 
         // Proper confirmation check
-        const isConfirmed = user.user_metadata.email_verified === true;
-        
-        res.json({
-            confirmed: isConfirmed,
-            exists: true,
-            rawData: user // For frontend debugging
-        });
+        const isConfirmed = user.user_metadata?.email_verified === true;
+
+        res.json({ confirmed: isConfirmed, exists: true });
 
     } catch (error) {
-        console.error('Error checking confirmation:', error);
-        res.status(500).json({ 
-            error: error.message,
-            debug: { email }
-        });
+        console.error('Error checking confirmation:', error?.message);
+        res.status(500).json({ error: 'Unable to check confirmation status' });
     }
 });
 
 // RESEND CONFIRMATION EMAIL
-router.post('/resend-confirmation', async (req, res) => {
+router.post('/resend-confirmation', authLimiter, async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -803,8 +795,10 @@ router.post('/resend-confirmation', async (req, res) => {
 
         res.json({ success: true, message: 'Confirmation email sent' });
     } catch (error) {
-        console.error('Error resending confirmation:', error, error.body.errors);
-        res.status(500).json({ error: error.message });
+        // NOTE: previously logged `error.body.errors`, which threw a TypeError when
+        // `error.body` was undefined, masking the real failure.
+        console.error('Error resending confirmation:', error?.message);
+        res.status(500).json({ error: 'Unable to resend confirmation email' });
     }
 });
 
