@@ -21,27 +21,14 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// CSRF Protection
-const csrfProtection = (req, res, next) => {
-  const csrfToken = req.headers['x-csrf-token'];
-  const sessionToken = req.cookies['csrf-token'];
-
-  if (!csrfToken || !sessionToken || csrfToken !== sessionToken) {
-    return res.status(403).json({ error: 'Invalid CSRF token' });
-  }
-  next();
-};
-
-// Session timeout middleware
-const sessionTimeout = (req, res, next) => {
-  const sessionAge = Date.now() - (req.session?.timestamp || 0);
-  const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-
-  if (sessionAge > maxAge) {
-    return res.status(401).json({ error: 'Session expired' });
-  }
-  next();
-};
+// NOTE: a custom `csrfProtection` and a `sessionTimeout` middleware previously
+// lived here. Both were exported but never used anywhere:
+//   - `csrfProtection` was a second, dead CSRF implementation (the app uses the
+//     `csurf` instance in server.js) that gave a false sense of protection.
+//   - `sessionTimeout` read `req.session`, but express-session is not configured,
+//     so it was inert.
+// Removed to avoid misleading, dead security code. A single, real CSRF strategy
+// applied across state-changing routes is tracked separately (audit H1).
 
 // Enhanced authentication middleware
 const authenticateUser = async (req, res, next) => {
@@ -174,7 +161,5 @@ module.exports = {
   clearAuthCookies,
   twoFaLimiter,
   authLimiter,
-  csrfProtection,
-  sessionTimeout,
   getValidUser
 };
