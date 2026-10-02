@@ -682,13 +682,22 @@ router.post('/check-confirmation', authLimiter, async (req, res) => {
     const { email } = req.body;
     
     try {
-        // Get user by email (admin API)
-        const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
-        
-        if (error) throw error;
+        // listUsers() only returns the first page (50 users), so past 50 sign-ups
+        // most accounts were reported as missing. Resolve the id from Users
+        // (written at registration), then read that one auth user.
+        const { data: profile, error: profileError } = await supabaseAdmin
+            .from('Users')
+            .select('userId')
+            .eq('email', String(email || '').trim())
+            .maybeSingle();
+        if (profileError) throw profileError;
 
-        // Find our specific user
-        const user = users.find(u => u.email === email);
+        let user = null;
+        if (profile) {
+            const { data, error } = await supabaseAdmin.auth.admin.getUserById(profile.userId);
+            if (error) throw error;
+            user = data.user;
+        }
 
         // Never leak the raw admin user object (PII / auth metadata).
         if (!user) {
@@ -696,7 +705,7 @@ router.post('/check-confirmation', authLimiter, async (req, res) => {
         }
 
         // Proper confirmation check
-        const isConfirmed = user.user_metadata?.email_verified === true;
+        const isConfirmed = Boolean(user.email_confirmed_at) || user.user_metadata?.email_verified === true;
 
         res.json({ confirmed: isConfirmed, exists: true });
 
