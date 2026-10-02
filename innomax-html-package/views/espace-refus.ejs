@@ -5,7 +5,7 @@
 </head>
 <body class="pl">
 <%- include('partials/pilotage/topbar', {
-  sousTitre: 'Pandora', email: null, badge: null, salut: '🔒 Zone protégée', titre: 'Accès refusé',
+  sousTitre: 'Espace sécurisé', email: null, badge: null, salut: '🔒 Zone protégée', titre: 'Accès refusé',
   intro: null, cta: null, nav: [], vue: null, base: '/'
 }) %>
   <main class="wrap main" id="contenu">
@@ -13,10 +13,11 @@
       <h2 id="refus-titre">On ne peut pas vous laisser entrer ici</h2>
       <p><%= message %></p>
       <div class="actions">
-        <a class="btn" href="/login">Se reconnecter</a>
+        <a class="btn btn--accent" href="/login">Se reconnecter</a>
         <a class="btn btn--ghost" href="/">Retour au site</a>
       </div>
     </section>
   </main>
+<%- include('partials/pilotage/footer') %>
 </body>
 </html>

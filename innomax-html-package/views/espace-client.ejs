@@ -34,18 +34,18 @@
   <% if (!data) { %>
     <section class="panel">
       <h2>🕐 Compte pas encore rattaché</h2>
-      <p>Votre compte n'est relié à aucune entreprise pour l'instant. Dès que l'équipe Pandora l'aura rattaché, vous verrez ici vos mandats, vos livrables et vos factures.</p>
-      <div class="actions"><a class="btn" href="/contact">💬 Nous écrire</a></div>
+      <p>Votre compte n'est relié à aucune entreprise pour l'instant. Dès que l'équipe <%= include('partials/pilotage/marque') %> l'aura rattaché, vous verrez ici vos mandats, vos livrables et vos factures.</p>
+      <div class="actions"><a class="btn btn--accent" href="/contact">💬 Nous écrire</a></div>
     </section>
   <% } else { %>
 
     <% if (vue === 'apercu') { %>
     <div class="pl-stack">
       <div class="kpis">
-        <div class="panel panel--gold kpi kpi--gold"><span class="emoji" aria-hidden="true">💰</span><span class="label">Total payé</span><span class="value"><%= fmt.money(t.paye) %></span></div>
+        <div class="panel panel--accent kpi kpi--accent"><span class="emoji" aria-hidden="true">💰</span><span class="label">Total payé</span><span class="value"><%= fmt.money(t.paye) %></span></div>
         <div class="panel kpi"><span class="emoji" aria-hidden="true">🚀</span><span class="label">Mandats actifs</span><span class="value"><%= t.mandatsActifs %></span></div>
         <div class="panel kpi"><span class="emoji" aria-hidden="true">👀</span><span class="label">Livrables à approuver</span><span class="value"><%= t.enAttente %></span></div>
-        <div class="panel panel--gold kpi kpi--gold"><span class="emoji" aria-hidden="true">🔁</span><span class="label">Abonnements</span><span class="value"><%= t.abonnements %></span></div>
+        <div class="panel panel--accent kpi kpi--accent"><span class="emoji" aria-hidden="true">🔁</span><span class="label">Abonnements</span><span class="value"><%= t.abonnements %></span></div>
       </div>
 
       <div class="pl-cols">
@@ -139,7 +139,7 @@
                 <textarea id="c-<%= l.id %>" name="commentaire" maxlength="2000"></textarea>
               </div>
               <div class="actions">
-                <button class="btn" type="submit" name="decision" value="approuve">👍 Approuver</button>
+                <button class="btn btn--accent" type="submit" name="decision" value="approuve">👍 Approuver</button>
                 <button class="btn btn--ghost" type="submit" name="decision" value="modification_demandee">✏️ Demander une modification</button>
               </div>
               <p class="status" data-status role="status"></p>
@@ -153,7 +153,7 @@
     <% } %>
 
     <% if (vue === 'achats') { %>
-    <section class="panel panel--gold" aria-labelledby="achats-titre">
+    <section class="panel panel--accent" aria-labelledby="achats-titre">
       <div class="panel-head"><h2 id="achats-titre">Achats, abonnements et factures</h2><span class="tag">Total payé <span class="money"><%= fmt.money(t.paye) %></span></span></div>
       <% if (!data.achats.length) { %>
         <p class="empty">Aucun paiement enregistré.</p>
@@ -181,7 +181,7 @@
 
     <% if (vue === 'nouveau') { %>
     <section class="panel" aria-labelledby="nouveau-titre">
-      <div class="panel-head"><h2 id="nouveau-titre">Nouveau mandat</h2><span class="tag">Transmis à l'équipe Pandora</span></div>
+      <div class="panel-head"><h2 id="nouveau-titre">Nouveau mandat</h2><span class="tag">Transmis à l'équipe <%= include('partials/pilotage/marque') %></span></div>
       <form class="form" data-api="/api/espace/mandats" data-ok="🎉 Mandat envoyé. Merci !" data-next="/espace?vue=mandats">
         <div class="field">
           <label for="titre">Titre du projet</label>
@@ -201,12 +201,13 @@
             <input id="echeance" name="echeance" type="date">
           </div>
         </div>
-        <div class="actions"><button class="btn btn--gold" type="submit">🚀 Envoyer le mandat</button></div>
+        <div class="actions"><button class="btn btn--accent" type="submit">🚀 Envoyer le mandat</button></div>
         <p class="status" data-status role="status"></p>
       </form>
     </section>
     <% } %>
   <% } %>
 </main>
+<%- include('partials/pilotage/footer') %>
 </body>
 </html>

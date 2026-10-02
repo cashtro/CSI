@@ -384,4 +384,67 @@ describe('cheerful theme', () => {
     expect(css).toContain(":root[data-theme='dark']");
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.confetti \{ display: none; \}/);
   });
+
+  // Rebranding: every colour lives in one brand block at the top of the file.
+  const TOKENS = ['--frame', '--frame-ink', '--frame-line', '--bg', '--surface', '--ink', '--muted', '--line', '--line-strong', '--accent', '--accent-ink', '--on-accent', '--neon-from', '--neon-to', '--on-neon', '--ok', '--on-ok', '--ok-ink', '--bad'];
+  const start = css.indexOf('/* 0. BLOC MARQUE');
+  const end = css.indexOf('/* FIN DU BLOC MARQUE');
+  const block = css.slice(start, end);
+
+  it('keeps the brand tokens in one block, in the light, system-dark and chosen-dark states', () => {
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    const states = [
+      block.slice(block.indexOf(':root {'), block.indexOf('@media (prefers-color-scheme: dark)')),
+      block.slice(block.indexOf(":root:not([data-theme='light'])"), block.indexOf(":root[data-theme='dark']")),
+      block.slice(block.indexOf(":root[data-theme='dark']")),
+    ];
+    states.forEach((state) => {
+      TOKENS.forEach((token) => expect(state).toMatch(new RegExp(`\\s${token}: (#[0-9a-f]{6}|var\\(--[a-z0-9-]+\\));`)));
+    });
+  });
+
+  it('hard-codes no colour outside the brand block, so a rebrand is one replacement', () => {
+    const rest = css.slice(0, start) + css.slice(end);
+    expect(rest).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+    ['topbar', 'logo', 'footer', 'marque', 'slogan'].forEach((name) => {
+      const src = fs.readFileSync(path.join(__dirname, '..', 'views', 'partials', 'pilotage', `${name}.ejs`), 'utf8');
+      expect(src).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+    });
+  });
+
+  it('stops every animation with reduced motion and only animates transform, opacity or background-position', () => {
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{\s*animation: none !important;\s*transition: none !important;/);
+    const frames = css.match(/@keyframes [\w-]+ \{[^@]*?\}\s*\}/g) || [];
+    expect(frames.length).toBeGreaterThan(5);
+    frames.forEach((f) => {
+      const props = f.replace(/^@keyframes [\w-]+ \{/, '').match(/[a-z-]+(?=:)/g) || [];
+      props.forEach((prop) => expect(['transform', 'opacity', 'background-position']).toContain(prop));
+    });
+  });
+
+  it('renders the replaceable panda logo and loads the motion script deferred', async () => {
+    const res = await request(app).get('/admin/console').set('Cookie', adminCookies());
+    expect(res.text).toContain('class="pb-mark" data-brand-mark');
+    expect(res.text).toContain('<script src="/assets/js/reflets.js" defer></script>');
+    expect(res.text.match(/kpi--vedette/g)).toHaveLength(1);
+    expect(res.text).toMatch(/<span class="hero-emoji">🏠<\/span><span class="foil">Aperçu<\/span>/);
+  });
+
+  it('takes every brand mention from one brandName variable, Panda by default', async () => {
+    const ejs = require('ejs');
+    const client = await request(app).get('/espace?vue=nouveau').set('Cookie', cookies('tok-a'));
+    expect(client.text).toContain('<span class="foil">Panda</span><small>Business · Technologie · Marketing</small>');
+    expect(client.text).toContain('· Panda</title>');
+    expect(client.text).toContain("Transmis à l'équipe Panda");
+    expect(client.text).toContain('class="pl-footer"');
+    expect(client.text).not.toContain('Pandora');
+    const admin = await request(app).get('/admin/console').set('Cookie', adminCookies());
+    expect(admin.text).toContain('Toute l’activité de Panda en un coup d’œil.');
+    expect(admin.text).not.toContain('Pandora');
+    const views = path.join(__dirname, '..', 'views', 'partials', 'pilotage');
+    const locals = { brandName: 'Nova & Co', title: 'X', sousTitre: 's', email: null, badge: null, salut: '', titre: 'T', intro: null, cta: null, nav: [], vue: null, base: '/' };
+    expect(await ejs.renderFile(path.join(views, 'topbar.ejs'), locals)).toContain('<span class="foil">Nova &amp; Co</span>');
+    expect(await ejs.renderFile(path.join(views, 'head.ejs'), locals)).toContain('<title>X · Nova &amp; Co</title>');
+  });
 });

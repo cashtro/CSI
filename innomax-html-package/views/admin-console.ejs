@@ -27,7 +27,7 @@
   badge: '🔐 2FA active',
   salut: fmt.salut() + ', chef !',
   titre: ici.emoji + ' ' + ici.label,
-  intro: vue === 'apercu' ? 'Toute l’activité de Pandora en un coup d’œil.' : null,
+  intro: vue === 'apercu' ? 'Toute l’activité de ' + include('partials/pilotage/marque') + ' en un coup d’œil.' : null,
   cta: null,
   nav: nav,
   vue: vue,
@@ -39,7 +39,7 @@
     <% if (vue === 'apercu') { %>
     <div class="pl-stack">
       <div class="kpis">
-        <div class="panel panel--gold kpi kpi--gold"><span class="emoji" aria-hidden="true">💰</span><span class="label">Revenus encaissés</span><span class="value"><%= fmt.money(revenus) %></span></div>
+        <div class="panel panel--accent kpi kpi--accent kpi--vedette"><span class="emoji" aria-hidden="true">💰</span><span class="label">Revenus encaissés</span><span class="value"><%= fmt.money(revenus) %></span></div>
         <div class="panel kpi"><span class="emoji" aria-hidden="true">🏢</span><span class="label">Entreprises</span><span class="value"><%= data.entreprises.length %></span></div>
         <div class="panel kpi"><span class="emoji" aria-hidden="true">🚀</span><span class="label">Mandats actifs</span><span class="value"><%= actifs %></span></div>
         <div class="panel kpi"><span class="emoji" aria-hidden="true">👀</span><span class="label">Livrables en attente</span><span class="value"><%= enAttente %></span></div>
@@ -59,12 +59,12 @@
           </ul>
           <% } %>
         </section>
-        <section class="panel panel--gold" aria-labelledby="derniers-paiements">
+        <section class="panel panel--accent" aria-labelledby="derniers-paiements">
           <div class="panel-head"><h2 id="derniers-paiements">Derniers paiements</h2><a href="/admin/console?vue=paiements">Tout voir →</a></div>
           <% if (!data.paiements.length) { %><p class="empty">Aucun paiement.</p><% } else { %>
           <ul class="items">
             <% data.paiements.slice(0, 5).forEach(function (p) { %>
-            <li class="item item--gold">
+            <li class="item item--accent">
               <div class="item-head"><h3><%= p.entreprise || p.email || 'Client anonyme' %></h3><span class="money"><%= fmt.money(p.montant, p.devise) %></span></div>
               <div class="item-meta"><%= p.type %> · <%= p.source %> · <span class="num"><%= fmt.jour(p.date) %></span></div>
             </li>
@@ -85,7 +85,7 @@
             <div class="field"><label for="e-nom">Nom</label><input id="e-nom" name="nom" type="text" maxlength="200" required></div>
             <div class="field"><label for="e-courriel">Courriel de contact</label><input id="e-courriel" name="courriel" type="email" maxlength="200"></div>
           </div>
-          <div class="actions"><button class="btn" type="submit">🏢 Créer l’entreprise</button></div>
+          <div class="actions"><button class="btn btn--accent" type="submit">🏢 Créer l’entreprise</button></div>
           <p class="status" data-status role="status"></p>
         </form>
       </section>
@@ -149,7 +149,7 @@
     <% } %>
 
     <% if (vue === 'paiements') { %>
-    <section class="panel panel--gold" aria-labelledby="paiements-titre">
+    <section class="panel panel--accent" aria-labelledby="paiements-titre">
       <div class="panel-head"><h2 id="paiements-titre">Paiements et achats</h2><span class="tag">Encaissé <span class="money"><%= fmt.money(revenus) %></span></span></div>
       <% if (!data.paiements.length) { %><p class="empty">Aucun paiement enregistré.</p><% } else { %>
       <div class="table-wrap">
@@ -179,7 +179,7 @@
     <div class="pl-stack">
       <section class="panel" aria-labelledby="nouveau-mandat">
         <details class="reveal">
-          <summary class="btn btn--gold btn--sm">✨ Ouvrir un mandat pour un client</summary>
+          <summary class="btn btn--accent btn--sm">✨ Ouvrir un mandat pour un client</summary>
           <form class="form" data-api="/api/admin/mandats" data-ok="Mandat créé.">
             <div class="form-row">
               <div class="field"><label for="nm-e">Entreprise</label>
@@ -194,7 +194,7 @@
               <div class="field"><label for="nm-b">Budget ($ CA)</label><input id="nm-b" name="budget" type="number" min="0" step="100"></div>
               <div class="field"><label for="nm-ech">Échéance</label><input id="nm-ech" name="echeance" type="date"></div>
             </div>
-            <div class="actions"><button class="btn btn--gold" type="submit">Créer le mandat</button></div>
+            <div class="actions"><button class="btn btn--accent" type="submit">Créer le mandat</button></div>
             <p class="status" data-status role="status"></p>
           </form>
         </details>
@@ -259,7 +259,7 @@
           </div>
           <div class="field"><label for="l-u">Lien du livrable (https://)</label><input id="l-u" name="url" type="url" pattern="https://.*" placeholder="https://"></div>
           <div class="field"><label for="l-d">Description</label><textarea id="l-d" name="description" maxlength="5000" data-dictee></textarea></div>
-          <div class="actions"><button class="btn" type="submit">📦 Déposer le livrable</button></div>
+          <div class="actions"><button class="btn btn--accent" type="submit">📦 Déposer le livrable</button></div>
           <p class="status" data-status role="status"></p>
         </form>
         <% } %>
@@ -359,5 +359,6 @@
     </div>
     <% } %>
 </main>
+<%- include('partials/pilotage/footer') %>
 </body>
 </html>

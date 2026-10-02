@@ -1,15 +1,31 @@
 <%#
   Shared header of /espace and /admin/console.
   locals: sousTitre, email, badge, salut, titre, intro, cta {href,label}, nav [{id,label,emoji,count}], vue, base
+  Logo : partial logo.ejs (panda provisoire, remplaçable seul). Nom et slogan :
+  marque.ejs et slogan.ejs, seules sources (variables EJS brandName et
+  brandTagline, à définir une fois via app.locals ou res.render).
+  sousTitre (zone : « Espace entreprise », « Console de pilotage ») s'affiche en pastille.
+  The title is set in the animated accent foil (.foil); a leading or trailing
+  emoji is kept outside the foil so it stays in colour.
+%>
+<%
+  const emojiRun = '(?:\\p{Extended_Pictographic}|\\uFE0F|\\u200D)+';
+  let titreTexte = String(titre || '');
+  let emojiAvant = '';
+  let emojiApres = '';
+  const avant = new RegExp('^(' + emojiRun + ')\\s*', 'u').exec(titreTexte);
+  if (avant) { emojiAvant = avant[1]; titreTexte = titreTexte.slice(avant[0].length); }
+  const apres = new RegExp('\\s*(' + emojiRun + ')$', 'u').exec(titreTexte);
+  if (apres) { emojiApres = apres[1]; titreTexte = titreTexte.slice(0, apres.index); }
 %>
 <a class="skip" href="#contenu">Aller au contenu</a>
 <header class="topbar">
   <div class="wrap topbar-row">
     <a class="brand" href="<%= base %>">
-      <img src="/assets/img/logo/cropped-LogoPB512gold-1.webp" alt="" width="36" height="36">
-      <span>Pandora<small><%= sousTitre %></small></span>
+      <%- include('logo') %>
     </a>
     <div class="topbar-actions">
+      <% if (sousTitre) { %><span class="zone-pill"><%= sousTitre %></span><% } %>
       <% if (email) { %><span class="who"><%= email %><% if (badge) { %> · <%= badge %><% } %></span><% } %>
       <button type="button" class="icon-btn" data-theme-toggle hidden aria-label="Changer de thème">🌙</button>
       <a class="topbar-link topbar-link--site" href="/">Voir le site</a>
@@ -19,10 +35,10 @@
   <div class="wrap hero">
     <div>
       <p class="greet"><%= salut %></p>
-      <h1><%= titre %></h1>
+      <h1><% if (emojiAvant) { %><span class="hero-emoji"><%= emojiAvant %></span><% } %><span class="foil"><%= titreTexte %></span><% if (emojiApres) { %> <span class="hero-emoji"><%= emojiApres %></span><% } %></h1>
       <% if (intro) { %><p class="intro"><%= intro %></p><% } %>
     </div>
-    <% if (cta) { %><a class="btn btn--gold" href="<%= cta.href %>"><%= cta.label %></a><% } %>
+    <% if (cta) { %><a class="btn btn--accent" href="<%= cta.href %>"><%= cta.label %></a><% } %>
   </div>
   <% if (nav && nav.length) { %>
   <nav class="wrap tabs" aria-label="Sections">
