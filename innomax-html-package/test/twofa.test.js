@@ -278,3 +278,11 @@ describe('logout', () => {
     expect(clearAuthCookies).toHaveBeenCalledTimes(1);
   });
 });
+
+describe('GET /user/:userId', () => {
+  it("an admin without the mfa proof cannot read another user's record", async () => {
+    mockDb.Users = [{ userId: 'boss', email: 'b@x.ca', isAdmin: true }, { userId: 'u2', email: 'v@x.ca', isAdmin: false }];
+    const res = await request(app).get('/api/auth/user/u2').set('x-test-user', 'boss');
+    expect(res.status).toBe(403);
+  });
+});

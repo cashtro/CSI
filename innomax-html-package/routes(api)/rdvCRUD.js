@@ -5,6 +5,7 @@ const { createClient } = require('@supabase/supabase-js');
 const { handleRDVPayment, createRendezvous } = require('./utils/stripe');
 const { authenticateUser, checkAdmin } = require('./utils/auth-middleware');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
+const { verifyMfaProof, MFA_COOKIE } = require('./utils/twofa');
 
 
 
@@ -13,15 +14,20 @@ const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 const supabaseAdmin = createSupabaseAdmin();
 
-async function isAdmin(userId) {
+// Admin powers here need the 2FA proof too (signed 'mfa' cookie, see
+// utils/twofa), like checkAdmin and the admin console.
+async function isAdmin(req) {
+  const userId = req.user && req.user.id;
   const { data } = await supabaseAdmin.from('Users').select('isAdmin').eq('userId', userId).single();
-  return Boolean(data && data.isAdmin);
+  if (!(data && data.isAdmin === true)) return false;
+  return verifyMfaProof(req.cookies && req.cookies[MFA_COOKIE], userId);
 }
 
 // A rendez-vous may be changed by its student, the teacher who owns the slot,
 // or an admin. Resolves to the row when allowed, null when not, and throws a
 // 404 marker when it does not exist.
-async function rdvForManager(userId, rdvId) {
+async function rdvForManager(req, rdvId) {
+  const userId = req.user.id;
   const { data: rdv } = await supabaseAdmin
     .from('rendez_vous')
     .select('id, id_eleve, disponibilite_id')
@@ -35,13 +41,13 @@ async function rdvForManager(userId, rdvId) {
     .eq('id', rdv.disponibilite_id)
     .single();
   if (slot && slot.id_prof === userId) return { rdv };
-  return (await isAdmin(userId)) ? { rdv } : { forbidden: true };
+  return (await isAdmin(req)) ? { rdv } : { forbidden: true };
 }
 
 // Listing someone else's rendez-vous is admin-only.
 async function listTarget(req, res) {
   const target = req.query.userId || req.user.id;
-  if (target !== req.user.id && !(await isAdmin(req.user.id))) {
+  if (target !== req.user.id && !(await isAdmin(req))) {
     res.status(403).json({ message: 'Forbidden' });
     return null;
   }
@@ -70,7 +76,7 @@ router.put('/update/:id', authenticateUser, async (req, res) => {
   const { date, heure, duree } = req.body;
 
   try {
-    const access = await rdvForManager(req.user.id, id);
+    const access = await rdvForManager(req, id);
     if (access.notFound) return res.status(404).json({ message: 'Rendez-vous not found' });
     if (access.forbidden) return res.status(403).json({ message: 'Forbidden' });
 
@@ -94,7 +100,7 @@ router.delete('/cancel/:id', authenticateUser, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const access = await rdvForManager(req.user.id, id);
+    const access = await rdvForManager(req, id);
     if (access.notFound) return res.status(404).json({ message: 'Rendez-vous not found' });
     if (access.forbidden) return res.status(403).json({ message: 'Forbidden' });
 

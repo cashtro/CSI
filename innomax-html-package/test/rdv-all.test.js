@@ -50,7 +50,12 @@ const request = require('supertest');
 const express = require('express');
 const rdvRoutes = require('../routes(api)/rdvCRUD');
 
+const cookieParser = require('cookie-parser');
+const { signMfaProof } = require('../routes(api)/utils/twofa');
+const adminMfa = () => `mfa=${signMfaProof('admin', Date.now() + 3600e3)}`;
+
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
 app.use('/api/rdv', rdvRoutes);
 
@@ -84,8 +89,14 @@ describe('GET /api/rdv/all', () => {
 
   it('lets an admin list anyone', async () => {
     mockRpcResult = { data: [], error: null };
-    const res = await request(app).get('/api/rdv/all?userId=eleve').set('x-test-user', 'admin');
+    const res = await request(app).get('/api/rdv/all?userId=eleve').set('x-test-user', 'admin').set('Cookie', adminMfa());
     expect(res.status).toBe(200);
+  });
+
+  it('refuses an admin who has not passed 2FA in this browser (no mfa proof)', async () => {
+    mockRpcResult = { data: [], error: null };
+    const res = await request(app).get('/api/rdv/all?userId=eleve').set('x-test-user', 'admin');
+    expect(res.status).toBe(403);
   });
 });
 

@@ -9,7 +9,7 @@ const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSes
 const { createSupabaseClient, createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { sendEmail } = require('./utils/emailService');
 const { encryptSecret, decryptSecret } = require('./utils/crypto2fa');
-const { signSetup, setupMode, get2fa, isPrivileged, secondFactorStep } = require('./utils/twofa');
+const { signSetup, setupMode, get2fa, isPrivileged, secondFactorStep, verifyMfaProof, MFA_COOKIE } = require('./utils/twofa');
 const crypto = require('crypto');
 
 // C4: access/refresh tokens are always set as httpOnly cookies. They are ALSO
@@ -499,7 +499,8 @@ router.get('/user/:userId', authenticateUser, async (req, res) => {
                 .select('isAdmin')
                 .eq('userId', req.user.id)
                 .single();
-            if (!requester || !requester.isAdmin) {
+            // Admin access to someone else's record also needs the 2FA proof.
+            if (!requester || requester.isAdmin !== true || !verifyMfaProof(req.cookies && req.cookies[MFA_COOKIE], req.user.id)) {
                 return res.status(403).json({ error: 'Forbidden' });
             }
         }
