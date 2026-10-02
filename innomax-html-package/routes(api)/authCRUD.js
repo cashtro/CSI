@@ -406,29 +406,29 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
     }
 });
 
-router.post('/toggle-2fa', async (req, res) => {
-    const { userId, enable, code } = req.body;
+router.post('/toggle-2fa', authenticateUser, async (req, res) => {
+    const { enable, code } = req.body;
+    // Authorization comes from the authenticated session, never the request body.
+    const userId = req.user.id;
 
     try {
-        // Vérifier l'accès
-        const { data: { user }, error: authError } = 
-            await supabase.auth.getUser(req.headers['authorization']?.split(' ')[1]);
-        if (authError || user.id !== userId) throw new Error("Non autorisé");
+        // Require a valid TOTP code for BOTH enabling and disabling 2FA (proves
+        // possession of the authenticator). Enabling without proof was possible
+        // before, and a stolen bearer token could flip 2FA with no code.
+        const { data: user2fa } = await supabase
+            .from('Users_2fa')
+            .select('secret')
+            .eq('userId', userId)
+            .single();
 
-        // Vérifier le code si désactivation
-        if (enable === false) {
-            const { data: user2fa } = await supabase
-                .from('Users_2fa')
-                .select('secret')
-                .eq('userId', userId)
-                .single();
-
-            if (!authenticator.verify({ token: code, secret: user2fa.secret })) {
-                return res.status(401).json({ message: "Code 2FA invalide" });
-            }
+        if (!user2fa || !user2fa.secret) {
+            return res.status(400).json({ message: "2FA n'est pas configuré. Utilisez d'abord la configuration." });
         }
 
-        // Mettre à jour le statut
+        if (!code || !authenticator.verify({ token: String(code).trim(), secret: user2fa.secret })) {
+            return res.status(401).json({ message: "Code 2FA invalide" });
+        }
+
         const { error } = await supabase
             .from('Users_2fa')
             .upsert({
@@ -444,11 +444,8 @@ router.post('/toggle-2fa', async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Toggle 2FA Error:", error);
-        return res.status(500).json({ 
-            message: "Erreur lors de la modification du 2FA",
-            error: error.message 
-        });
+        console.error("Toggle 2FA Error:", error.message);
+        return res.status(500).json({ message: "Erreur lors de la modification du 2FA" });
     }
 });
 
@@ -519,21 +516,35 @@ router.get('/user/:userId', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.params;
 
+        // Authorization: a user may read only their own record, unless they are
+        // an admin. Prevents IDOR (any logged-in user reading anyone's full row).
+        if (req.user.id !== userId) {
+            const { data: requester } = await supabase
+                .from('Users')
+                .select('isAdmin')
+                .eq('userId', req.user.id)
+                .single();
+            if (!requester || !requester.isAdmin) {
+                return res.status(403).json({ error: 'Forbidden' });
+            }
+        }
+
+        // Return a minimal field set (never select('*') for user records).
         const { data, error } = await supabase
             .from('Users')
-            .select('*')
+            .select('userId, username, email, age, isAdmin, isTeacher')
             .eq('userId', userId)
             .single();
 
         if (error) throw error;
         res.json(data);
     } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error fetching user:', error.message);
+        res.status(500).json({ error: 'Unable to fetch user' });
     }
 });
 
-router.post('/regenerate-2fa', async (req, res) => {
+router.post('/regenerate-2fa', twoFaLimiter, async (req, res) => {
     const { tempSessionId } = req.body;
     
     try {
