@@ -7,6 +7,7 @@ const path = require('path');
 const fs = require('fs');
 const catalog = require('../../agents/catalog');
 const { monthStart } = require('../../agents/budget');
+const { seedFinancesDemo } = require('./finances-data');
 
 const ADMIN_ID = '00000000-0000-4000-8000-00000000a001';
 const ENT_A = '10000000-0000-4000-8000-000000000001';
@@ -75,7 +76,7 @@ function councilFromArtifact(d, idByName) {
   };
 }
 
-async function seedDemo(db) {
+async function seedDemo(db, options = {}) {
   const tables = db.tables;
   Object.assign(tables, {
     Users: [{ userId: ADMIN_ID, email: 'fondateur@demo.local', username: 'Fondateur (démo)', isAdmin: true }],
@@ -170,6 +171,9 @@ async function seedDemo(db) {
     { day, model: 'claude-haiku-4-5-20251001', calls: 10, tokens_in: 12000, tokens_out: 3000, cost_usd: 0.0270 },
     { day, model: 'web_search', calls: 1, tokens_in: 0, tokens_out: 0, cost_usd: 0.03 },
   );
+
+  // Finances tab: sales, expenses, AI cost and targets marked « exemple ».
+  if (options.finances !== false) seedFinancesDemo(db);
   return { adminId: ADMIN_ID, entreprises: [ENT_A, ENT_B], debateId: debate.id };
 }
 

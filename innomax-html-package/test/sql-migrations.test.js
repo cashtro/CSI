@@ -7,7 +7,7 @@ const DIR = path.join(__dirname, '..', '..', 'db');
 const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8');
 // SQL without "--" comments, to check what actually runs.
 const code = (f) => read(f).replace(/--.*$/gm, '');
-const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql', '005_recherche_agents.sql', '006_robots.sql'];
+const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql', '005_recherche_agents.sql', '006_robots.sql', '007_finances.sql'];
 
 describe('SQL migrations', () => {
   it('002 and 003 state the mandatory order 001, 002, 003', () => {
@@ -89,5 +89,18 @@ describe('SQL migrations', () => {
     expect(sql).not.toMatch(/grant [^;]* on public\.connexions_etats/);
     expect(sql).toMatch(/statut not in \('a_valider', 'refuse'\)/);
     expect(sql).toMatch(/revoke all on public\.robots_offres, public\.robots_actifs, public\.connexions, public\.connexions_etats\s+from anon, authenticated/);
+  });
+
+  it('007 runs after 006 (another team) and keeps finances server-only', () => {
+    const head = read('007_finances.sql').split('\n').slice(0, 10).join('\n');
+    expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE[\s\S]*005_recherche_agents\.sql[\s\S]*006[\s\S]*autre equipe[\s\S]*ce fichier \(007\)/);
+    const sql = code('007_finances.sql');
+    expect(sql).toMatch(/create table if not exists public\.depenses/);
+    expect(sql).toMatch(/create table if not exists public\.objectifs_financiers/);
+    expect(sql).toMatch(/categorie in \('outils', 'ia', 'publicite', 'sous_traitance', 'salaires', 'autres'\)/);
+    expect(sql).toMatch(/piece_jointe ~ '\^https:\/\/'/);
+    expect(sql).not.toMatch(/create policy/);
+    expect(sql).toMatch(/revoke all on public\.depenses from anon, authenticated/);
+    expect(sql).toMatch(/revoke all on public\.objectifs_financiers from anon, authenticated/);
   });
 });

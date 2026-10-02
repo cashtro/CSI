@@ -1,0 +1,305 @@
+<%#
+  Onglet Finances de /admin/console (FINANCES.md).
+  locals: fin (utils/finances.loadFinances), fmt, categories, categorieLabel.
+  Tous les montants arrivent en cents, calculés par le serveur. Les graphiques
+  sont dessinés par assets/js/finances.js à partir des attributs data-* (JSON
+  échappé par EJS) ; chaque graphique a aussi son tableau de données.
+%>
+<%
+  const m = function (c) { return typeof c === 'number' ? fmt.money(c / 100) : '—'; };
+  const pct = function (x) { return x === null || x === undefined ? '—' : (x * 100).toLocaleString('fr-CA', { maximumFractionDigits: 1, minimumFractionDigits: 1 }) + ' %'; };
+  const k = fin.kpi;
+  const p = fin.periode;
+  const q = function (extra) { return '/admin/console?vue=finances&mois=' + p.mois + '&du=' + p.du + '&au=' + p.au + (extra || ''); };
+  const csv = function (type) { return '/api/admin/finances/export?type=' + type + '&mois=' + p.mois + '&du=' + p.du + '&au=' + p.au; };
+  const PILL = { bon: '✅ Bon', attention: '⚠️ Attention', critique: '⛔ Critique' };
+  const margeEtat = (function () {
+    if (k.margePct === null) return null;
+    if (k.margePct < 0) return 'critique';
+    if (fin.objectif) return k.margePct * 100 >= fin.objectif.margeVisee ? 'bon' : (fin.objectif.margeVisee - k.margePct * 100 >= 10 ? 'critique' : 'attention');
+    return k.margePct >= 0.3 ? 'bon' : 'attention';
+  })();
+  const iaPart = fin.aiBudget.budgetUsd > 0 ? fin.aiBudget.spentUsd / fin.aiBudget.budgetUsd : 0;
+  const iaEtat = iaPart >= 1 ? 'critique' : (iaPart > 0.8 ? 'attention' : 'bon');
+  const fluxEtat = k.flux >= 0 ? 'bon' : 'critique';
+  const progression = fin.objectif && fin.objectif.revenuVise > 0 ? k.revenus / fin.objectif.revenuVise : null;
+  const objEtat = progression === null ? null : (progression >= 1 ? 'bon' : (progression >= 0.6 ? 'attention' : 'critique'));
+  const repartTotal = fin.repartition.reduce(function (s, r) { return s + r.cents; }, 0);
+  const t = fin.taxes;
+  const n2 = function (x) { return Number(x).toLocaleString('fr-CA', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); };
+%>
+<div class="fin pl-stack" data-fin>
+
+  <% if (fin.tableManquante) { %><p class="status is-error fin-banner"><%= fin.tableManquante %></p><% } %>
+
+  <%# ---------------------------------------------------------- Mois %>
+  <section class="panel fin-toolbar" aria-labelledby="fin-mois-titre">
+    <div class="fin-toolbar-row">
+      <div>
+        <h2 id="fin-mois-titre">Tableau de bord de <span class="fin-month"><%= fin.moisLabel %></span></h2>
+        <p class="dim fin-source">
+          Revenus calculés par le serveur depuis <strong>bills</strong><%= fin.source.stripe ? ' et l’API Stripe' : '' %>, avant taxes, en $ CA.
+          <% if (fin.source.mrrEstime) { %>MRR estimé (abonnements payés dans les 35 derniers jours) : Stripe non relié.<% } %>
+          Coût IA converti au taux <span class="num"><%= n2(fin.source.usdToCad) %></span> $ CA par $ US.
+        </p>
+      </div>
+      <form class="fin-month-form" method="get" action="/admin/console">
+        <input type="hidden" name="vue" value="finances">
+        <div class="field"><label for="fin-mois">Mois affiché</label><input id="fin-mois" name="mois" type="month" value="<%= p.mois %>" required></div>
+        <button class="btn btn--sm" type="submit">Afficher</button>
+      </form>
+    </div>
+  </section>
+
+  <%# ---------------------------------------------------------- Alertes %>
+  <section class="panel fin-alerts" aria-labelledby="fin-alertes-titre">
+    <div class="panel-head"><h2 id="fin-alertes-titre">🚦 Alertes</h2><span class="tag"><%= fin.alerts.length %> alerte(s)</span></div>
+    <% if (!fin.alerts.length) { %>
+      <p class="fin-ok"><span class="fin-pill fin-pill--bon"><%= PILL.bon %></span> Rien à signaler pour <%= fin.moisLabel %>.</p>
+    <% } else { %>
+    <ul class="fin-alert-list">
+      <% fin.alerts.forEach(function (a) { %>
+      <li class="fin-alert fin-alert--<%= a.niveau %>">
+        <span class="fin-pill fin-pill--<%= a.niveau %>"><%= PILL[a.niveau] %></span>
+        <div><strong><%= a.titre %></strong><p><%= a.detail %></p></div>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+
+  <%# ---------------------------------------------------------- KPI %>
+  <section aria-labelledby="fin-kpi-titre">
+    <h2 id="fin-kpi-titre" class="fin-section-title">📊 Indicateurs du mois</h2>
+    <div class="kpis fin-kpis">
+      <div class="panel panel--accent kpi kpi--accent kpi--vedette"><span class="emoji" aria-hidden="true">💰</span><span class="label">Revenus du mois (avant taxes)</span><span class="value"><%= m(k.revenus) %></span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">🔁</span><span class="label">MRR (abonnements actifs)<% if (fin.source.mrrEstime) { %> · estimé<% } %></span><span class="value"><%= m(k.mrr) %></span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">🛒</span><span class="label">Revenus ponctuels</span><span class="value"><%= m(k.ponctuels) %></span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">🧾</span><span class="label">Dépenses du mois (avant taxes)</span><span class="value"><%= m(k.depenses) %></span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">🤖</span><span class="label">Coût IA du mois <span class="fin-pill fin-pill--<%= iaEtat %> fin-pill--sm"><%= PILL[iaEtat] %></span></span><span class="value"><%= m(k.ia) %></span><span class="fin-sub num"><%= n2(fin.aiBudget.spentUsd) %> $ US sur <%= n2(fin.aiBudget.budgetUsd) %> $ US</span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">📈</span><span class="label">Marge brute<% if (margeEtat) { %> <span class="fin-pill fin-pill--<%= margeEtat %> fin-pill--sm"><%= PILL[margeEtat] %></span><% } %></span><span class="value"><%= m(k.marge) %></span><span class="fin-sub num"><%= pct(k.margePct) %> des revenus</span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">💧</span><span class="label">Flux de trésorerie <span class="fin-pill fin-pill--<%= fluxEtat %> fin-pill--sm"><%= PILL[fluxEtat] %></span></span><span class="value"><%= m(k.flux) %></span><span class="fin-sub num">Entrées <%= m(k.encaisse) %> · sorties <%= m(k.decaisse) %> (taxes incluses)</span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">👥</span><span class="label">Clients payants</span><span class="value num"><%= k.clients %></span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">🎯</span><span class="label">Revenu moyen par client</span><span class="value"><%= k.revenuMoyen === null ? '—' : m(k.revenuMoyen) %></span></div>
+      <div class="panel kpi"><span class="emoji" aria-hidden="true">🚪</span><span class="label">Taux d’annulation</span><span class="value num"><%= k.churn === null ? '—' : pct(k.churn) %></span><% if (k.churn === null) { %><span class="fin-sub">Données insuffisantes (relier Stripe)</span><% } %></div>
+    </div>
+  </section>
+
+  <%# ---------------------------------------------------------- Graphiques %>
+  <section aria-labelledby="fin-graph-titre">
+    <h2 id="fin-graph-titre" class="fin-section-title">📉 Tendances</h2>
+    <div class="fin-charts">
+      <figure class="panel fin-chart fin-chart--wide" data-fin-chart="revdep" data-serie="<%= JSON.stringify(fin.serie) %>">
+        <figcaption class="panel-head"><h3>Revenus contre coûts, 12 mois</h3>
+          <span class="fin-legend"><span class="fin-key fin-key--rev" aria-hidden="true"></span>Revenus <span class="fin-key fin-key--dep" aria-hidden="true"></span>Coûts (dépenses + IA)</span></figcaption>
+        <div class="fin-plot" data-plot></div>
+        <p class="fin-readout num" data-readout aria-live="polite">Survolez ou parcourez au clavier un mois pour lire ses chiffres.</p>
+        <details class="fin-data"><summary>Voir les données</summary>
+          <div class="table-wrap"><table class="grid"><thead><tr><th>Mois</th><th class="right">Revenus</th><th class="right">Coûts</th><th class="right">Marge</th></tr></thead><tbody>
+            <% fin.serie.forEach(function (s) { %><tr><td><%= s.label %></td><td class="right num"><%= m(s.revenus) %></td><td class="right num"><%= m(s.couts) %></td><td class="right num"><%= m(s.marge) %></td></tr><% }) %>
+          </tbody></table></div>
+        </details>
+      </figure>
+
+      <figure class="panel fin-chart" data-fin-chart="mrr" data-serie="<%= JSON.stringify(fin.serie) %>">
+        <figcaption class="panel-head"><h3>MRR, 12 mois</h3><span class="tag"><%= fin.source.mrrEstime ? 'estimé depuis bills' : 'Stripe' %></span></figcaption>
+        <div class="fin-plot" data-plot></div>
+        <p class="fin-readout num" data-readout aria-live="polite">MRR actuel : <%= m(k.mrr) %></p>
+        <details class="fin-data"><summary>Voir les données</summary>
+          <div class="table-wrap"><table class="grid"><thead><tr><th>Mois</th><th class="right">MRR</th></tr></thead><tbody>
+            <% fin.serie.forEach(function (s) { %><tr><td><%= s.label %></td><td class="right num"><%= m(s.mrr) %></td></tr><% }) %>
+          </tbody></table></div>
+        </details>
+      </figure>
+
+      <figure class="panel fin-chart" data-fin-chart="repartition" data-serie="<%= JSON.stringify(fin.repartition) %>">
+        <figcaption class="panel-head"><h3>Répartition des coûts</h3><span class="tag num"><%= m(repartTotal) %></span></figcaption>
+        <div class="fin-plot" data-plot></div>
+        <% if (!repartTotal) { %><p class="empty">Aucun coût en <%= fin.moisLabel %>.</p><% } %>
+        <details class="fin-data"><summary>Voir les données</summary>
+          <div class="table-wrap"><table class="grid"><thead><tr><th>Catégorie</th><th class="right">Montant</th><th class="right">Part</th></tr></thead><tbody>
+            <% fin.repartition.forEach(function (r) { %><tr><td><%= r.label %></td><td class="right num"><%= m(r.cents) %></td><td class="right num"><%= repartTotal ? pct(r.cents / repartTotal) : '—' %></td></tr><% }) %>
+          </tbody></table></div>
+        </details>
+      </figure>
+
+      <figure class="panel fin-chart" data-fin-chart="objectif" data-serie="<%= JSON.stringify({ revenus: k.revenus, vise: fin.objectif ? fin.objectif.revenuVise : null }) %>">
+        <figcaption class="panel-head"><h3>Objectif du mois</h3><% if (objEtat) { %><span class="fin-pill fin-pill--<%= objEtat %>"><%= PILL[objEtat] %></span><% } %></figcaption>
+        <% if (!fin.objectif) { %>
+          <p class="empty">Aucun objectif pour <%= fin.moisLabel %>. Fixez-en un dans la section Objectifs.</p>
+        <% } else { %>
+          <p class="fin-goal-big"><span class="num"><%= pct(progression) %></span> <span class="dim">de <%= m(fin.objectif.revenuVise) %></span></p>
+          <div class="fin-plot fin-plot--goal" data-plot></div>
+          <p class="dim num">Reste <%= m(Math.max(0, fin.objectif.revenuVise - k.revenus)) %> à facturer · marge visée <%= fin.objectif.margeVisee.toLocaleString('fr-CA') %> %, réelle <%= pct(k.margePct) %>.</p>
+        <% } %>
+      </figure>
+    </div>
+  </section>
+
+  <%# ---------------------------------------------------------- Objectifs %>
+  <section class="panel" aria-labelledby="fin-obj-titre">
+    <div class="panel-head"><h2 id="fin-obj-titre">🎯 Objectifs mensuels</h2><span class="tag">Revenu avant taxes et marge brute visée</span></div>
+    <form class="form fin-obj-form" data-api="/api/admin/finances/objectifs" data-method="PUT" data-ok="Objectif enregistré.">
+      <div class="form-row">
+        <div class="field"><label for="fo-mois">Mois</label><input id="fo-mois" name="mois" type="month" value="<%= p.mois %>" required></div>
+        <div class="field"><label for="fo-rev">Revenu visé ($ CA)</label><input id="fo-rev" name="revenu_vise" type="number" min="0" step="0.01" inputmode="decimal" value="<%= fin.objectif ? (fin.objectif.revenuVise / 100) : '' %>" required></div>
+        <div class="field"><label for="fo-marge">Marge visée (%)</label><input id="fo-marge" name="marge_visee" type="number" min="-100" max="100" step="0.1" inputmode="decimal" value="<%= fin.objectif ? fin.objectif.margeVisee : '' %>" required></div>
+      </div>
+      <div class="actions"><button class="btn btn--accent" type="submit">Enregistrer l’objectif</button><span class="status" data-status role="status"></span></div>
+    </form>
+    <% if (fin.objectifs.length) { %>
+    <div class="table-wrap fin-gap">
+      <table class="grid stack">
+        <thead><tr><th>Mois</th><th class="right">Revenu visé</th><th class="right">Revenu réel</th><th class="right">Écart</th><th class="right">Marge visée</th><th class="right">Marge réelle</th><th>État</th><th></th></tr></thead>
+        <tbody>
+          <% fin.objectifs.forEach(function (o) { const e = o.atteint ? 'bon' : (o.ecart < 0 && o.revenu < o.revenuVise * 0.6 ? 'critique' : 'attention'); %>
+          <tr>
+            <td data-label="Mois"><%= o.label %></td>
+            <td data-label="Revenu visé" class="right num"><%= m(o.revenuVise) %></td>
+            <td data-label="Revenu réel" class="right num"><%= m(o.revenu) %></td>
+            <td data-label="Écart" class="right num fin-delta fin-delta--<%= o.ecart >= 0 ? 'pos' : 'neg' %>"><%= o.ecart >= 0 ? '+' : '' %><%= m(o.ecart) %></td>
+            <td data-label="Marge visée" class="right num"><%= o.margeVisee.toLocaleString('fr-CA') %> %</td>
+            <td data-label="Marge réelle" class="right num"><%= pct(o.margePct) %><% if (o.ecartMarge !== null) { %> <span class="dim">(<%= o.ecartMarge >= 0 ? '+' : '' %><%= o.ecartMarge.toFixed(1) %> pts)</span><% } %></td>
+            <td data-label="État"><span class="fin-pill fin-pill--<%= e %> fin-pill--sm"><%= o.atteint ? '✅ Atteint' : PILL[e] %></span></td>
+            <td data-label="Action">
+              <form data-api="/api/admin/finances/objectifs/<%= o.mois %>" data-method="DELETE" data-confirm="Supprimer l’objectif de <%= o.label %> ?">
+                <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
+
+  <%# ---------------------------------------------------------- Période %>
+  <section class="panel fin-period" aria-labelledby="fin-periode-titre">
+    <div class="panel-head"><h2 id="fin-periode-titre">🗓️ Période des tableaux, des taxes et des exports</h2><span class="tag num"><%= fmt.jour(p.du) %> → <%= fmt.jour(p.au) %></span></div>
+    <nav class="fin-presets" aria-label="Périodes rapides">
+      <% fin.presets.forEach(function (r) { %>
+      <a class="fin-chip" href="/admin/console?vue=finances&amp;mois=<%= p.mois %>&amp;du=<%= r.du %>&amp;au=<%= r.au %>"<% if (r.du === p.du && r.au === p.au) { %> aria-current="true"<% } %>><%= r.label %></a>
+      <% }) %>
+    </nav>
+    <form class="form-row fin-period-form" method="get" action="/admin/console">
+      <input type="hidden" name="vue" value="finances">
+      <input type="hidden" name="mois" value="<%= p.mois %>">
+      <div class="field"><label for="fp-du">Du</label><input id="fp-du" name="du" type="date" value="<%= p.du %>" required></div>
+      <div class="field"><label for="fp-au">Au</label><input id="fp-au" name="au" type="date" value="<%= p.au %>" required></div>
+      <div class="field fin-period-go"><span class="label" aria-hidden="true">&nbsp;</span><button class="btn btn--sm" type="submit">Filtrer</button></div>
+    </form>
+  </section>
+
+  <%# ---------------------------------------------------------- Taxes %>
+  <section class="panel fin-taxes" aria-labelledby="fin-taxes-titre">
+    <div class="panel-head"><h2 id="fin-taxes-titre">🍁 Taxes du Québec</h2><a class="btn btn--ghost btn--sm" href="<%= csv('taxes') %>">⬇️ CSV</a></div>
+    <p class="fin-warning"><span class="fin-pill fin-pill--attention">⚠️ À valider par ton comptable</span> Résumé indicatif pour préparer ta déclaration de TPS (5 %) et de TVQ (9,975 %). Il ne remplace pas l’avis d’un professionnel.</p>
+    <div class="table-wrap">
+      <table class="grid stack fin-tax-table">
+        <thead><tr><th>Du <%= fmt.jour(p.du) %> au <%= fmt.jour(p.au) %></th><th class="right">TPS (5 %)</th><th class="right">TVQ (9,975 %)</th></tr></thead>
+        <tbody>
+          <tr><td>Taxes perçues sur les ventes <span class="dim">(ventes avant taxes : <%= m(t.ventesTaxables) %>)</span></td><td data-label="TPS" class="right num"><%= m(t.percues.tps) %></td><td data-label="TVQ" class="right num"><%= m(t.percues.tvq) %></td></tr>
+          <tr><td>Taxes payées sur les dépenses <span class="dim">(CTI et RTI, achats : <%= m(t.achatsHt) %>)</span></td><td data-label="TPS" class="right num">− <%= m(t.payees.tps) %></td><td data-label="TVQ" class="right num">− <%= m(t.payees.tvq) %></td></tr>
+          <tr class="fin-total"><td><strong><%= t.net.tps + t.net.tvq >= 0 ? 'Net à remettre' : 'Remboursement estimé' %></strong></td><td data-label="TPS" class="right num"><strong><%= m(t.net.tps) %></strong></td><td data-label="TVQ" class="right num"><strong><%= m(t.net.tvq) %></strong></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <ul class="fin-notes dim">
+      <% if (t.sansTaxe) { %><li><span class="num"><%= t.sansTaxe %></span> vente(s) sans TPS ni TVQ calculée par Stripe : vérifie si elles étaient taxables.</li><% } %>
+      <% if (t.autresTaxes) { %><li>Autres taxes perçues (TVH d’une autre province, etc.) : <span class="num"><%= m(t.autresTaxes) %></span>, non comptées ci-dessus.</li><% } %>
+      <% if (t.horsCad) { %><li><span class="num"><%= t.horsCad %></span> vente(s) dans une autre devise, exclue(s) du résumé.</li><% } %>
+      <li>Le coût IA du moteur (fournisseur étranger, en $ US) n’apparaît pas dans les taxes payées.</li>
+    </ul>
+  </section>
+
+  <%# ---------------------------------------------------------- Revenus %>
+  <section class="panel" aria-labelledby="fin-rev-titre">
+    <div class="panel-head"><h2 id="fin-rev-titre">💵 Revenus</h2><span class="actions"><span class="tag"><%= fin.ventesPeriode.length %> vente(s)</span><a class="btn btn--ghost btn--sm" href="<%= csv('revenus') %>">⬇️ CSV</a></span></div>
+    <% if (!fin.ventesPeriode.length) { %><p class="empty">Aucune vente payée sur cette période.</p><% } else { %>
+    <div class="table-wrap">
+      <table class="grid stack">
+        <thead><tr><th>Date</th><th>Client</th><th>Type</th><th>Objet</th><th>Source</th><th class="right">Avant taxes</th><th class="right">TPS</th><th class="right">TVQ</th><th class="right">Total</th></tr></thead>
+        <tbody>
+          <% fin.ventesPeriode.forEach(function (s) { %>
+          <tr>
+            <td data-label="Date" class="num"><%= fmt.jour(s.jour) %></td>
+            <td data-label="Client"><%= s.email || 'Client' %></td>
+            <td data-label="Type"><span class="badge"><%= s.type === 'abonnement' ? '🔁 Abonnement' : '🛒 Ponctuel' %></span></td>
+            <td data-label="Objet"><%= s.objet || '—' %></td>
+            <td data-label="Source" class="dim"><%= s.origine === 'stripe' ? 'Stripe' : 'bills' %> · <span class="num">…<%= s.reference %></span></td>
+            <td data-label="Avant taxes" class="right num"><%= fmt.money(s.ht / 100, s.devise) %></td>
+            <td data-label="TPS" class="right num"><%= fmt.money(s.tps / 100, s.devise) %></td>
+            <td data-label="TVQ" class="right num"><%= fmt.money(s.tvq / 100, s.devise) %></td>
+            <td data-label="Total" class="right money"><%= fmt.money(s.total / 100, s.devise) %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
+
+  <%# ---------------------------------------------------------- Dépenses %>
+  <section class="panel" aria-labelledby="fin-dep-titre">
+    <div class="panel-head"><h2 id="fin-dep-titre">🧾 Dépenses</h2><span class="actions"><span class="tag"><%= fin.depensesPeriode.length %> dépense(s)</span><a class="btn btn--ghost btn--sm" href="<%= csv('depenses') %>">⬇️ CSV</a></span></div>
+    <details class="reveal fin-add">
+      <summary class="btn btn--accent btn--sm">➕ Ajouter une dépense</summary>
+      <%- include('_depense-form', { d: null, idp: 'fd-new', api: '/api/admin/finances/depenses', method: 'POST', ok: 'Dépense ajoutée.', bouton: 'Ajouter la dépense' }) %>
+    </details>
+    <% if (!fin.depensesPeriode.length) { %><p class="empty fin-gap">Aucune dépense sur cette période.</p><% } else { %>
+    <div class="table-wrap fin-gap">
+      <table class="grid stack">
+        <thead><tr><th>Date</th><th>Catégorie</th><th>Fournisseur</th><th class="right">Avant taxes</th><th class="right">TPS</th><th class="right">TVQ</th><th class="right">Total</th><th>Pièce</th><th>Actions</th></tr></thead>
+        <tbody>
+          <% fin.depensesPeriode.forEach(function (d) { %>
+          <tr>
+            <td data-label="Date" class="num"><%= fmt.jour(d.jour) %></td>
+            <td data-label="Catégorie"><span class="badge"><%= categorieLabel[d.categorie] %></span><% if (d.recurrente) { %> <span class="dim">🔁</span><% } %></td>
+            <td data-label="Fournisseur"><%= d.fournisseur %><% if (d.note) { %><span class="fin-note dim"><%= d.note %></span><% } %></td>
+            <td data-label="Avant taxes" class="right num"><%= m(d.ht) %></td>
+            <td data-label="TPS" class="right num"><%= m(d.tps) %></td>
+            <td data-label="TVQ" class="right num"><%= m(d.tvq) %></td>
+            <td data-label="Total" class="right money"><%= m(d.total) %></td>
+            <td data-label="Pièce"><% if (d.piece_jointe) { %><a href="<%= d.piece_jointe %>" target="_blank" rel="noopener noreferrer">📎 Voir</a><% } else { %>—<% } %></td>
+            <td data-label="Actions">
+              <details class="reveal fin-edit">
+                <summary class="btn btn--ghost btn--sm">Modifier</summary>
+                <%- include('_depense-form', { d: d, idp: 'fd-' + d.id, api: '/api/admin/finances/depenses/' + d.id, method: 'PUT', ok: 'Dépense modifiée.', bouton: 'Enregistrer' }) %>
+              </details>
+              <form data-api="/api/admin/finances/depenses/<%= d.id %>" data-method="DELETE" data-confirm="Supprimer cette dépense ?">
+                <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+              </form>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
+
+  <%# ---------------------------------------------------------- Factures %>
+  <section class="panel" aria-labelledby="fin-fac-titre">
+    <div class="panel-head"><h2 id="fin-fac-titre">📄 Factures</h2><span class="actions"><span class="tag"><%= fin.source.stripe ? 'Stripe' : 'depuis bills' %></span><a class="btn btn--ghost btn--sm" href="<%= csv('factures') %>">⬇️ CSV</a></span></div>
+    <% if (!fin.factures.length) { %><p class="empty">Aucune facture sur cette période.</p><% } else { %>
+    <div class="table-wrap">
+      <table class="grid stack">
+        <thead><tr><th>Date</th><th>Numéro</th><th>Client</th><th>Statut</th><th class="right">Total</th><th>Lien</th></tr></thead>
+        <tbody>
+          <% fin.factures.forEach(function (f) { %>
+          <tr>
+            <td data-label="Date" class="num"><%= fmt.jour(f.jour) %></td>
+            <td data-label="Numéro" class="num"><%= f.numero %></td>
+            <td data-label="Client"><%= f.client %></td>
+            <td data-label="Statut"><span class="badge badge--paye"><%= f.statut === 'paid' ? 'Payée' : f.statut %></span></td>
+            <td data-label="Total" class="right money"><%= fmt.money(f.total / 100, f.devise) %></td>
+            <td data-label="Lien"><% if (f.url) { %><a href="<%= f.url %>" target="_blank" rel="noopener noreferrer">Ouvrir</a><% } else { %>—<% } %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
+</div>

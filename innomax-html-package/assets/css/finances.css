@@ -1,0 +1,215 @@
+/* ==========================================================================
+   Onglet Finances de la console admin (/admin/console?vue=finances).
+   Complète pilotage.css. Aucune couleur écrite en dur : tout vient du BLOC
+   MARQUE de pilotage.css. Les graphiques SVG (assets/js/finances.js) lisent
+   ces mêmes classes.
+
+   1. Jetons locaux      4. Alertes         7. Taxes, tableaux, formulaires
+   2. Pastilles d'état   5. Indicateurs     8. Petits écrans (390 px)
+   3. Mise en page       6. Graphiques      9. Mouvement réduit
+   ========================================================================== */
+
+
+/* 1. Jetons locaux --------------------------------------------------------- */
+/* Séries validées (outil dataviz) : revenus = accent (violet vif en clair,
+   orchidée en sombre), coûts = cyan (clair) / cyan néon (sombre). */
+
+.fin {
+  --fin-rev: var(--accent);
+  --fin-dep: var(--cyan);
+  --fin-good: var(--ok);
+  --fin-on-good: var(--on-ok);
+  --fin-warn: var(--or);
+  --fin-on-warn: var(--on-accent);
+  --fin-bad: var(--bad);
+  --fin-on-bad: var(--surface);
+  --fin-gap: var(--s-7);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) .fin { --fin-dep: var(--cyan-neon); }
+}
+:root[data-theme='dark'] .fin { --fin-dep: var(--cyan-neon); }
+
+
+/* 2. Pastilles d'état (icône + libellé, jamais la couleur seule) ----------- */
+
+.fin-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 3px var(--s-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  line-height: 1.4;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+.fin-pill--sm { padding: 1px var(--s-2); font-size: 0.7rem; }
+.fin-pill--bon { background: var(--fin-good); color: var(--fin-on-good); }
+.fin-pill--attention { background: var(--fin-warn); color: var(--fin-on-warn); }
+.fin-pill--critique { background: var(--fin-bad); color: var(--fin-on-bad); }
+
+
+/* 3. Mise en page ---------------------------------------------------------- */
+
+.fin.pl-stack { gap: var(--fin-gap); grid-template-columns: minmax(0, 1fr); }
+.fin > * { min-width: 0; }
+.fin-section-title { margin: 0 0 var(--s-4); }
+.fin-gap { margin-top: var(--s-5); }
+.fin-banner { padding: var(--s-4); border-radius: var(--r-md); background: var(--bad-soft); }
+
+.fin-toolbar-row { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-4) var(--s-6); }
+.fin-toolbar h2 { margin: 0 0 var(--s-2); }
+.fin-month { color: var(--accent-ink); }
+.fin-source { margin: 0; max-width: 72ch; font-size: var(--fs-sm); }
+.fin-month-form { display: flex; align-items: flex-end; gap: var(--s-3); }
+
+.pl .fin input[type='month'] {
+  min-height: var(--tap);
+  padding: var(--s-2) var(--s-4);
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-input);
+  border-radius: var(--r-pill);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+.pl .fin input[type='date'] { font-variant-numeric: tabular-nums; }
+
+.fin-presets { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-bottom: var(--s-4); }
+.pl .fin-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 36px;
+  padding: 0 var(--s-4);
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+  font-size: var(--fs-sm);
+  font-weight: 700;
+  text-decoration: none;
+}
+.pl .fin-chip:hover { background: var(--accent-soft); }
+.pl .fin-chip[aria-current='true'] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.fin-period-form { align-items: end; }
+.fin-period-go { align-self: end; }
+
+
+/* 4. Alertes --------------------------------------------------------------- */
+
+.fin-ok { margin: 0; display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+.fin-alert-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-3); }
+.fin-alert {
+  display: flex;
+  gap: var(--s-4);
+  align-items: flex-start;
+  padding: var(--s-4);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--fin-warn);
+  background: var(--surface-2);
+}
+.fin-alert--critique { border-left-color: var(--fin-bad); background: var(--bad-soft); }
+.fin-alert p { margin: var(--s-1) 0 0; color: var(--muted); font-size: var(--fs-sm); font-variant-numeric: tabular-nums; }
+
+
+/* 5. Indicateurs ----------------------------------------------------------- */
+
+.fin-kpis { grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: var(--s-4); }
+.fin-kpis .kpi { align-content: start; }
+.fin-kpis .kpi .label { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-2); align-items: center; }
+.fin-kpis .kpi .value { font-variant-numeric: tabular-nums; }
+.fin-sub { grid-column: 2; font-size: var(--fs-xs); color: var(--muted); font-variant-numeric: tabular-nums; }
+
+
+/* 6. Graphiques ------------------------------------------------------------ */
+
+.fin-charts { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); }
+.fin-chart { margin: 0; min-width: 0; }
+.fin-chart--wide { grid-column: 1 / -1; }
+.fin-chart h3 { margin: 0; }
+.fin-plot { width: 100%; min-height: 40px; overflow: hidden; }
+.fin-svg { display: block; overflow: visible; }
+.fin-readout { margin: var(--s-3) 0 0; min-height: 1.5em; font-size: var(--fs-sm); color: var(--muted); }
+
+.fin-legend { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); color: var(--muted); }
+.fin-key { display: inline-block; width: 12px; height: 12px; border-radius: 3px; }
+.fin-key--rev { background: var(--fin-rev); }
+.fin-key--dep { background: var(--fin-dep); margin-left: var(--s-2); }
+
+.fin-axis { fill: var(--muted); font-family: var(--font-text); font-size: 12px; font-variant-numeric: tabular-nums; }
+.fin-cat { fill: var(--ink); font-family: var(--font-text); font-size: 13px; font-weight: 700; }
+.fin-cat--num { fill: var(--muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+.fin-grid { stroke: var(--line); stroke-width: 1; }
+.fin-baseline { stroke: var(--line-strong); stroke-width: 1; }
+.fin-bar--rev { fill: var(--fin-rev); }
+.fin-bar--dep { fill: var(--fin-dep); }
+.fin-bar--cat { fill: var(--fin-rev); }
+.fin-bar--goal { fill: var(--fin-rev); }
+.fin-bar--goal.is-done { fill: var(--fin-good); }
+.fin-track { fill: var(--surface-2); stroke: var(--line); }
+.fin-target { stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 3; }
+.fin-line { fill: none; stroke: var(--fin-rev); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.fin-area { fill: var(--accent-soft); }
+.fin-dot { fill: var(--fin-rev); stroke: var(--surface); stroke-width: 2; }
+.fin-dot--hover { opacity: 0; }
+.fin-dot--hover.is-shown { opacity: 1; }
+.fin-hit { fill: transparent; cursor: crosshair; outline: none; }
+.fin-hit.is-active { fill: var(--ink); fill-opacity: 0.05; }
+.fin-hit:focus-visible { stroke: var(--focus); stroke-width: 2; }
+
+.fin-goal-big { margin: 0 0 var(--s-3); font-family: var(--font-title); font-size: var(--fs-xl); font-weight: 700; }
+.fin-goal-big .dim { font-family: var(--font-text); font-size: var(--fs-sm); font-weight: 600; }
+
+.fin-data { margin-top: var(--s-4); }
+.fin-data summary { cursor: pointer; font-size: var(--fs-sm); font-weight: 700; color: var(--accent-ink); }
+.fin-data .table-wrap { margin-top: var(--s-3); }
+
+
+/* 7. Taxes, tableaux, formulaires ------------------------------------------ */
+
+.fin-warning { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-3); align-items: center; padding: var(--s-4); border-radius: var(--r-md); background: var(--surface-2); border: 1px dashed var(--line-strong); }
+.fin-tax-table td, .fin-tax-table th { font-size: var(--fs-base); }
+.fin-tax-table th.right, .fin-tax-table td.right { white-space: nowrap; }
+.fin-total td { border-top: 2px solid var(--line-strong); border-bottom: 0; }
+.fin-notes { margin: var(--s-4) 0 0; padding-left: var(--s-5); font-size: var(--fs-sm); display: grid; gap: var(--s-1); }
+
+.fin-delta--pos { color: var(--ok-ink); font-weight: 800; }
+.fin-delta--neg { color: var(--bad); font-weight: 800; }
+.fin-note { display: block; font-size: var(--fs-xs); }
+.fin table.grid td.num, .fin table.grid td.right { font-variant-numeric: tabular-nums; }
+.fin table.grid td.right, .fin table.grid td.money { white-space: nowrap; }
+
+.fin-add { margin-bottom: var(--s-2); }
+.fin-add > .form, .fin-edit > .form { margin-top: var(--s-4); padding: var(--s-4); border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface-2); }
+.fin-edit { margin-bottom: var(--s-2); }
+.fin-edit > .form { min-width: min(80vw, 640px); }
+.fin-checks { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); }
+.fin-check { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); font-weight: 600; min-height: var(--tap); }
+.fin-check input { width: 20px; height: 20px; accent-color: var(--accent); }
+
+
+/* 8. Petits écrans (390 px) ------------------------------------------------ */
+
+@media (max-width: 760px) {
+  .fin { --fin-gap: var(--s-6); }
+  .fin-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+  .fin-kpis .kpi--vedette { grid-column: 1 / -1; }
+  .fin-sub { grid-column: auto; }
+  .fin-month-form { width: 100%; }
+  .fin-month-form .field { flex: 1 1 auto; }
+  .fin-charts { grid-template-columns: 1fr; }
+  .fin-alert { flex-direction: column; gap: var(--s-2); }
+  .fin-edit > .form { min-width: 0; }
+  .fin-tax-table td, .fin-tax-table th { font-size: var(--fs-sm); padding: var(--s-2); }
+  .fin table.grid.stack td.right, .fin table.grid.stack td.money { white-space: normal; }
+}
+
+
+/* 9. Mouvement réduit ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .fin-hit { transition: none; }
+}

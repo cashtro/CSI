@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Local demo of the admin "Agents" tabs, for the founder.
+// Local demo of the admin "Agents" and "Finances" tabs, for the founder.
 //
 //   DEMO_MODE=true node scripts/demo-admin.js
-//   then open http://127.0.0.1:3999/demo/connexion (admin)
+//   then open http://127.0.0.1:3999/demo/connexion (admin; /demo/connexion?vue=finances
+//   for the Finances tab, example data)
 //   or http://127.0.0.1:3999/demo/client (a client, owner of the demo clinic),
 //   and http://127.0.0.1:3999/robots (the public robots page)
 //
@@ -120,7 +121,7 @@ async function main() {
     const opts = { httpOnly: true, sameSite: 'lax', secure: false, path: '/' };
     res.cookie('accessToken', token, opts);
     res.cookie(MFA_COOKIE, signMfaProof(ADMIN_ID, Date.now() + 12 * 3600 * 1000), opts);
-    res.redirect('/admin/console?vue=agents');
+    res.redirect(`/admin/console?vue=${req.query.vue === 'finances' ? 'finances' : 'agents'}`);
   });
   // Demo sign-in as a client (owner of the demo clinic), no password.
   app.get('/demo/client', (req, res) => {
@@ -140,6 +141,7 @@ async function main() {
   app.use('/api/admin/robots', require('../routes(api)/adminRobots'));
   app.use('/api/robots', require('../routes(api)/robotsCRUD'));
   app.use('/api/espace', require('../routes(api)/espaceCRUD'));
+  app.use('/api/admin/finances', require('../routes(api)/financesAdmin'));
   app.use('/api/admin', require('../routes(api)/adminCRUD'));
   app.use(require('../routes(api)/espacePages'));
   app.use(require('../routes(api)/robotsPages'));
