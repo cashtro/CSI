@@ -86,7 +86,10 @@
   function clock(iso) {
     var d = new Date(iso);
     if (isNaN(d)) return '';
-    return d.toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: TZ });
+    var parts = {};
+    new Intl.DateTimeFormat('en-CA', { hour: '2-digit', minute: '2-digit', second: '2-digit', hourCycle: 'h23', timeZone: TZ })
+      .formatToParts(d).forEach(function (x) { parts[x.type] = x.value; });
+    return parts.hour + ':' + parts.minute + ':' + parts.second;
   }
   function when(iso) {
     var d = new Date(iso);
@@ -546,7 +549,7 @@
     var cx = w / 2;
     var cy = h / 2;
     var rx = Math.min(w * (narrow ? 0.3 : 0.36), 440);
-    var ry = h * 0.3;
+    var ry = h * (narrow ? 0.3 : 0.28);
 
     // Soft rings and a slow sweep around the core.
     g.strokeStyle = C.line;
@@ -585,12 +588,15 @@
     hubs.forEach(function (hb) {
       var members = S.agents.filter(function (a) { return a.team === hb.key; });
       var base = Math.atan2(hb.y - cy, hb.x - cx);
-      var spread = members.length > 1 ? Math.min(2.4, (narrow ? 0.42 : 0.48) * members.length) : 0;
+      var spread = members.length > 1 ? Math.min(2.8, (narrow ? 0.42 : 0.5) * members.length) : 0;
       var R = hb.inner ? agentR * 0.55 : agentR;
+      // Big rooms (more than 5 agents) alternate two radii so names do not collide.
+      var two = members.length > 5;
       members.forEach(function (a, j) {
         var ang = base + (members.length > 1 ? -spread / 2 + spread * j / (members.length - 1) : 0);
-        var x = Math.max(30, Math.min(w - 30, hb.x + Math.cos(ang) * R));
-        var y = Math.max(26, Math.min(h - 26, hb.y + Math.sin(ang) * R));
+        var rr = two && j % 2 ? R * 1.5 : R * (two ? 0.85 : 1);
+        var x = Math.max(30, Math.min(w - 30, hb.x + Math.cos(ang) * rr));
+        var y = Math.max(26, Math.min(h - 26, hb.y + Math.sin(ang) * rr));
         var busy = a.status === 'working';
         var paused = a.active === false;
         var focus = S.focus === a.id || Net.hover === a.id;
@@ -1247,6 +1253,15 @@
   }
 
   // ------------------------------------------------------------ start
+
+  // The section tabs scroll sideways: bring the current one into view.
+  (function () {
+    var nav = document.querySelector('.tabs');
+    var active = nav && nav.querySelector('[aria-current="page"]');
+    if (active && nav.scrollWidth > nav.clientWidth) {
+      nav.scrollLeft = active.offsetLeft - (nav.clientWidth - active.offsetWidth) / 2;
+    }
+  })();
 
   var INIT = { agents: initConsole, conseil: initConseil, travail: initTravail, recherche: initRecherche, 'reglages-agents': initReglages };
   if (INIT[VUE]) INIT[VUE]();

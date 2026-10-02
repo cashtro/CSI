@@ -59,6 +59,7 @@
 /* 2. Commun ---------------------------------------------------------------- */
 
 .ag .panel { min-width: 0; }
+.ag [hidden] { display: none !important; }
 .ag-note { font-size: var(--fs-sm); margin: var(--s-3) 0 0; }
 .ag-probe { position: absolute; width: 0; height: 0; overflow: hidden; }
 .ag-empty p { margin: 0; }
@@ -182,7 +183,7 @@
   background: var(--ag-surface);
   overflow: hidden;
 }
-.ag-stage canvas { display: block; width: 100%; height: 440px; cursor: crosshair; }
+.ag-stage canvas { display: block; width: 100%; height: 520px; cursor: crosshair; }
 .ag-stage canvas.is-pointing { cursor: pointer; }
 .ag-tip {
   position: absolute;
@@ -335,7 +336,7 @@
 }
 .ag-feed li {
   display: grid;
-  grid-template-columns: 4.6rem 1.4rem minmax(0, 1fr);
+  grid-template-columns: 4.4rem 1.4rem minmax(0, 1fr);
   gap: var(--s-2);
   padding: var(--s-2) 0;
   border-bottom: 1px solid var(--ag-line);
@@ -456,6 +457,7 @@
 
 .ag-jobs tr.is-selected td { background: var(--ag-surface-2); }
 .ag-jobs td { vertical-align: top; }
+.ag-jobs td.num, .ag-jobs td:nth-child(2) { white-space: nowrap; }
 .ag-detail:focus { outline: none; }
 .ag-dl { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: var(--s-1) var(--s-4); margin: 0 0 var(--s-3); font-size: var(--fs-sm); }
 .ag-dl dt { color: var(--ag-muted); }
@@ -507,13 +509,30 @@
 }
 
 @media (max-width: 760px) {
-  .ag-stage canvas { height: 340px; }
+  .ag-stage canvas { height: 420px; }
+  .ag .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
   .ag-frieze { grid-template-columns: repeat(3, minmax(0, 1fr)); row-gap: var(--s-3); }
   .ag-frieze li:nth-child(4)::before { display: none; }
   .ag-feed li { grid-template-columns: 4.2rem 1.2rem minmax(0, 1fr); }
   .ag-dl { grid-template-columns: minmax(0, 1fr); }
   .ag-dl dd { margin-bottom: var(--s-2); }
-  .ag-jobs th:nth-child(1), .ag-jobs td:nth-child(1), .ag-jobs th:nth-child(5), .ag-jobs td:nth-child(5) { display: none; }
+  /* The job table becomes a list of cards: date and status, subject, type and cost. */
+  .ag table.grid.ag-jobs, .ag table.grid.ag-jobs tbody { display: block; min-width: 0; }
+  .ag table.grid.ag-jobs thead { display: none; }
+  .ag table.grid.ag-jobs tr {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--s-1) var(--s-3);
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid var(--ag-line);
+  }
+  .ag table.grid.ag-jobs td { display: block; padding: 0; border: 0; }
+  .ag table.grid.ag-jobs td:nth-child(1) { grid-row: 1; grid-column: 1; font-size: var(--fs-xs); color: var(--ag-muted); }
+  .ag table.grid.ag-jobs td:nth-child(4) { grid-row: 1; grid-column: 2; }
+  .ag table.grid.ag-jobs td:nth-child(3) { grid-row: 2; grid-column: 1 / -1; }
+  .ag table.grid.ag-jobs td:nth-child(2) { grid-row: 3; grid-column: 1; font-size: var(--fs-xs); color: var(--ag-muted); }
+  .ag table.grid.ag-jobs td:nth-child(5) { grid-row: 3; grid-column: 2; font-size: var(--fs-xs); }
+  .ag table.grid.ag-jobs td[colspan] { grid-column: 1 / -1; }
   .pl .btn.ag-stop { width: 100%; }
 }
 
