@@ -1,5 +1,5 @@
 <%# <option>s of the companies (entreprise_id). locals: data %>
-<option value="">Pour Pandora (aucun client précis)</option>
+<option value="">Pour <%= include('../pilotage/marque') %> (aucun client précis)</option>
 <% data.entreprises.forEach(function (e) { %>
 <option value="<%= e.id %>"><%= e.nom %></option>
 <% }) %>

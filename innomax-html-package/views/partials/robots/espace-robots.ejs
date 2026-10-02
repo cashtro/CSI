@@ -1,6 +1,6 @@
 <%# Onglet « 🤖 Mes robots » de /espace. locals : robotsData, robotsError, bienvenue, proprietaire, fmt. %>
 <%
-  const ETATS = { en_cours: '⏳ En cours', verification: '🕵️ Vérification PBTM', livre: '📦 Livré', arrete: '⚠️ Arrêté' };
+  const ETATS = { en_cours: '⏳ En cours', verification: '🕵️ Vérification ' + include('../pilotage/marque'), livre: '📦 Livré', arrete: '⚠️ Arrêté' };
   const STATUT_ROBOT = { actif: '🟢 Actif', en_pause: '⏸️ En pause', annule: '✖️ Annulé' };
 %>
 <div class="pl-stack">

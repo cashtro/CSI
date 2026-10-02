@@ -1,6 +1,6 @@
 <%# ?vue=conseil · submit a subject to the Council and follow the deliberations live. %>
 <% const PHASES = [['plan', 'Plan et tâches', '🗂️'], ['propositions', 'Propositions', '💡'], ['objections', 'Contradiction', '😈'], ['revisions', 'Révisions', '✏️'], ['vote', 'Vote', '🗳️'], ['revision_finale', 'Consensus', '✅']]; %>
-<div class="ag pl-stack" data-agents-vue="conseil">
+<div class="ag pl-stack" data-agents-vue="conseil" data-brand="<%= include('../pilotage/marque') %>">
   <%- include('_absent') %>
   <div class="ag-council">
     <section class="panel" aria-labelledby="ag-c-titre">
@@ -12,7 +12,7 @@
       <form class="form" data-ag-form="council" novalidate>
         <div class="field">
           <label for="ag-c-sujet">Le sujet (écris ou dicte 🎤)</label>
-          <textarea id="ag-c-sujet" name="sujet" rows="4" maxlength="4000" required data-dictee placeholder="Ex. Quel nouveau concept Pandora doit lancer d’ici 90 jours pour se démarquer ?"></textarea>
+          <textarea id="ag-c-sujet" name="sujet" rows="4" maxlength="4000" required data-dictee placeholder="Ex. Quel nouveau concept <%= include('../pilotage/marque') %> doit lancer d’ici 90 jours pour se démarquer ?"></textarea>
         </div>
         <fieldset class="field ag-teams">
           <legend class="label">Équipes qui proposent</legend>

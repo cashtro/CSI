@@ -15,6 +15,8 @@
   var root = document.querySelector('[data-agents-vue]');
   if (!root || !window.fetch) return;
   var VUE = root.getAttribute('data-agents-vue');
+  // Brand name from the page (views/partials/pilotage/marque.ejs, brandName).
+  var BRAND = root.getAttribute('data-brand') || 'PBTM';
   var API = '/api/admin/agents';
   var calm = window.matchMedia ? window.matchMedia('(prefers-reduced-motion: reduce)') : { matches: false };
 
@@ -140,7 +142,7 @@
   }
   function kindLabel(kind) { var k = KIND[kind] || ['•', kind]; return k[0] + ' ' + k[1]; }
   function entrepriseName(id) {
-    if (!id) return 'Pour Pandora';
+    if (!id) return 'Pour ' + BRAND;
     var opt = document.querySelector('select[name="entreprise_id"] option[value="' + String(id).replace(/[^0-9a-f-]/gi, '') + '"]');
     return opt ? 'Pour ' + opt.textContent : 'Client ' + String(id).slice(0, 8);
   }
@@ -644,7 +646,7 @@
     var R0 = 30 + (still ? 0 : Math.sin(s * 1.6) * (busyAll ? 2 : 1));
     g.save(); g.globalAlpha = 0.35; circle(g, cx, cy, R0 + 8); g.strokeStyle = C.core; g.lineWidth = 1; g.stroke(); g.restore();
     g.save(); circle(g, cx, cy, R0); g.fillStyle = C.core; g.shadowColor = C.core; g.shadowBlur = busyAll ? 26 : 12; g.fill(); g.restore();
-    g.save(); g.fillStyle = C.coreInk; g.font = '800 10px "DM Sans", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('PANDORA', cx, cy); g.restore();
+    g.save(); g.fillStyle = C.coreInk; g.font = '800 10px "DM Sans", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(BRAND.toUpperCase().slice(0, 10), cx, cy); g.restore();
   }
 
   function drawOnce() { if (Net.canvas) drawNet(performance.now()); }

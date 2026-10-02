@@ -105,6 +105,22 @@ describe('agent tabs of the admin console', () => {
     expect(res.text).toContain('Arrêt d’urgence');
   });
 
+  it('names the brand from brandName only (PBTM by default), never Pandora', async () => {
+    for (const vue of AGENT_VUES) {
+      const res = await request(app).get(`/admin/console?vue=${vue}`).set('Cookie', adminCookie);
+      expect(res.text).toContain('data-brand="PBTM"');
+      expect(res.text.replace(/pandorabrains/gi, '')).not.toMatch(/Pandora/);
+    }
+    app.locals.brandName = 'Nova & Co';
+    try {
+      const res = await request(app).get('/admin/console?vue=agents').set('Cookie', adminCookie);
+      expect(res.text).toContain('data-brand="Nova &amp; Co"');
+      expect(res.text).toContain('Pour Nova &amp; Co (aucun client précis)');
+    } finally {
+      delete app.locals.brandName;
+    }
+  });
+
   it('other tabs do not load the agent script', async () => {
     const res = await request(app).get('/admin/console?vue=mandats').set('Cookie', adminCookie);
     expect(res.status).toBe(200);

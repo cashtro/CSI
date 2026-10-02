@@ -1,5 +1,5 @@
 <%# ?vue=reglages-agents · engine on/off (emergency stop), budget, usage, models, import/export. %>
-<div class="ag pl-stack" data-agents-vue="reglages-agents">
+<div class="ag pl-stack" data-agents-vue="reglages-agents" data-brand="<%= include('../pilotage/marque') %>">
   <% if (agentsError) { %><p class="status is-error"><%= agentsError %></p><% } %>
   <section class="panel ag-switch" aria-labelledby="ag-s-titre" data-engine-panel>
     <div class="panel-head"><h2 id="ag-s-titre">🛑 Moteur des agents</h2><span class="badge" data-engine-badge>…</span></div>

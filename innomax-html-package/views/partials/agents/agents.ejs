@@ -2,7 +2,7 @@
   ?vue=agents · Console: KPIs, live network, rooms, live log, orders.
   Rendered empty; assets/js/agents-console.js fills it from /api/admin/agents.
 %>
-<div class="ag pl-stack" data-agents-vue="agents">
+<div class="ag pl-stack" data-agents-vue="agents" data-brand="<%= include('../pilotage/marque') %>">
   <%- include('_absent') %>
   <p class="ag-banner" data-engine-state role="status" hidden></p>
 

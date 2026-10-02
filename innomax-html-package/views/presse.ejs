@@ -17,7 +17,7 @@
   sousTitre: null, email: null, badge: null,
   salut: '🐼 ' + include('partials/pilotage/marque'),
   titre: '📰 Kit média',
-  intro: 'Tout ce qu’il faut pour parler de PBTM : description officielle, logo et coordonnées des relations de presse.',
+  intro: 'Tout ce qu’il faut pour parler de ' + include('partials/pilotage/marque') + ' : description officielle, logo et coordonnées des relations de presse.',
   cta: null, nav: null, vue: null, base: '/'
 }) %>
 <%- include('partials/public-nav', { ici: '/presse' }) %>
@@ -28,7 +28,7 @@
         <h2 id="presse-qui">Qui sommes-nous ?</h2>
         <p class="cr-lead"><%= content('presse.description', orgDescription) %></p>
         <dl class="cr-facts">
-          <div><dt>Nom</dt><dd>PBTM (Panda Business Tech &amp; Marketing)</dd></div>
+          <div><dt>Nom</dt><dd><%= include('partials/pilotage/marque') %> (<%= include('partials/pilotage/slogan') %>)</dd></div>
           <div><dt>Région</dt><dd>Québec, Canada</dd></div>
           <div><dt>Langues</dt><dd>Français d’abord, anglais sur demande</dd></div>
           <div><dt>Domaines</dt><dd>IA et agents IA, marketing numérique, formation en ligne, NFT</dd></div>
@@ -36,7 +36,7 @@
       </section>
       <section class="panel" aria-labelledby="presse-logo">
         <h2 id="presse-logo">Logo officiel</h2>
-        <div class="cr-logo"><img src="<%= logoSrc %>" alt="Logo de PBTM" width="160" height="160"></div>
+        <div class="cr-logo"><img src="<%= logoSrc %>" alt="Logo de <%= include('partials/pilotage/marque') %>" width="160" height="160"></div>
         <p><a class="btn btn--sm" href="<%= logoSrc %>" download>Télécharger le logo</a></p>
         <p class="dim">Merci de ne pas déformer ni recolorer le logo.</p>
       </section>

@@ -5,7 +5,7 @@
       <h2 id="cr-cp-new">Nouveau communiqué</h2>
       <p class="cr-lead-sm">Donne le titre et les faits : Tribune (agent RP) rédige un brouillon structuré. Tu le relis, tu l’approuves, puis tu le diffuses toi-même.</p>
       <form class="form" data-api="/api/admin/croissance/communiques/rediger" data-ok="Tribune rédige le communiqué.">
-        <div class="field"><label for="cp-t">Titre</label><input id="cp-t" name="titre" type="text" maxlength="300" required placeholder="Ex. : PBTM lance ses agents IA pour les PME du Québec"></div>
+        <div class="field"><label for="cp-t">Titre</label><input id="cp-t" name="titre" type="text" maxlength="300" required placeholder="Ex. : <%= include('../pilotage/marque') %> lance ses agents IA pour les PME du Québec"></div>
         <div class="field"><label for="cp-s">Faits à inclure (qui, quoi, quand, où, pourquoi)</label><textarea id="cp-s" name="sujet" maxlength="4000" rows="4" data-dictee></textarea></div>
         <div class="actions"><button class="btn btn--accent" type="submit">📝 Faire rédiger par Tribune</button><span class="status" data-status role="status"></span></div>
       </form>
