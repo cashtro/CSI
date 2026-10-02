@@ -1,20 +1,17 @@
 const express = require('express');
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
 const { authenticateUser, setAuthCookies, clearAuthCookies, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
 const { loginValidation, registrationValidation, validatePassword } = require('./utils/validation-middleware');
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
-const { createSupabaseAdmin } = require('./utils/supabaseUtil');
+const { createSupabaseClient, createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { sendEmail } = require('./utils/emailService');
 const { encryptSecret, decryptSecret } = require('./utils/crypto2fa');
 const crypto = require('crypto');
 
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Initialize stateless Supabase clients (see utils/supabaseUtil).
+const supabase = createSupabaseClient();
 const supabaseAdmin = createSupabaseAdmin();
 
 router.get('/validateToken', async (req, res) => {

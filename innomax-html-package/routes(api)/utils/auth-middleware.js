@@ -1,8 +1,10 @@
-const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
+const { createSupabaseClient } = require('./supabaseUtil');
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+// Stateless server-side client (no persisted/auto-refreshed session) to avoid
+// cross-request auth identity bleed. Requests pass their JWT explicitly.
+const supabase = createSupabaseClient();
 
 // Rate limiting for different endpoints
 const twoFaLimiter = rateLimit({
