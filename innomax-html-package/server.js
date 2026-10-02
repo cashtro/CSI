@@ -136,7 +136,9 @@ const csrfProtection = csrf({
 });
 
 app.get('/api/csrf-token', csrfProtection, (req, res) => {
-  res.cookie('XSRF-TOKEN', req.csrfToken()); // Optional: set it as cookie
+  // Same attributes as issueCsrfCookie (utils/csrf): readable by the page,
+  // Secure, SameSite=Lax. It used to be set with none of them.
+  res.cookie('XSRF-TOKEN', req.csrfToken(), { httpOnly: false, sameSite: 'Lax', secure: cookieSecure(), path: '/' });
   res.json({ csrfToken: req.csrfToken() });
 });
 
