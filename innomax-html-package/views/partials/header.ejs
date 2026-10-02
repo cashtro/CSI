@@ -1,3 +1,4 @@
+<script src="assets/js/escape-html.js"></script>
 <!-- css include -->
 
  <link rel="stylesheet" href="assets/css/headerfooter.css">
@@ -301,7 +302,6 @@
         async function checkAuthAndShowButtons() {
             let isLoggedIn = false;
             const token = sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken');
-            console.log('[DEBUG] Token found:', token);
             if (token) {
                 try {
                     console.log('[DEBUG] Sending validateToken request...');
@@ -312,7 +312,6 @@
                     console.log('[DEBUG] validateToken response status:', response.status);
                     if (response.ok) {
                         const data = await response.json();
-                        console.log('[DEBUG] validateToken response JSON:', data);
                         isLoggedIn = data.success || data.valid || data.authenticated;
                     } else {
                         console.log('[DEBUG] validateToken response not ok, removing token');

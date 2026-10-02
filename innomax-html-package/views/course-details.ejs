@@ -948,7 +948,7 @@
             container.innerHTML = `
             <div class="alert alert-warning w-100 text-center">
                 <i class="fas fa-exclamation-triangle"></i> Format de données incorrect.
-                <p>Détails: ${JSON.stringify(allAvailability)}</p>
+                <p>Détails: ${window.escapeHtml(JSON.stringify(allAvailability))}</p>
             </div>`;
             return;
         }
@@ -1027,7 +1027,7 @@
         container.innerHTML = `
             <div class="alert alert-danger w-100 text-center">
                 <i class="fas fa-exclamation-circle"></i> Error loading availability.
-                <p class="small">${error.message}</p>
+                <p class="small">${window.escapeHtml(error.message)}</p>
             </div>`;
     });
 }
@@ -1335,8 +1335,8 @@ function createTeacherAvailabilityCard(teacher, container) {
                 <div class="confirmation-message">
                     <i class="fas fa-check-circle pulse"></i>
                     <h3>Appointment Confirmed!</h3>
-                    <p>Your meeting with ${selectedTeacher} has been scheduled for:</p>
-                    <p id="confirmedDateTime" class="text-primary">${document.getElementById('selectedDateTime').textContent}</p>
+                    <p>Your meeting with ${window.escapeHtml(selectedTeacher)} has been scheduled for:</p>
+                    <p id="confirmedDateTime" class="text-primary">${window.escapeHtml(document.getElementById('selectedDateTime').textContent)}</p>
                     <p>Meeting link will be sent to your email.</p>
                 </div>
             `;

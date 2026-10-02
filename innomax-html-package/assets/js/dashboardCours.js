@@ -176,10 +176,10 @@ async function fetchCourseSummary(courseId) {
                                     transition: background 0.2s;
                                 ">
                                     <div style="font-weight: 500; color: #212529;">
-                                        ${lesson.title || `Leçon ${index + 1}`}
+                                        ${window.escapeHtml(lesson.title || `Leçon ${index + 1}`)}
                                     </div>
                                     <div style="font-size: 0.8rem; color: #6c757d; margin-top: 0.25rem;">
-                                        Type: ${lesson.type || 'Non spécifié'}
+                                        Type: ${window.escapeHtml(lesson.type || 'Non spécifié')}
                                     </div>
                                 </button>
                             `).join('')}
@@ -274,7 +274,7 @@ async function fetchCourseSummary(courseId) {
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                 </svg>
                 <p>Impossible de charger les détails du cours</p>
-                <p style="font-size: 0.9rem; margin-top: 0.5rem;">${error.message}</p>
+                <p style="font-size: 0.9rem; margin-top: 0.5rem;">${window.escapeHtml(error.message)}</p>
             </div>
         `;
     }
@@ -288,16 +288,16 @@ function renderLessonContent(lesson) {
         return `
             <div class="lesson-display">
                 <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: #333;">
-                    ${lesson.title || 'Lesson without title'}
+                    ${window.escapeHtml(lesson.title || 'Lesson without title')}
                 </h3>
                 <div style="background: #000; border-radius: 8px; overflow: hidden; margin-bottom: 1rem;">
                     <video controls style="width: 100%;">
-                        <source src="${lesson.url}" type="video/mp4">
+                        <source src="${window.safeUrl(lesson.url)}" type="video/mp4">
                         Votre navigateur ne supporte pas les vidéos HTML5.
                     </video>
                 </div>
                 ${lesson.url ? `
-                    <a href="${lesson.url}" target="_blank" style="
+                    <a href="${window.safeUrl(lesson.url)}" target="_blank" style="
                         display: inline-flex;
                         align-items: center;
                         gap: 0.5rem;
@@ -318,13 +318,13 @@ function renderLessonContent(lesson) {
         return `
             <div class="lesson-display">
                 <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: #333;">
-                    ${lesson.title || 'Leçon sans titre'}
+                    ${window.escapeHtml(lesson.title || 'Leçon sans titre')}
                 </h3>
                 <div style="height: 500px; border: 1px solid #eee; border-radius: 8px; margin-bottom: 1rem;">
-                    <iframe src="${lesson.url}" style="width: 100%; height: 100%; border: none;"></iframe>
+                    <iframe src="${window.safeUrl(lesson.url)}" style="width: 100%; height: 100%; border: none;"></iframe>
                 </div>
                 ${lesson.url ? `
-                    <a href="${lesson.url}" target="_blank" style="
+                    <a href="${window.safeUrl(lesson.url)}" target="_blank" style="
                         display: inline-flex;
                         align-items: center;
                         gap: 0.5rem;
@@ -345,14 +345,14 @@ function renderLessonContent(lesson) {
         return `
             <div class="lesson-display">
                 <h3 style="margin: 0 0 1rem 0; font-size: 1.3rem; color: #333;">
-                    ${lesson.title || 'Lesson without title'}
+                    ${window.escapeHtml(lesson.title || 'Lesson without title')}
                 </h3>
                 <div style="padding: 2rem; background: #f8f9fa; border-radius: 8px; text-align: center;">
                     <p style="color: #666; margin-bottom: 1rem;">
-                        Type: ${lesson.type || 'Not specified'}
+                        Type: ${window.escapeHtml(lesson.type || 'Not specified')}
                     </p>
                     ${lesson.url ? `
-                        <a href="${lesson.url}" target="_blank" style="
+                        <a href="${window.safeUrl(lesson.url)}" target="_blank" style="
                             display: inline-flex;
                             align-items: center;
                             gap: 0.5rem;

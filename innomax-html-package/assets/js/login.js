@@ -222,7 +222,7 @@ function showQRCodeModal(secret, qrCode, tempSessionId, setupToken) {
     if (qrCode.startsWith('<svg')) {
         qrContainer.innerHTML = qrCode;
     } else if (qrCode.startsWith('data:image')) {
-        qrContainer.innerHTML = `<img src="${qrCode}" alt="QR Code">`;
+        qrContainer.innerHTML = `<img src="${window.escapeHtml(qrCode)}" alt="QR Code">`;
     }
 
     // Affichage du code secret

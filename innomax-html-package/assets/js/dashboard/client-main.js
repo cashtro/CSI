@@ -140,9 +140,9 @@ async function displayCourses() {
             courseCard.className = 'content-card';
             courseCard.dataset.courseId = course.id;
             courseCard.innerHTML = `
-                <div class="content-card-title">${course.nom || 'Sans titre'}</div>
-                <div class="content-card-value">${course.student_count || 0} étudiants</div>
-                <div class="content-card-desc">${course.description || 'Aucune description'}</div>
+                <div class="content-card-title">${escapeHtml(course.nom || 'Sans titre')}</div>
+                <div class="content-card-value">${escapeHtml(course.student_count || 0)} étudiants</div>
+                <div class="content-card-desc">${escapeHtml(course.description || 'Aucune description')}</div>
                 <div class="content-card-actions">
                     <button class="view-course-btn">Voir détails</button>
                 </div>
@@ -172,7 +172,7 @@ async function displayCourses() {
             });
         });
     } catch (error) {
-        coursesList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        coursesList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -401,23 +401,23 @@ async function displayCoursesWithProgress() {
 
             // Préparer l'élément d'image du cours
             const courseImageHtml = course.image_url 
-                ? `<div class="card-image"><img src="${course.image_url}" alt="${course.nom || 'Sans titre'}"></div>` 
+                ? `<div class="card-image"><img src="${safeUrl(course.image_url)}" alt="${escapeHtml(course.nom || 'Sans titre')}"></div>` 
                 : `<div class="card-image default-image">📚</div>`;
 
             courseCard.innerHTML = `
-                <div class="content-card-title">${course.nom || 'Sans titre'}</div>
+                <div class="content-card-title">${escapeHtml(course.nom || 'Sans titre')}</div>
                 <div class="content-card-badges">
-                    <span class="badge badge-level">${level}</span>
-                    <span class="badge badge-duration">${duration}</span>
+                    <span class="badge badge-level">${escapeHtml(level)}</span>
+                    <span class="badge badge-duration">${escapeHtml(duration)}</span>
                     <span class="badge badge-price">${formattedPrice}</span>
                     ${isCompleted 
                         ? `<span class="course-completion-badge">Terminé</span>` 
                         : `<span class="mark-complete-btn">Marquer comme terminé</span>`
                     }
                 </div>
-                <div class="content-card-value">${course.student_count || 0} étudiants</div>
+                <div class="content-card-value">${escapeHtml(course.student_count || 0)} étudiants</div>
                 ${courseImageHtml}
-                <div class="content-card-desc">${course.description || 'Aucune description'}</div>
+                <div class="content-card-desc">${escapeHtml(course.description || 'Aucune description')}</div>
                 <div class="course-progress-container">
                     <div class="course-progress-bar" style="width: ${progressPercentage}%"></div>
                 </div>
@@ -475,7 +475,7 @@ async function displayCoursesWithProgress() {
         // Ajouter les styles pour les badges
         addBadgeStyles();
     } catch (error) {
-        coursesList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        coursesList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -754,20 +754,20 @@ async function displayCoursesTeacher() {
                 
                 // Préparer l'élément d'image du cours
                 const courseImageHtml = course.image_url 
-                    ? `<div class="card-image"><img src="${course.image_url}" alt="${course.nom}"></div>` 
+                    ? `<div class="card-image"><img src="${safeUrl(course.image_url)}" alt="${escapeHtml(course.nom)}"></div>` 
                     : `<div class="card-image default-image">📚</div>`;
                 
                 courseCard.innerHTML = `
-                    <div class="content-card-title">${course.nom || 'Sans titre'}</div>
+                    <div class="content-card-title">${escapeHtml(course.nom || 'Sans titre')}</div>
                     <div class="content-card-badges">
-                        <span class="badge badge-level">${level}</span>
-                        <span class="badge badge-duration">${duration}</span>
+                        <span class="badge badge-level">${escapeHtml(level)}</span>
+                        <span class="badge badge-duration">${escapeHtml(duration)}</span>
                         <span class="badge badge-price">${formattedPrice}</span>
-                        <span class="badge badge-status badge-status-${status}">${statusLabel}</span>
+                        <span class="badge badge-status badge-status-${escapeHtml(status)}">${statusLabel}</span>
                     </div>
-                    <div class="content-card-value">${course.student_count || 0} étudiants</div>
+                    <div class="content-card-value">${escapeHtml(course.student_count || 0)} étudiants</div>
                     ${courseImageHtml}
-                    <div class="content-card-desc">${course.description || 'Aucune description'}</div>
+                    <div class="content-card-desc">${escapeHtml(course.description || 'Aucune description')}</div>
                     <div class="content-card-actions">
                         <button class="edit-btn">Modifier</button>
                     </div>
@@ -790,7 +790,7 @@ async function displayCoursesTeacher() {
         const errorMessage = error.message.includes('Token')
             ? 'Session expirée, veuillez vous reconnecter'
             : error.message;
-        coursesList.innerHTML = `<div class="error-loading">${errorMessage}</div>`;
+        coursesList.innerHTML = `<div class="error-loading">${escapeHtml(errorMessage)}</div>`;
     }
 }
 // Fonction pour ajouter les styles CSS des badges pour la section enseignant
@@ -1179,7 +1179,7 @@ function createAndOpenEditModal(course) {
             ">Modifier le cours</h3>
             
             <form id="edit-course-form" enctype="multipart/form-data">
-                <input type="hidden" id="edit-course-id" name="id" value="${course.id}">
+                <input type="hidden" id="edit-course-id" name="id" value="${escapeHtml(course.id)}">
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label for="edit-course-title" style="
@@ -1188,7 +1188,7 @@ function createAndOpenEditModal(course) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Titre du cours</label>
-                    <input type="text" id="edit-course-title" name="nom" value="${course.nom || ''}" required style="
+                    <input type="text" id="edit-course-title" name="nom" value="${escapeHtml(course.nom || '')}" required style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1216,7 +1216,7 @@ function createAndOpenEditModal(course) {
                         resize: vertical;
                         background-color: rgba(0, 0, 0, 0.2);
                         color: #f3f4f6;
-                    ">${course.description || ''}</textarea>
+                    ">${escapeHtml(course.description || '')}</textarea>
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
@@ -1248,7 +1248,7 @@ function createAndOpenEditModal(course) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Nombre d'heures</label>
-                    <input type="number" id="edit-course-heures" name="nombre_heures" min="1" max="500" value="${course.nombre_heures || ''}" required style="
+                    <input type="number" id="edit-course-heures" name="nombre_heures" min="1" max="500" value="${escapeHtml(course.nombre_heures || '')}" required style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1266,7 +1266,7 @@ function createAndOpenEditModal(course) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Prix ($)</label>
-                    <input type="number" id="edit-course-prix" name="prix" step="0.01" min="0" value="${course.prix || 0}" style="
+                    <input type="number" id="edit-course-prix" name="prix" step="0.01" min="0" value="${escapeHtml(course.prix || 0)}" style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1478,13 +1478,13 @@ function displayExistingLessons(lessons) {
                 <div style="display: flex; align-items: center; overflow: hidden;">
                     <span style="font-size: 1.5rem; margin-right: 10px; flex-shrink: 0;">${icon}</span>
                     <div style="overflow: hidden; text-overflow: ellipsis;">
-                        <span style="display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${fileName}</span>
-                        <small style="color: rgba(255, 255, 255, 0.5);">${lesson.type}</small>
+                        <span style="display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(fileName)}</span>
+                        <small style="color: rgba(255, 255, 255, 0.5);">${escapeHtml(lesson.type)}</small>
                     </div>
                 </div>
                 ${lesson.url ? `
                 <div style="display: flex; gap: 5px;">
-                    <a href="${lesson.url}" target="_blank" style="
+                    <a href="${safeUrl(lesson.url)}" target="_blank" style="
                         background-color: rgba(79, 70, 229, 0.8);
                         color: white;
                         border: none;
@@ -2494,14 +2494,14 @@ async function fetchCourseDetails(courseId) {
                             </div>
                             <div class="details-lecon" style="flex: 1;">
                                 <div class="titre-lecon" style="font-weight: 600; color: #333;">
-                                    ${lecon.title || `Leçon ${index + 1}`}
+                                    ${escapeHtml(lecon.title || `Leçon ${index + 1}`)}
                                 </div>
                                 <div class="type-lecon" style="color: #666; font-size: 0.9rem;">
-                                    Type : ${lecon.type || 'Non spécifié'}
+                                    Type : ${escapeHtml(lecon.type || 'Non spécifié')}
                                 </div>
                                 ${lecon.url ? `
                                     <div class="lien-lecon" style="margin-top: 0.5rem;">
-                                        <a href="${lecon.url}" target="_blank" style="
+                                        <a href="${safeUrl(lecon.url)}" target="_blank" style="
                                             color: #4CAF50;
                                             text-decoration: none;
                                             display: inline-flex;
@@ -2532,7 +2532,7 @@ async function fetchCourseDetails(courseId) {
                                 ` : ''}
                             </div>
                             ${!estTerminee ? `
-                            <button class="marquer-termine-btn" data-course-id="${courseId}" data-lesson-index="${index}" style="
+                            <button class="marquer-termine-btn" data-course-id="${escapeHtml(courseId)}" data-lesson-index="${index}" style="
                                 background-color: #2196F3;
                                 color: white;
                                 border: none;
@@ -2599,12 +2599,12 @@ async function fetchCourseDetails(courseId) {
                 <div class="course-main-info">
                     <div class="info-item" style="margin-bottom: 1.5rem;">
                         <h3 style="margin: 0 0 0.5rem 0; font-size: 1.2rem; color: #555;">Description</h3>
-                        <p style="margin: 0; line-height: 1.6; color: #333;">${course.description || 'Aucune description disponible'}</p>
+                        <p style="margin: 0; line-height: 1.6; color: #333;">${escapeHtml(course.description || 'Aucune description disponible')}</p>
                     </div>
                     
                     <div class="info-item" style="margin-bottom: 1.5rem;">
                         <h3 style="margin: 0 0 0.5rem 0; font-size: 1.2rem; color: #555;">Niveau</h3>
-                        <p style="margin: 0; color: #333; font-weight: 500;">${course.niveau || 'Non spécifié'}</p>
+                        <p style="margin: 0; color: #333; font-weight: 500;">${escapeHtml(course.niveau || 'Non spécifié')}</p>
                     </div>
                 </div>
                 
@@ -2617,22 +2617,22 @@ async function fetchCourseDetails(courseId) {
                     ">
                         <div class="info-item" style="margin-bottom: 1rem; display: flex; justify-content: space-between;">
                             <span style="color: #555;">Professeur:</span>
-                            <span style="font-weight: 500; color: #333;">${course.professor || 'Non spécifié'}</span>
+                            <span style="font-weight: 500; color: #333;">${escapeHtml(course.professor || 'Non spécifié')}</span>
                         </div>
                         
                         <div class="info-item" style="margin-bottom: 1rem; display: flex; justify-content: space-between;">
                             <span style="color: #555;">Durée:</span>
-                            <span style="font-weight: 500; color: #333;">${course.nombre_heures || 0} heures</span>
+                            <span style="font-weight: 500; color: #333;">${escapeHtml(course.nombre_heures || 0)} heures</span>
                         </div>
                         
                         <div class="info-item" style="margin-bottom: 1rem; display: flex; justify-content: space-between;">
                             <span style="color: #555;">Étudiants inscrits:</span>
-                            <span style="font-weight: 500; color: #333;">${course.student_count || 0}</span>
+                            <span style="font-weight: 500; color: #333;">${escapeHtml(course.student_count || 0)}</span>
                         </div>
                         
                         <div class="info-item" style="margin-bottom: 0; display: flex; justify-content: space-between;">
                             <span style="color: #555;">Prix:</span>
-                            <span id="course-details-prix" data-price="${course.prix || 0}" style="font-weight: 700; color: #4CAF50;">${course.prix || 0}$</span>
+                            <span id="course-details-prix" data-price="${escapeHtml(course.prix || 0)}" style="font-weight: 700; color: #4CAF50;">${escapeHtml(course.prix || 0)}$</span>
                         </div>
                     </div>
                     
@@ -2647,7 +2647,7 @@ async function fetchCourseDetails(courseId) {
                 ${course.modules_count ? `
                 <div class="info-item" style="margin-bottom: 1.5rem;">
                     <h3 style="margin: 0 0 0.5rem 0; font-size: 1.2rem; color: #555;">Contenu du cours</h3>
-                    <p style="margin: 0; color: #333;">Ce cours contient ${course.modules_count} modules.</p>
+                    <p style="margin: 0; color: #333;">Ce cours contient ${escapeHtml(course.modules_count)} modules.</p>
                 </div>
                 ` : ''}
             </div>
@@ -2741,7 +2741,7 @@ async function fetchCourseDetails(courseId) {
                     <line x1="12" y1="16" x2="12.01" y2="16"></line>
                 </svg>
                 <p>Impossible de charger les détails du cours.</p>
-                <p>${error.message}</p>
+                <p>${escapeHtml(error.message)}</p>
             </div>
         `;
     }
@@ -2893,8 +2893,8 @@ async function displayAppointments() {
             
             appointmentCard.innerHTML = `
                 <div class="content-card-title">Rendez-vous du ${formattedDate}</div>
-                <div class="content-card-value">Heure: ${appointment.heure || 'Non spécifiée'}</div>
-                <div class="content-card-desc">Durée: ${appointment.duree || '30'} minutes</div>
+                <div class="content-card-value">Heure: ${escapeHtml(appointment.heure || 'Non spécifiée')}</div>
+                <div class="content-card-desc">Durée: ${escapeHtml(appointment.duree || '30')} minutes</div>
                 <div class="content-card-actions">
                     <button class="edit-appointment-btn">Modifier</button>
                     <button class="cancel-appointment-btn">Annuler</button>
@@ -2934,7 +2934,7 @@ async function displayAppointments() {
             });
         });
     } catch (error) {
-        appointmentList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        appointmentList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -2974,7 +2974,7 @@ function openAppointmentEditModal(appointment) {
         ">
             <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: #333;">Modifier le rendez-vous</h3>
             <form id="edit-appointment-form" class="edit-form">
-                <input type="hidden" id="appointment-id" name="id" value="${appointment.id}">
+                <input type="hidden" id="appointment-id" name="id" value="${escapeHtml(appointment.id)}">
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label for="appointment-date" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Date</label>
@@ -3378,8 +3378,8 @@ async function displayAppointments() {
             
             appointmentCard.innerHTML = `
                 <div class="content-card-title">Rendez-vous du ${formattedDate}</div>
-                <div class="content-card-value">Heure: ${appointment.heure || 'Non spécifiée'}</div>
-                <div class="content-card-desc">Durée: ${appointment.duree || '30'} minutes</div>
+                <div class="content-card-value">Heure: ${escapeHtml(appointment.heure || 'Non spécifiée')}</div>
+                <div class="content-card-desc">Durée: ${escapeHtml(appointment.duree || '30')} minutes</div>
                 <div class="content-card-actions">
                     <button class="edit-appointment-btn">Modifier</button>
                     <button class="cancel-appointment-btn">Annuler</button>
@@ -3419,7 +3419,7 @@ async function displayAppointments() {
             });
         });
     } catch (error) {
-        appointmentList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        appointmentList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -3816,8 +3816,8 @@ async function displayAppointments() {
             
             appointmentCard.innerHTML = `
                 <div class="content-card-title">Rendez-vous du ${formattedDate}</div>
-                <div class="content-card-value">Heure: ${appointment.heure || 'Non spécifiée'}</div>
-                <div class="content-card-desc">Durée: ${appointment.duree || '30'} minutes</div>
+                <div class="content-card-value">Heure: ${escapeHtml(appointment.heure || 'Non spécifiée')}</div>
+                <div class="content-card-desc">Durée: ${escapeHtml(appointment.duree || '30')} minutes</div>
                 <div class="content-card-actions">
                     <button class="edit-appointment-btn">Modifier</button>
                     <button class="cancel-appointment-btn">Annuler</button>
@@ -3857,7 +3857,7 @@ async function displayAppointments() {
             });
         });
     } catch (error) {
-        appointmentList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        appointmentList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -3897,7 +3897,7 @@ function openAppointmentEditModal(appointment) {
         ">
             <h3 style="margin-top: 0; margin-bottom: 1.5rem; color: #333;">Modifier le rendez-vous</h3>
             <form id="edit-appointment-form" class="edit-form">
-                <input type="hidden" id="appointment-id" name="id" value="${appointment.id}">
+                <input type="hidden" id="appointment-id" name="id" value="${escapeHtml(appointment.id)}">
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label for="appointment-date" style="display: block; margin-bottom: 0.5rem; font-weight: 500;">Date</label>
@@ -4159,10 +4159,10 @@ async function displayAvailabilities() {
                 
                 availabilityCard.innerHTML = `
                     <div class="content-card-title">Disponibilité: ${formattedStart} - ${formattedEnd}</div>
-                    <div class="content-card-value">Prix: ${availability.price || 0}$</div>
+                    <div class="content-card-value">Prix: ${escapeHtml(availability.price || 0)}$</div>
                     <div class="content-card-desc">
                         <div>Durée: ${durationMinutes} minutes</div>
-                        <div>Taux de commission: ${availability.commission_rate || 0}%</div>
+                        <div>Taux de commission: ${escapeHtml(availability.commission_rate || 0)}%</div>
                     </div>
                     <div class="content-card-actions">
                         
@@ -4212,7 +4212,7 @@ async function displayAvailabilities() {
         });
     } catch (error) {
         console.error("Erreur complète lors de l'affichage des disponibilités:", error);
-        availabilityList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        availabilityList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -4671,10 +4671,10 @@ async function displayMeetings() {
                     Rendez-vous du ${formattedDate}
                     <span class="meeting-status ${statusClass}">${statusText}</span>
                 </div>
-                <div class="content-card-value">Heure: ${meeting.heure || 'Non spécifiée'}</div>
+                <div class="content-card-value">Heure: ${escapeHtml(meeting.heure || 'Non spécifiée')}</div>
                 <div class="content-card-desc">
-                    <div>Durée: ${meeting.duree || 30} minutes</div>
-                    ${meeting.ID_vendeur ? `<div>Professeur ID: ${meeting.ID_vendeur}</div>` : ''}
+                    <div>Durée: ${escapeHtml(meeting.duree || 30)} minutes</div>
+                    ${meeting.ID_vendeur ? `<div>Professeur ID: ${escapeHtml(meeting.ID_vendeur)}</div>` : ''}
                 </div>
                 <div class="content-card-actions">
                     ${isActive 
@@ -4779,7 +4779,7 @@ async function displayMeetings() {
         
     } catch (error) {
         console.error('Erreur complète:', error);
-        meetList.innerHTML = `<div class="error-state">Une erreur est survenue lors du chargement des réunions: ${error.message}</div>`;
+        meetList.innerHTML = `<div class="error-state">Une erreur est survenue lors du chargement des réunions: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -4926,13 +4926,13 @@ async function displayDraws() {
             drawCard.dataset.drawId = draw.lotteryId;
             
             drawCard.innerHTML = `
-                <div class="content-card-title">${draw.nomProduit || 'Tirage sans nom'}</div>
+                <div class="content-card-title">${escapeHtml(draw.nomProduit || 'Tirage sans nom')}</div>
                 <div class="content-card-value">${formattedDate}</div>
                 <div class="content-card-desc">
-                    <div>Prix du ticket: ${draw.entrieCost}$</div>
-                    <div>Participants: ${draw.totalEntries || 0}</div>
+                    <div>Prix du ticket: ${escapeHtml(draw.entrieCost)}$</div>
+                    <div>Participants: ${escapeHtml(draw.totalEntries || 0)}</div>
                     <div class="lottery-image" style="margin-top: 15px; text-align: center;">
-                        <img src="${draw.imageProduit}" alt="Image du tirage" 
+                        <img src="${safeUrl(draw.imageProduit)}" alt="Image du tirage" 
                              style="max-width: 100%; height: auto; max-height: 150px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                     </div>
                 </div>
@@ -4950,7 +4950,7 @@ async function displayDraws() {
             });
         });
     } catch (error) {
-        drawsContent.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        drawsContent.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 

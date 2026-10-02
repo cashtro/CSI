@@ -1165,9 +1165,9 @@
         container.innerHTML = requests.map(req => `
             <div class="request-card">
                 
-                <p>Message: </br>${req.message}</p>
-                <button onclick="acceptRequest('${req.id}')">Accept</button>
-                <button onclick="refuseRequest('${req.id}')">Refuse</button>
+                <p>Message: </br>${escapeHtml(req.message)}</p>
+                <button data-id="${escapeHtml(req.id)}" onclick="acceptRequest(this.dataset.id)">Accept</button>
+                <button data-id="${escapeHtml(req.id)}" onclick="refuseRequest(this.dataset.id)">Refuse</button>
             </div>
         `).join('');
     }
@@ -1178,8 +1178,8 @@
 
         container.innerHTML = teachers.map(user => `
             <div class="teacher-card">
-                <p><strong>${user.username}</strong> (${user.email})</p>
-                <button onclick="revokeTeacher('${user.userId}')">Revoke teacher access</button>
+                <p><strong>${escapeHtml(user.username)}</strong> (${escapeHtml(user.email)})</p>
+                <button data-id="${escapeHtml(user.userId)}" onclick="revokeTeacher(this.dataset.id)">Revoke teacher access</button>
             </div>
         `).join('');
     }

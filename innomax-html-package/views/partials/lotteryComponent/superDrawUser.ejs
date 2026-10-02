@@ -316,8 +316,10 @@
         </div>
             
             
+        <script type="application/json" id="lotteries-data"><%- JSON.stringify(lotteries).replace(/</g, '\\u003c') %></script>
         <script>
-  window.lotteries = '<%- JSON.stringify(lotteries) %>';
+  // Keep window.lotteries as a JSON string: lotteryUserData.js calls JSON.parse(window.lotteries)
+  window.lotteries = document.getElementById('lotteries-data').textContent;
 </script>
     <script src="assets/js/lotteryUserData.js" defer></script>
 

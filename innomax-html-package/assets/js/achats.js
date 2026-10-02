@@ -88,10 +88,10 @@ async function openProductModal(product) {
     
     if (modalDescription) {
         if (product.fullDescription && product.fullDescription.trim() !== '') {
-            modalDescription.innerHTML = product.fullDescription;
+            modalDescription.innerHTML = window.escapeHtml(product.fullDescription).replace(/\n/g, '<br>');
             if (productAttributes) productAttributes.style.display = 'none';
         } else if (product.shortDescription && product.shortDescription.trim() !== '') {
-            modalDescription.innerHTML = product.shortDescription;
+            modalDescription.innerHTML = window.escapeHtml(product.shortDescription).replace(/\n/g, '<br>');
             if (productAttributes) productAttributes.style.display = 'none';
         } else {
             modalDescription.textContent = 'No description available';
@@ -447,10 +447,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                     <div class="parent">
                         <div class="card">
                             <div class="content-box">
-                                <img src="${product.imageProduit || '/assets/img/placeholder.jpg'}" alt="${product.nomProduit || 'Product'}" class="product-image" />
-                                <span class="card-title">${product.nomProduit || 'Product Name'}</span>
-                                <div class="price-tag">$${product.price || product.entrieCost || '0'}</div>
-                                <a href="#" class="buy-now-btn" data-product-id="${product.lotteryId || product.id}" data-type="${product.type}"></a>
+                                <img src="${window.safeUrl(product.imageProduit || '/assets/img/placeholder.jpg')}" alt="${window.escapeHtml(product.nomProduit || 'Product')}" class="product-image" />
+                                <span class="card-title">${window.escapeHtml(product.nomProduit || 'Product Name')}</span>
+                                <div class="price-tag">$${window.escapeHtml(product.price || product.entrieCost || '0')}</div>
+                                <a href="#" class="buy-now-btn" data-product-id="${window.escapeHtml(product.lotteryId || product.id)}" data-type="${window.escapeHtml(product.type)}"></a>
                             </div>
                         </div>
                     </div>

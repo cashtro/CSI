@@ -40,12 +40,12 @@ function loadPortfolio() {
             .catch(error => {
                 console.error('Erreur détaillée:', error);
                 document.getElementById('portfolio-list').innerHTML = 
-                    `<div class="error-message">${error.message}</div>`;
+                    `<div class="error-message">${escapeHtml(error.message)}</div>`;
             });
     } catch (error) {
         console.error('Erreur détaillée:', error);
         document.getElementById('portfolio-list').innerHTML = 
-            `<div class="error-message">${error.message}</div>`;
+            `<div class="error-message">${escapeHtml(error.message)}</div>`;
     }
 }
             // Affichage des projets
@@ -60,16 +60,16 @@ function loadPortfolio() {
                 portfolioList.innerHTML = items.map(item => `
                     <div class="portfolio-item">
                         <div class="portfolio-image">
-                            ${item.image_portfolio ? `<img src="${item.image_portfolio}" alt="${item.title}">` : ''}
+                            ${item.image_portfolio ? `<img src="${safeUrl(item.image_portfolio)}" alt="${escapeHtml(item.title)}">` : ''}
                         </div>
                         <div class="portfolio-info">
-                            <h3>${item.title}</h3>
-                            <p class="genre">${item.genre}</p>
-                            <a href="${item.urlPortfolio}" target="_blank" class="portfolio-link">Voir le projet</a>
+                            <h3>${escapeHtml(item.title)}</h3>
+                            <p class="genre">${escapeHtml(item.genre)}</p>
+                            <a href="${safeUrl(item.urlPortfolio)}" target="_blank" class="portfolio-link">Voir le projet</a>
                         </div>
                         <div class="portfolio-actions">
-                            <button class="edit-btn" data-id="${item.id}">Modify</button>
-                            <button class="delete-btn" data-id="${item.id}">Delete</button>
+                            <button class="edit-btn" data-id="${escapeHtml(item.id)}">Modify</button>
+                            <button class="delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
                         </div>
                     </div>
                 `).join('');
@@ -294,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(res => res.json())
             .then(items => renderAchat(items))
             .catch(err => {
-                document.getElementById('achat-list').innerHTML = `<div class="error-message">${err.message}</div>`;
+                document.getElementById('achat-list').innerHTML = `<div class="error-message">${escapeHtml(err.message)}</div>`;
             });
     }
 
@@ -306,15 +306,15 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         achatGrid.innerHTML = items.map(item => `
             <div class="achat-item">
-                <div class="achat-image">${item.imageProduit ? `<img src="${item.imageProduit}" alt="${item.nomProduit}">` : ''}</div>
+                <div class="achat-image">${item.imageProduit ? `<img src="${safeUrl(item.imageProduit)}" alt="${escapeHtml(item.nomProduit)}">` : ''}</div>
                 <div class="achat-info">
-                    <h3>${item.nomProduit}</h3>
-                    <p>${item.shortDescription}</p>
-                    <div class="achat-price">$${item.price}</div>
+                    <h3>${escapeHtml(item.nomProduit)}</h3>
+                    <p>${escapeHtml(item.shortDescription)}</p>
+                    <div class="achat-price">$${escapeHtml(item.price)}</div>
                 </div>
                 <div class="achat-actions">
-                    <button class="edit-btn" data-id="${item.id}">Edit</button>
-                    <button class="delete-btn" data-id="${item.id}">Delete</button>
+                    <button class="edit-btn" data-id="${escapeHtml(item.id)}">Edit</button>
+                    <button class="delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
                 </div>
             </div>
         `).join('');
@@ -417,16 +417,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 portfolioList.innerHTML = items.map(item => `
                     <div class="portfolio-item">
                         <div class="portfolio-image">
-                            ${item.image_portfolio ? `<img src="${item.image_portfolio}" alt="${item.title}">` : ''}
+                            ${item.image_portfolio ? `<img src="${safeUrl(item.image_portfolio)}" alt="${escapeHtml(item.title)}">` : ''}
                         </div>
                         <div class="portfolio-info">
-                            <h3>${item.title}</h3>
-                            <p class="genre">${item.genre}</p>
-                            <a href="${item.urlPortfolio}" target="_blank" class="portfolio-link">Voir le projet</a>
+                            <h3>${escapeHtml(item.title)}</h3>
+                            <p class="genre">${escapeHtml(item.genre)}</p>
+                            <a href="${safeUrl(item.urlPortfolio)}" target="_blank" class="portfolio-link">Voir le projet</a>
                         </div>
                         <div class="portfolio-actions">
-                            <button class="edit-btn" data-id="${item.id}">Modify</button>
-                            <button class="delete-btn" data-id="${item.id}">Delete</button>
+                            <button class="edit-btn" data-id="${escapeHtml(item.id)}">Modify</button>
+                            <button class="delete-btn" data-id="${escapeHtml(item.id)}">Delete</button>
                         </div>
                     </div>
                 `).join('');
@@ -477,12 +477,12 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => {
                 console.error('Erreur détaillée:', error);
                 document.getElementById('portfolio-list').innerHTML = 
-                    `<div class="error-message">${error.message}</div>`;
+                    `<div class="error-message">${escapeHtml(error.message)}</div>`;
             });
     } catch (error) {
         console.error('Erreur détaillée:', error);
         document.getElementById('portfolio-list').innerHTML = 
-            `<div class="error-message">${error.message}</div>`;
+            `<div class="error-message">${escapeHtml(error.message)}</div>`;
     }
                 } catch (error) {
                     console.error('Erreur:', error);
