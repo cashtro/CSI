@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <%- include('partials/pilotage/head', { title: 'Console admin' }) %>
+</head>
+<%
+  const enAttente = data.livrables.filter(function (l) { return l.statut === 'en_attente'; }).length;
+  const actifs = data.mandats.filter(function (m) { return m.statut === 'actif'; }).length;
+  const revenus = data.paiements.reduce(function (s, p) { return s + (p.statut === 'Payé' && p.montant ? p.montant : 0); }, 0);
+  const nav = [
+    ['apercu', 'Aperçu', null],
+    ['entreprises', 'Entreprises', data.entreprises.length],
+    ['clients', 'Clients', data.clients.length],
+    ['paiements', 'Paiements', data.paiements.length],
+    ['mandats', 'Mandats', actifs],
+    ['livrables', 'Livrables', enAttente],
+    ['cms', 'Contenu du site', null],
+  ];
+  const titreMandat = {};
+  data.mandats.forEach(function (m) { titreMandat[m.id] = m.titre; });
+%>
+<body class="pl">
+<div class="pl-shell">
+  <aside class="pl-side">
+    <%- include('partials/pilotage/brand', { sousTitre: 'Console admin' }) %>
+    <nav class="pl-nav" aria-label="Sections">
+      <% nav.forEach(function (n) { %>
+      <a href="/admin/console?vue=<%= n[0] %>"<% if (vue === n[0]) { %> aria-current="page"<% } %>><%= n[1] %>
+        <% if (n[2]) { %><span class="count"><%= n[2] %></span><% } %>
+      </a>
+      <% }) %>
+    </nav>
+    <div class="pl-side-foot">
+      <p><%= email %> · 2FA active</p>
+      <p><a href="/">Voir le site</a> · <a href="/login" data-logout>Déconnexion</a></p>
+    </div>
+  </aside>
+
+  <main class="pl-main" id="contenu">
+    <header class="pl-top">
+      <div><span class="kicker">Poste de pilotage · contrôle total</span><h1><%= nav.find(function (n) { return n[0] === vue; })[1] %></h1></div>
+    </header>
+
+    <% if (vue === 'apercu') { %>
+    <div class="pl-stack">
+      <div class="kpis">
+        <div class="panel panel--gold kpi kpi--gold"><span class="label">Revenus encaissés</span><span class="value"><%= fmt.money(revenus) %></span></div>
+        <div class="panel kpi"><span class="label">Entreprises</span><span class="value"><%= data.entreprises.length %></span></div>
+        <div class="panel kpi"><span class="label">Mandats actifs</span><span class="value"><%= actifs %></span></div>
+        <div class="panel kpi"><span class="label">Livrables en attente</span><span class="value"><%= enAttente %></span></div>
+      </div>
+      <div class="pl-cols">
+        <section class="panel" aria-labelledby="derniers-mandats">
+          <div class="panel-head"><h2 id="derniers-mandats">Derniers mandats</h2><a href="/admin/console?vue=mandats">Tout voir →</a></div>
+          <% if (!data.mandats.length) { %><p class="empty">Aucun mandat.</p><% } else { %>
+          <ul class="items">
+            <% data.mandats.slice(0, 4).forEach(function (m) { %>
+            <li class="item">
+              <div class="item-head"><h3><%= m.titre %></h3><span class="badge badge--<%= m.statut %>"><%= fmt.statut[m.statut] || m.statut %></span></div>
+              <div class="item-meta"><%= m.entreprise %> · <span class="num"><%= fmt.jour(m.created_at) %></span></div>
+              <%- include('partials/pilotage/steps', { m: m, etapes: etapes }) %>
+            </li>
+            <% }) %>
+          </ul>
+          <% } %>
+        </section>
+        <section class="panel panel--gold" aria-labelledby="derniers-paiements">
+          <div class="panel-head"><h2 id="derniers-paiements">Derniers paiements</h2><a href="/admin/console?vue=paiements">Tout voir →</a></div>
+          <% if (!data.paiements.length) { %><p class="empty">Aucun paiement.</p><% } else { %>
+          <ul class="items">
+            <% data.paiements.slice(0, 5).forEach(function (p) { %>
+            <li class="item item--gold">
+              <div class="item-head"><h3><%= p.entreprise || p.email || 'Client anonyme' %></h3><span class="money"><%= fmt.money(p.montant, p.devise) %></span></div>
+              <div class="item-meta"><%= p.type %> · <%= p.source %> · <span class="num"><%= fmt.jour(p.date) %></span></div>
+            </li>
+            <% }) %>
+          </ul>
+          <% } %>
+        </section>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (vue === 'entreprises') { %>
+    <div class="pl-stack">
+      <section class="panel" aria-labelledby="nouvelle-entreprise">
+        <div class="panel-head"><h2 id="nouvelle-entreprise">Ajouter une entreprise</h2></div>
+        <form class="form" data-api="/api/admin/entreprises" data-ok="Entreprise créée.">
+          <div class="form-row">
+            <div class="field"><label for="e-nom">Nom</label><input id="e-nom" name="nom" type="text" maxlength="200" required></div>
+            <div class="field"><label for="e-courriel">Courriel de contact</label><input id="e-courriel" name="courriel" type="email" maxlength="200"></div>
+          </div>
+          <div class="actions"><button class="btn" type="submit">Créer</button></div>
+          <p class="status" data-status role="status"></p>
+        </form>
+      </section>
+
+      <% if (!data.entreprises.length) { %><p class="empty">Aucune entreprise. Créez-en une ci-dessus.</p><% } %>
+      <% data.entreprises.forEach(function (e) { %>
+      <section class="panel">
+        <div class="panel-head"><h2><%= e.nom %></h2><span class="tag"><%= e.courriel || '' %> · <%= e.membres.length %> membre(s)</span></div>
+        <% if (e.membres.length) { %>
+        <ul class="items">
+          <% e.membres.forEach(function (m) { %>
+          <li class="item">
+            <div class="item-head">
+              <span><%= m.email %> <span class="dim">· <%= m.role === 'proprietaire' ? 'Propriétaire' : 'Membre' %></span></span>
+              <form data-api="/api/admin/membres/<%= m.id %>" data-method="DELETE" data-confirm="Retirer ce membre de l'entreprise ?">
+                <button class="btn btn--danger btn--sm" type="submit">Retirer</button>
+                <span class="status" data-status role="status"></span>
+              </form>
+            </div>
+          </li>
+          <% }) %>
+        </ul>
+        <% } %>
+        <details class="reveal">
+          <summary class="btn btn--ghost btn--sm">Rattacher un compte</summary>
+          <form class="form" data-api="/api/admin/entreprises/<%= e.id %>/membres" data-ok="Compte rattaché.">
+            <div class="form-row">
+              <div class="field"><label for="m-<%= e.id %>">Courriel du compte (déjà inscrit)</label><input id="m-<%= e.id %>" name="email" type="email" required></div>
+              <div class="field"><label for="r-<%= e.id %>">Rôle</label>
+                <select id="r-<%= e.id %>" name="role"><option value="membre">Membre</option><option value="proprietaire">Propriétaire</option></select>
+              </div>
+            </div>
+            <div class="actions"><button class="btn" type="submit">Rattacher</button></div>
+            <p class="status" data-status role="status"></p>
+          </form>
+        </details>
+      </section>
+      <% }) %>
+    </div>
+    <% } %>
+
+    <% if (vue === 'clients') { %>
+    <section class="panel" aria-labelledby="clients-titre">
+      <div class="panel-head"><h2 id="clients-titre">Comptes inscrits</h2><span class="tag"><%= data.clients.length %> compte(s)</span></div>
+      <div class="table-wrap">
+        <table class="grid stack">
+          <thead><tr><th>Courriel</th><th>Nom d'utilisateur</th><th>Entreprise</th><th>Rôle</th></tr></thead>
+          <tbody>
+            <% data.clients.forEach(function (c) { %>
+            <tr>
+              <td data-label="Courriel"><%= c.email %></td>
+              <td data-label="Utilisateur"><%= c.username || '—' %></td>
+              <td data-label="Entreprise"><%= c.entreprise || '—' %></td>
+              <td data-label="Rôle"><%= c.isAdmin ? 'Admin' : 'Client' %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <% } %>
+
+    <% if (vue === 'paiements') { %>
+    <section class="panel panel--gold" aria-labelledby="paiements-titre">
+      <div class="panel-head"><h2 id="paiements-titre">Paiements et achats</h2><span class="tag">Encaissé <span class="money"><%= fmt.money(revenus) %></span></span></div>
+      <% if (!data.paiements.length) { %><p class="empty">Aucun paiement enregistré.</p><% } else { %>
+      <div class="table-wrap">
+        <table class="grid stack">
+          <thead><tr><th>Date</th><th>Client</th><th>Entreprise</th><th>Type</th><th>Objet</th><th>Statut</th><th>Session Stripe</th><th class="right">Montant</th></tr></thead>
+          <tbody>
+            <% data.paiements.forEach(function (p) { %>
+            <tr>
+              <td data-label="Date" class="num"><%= fmt.jour(p.date) %></td>
+              <td data-label="Client"><%= p.email || 'Anonyme' %></td>
+              <td data-label="Entreprise"><%= p.entreprise || '—' %></td>
+              <td data-label="Type"><%= p.type %></td>
+              <td data-label="Objet"><%= p.source %></td>
+              <td data-label="Statut"><span class="badge <%= p.statut === 'Payé' ? 'badge--paye' : '' %>"><%= p.statut %></span></td>
+              <td data-label="Réf." class="num dim">…<%= p.reference %></td>
+              <td data-label="Montant" class="right money"><%= fmt.money(p.montant, p.devise) %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </section>
+    <% } %>
+
+    <% if (vue === 'mandats') { %>
+    <div class="pl-stack">
+      <section class="panel" aria-labelledby="nouveau-mandat">
+        <details class="reveal">
+          <summary class="btn btn--gold btn--sm">Ouvrir un mandat pour un client</summary>
+          <form class="form" data-api="/api/admin/mandats" data-ok="Mandat créé.">
+            <div class="form-row">
+              <div class="field"><label for="nm-e">Entreprise</label>
+                <select id="nm-e" name="entreprise_id" required>
+                  <% data.entreprises.forEach(function (e) { %><option value="<%= e.id %>"><%= e.nom %></option><% }) %>
+                </select>
+              </div>
+              <div class="field"><label for="nm-t">Titre</label><input id="nm-t" name="titre" type="text" maxlength="200" required></div>
+            </div>
+            <div class="field"><label for="nm-d">Description</label><textarea id="nm-d" name="description" maxlength="5000"></textarea></div>
+            <div class="form-row">
+              <div class="field"><label for="nm-b">Budget ($ CA)</label><input id="nm-b" name="budget" type="number" min="0" step="100"></div>
+              <div class="field"><label for="nm-ech">Échéance</label><input id="nm-ech" name="echeance" type="date"></div>
+            </div>
+            <div class="actions"><button class="btn btn--gold" type="submit">Créer le mandat</button></div>
+            <p class="status" data-status role="status"></p>
+          </form>
+        </details>
+      </section>
+
+      <% if (!data.mandats.length) { %><p class="empty">Aucun mandat.</p><% } %>
+      <ul class="items">
+        <% data.mandats.forEach(function (m) { %>
+        <li class="item">
+          <div class="item-head"><h3><%= m.titre %></h3><span class="badge badge--<%= m.statut %>"><%= fmt.statut[m.statut] || m.statut %></span></div>
+          <div class="item-meta">
+            <%= m.entreprise %> · ouvert le <span class="num"><%= fmt.jour(m.created_at) %></span>
+            <% if (m.echeance) { %> · échéance <span class="num"><%= fmt.jour(m.echeance) %></span><% } %>
+            <% if (m.budget !== null && m.budget !== undefined) { %> · <span class="money"><%= fmt.money(Number(m.budget)) %></span><% } %>
+          </div>
+          <% if (m.description) { %><p><%= m.description %></p><% } %>
+          <%- include('partials/pilotage/steps', { m: m, etapes: etapes }) %>
+          <form class="form" data-api="/api/admin/mandats/<%= m.id %>" data-method="PATCH" data-ok="Mandat mis à jour.">
+            <div class="form-row">
+              <div class="field"><label for="et-<%= m.id %>">Étape</label>
+                <select id="et-<%= m.id %>" name="etape">
+                  <% etapes.forEach(function (nom, i) { %><option value="<%= i %>"<% if (i === Number(m.etape)) { %> selected<% } %>><%= i + 1 %>. <%= nom %></option><% }) %>
+                </select>
+              </div>
+              <div class="field"><label for="st-<%= m.id %>">Statut</label>
+                <select id="st-<%= m.id %>" name="statut">
+                  <% statuts.forEach(function (s) { %><option value="<%= s %>"<% if (s === m.statut) { %> selected<% } %>><%= fmt.statut[s] %></option><% }) %>
+                </select>
+              </div>
+            </div>
+            <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
+          </form>
+        </li>
+        <% }) %>
+      </ul>
+    </div>
+    <% } %>
+
+    <% if (vue === 'livrables') { %>
+    <div class="pl-stack">
+      <section class="panel" aria-labelledby="depot">
+        <div class="panel-head"><h2 id="depot">Déposer un livrable</h2><span class="tag">Le client le verra dans son espace</span></div>
+        <% if (!data.entreprises.length) { %><p class="empty">Créez d'abord une entreprise.</p><% } else { %>
+        <form class="form" data-api="/api/admin/livrables" data-ok="Livrable déposé.">
+          <div class="form-row">
+            <div class="field"><label for="l-e">Entreprise</label>
+              <select id="l-e" name="entreprise_id" required>
+                <% data.entreprises.forEach(function (e) { %><option value="<%= e.id %>"><%= e.nom %></option><% }) %>
+              </select>
+            </div>
+            <div class="field"><label for="l-m">Mandat (facultatif)</label>
+              <select id="l-m" name="mandat_id">
+                <option value="">Hors mandat</option>
+                <% data.mandats.forEach(function (m) { %><option value="<%= m.id %>"><%= m.entreprise %> — <%= m.titre %></option><% }) %>
+              </select>
+              <span class="hint">Le mandat doit appartenir à l'entreprise choisie.</span>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label for="l-t">Titre</label><input id="l-t" name="titre" type="text" maxlength="200" required></div>
+            <div class="field"><label for="l-p">Produit par (agent)</label><input id="l-p" name="produit_par" type="text" maxlength="120" placeholder="Ex. : Agent rédaction"></div>
+          </div>
+          <div class="field"><label for="l-u">Lien du livrable (https://)</label><input id="l-u" name="url" type="url" pattern="https://.*" placeholder="https://"></div>
+          <div class="field"><label for="l-d">Description</label><textarea id="l-d" name="description" maxlength="5000"></textarea></div>
+          <div class="actions"><button class="btn" type="submit">Déposer</button></div>
+          <p class="status" data-status role="status"></p>
+        </form>
+        <% } %>
+      </section>
+
+      <section class="panel" aria-labelledby="tous-livrables">
+        <div class="panel-head"><h2 id="tous-livrables">Tous les livrables</h2><span class="tag"><%= enAttente %> en attente</span></div>
+        <% if (!data.livrables.length) { %><p class="empty">Aucun livrable.</p><% } else { %>
+        <div class="table-wrap">
+          <table class="grid stack">
+            <thead><tr><th>Déposé</th><th>Entreprise</th><th>Titre</th><th>Mandat</th><th>Statut</th><th>Commentaire client</th></tr></thead>
+            <tbody>
+              <% data.livrables.forEach(function (l) { %>
+              <tr>
+                <td data-label="Déposé" class="num"><%= fmt.jour(l.created_at) %></td>
+                <td data-label="Entreprise"><%= l.entreprise %></td>
+                <td data-label="Titre"><% if (l.url && /^https:\/\//.test(l.url)) { %><a href="<%= l.url %>" target="_blank" rel="noopener noreferrer"><%= l.titre %></a><% } else { %><%= l.titre %><% } %></td>
+                <td data-label="Mandat"><%= l.mandat_id ? (titreMandat[l.mandat_id] || '—') : '—' %></td>
+                <td data-label="Statut"><span class="badge badge--<%= l.statut %>"><%= fmt.statut[l.statut] || l.statut %></span></td>
+                <td data-label="Commentaire"><%= l.commentaire_client || '—' %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+        <% } %>
+      </section>
+    </div>
+    <% } %>
+
+    <% if (vue === 'cms') { %>
+    <div class="pl-stack">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Textes et images du site</h2>
+          <span class="lang-switch" role="group" aria-label="Langue">
+            <a href="/admin/console?vue=cms&amp;langue=fr" aria-current="<%= langue === 'fr' %>">FR</a>
+            <a href="/admin/console?vue=cms&amp;langue=en" aria-current="<%= langue === 'en' %>">EN</a>
+          </span>
+        </div>
+        <p class="dim">Chaque zone affiche la valeur enregistrée ou, à défaut, le texte d'origine du site. « Rétablir » remet le texte d'origine. Les visiteurs voient la version <strong>FR</strong> par défaut, ou <strong>EN</strong> avec <span class="mono">?lang=en</span>.</p>
+        <% if (cmsError) { %><p class="status is-error"><%= cmsError %></p><% } %>
+      </section>
+
+      <% let section = null; %>
+      <% site.zones.forEach(function (z) { %>
+        <% if (z.section !== section) { %>
+          <% if (section !== null) { %></section><% } %>
+          <% section = z.section; %>
+          <section class="panel"><div class="panel-head"><h2><%= section %></h2></div>
+        <% } %>
+        <% const stored = z[langue]; const current = stored ? stored.value : z.fallbackText; %>
+        <div class="cms-zone">
+          <div class="item-head">
+            <h3><%= z.label %></h3>
+            <span class="cms-key"><%= z.key %> · <%= stored ? 'modifié le ' + fmt.jour(stored.updated_at) : "texte d'origine" %></span>
+          </div>
+          <form class="form" data-api="/api/admin/cms" data-method="PUT" data-ok="Enregistré : visible sur le site.">
+            <input type="hidden" name="key" value="<%= z.key %>">
+            <input type="hidden" name="lang" value="<%= langue %>">
+            <input type="hidden" name="type" value="<%= z.type %>">
+            <div class="field">
+              <label for="v-<%= z.key %>" class="sr-only"><%= z.label %></label>
+              <% if (z.type === 'json') { %>
+                <textarea class="code" id="v-<%= z.key %>" name="value" rows="7"><%= current %></textarea>
+                <span class="hint">Liste au format JSON : ["Point 1", "Point 2"]</span>
+              <% } else if (z.type === 'image') { %>
+                <% if (/^(https:\/\/|\/?assets\/)/.test(current)) { %><img class="cms-preview" src="<%= current.charAt(0) === 'h' || current.charAt(0) === '/' ? current : '/' + current %>" alt="Aperçu"><% } %>
+                <input id="v-<%= z.key %>" name="value" type="text" value="<%= current %>">
+                <span class="hint">Adresse https:// ou chemin assets/…, ou envoyez un fichier ci-dessous.</span>
+              <% } else { %>
+                <input id="v-<%= z.key %>" name="value" type="text" value="<%= current %>">
+              <% } %>
+            </div>
+            <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
+          </form>
+          <% if (z.type === 'image') { %>
+          <form class="form" data-api="/api/admin/cms/image" data-multipart data-ok="Image envoyée.">
+            <input type="hidden" name="key" value="<%= z.key %>">
+            <input type="hidden" name="lang" value="<%= langue %>">
+            <div class="field"><label for="f-<%= z.key %>">Nouvelle image (JPEG, PNG, WebP, GIF, AVIF · 5 Mo max)</label>
+              <input id="f-<%= z.key %>" name="image" type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" required></div>
+            <div class="actions"><button class="btn btn--ghost btn--sm" type="submit">Envoyer l'image</button><span class="status" data-status role="status"></span></div>
+          </form>
+          <% } %>
+          <% if (stored) { %>
+          <form data-api="/api/admin/cms" data-method="DELETE" data-confirm="Rétablir le texte d'origine ?">
+            <input type="hidden" name="key" value="<%= z.key %>">
+            <input type="hidden" name="lang" value="<%= langue %>">
+            <button class="btn btn--danger btn--sm" type="submit">Rétablir</button>
+            <span class="status" data-status role="status"></span>
+          </form>
+          <% } %>
+        </div>
+      <% }) %>
+      <% if (section !== null) { %></section><% } %>
+    </div>
+    <% } %>
+  </main>
+</div>
+</body>
+</html>

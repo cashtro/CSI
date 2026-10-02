@@ -1,0 +1,6 @@
+<ol class="steps" aria-label="Avancement : étape <%= Number(m.etape || 0) + 1 %> sur <%= etapes.length %>">
+  <% etapes.forEach(function (nom, i) { %>
+  <li class="<%= i < m.etape ? 'is-done' : (i === Number(m.etape) ? 'is-current' : '') %>"<% if (i === Number(m.etape)) { %> aria-current="step"<% } %>><%= nom %></li>
+  <% }) %>
+</ol>
+<p class="steps-label">Étape <span class="num"><%= Number(m.etape || 0) + 1 %>/<%= etapes.length %></span> · <%= etapes[m.etape] || '' %></p>

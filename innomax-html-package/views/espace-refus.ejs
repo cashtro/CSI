@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <%- include('partials/pilotage/head', { title: 'Accès refusé' }) %>
+</head>
+<body class="pl">
+  <main class="pl-main">
+    <%- include('partials/pilotage/brand', { sousTitre: 'Poste de pilotage' }) %>
+    <section class="panel pl-stack" aria-labelledby="refus-titre">
+      <h1 id="refus-titre">Accès refusé</h1>
+      <p><%= message %></p>
+      <div class="actions">
+        <a class="btn" href="/login">Se reconnecter</a>
+        <a class="btn btn--ghost" href="/">Retour au site</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

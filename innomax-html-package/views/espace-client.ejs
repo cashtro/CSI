@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <%- include('partials/pilotage/head', { title: 'Espace entreprise' }) %>
+</head>
+<%
+  const nav = [
+    ['apercu', 'Aperçu'],
+    ['mandats', 'Mandats'],
+    ['livrables', 'Livrables'],
+    ['achats', 'Achats et factures'],
+    ['nouveau', 'Nouveau mandat'],
+  ];
+  const t = data ? data.totaux : null;
+  const aApprouver = data ? data.livrables.filter(function (l) { return l.statut === 'en_attente'; }) : [];
+  const titreMandat = {};
+  if (data) data.mandats.forEach(function (m) { titreMandat[m.id] = m.titre; });
+%>
+<body class="pl">
+<div class="pl-shell">
+  <aside class="pl-side">
+    <%- include('partials/pilotage/brand', { sousTitre: 'Espace entreprise' }) %>
+    <% if (data) { %>
+    <nav class="pl-nav" aria-label="Sections">
+      <% nav.forEach(function (n) { %>
+      <a href="/espace?vue=<%= n[0] %>"<% if (vue === n[0]) { %> aria-current="page"<% } %>><%= n[1] %>
+        <% if (n[0] === 'livrables' && t.enAttente) { %><span class="count"><%= t.enAttente %></span><% } %>
+      </a>
+      <% }) %>
+    </nav>
+    <% } %>
+    <div class="pl-side-foot">
+      <p><%= email %></p>
+      <p><a href="/" >Retour au site</a> · <a href="/login" data-logout>Déconnexion</a></p>
+    </div>
+  </aside>
+
+  <main class="pl-main" id="contenu">
+  <% if (!data) { %>
+    <header class="pl-top">
+      <div><span class="kicker">Poste de pilotage</span><h1>Bienvenue</h1></div>
+    </header>
+    <section class="panel">
+      <h2>Compte pas encore rattaché</h2>
+      <p>Votre compte n'est relié à aucune entreprise pour l'instant. Dès que l'équipe Pandora l'aura rattaché, vous verrez ici vos mandats, vos livrables et vos factures.</p>
+      <div class="actions"><a class="btn" href="/contact">Nous écrire</a></div>
+    </section>
+  <% } else { %>
+    <header class="pl-top">
+      <div>
+        <span class="kicker">Poste de pilotage · entreprise</span>
+        <h1><%= data.entreprise ? data.entreprise.nom : 'Mon entreprise' %></h1>
+      </div>
+      <a class="btn btn--gold" href="/espace?vue=nouveau">Nouveau mandat</a>
+    </header>
+
+    <% if (vue === 'apercu') { %>
+    <div class="pl-stack">
+      <div class="kpis">
+        <div class="panel panel--gold kpi kpi--gold"><span class="label">Total payé</span><span class="value"><%= fmt.money(t.paye) %></span></div>
+        <div class="panel kpi"><span class="label">Mandats actifs</span><span class="value"><%= t.mandatsActifs %></span></div>
+        <div class="panel kpi"><span class="label">Livrables à approuver</span><span class="value"><%= t.enAttente %></span></div>
+        <div class="panel panel--gold kpi kpi--gold"><span class="label">Abonnements</span><span class="value"><%= t.abonnements %></span></div>
+      </div>
+
+      <div class="pl-cols">
+        <section class="panel" aria-labelledby="a-faire">
+          <div class="panel-head"><h2 id="a-faire">À approuver</h2><span class="tag"><%= aApprouver.length %> en attente</span></div>
+          <% if (!aApprouver.length) { %>
+            <p class="empty">Rien à approuver pour le moment.</p>
+          <% } else { %>
+            <ul class="items">
+              <% aApprouver.slice(0, 3).forEach(function (l) { %>
+              <li class="item">
+                <div class="item-head"><h3><%= l.titre %></h3><span class="badge badge--en_attente"><%= fmt.statut.en_attente %></span></div>
+                <div class="item-meta"><%= l.mandat_id && titreMandat[l.mandat_id] ? titreMandat[l.mandat_id] : 'Hors mandat' %> · <span class="num"><%= fmt.jour(l.created_at) %></span></div>
+              </li>
+              <% }) %>
+            </ul>
+            <p><a href="/espace?vue=livrables">Voir et décider →</a></p>
+          <% } %>
+        </section>
+
+        <section class="panel" aria-labelledby="en-cours">
+          <div class="panel-head"><h2 id="en-cours">Mandats en cours</h2></div>
+          <% const actifs = data.mandats.filter(function (m) { return m.statut === 'actif'; }); %>
+          <% if (!actifs.length) { %>
+            <p class="empty">Aucun mandat actif. <a href="/espace?vue=nouveau">Lancer un mandat</a></p>
+          <% } else { %>
+            <ul class="items">
+              <% actifs.slice(0, 3).forEach(function (m) { %>
+              <li class="item">
+                <div class="item-head"><h3><%= m.titre %></h3><span class="num dim"><%= etapes[m.etape] || '' %></span></div>
+                <%- include('partials/pilotage/steps', { m: m, etapes: etapes }) %>
+              </li>
+              <% }) %>
+            </ul>
+          <% } %>
+        </section>
+      </div>
+    </div>
+    <% } %>
+
+    <% if (vue === 'mandats') { %>
+    <section class="panel" aria-labelledby="mandats-titre">
+      <div class="panel-head"><h2 id="mandats-titre">Mandats et projets</h2><span class="tag"><%= data.mandats.length %> au total</span></div>
+      <% if (!data.mandats.length) { %>
+        <p class="empty">Aucun mandat pour l'instant. <a href="/espace?vue=nouveau">Créer le premier</a></p>
+      <% } else { %>
+        <ul class="items">
+          <% data.mandats.forEach(function (m) { %>
+          <li class="item">
+            <div class="item-head"><h3><%= m.titre %></h3><span class="badge badge--<%= m.statut %>"><%= fmt.statut[m.statut] || m.statut %></span></div>
+            <div class="item-meta">
+              Ouvert le <span class="num"><%= fmt.jour(m.created_at) %></span>
+              <% if (m.echeance) { %> · échéance <span class="num"><%= fmt.jour(m.echeance) %></span><% } %>
+              <% if (m.budget !== null && m.budget !== undefined) { %> · budget <span class="money"><%= fmt.money(Number(m.budget)) %></span><% } %>
+            </div>
+            <% if (m.description) { %><p><%= m.description %></p><% } %>
+            <%- include('partials/pilotage/steps', { m: m, etapes: etapes }) %>
+          </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </section>
+    <% } %>
+
+    <% if (vue === 'livrables') { %>
+    <section class="panel" aria-labelledby="livrables-titre">
+      <div class="panel-head"><h2 id="livrables-titre">Livrables</h2><span class="tag">Produits par nos agents</span></div>
+      <% if (!data.livrables.length) { %>
+        <p class="empty">Aucun livrable déposé pour l'instant.</p>
+      <% } else { %>
+        <ul class="items">
+          <% data.livrables.forEach(function (l) { %>
+          <li class="item">
+            <div class="item-head"><h3><%= l.titre %></h3><span class="badge badge--<%= l.statut %>"><%= fmt.statut[l.statut] || l.statut %></span></div>
+            <div class="item-meta">
+              <%= l.mandat_id && titreMandat[l.mandat_id] ? titreMandat[l.mandat_id] : 'Hors mandat' %>
+              <% if (l.produit_par) { %> · par <%= l.produit_par %><% } %>
+              · <span class="num"><%= fmt.jour(l.created_at) %></span>
+            </div>
+            <% if (l.description) { %><p><%= l.description %></p><% } %>
+            <% if (l.commentaire_client) { %><p class="dim">Votre commentaire : <%= l.commentaire_client %></p><% } %>
+            <div class="actions">
+              <% if (l.url && /^https:\/\//.test(l.url)) { %>
+                <a class="btn btn--ghost btn--sm" href="<%= l.url %>" target="_blank" rel="noopener noreferrer">Ouvrir le livrable</a>
+              <% } %>
+            </div>
+            <% if (l.statut === 'en_attente') { %>
+            <form class="form" data-api="/api/espace/livrables/<%= l.id %>/decision" data-ok="Décision enregistrée.">
+              <div class="field">
+                <label for="c-<%= l.id %>">Commentaire (obligatoire pour une modification)</label>
+                <textarea id="c-<%= l.id %>" name="commentaire" maxlength="2000"></textarea>
+              </div>
+              <div class="actions">
+                <button class="btn" type="submit" name="decision" value="approuve">Approuver</button>
+                <button class="btn btn--ghost" type="submit" name="decision" value="modification_demandee">Demander une modification</button>
+              </div>
+              <p class="status" data-status role="status"></p>
+            </form>
+            <% } %>
+          </li>
+          <% }) %>
+        </ul>
+      <% } %>
+    </section>
+    <% } %>
+
+    <% if (vue === 'achats') { %>
+    <section class="panel panel--gold" aria-labelledby="achats-titre">
+      <div class="panel-head"><h2 id="achats-titre">Achats, abonnements et factures</h2><span class="tag">Total payé <span class="money"><%= fmt.money(t.paye) %></span></span></div>
+      <% if (!data.achats.length) { %>
+        <p class="empty">Aucun paiement enregistré.</p>
+      <% } else { %>
+        <div class="table-wrap">
+          <table class="grid stack">
+            <thead><tr><th>Date</th><th>Type</th><th>Objet</th><th>Statut</th><th>Référence</th><th class="right">Montant</th></tr></thead>
+            <tbody>
+              <% data.achats.forEach(function (a) { %>
+              <tr>
+                <td data-label="Date" class="num"><%= fmt.jour(a.date) %></td>
+                <td data-label="Type"><%= a.type %></td>
+                <td data-label="Objet"><%= a.source %></td>
+                <td data-label="Statut"><span class="badge <%= a.statut === 'Payé' ? 'badge--paye' : '' %>"><%= a.statut %></span></td>
+                <td data-label="Référence" class="num dim"><%= a.facture || a.reference %></td>
+                <td data-label="Montant" class="right money"><%= fmt.money(a.montant, a.devise) %></td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </section>
+    <% } %>
+
+    <% if (vue === 'nouveau') { %>
+    <section class="panel" aria-labelledby="nouveau-titre">
+      <div class="panel-head"><h2 id="nouveau-titre">Nouveau mandat</h2><span class="tag">Transmis à l'équipe Pandora</span></div>
+      <form class="form" data-api="/api/espace/mandats" data-ok="Mandat envoyé. Merci !" data-next="/espace?vue=mandats">
+        <div class="field">
+          <label for="titre">Titre du projet</label>
+          <input id="titre" name="titre" type="text" maxlength="200" required placeholder="Ex. : Agent IA pour le service client">
+        </div>
+        <div class="field">
+          <label for="description">Ce dont vous avez besoin</label>
+          <textarea id="description" name="description" maxlength="5000" placeholder="Objectifs, contexte, outils déjà en place…"></textarea>
+        </div>
+        <div class="form-row">
+          <div class="field">
+            <label for="budget">Budget indicatif ($ CA)</label>
+            <input id="budget" name="budget" type="number" min="0" step="100" inputmode="decimal">
+          </div>
+          <div class="field">
+            <label for="echeance">Échéance souhaitée</label>
+            <input id="echeance" name="echeance" type="date">
+          </div>
+        </div>
+        <div class="actions"><button class="btn btn--gold" type="submit">Envoyer le mandat</button></div>
+        <p class="status" data-status role="status"></p>
+      </form>
+    </section>
+    <% } %>
+  <% } %>
+  </main>
+</div>
+</body>
+</html>
