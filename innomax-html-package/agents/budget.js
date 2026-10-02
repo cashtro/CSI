@@ -7,12 +7,19 @@
 // real usage to agent_usage (atomic upsert in SQL).
 //
 // Months follow Québec time (America/Toronto), like record_agent_usage().
-// Two workers checking at the same instant can overshoot by at most one call
-// each; the estimate is worst-case (full max_tokens), which covers that.
+// Calls that run in parallel (a Council runs up to 6 at once) each reserve
+// their worst-case estimate in this process before calling, and the check
+// counts those reservations: without that, six calls reading the same "spent"
+// at once could all pass and overshoot the cap six times over. Run a single
+// worker process: separate processes do not see each other's reservations.
 
 const logger = require('../routes(api)/utils/logger');
 
 const TZ = 'America/Toronto';
+
+// Worst-case cost of the calls in flight in this process (shared by every
+// budget object, since each job builds its own).
+let reserved = 0;
 
 class BudgetExceededError extends Error {
   constructor({ spent, budget, estimate }) {
@@ -48,8 +55,23 @@ function createBudget({ db, getSettings, now = () => new Date() }) {
 
   async function assertCanSpend(estimate = 0) {
     const s = await status();
-    if (s.spent + estimate > s.budget) throw new BudgetExceededError({ spent: s.spent, budget: s.budget, estimate });
+    if (s.spent + reserved + estimate > s.budget) throw new BudgetExceededError({ spent: s.spent + reserved, budget: s.budget, estimate });
     return s;
+  }
+
+  // Check AND reserve, with no await between the two, so parallel callers
+  // see each other. Returns a release() to call once the call is recorded.
+  async function reserve(estimate = 0) {
+    const s = await status();
+    const amount = Math.max(0, Number(estimate) || 0);
+    if (s.spent + reserved + amount > s.budget) throw new BudgetExceededError({ spent: s.spent + reserved, budget: s.budget, estimate: amount });
+    reserved += amount;
+    let released = false;
+    return () => {
+      if (released) return;
+      released = true;
+      reserved = Math.max(0, reserved - amount);
+    };
   }
 
   async function record({ model, tokensIn = 0, tokensOut = 0, costUsd = 0 }) {
@@ -61,7 +83,7 @@ function createBudget({ db, getSettings, now = () => new Date() }) {
     if (error) logger.error('[agents] usage not recorded:', error.message);
   }
 
-  return { monthSpend, status, assertCanSpend, record };
+  return { monthSpend, status, assertCanSpend, reserve, record };
 }
 
 // Wrap an LLM client so every call is checked against the budget, recorded,
@@ -71,16 +93,20 @@ function meteredLLM(llm, budget, totals = { costUsd: 0, tokensIn: 0, tokensOut: 
     totals,
     resolveModel: llm.resolveModel,
     async complete(req) {
-      await budget.assertCanSpend(llm.estimateCost(req));
-      const out = await llm.complete(req);
-      totals.costUsd += out.costUsd;
-      totals.tokensIn += out.usage.input_tokens;
-      totals.tokensOut += out.usage.output_tokens;
-      totals.calls += 1;
-      await budget.record({ model: out.model, tokensIn: out.usage.input_tokens, tokensOut: out.usage.output_tokens, costUsd: out.costUsd });
-      return out;
+      const release = await budget.reserve(llm.estimateCost(req));
+      try {
+        const out = await llm.complete(req);
+        totals.costUsd += out.costUsd;
+        totals.tokensIn += out.usage.input_tokens;
+        totals.tokensOut += out.usage.output_tokens;
+        totals.calls += 1;
+        await budget.record({ model: out.model, tokensIn: out.usage.input_tokens, tokensOut: out.usage.output_tokens, costUsd: out.costUsd });
+        return out;
+      } finally {
+        release();
+      }
     },
   };
 }
 
-module.exports = { createBudget, meteredLLM, monthStart, BudgetExceededError };
+module.exports = { createBudget, meteredLLM, monthStart, BudgetExceededError, _reserved: () => reserved };

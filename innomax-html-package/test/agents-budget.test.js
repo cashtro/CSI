@@ -1,6 +1,6 @@
 // agents/budget.js: monthly cap refuses work that would exceed it, records usage.
 require('./helpers/quiet');
-const { createBudget, meteredLLM, monthStart, BudgetExceededError } = require('../agents/budget');
+const { createBudget, meteredLLM, monthStart, BudgetExceededError, _reserved } = require('../agents/budget');
 const { createMockDb, sqlLikeHandlers } = require('./helpers/mock-supabase');
 
 const now = () => new Date('2026-10-15T12:00:00Z');
@@ -53,5 +53,33 @@ describe('agents/budget', () => {
     const llm = { estimateCost: () => 0.01, complete: jest.fn() };
     await expect(meteredLLM(llm, budget).complete({})).rejects.toBeInstanceOf(BudgetExceededError);
     expect(llm.complete).not.toHaveBeenCalled();
+  });
+
+  it('parallel calls cannot overshoot the cap together (reservations)', async () => {
+    // 59 spent of 60: room for exactly two calls estimated at 0.5.
+    const { budget } = setup([{ day: '2026-10-02', model: 'm', cost_usd: 59 }]);
+    let resolveCalls;
+    const gate = new Promise((r) => { resolveCalls = r; });
+    const llm = {
+      estimateCost: () => 0.5,
+      complete: jest.fn(async () => { await gate; return { text: 'x', model: 'm', costUsd: 0.5, usage: { input_tokens: 1, output_tokens: 1 } }; }),
+    };
+    const m = meteredLLM(llm, budget);
+    const runs = Array.from({ length: 6 }, () => m.complete({}).then(() => 'ok', (e) => e));
+    await new Promise((r) => setTimeout(r, 10));
+    resolveCalls();
+    const results = await Promise.all(runs);
+    expect(llm.complete).toHaveBeenCalledTimes(2);
+    expect(results.filter((r) => r === 'ok')).toHaveLength(2);
+    expect(results.filter((r) => r instanceof BudgetExceededError)).toHaveLength(4);
+    expect(_reserved()).toBe(0);
+  });
+
+  it('a failed call releases its reservation', async () => {
+    const { budget } = setup([], 1);
+    const llm = { estimateCost: () => 0.9, complete: jest.fn(async () => { throw new Error('boom'); }) };
+    await expect(meteredLLM(llm, budget).complete({})).rejects.toThrow('boom');
+    expect(_reserved()).toBe(0);
+    await expect(budget.assertCanSpend(0.9)).resolves.toBeTruthy();
   });
 });
