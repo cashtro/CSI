@@ -21,6 +21,13 @@ const helmet = require('helmet');
 
 const app = express();
 app.disable("x-powered-by");
+// Real client IP behind the reverse proxy (rate limits, logs). See utils/trustProxy.
+{
+  const { parseTrustProxy } = require('./routes(api)/utils/trustProxy');
+  const trust = parseTrustProxy(process.env.TRUST_PROXY);
+  if (trust !== false) app.set('trust proxy', trust);
+  else if (process.env.TRUST_PROXY === 'true') logger.warn('[config] TRUST_PROXY=true refused (spoofable); use the number of proxies, e.g. 1.');
+}
 const PORT = process.env.PORT || 3000; //le env à revoir pour le deploiement
 // Pages that render API data call this server over loopback. The Host header
 // is client-controlled, so building the URL from it allowed SSRF and let a
