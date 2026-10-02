@@ -566,7 +566,8 @@
                       code,
                       tempSessionId: check2FAData.tempSessionId,
                       isSetup: true,
-                      secret: check2FAData.secret
+                      secret: check2FAData.secret,
+                      setupToken: check2FAData.setupToken
                     })
                   });
 
@@ -654,16 +655,19 @@
                       'Content-Type': 'application/json',
                     },
                     body: JSON.stringify({
-                      tempSessionId: check2FAData.tempSessionId
+                      tempSessionId: check2FAData.tempSessionId,
+                      // Replacing an active authenticator needs its current code.
+                      code: Array.from(codeInputs).map(input => input.value).join('')
                     })
                   });
 
                   if (!regenerateResponse.ok) {
-                    throw new Error('Failed to regenerate QR code');
+                    const failure = await regenerateResponse.json().catch(() => ({}));
+                    throw new Error(failure.message || 'Failed to regenerate QR code');
                   }
 
-                  const { qrCode, secret } = await regenerateResponse.json();
-                  
+                  const { qrCode, secret, setupToken } = await regenerateResponse.json();
+
                   // Hide verification modal and show setup modal with new QR code
                   modal.style.display = 'none';
                   const setupModal = document.getElementById('qrCodeModal');
@@ -675,7 +679,34 @@
                   manualCode.textContent = secret;
                   setupCodeInputs.forEach(input => input.value = '');
                   setupCodeInputs[0].focus();
-                  
+
+                  // Confirm the new authenticator with a code from it.
+                  const setupError = setupModal.querySelector('.error-message');
+                  setupModal.querySelector('.btn-qr-verify').onclick = async () => {
+                    const setupCode = Array.from(setupCodeInputs).map(input => input.value).join('');
+                    try {
+                      const verifyResponse = await fetch('/api/auth/verify-2fa', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                          code: setupCode,
+                          tempSessionId: check2FAData.tempSessionId,
+                          isSetup: true,
+                          secret,
+                          setupToken
+                        })
+                      });
+                      if (!verifyResponse.ok) {
+                        const failure = await verifyResponse.json().catch(() => ({}));
+                        throw new Error(failure.error || 'Verification failed');
+                      }
+                      window.location.href = '/';
+                    } catch (error) {
+                      setupError.textContent = error.message;
+                      setupError.style.display = 'block';
+                    }
+                  };
+
                   setupModal.style.display = 'block';
                 } catch (error) {
                   errorMessage.textContent = error.message;
@@ -740,8 +771,8 @@
                   throw new Error(error.message || 'Failed to link accounts');
                 }
 
-                // If successful, redirect to home
-                window.location.href = '/';
+                // Linked: run the sign-in again so it goes through check-2fa.
+                window.location.reload();
               } catch (error) {
                 errorMessage.textContent = error.message;
                 errorMessage.style.display = 'block';
@@ -773,8 +804,8 @@
             throw new Error('Failed to insert user data');
           }
 
-          const createData = await createResponse.json();
-          // window.location.href = '/';
+          // Created: run the sign-in again so it goes through check-2fa.
+          window.location.reload();
         } catch (error) {
           console.error('Error:', error);
           await supabase.auth.signOut();
