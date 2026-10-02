@@ -12,6 +12,7 @@
 // rendez_vous / bills itself.
 
 const { createSupabaseAdmin } = require('./supabaseUtil');
+const logger = require('./logger');
 const { claimFulfillment, releaseFulfillment } = require('./fulfillment');
 const { slotWasClaimed, sumEntryCounts } = require('./booking');
 const { sendEmail } = require('./emailService');
@@ -44,7 +45,7 @@ async function orUndo(step, undo) {
     try {
       await undo();
     } catch (undoErr) {
-      console.error('[fulfill] undo failed:', undoErr.message);
+      logger.error('[fulfill] undo failed:', undoErr.message);
     }
     throw err;
   }
@@ -61,7 +62,7 @@ async function grantRendezVous(admin, session) {
     .select('id');
   if (claimError) throw claimError;
   if (!slotWasClaimed(claimed)) {
-    console.error(`[fulfill] slot ${dispoId} already booked; payment ${session.payment_intent} needs a refund.`);
+    logger.error(`[fulfill] slot ${dispoId} already booked; payment ${session.payment_intent} needs a refund.`);
     return { status: 'slot_taken' };
   }
   const freeSlot = () => admin.from('disponibilites').update({ taken: false }).eq('id', dispoId);
@@ -124,7 +125,7 @@ async function grantLotteryEntry(admin, session) {
     .single();
   if (!lottery) throw new Error('lottery not found');
   if (!lottery.isActive || new Date(lottery.lotteryTime) <= new Date()) {
-    console.error(`[fulfill] lottery ${lotteryId} closed; payment ${session.payment_intent} needs a refund.`);
+    logger.error(`[fulfill] lottery ${lotteryId} closed; payment ${session.payment_intent} needs a refund.`);
     return { status: 'lottery_closed' };
   }
 

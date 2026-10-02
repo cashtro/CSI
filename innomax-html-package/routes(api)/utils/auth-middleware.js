@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const logger = require('./logger');
 const rateLimit = require('express-rate-limit');
 const { createSupabaseClient } = require('./supabaseUtil');
 const { cookieSecure } = require('./cookies');
@@ -56,7 +57,7 @@ const authenticateUser = async (req, res, next) => {
     req.accessToken = token;
     next();
   } catch (err) {
-    console.error("Authentication error:", err);
+    logger.error("Authentication error:", err);
     res.status(401).json({ error: 'Authentication failed' });
   }
 };
@@ -126,7 +127,7 @@ async function getValidUser(req, res) {
 
     return { user, token };
   } catch (error) {
-    console.error('User validation error:', error);
+    logger.error('User validation error:', error);
     return { user: null, token: null };
   }
 }
@@ -152,7 +153,7 @@ const checkAdmin = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    console.error("Erreur checkAdmin:", err);
+    logger.error("Erreur checkAdmin:", err);
     res.status(500).json({ error: "Erreur serveur lors de la vérification de l'administrateur" });
   }
 };

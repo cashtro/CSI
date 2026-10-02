@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('./logger');
 const { sendLotteryWinnerEmail, sendLotteryOwnerEmail } = require('./emailService');
 const { createSupabaseAdmin } = require('./supabaseUtil');
 
@@ -26,7 +27,7 @@ async function performLotteryDraw() {
 
         if (lockError) {
             // If there's an error while locking the lottery, log it and exit
-            console.error('[Lock Error]', lockError.message);
+            logger.error('[Lock Error]', lockError.message);
             return;
         }
 
@@ -58,7 +59,7 @@ async function performLotteryDraw() {
 
         if (entriesError || !entries || entries.length === 0) {
             // If there was an error or no entries, log the error and reset the isProcessing flag and add more time to the lottery
-            console.error('[Entries Error]', entriesError?.message);
+            logger.error('[Entries Error]', entriesError?.message);
             // Reset isProcessing to false to unlock the lottery
             await supabaseAdmin
                 .from('Lottery')
@@ -97,7 +98,7 @@ async function performLotteryDraw() {
             .single();
 
         if (winnerError) {
-            console.error('Error fetching winner details:', winnerError);
+            logger.error('Error fetching winner details:', winnerError);
             await supabaseAdmin
                 .from('Lottery')
                 .update({ isProcessing: false })
@@ -118,7 +119,7 @@ async function performLotteryDraw() {
 
         if (updateError) {
             // If there's an error while updating the lottery, log it and exit
-            console.error('Error updating lottery:', updateError.message);
+            logger.error('Error updating lottery:', updateError.message);
             return;
         }
 
@@ -139,13 +140,13 @@ async function performLotteryDraw() {
                 ownerEmail: process.env.EMAIL_USER,
             });
         } catch (emailError) {
-            console.error('Error sending email notifications:', emailError);
+            logger.error('Error sending email notifications:', emailError);
             // We don't return here because the lottery was already updated successfully
         }
 
     } catch (err) {
         // If any error occurs during the process, log it
-        console.error('Error during lottery draw:', err.message);
+        logger.error('Error during lottery draw:', err.message);
     }
 }
 

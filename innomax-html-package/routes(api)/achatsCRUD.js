@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
 const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
@@ -20,8 +21,8 @@ function sanitizeFileName(filename) {
 }
 
 router.post('/', checkAdmin, upload.single('imageProduit'), async (req, res) => {
-    console.log('BODY:', req.body);
-    console.log('FILE:', req.file);
+    // Never log raw bodies or files: they carry personal data.
+    logger.debug('Create product request', logger.redact(req.body), { file: req.file?.originalname || null });
 
     const { nomProduit, price, shortDescription } = req.body;
     const imageFile = req.file;
@@ -45,7 +46,7 @@ router.post('/', checkAdmin, upload.single('imageProduit'), async (req, res) => 
                 upsert: false
             });
         if (uploadError) {
-            console.error("Supabase upload error:", uploadError); // log for debug
+            logger.error("Supabase upload error:", uploadError); // log for debug
             return res.status(500).json({ error: 'Image upload failed.' });
         }
         const { data: { publicUrl } } = supabase
@@ -84,11 +85,11 @@ router.get('/', async (req, res) => {
             .range(from, to);
 
         if (error) {
-            console.error('Supabase error:', error);
+            logger.error('Supabase error:', error);
             throw error;
         }
         
-        console.log('Raw achats data:', data); // Debug log
+        logger.debug('achats rows:', Array.isArray(data) ? data.length : 0); // Debug log
         
         res.json(
             (data || []).map(item => ({
@@ -101,7 +102,7 @@ router.get('/', async (req, res) => {
             }))
         );
     } catch (err) {
-        console.error('Route error:', err);
+        logger.error('Route error:', err);
         res.status(500).json({ error: err.message });
     }
 });
@@ -115,7 +116,7 @@ router.delete('/:id', checkAdmin, async (req, res) => {
             .delete()
             .eq('id_item', id);
         if (error) {
-            console.error('Supabase delete error:', error);
+            logger.error('Supabase delete error:', error);
             return res.status(500).json({ error: error.message });
         }
         res.json({ success: true });
@@ -147,7 +148,7 @@ router.put('/:id', checkAdmin, upload.single('imageProduit'), async (req, res) =
                 upsert: false
             });
         if (uploadError) {
-            console.error("Supabase upload error:", uploadError);
+            logger.error("Supabase upload error:", uploadError);
             return res.status(500).json({ error: 'Image upload failed.' });
         }
         const { data: { publicUrl } } = supabase
@@ -165,7 +166,7 @@ router.put('/:id', checkAdmin, upload.single('imageProduit'), async (req, res) =
             .select()
             .single();
         if (error) {
-            console.error('Supabase update error:', error);
+            logger.error('Supabase update error:', error);
             return res.status(500).json({ error: error.message });
         }
         res.json(data);
@@ -238,7 +239,7 @@ router.post('/purchase', async (req, res) => {
         res.json({ id: session.id });
 
     } catch (error) {
-        console.error('Error in achats purchase:', error);
+        logger.error('Error in achats purchase:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -318,7 +319,7 @@ router.get('/verify-purchase', async (req, res) => {
         res.redirect(`${process.env.APP_URL}/achats?success=purchase_completed`);
         
     } catch (error) {
-        console.error('Error in verify achats purchase:', error);
+        logger.error('Error in verify achats purchase:', error);
         res.redirect(`${process.env.APP_URL}/achats?error=verification_failed`);
     }
 });

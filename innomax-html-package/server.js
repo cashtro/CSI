@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./routes(api)/utils/logger');
 // Route handlers are async; without this a rejected promise skips Express's
 // error handling and an unhandled rejection takes the whole process down.
 require('express-async-errors');
@@ -179,7 +180,7 @@ app.get('/', async (req, res) => {
       lotteries: lotteries || []
     });
   } catch (error) {
-    console.error('Error fetching data:', error);
+    logger.error('Error fetching data:', error);
     res.render('home4', {
       currentPage: '/',
       courses: [],
@@ -224,7 +225,7 @@ app.get('/education', async (req, res) => {
       stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     });
   } catch (error) {
-    console.error('Error fetching courses:', error);
+    logger.error('Error fetching courses:', error);
     res.render('education', { 
       currentPage: '/education',
       courses: [],
@@ -331,7 +332,7 @@ app.get('/luckydraw', async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.render('lottery', { lotteries: [], currentPage: '/luckydraw' });
   }
 });
@@ -448,7 +449,7 @@ app.get('/Purchase-Lottery-Tickets', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erreur:', error.message);
+    logger.error('Erreur:', error.message);
     return res.status(500).json({
       success: false,
       error: 'Internal server error'
@@ -578,21 +579,21 @@ app.use('/api',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 //     switch (event.type) {
 //       case 'payment_intent.succeeded':
 //         const paymentIntent = event.data.object;
-//         console.log('PaymentIntent réussi:', paymentIntent.id);
+//         logger.info('PaymentIntent réussi:', paymentIntent.id);
 //         // Logique pour traiter un paiement réussi
 //         break;
 //       case 'payment_intent.payment_failed':
 //         const failedPaymentIntent = event.data.object;
-//         console.log('Échec de PaymentIntent:', failedPaymentIntent.id);
+//         logger.info('Échec de PaymentIntent:', failedPaymentIntent.id);
 //         // Logique pour traiter un échec de paiement
 //         break;
 //       default:
-//         console.log(`Type d'événement non géré: ${event.type}`);
+//         logger.info(`Type d'événement non géré: ${event.type}`);
 //     }
 
 //     res.status(200).json({ received: true });
 //   } catch (error) {
-//     console.error('Erreur lors du traitement du webhook:', error);
+//     logger.error('Erreur lors du traitement du webhook:', error);
 //     res.status(400).send(`Webhook Error: ${error.message}`);
 //   }
 // });
@@ -605,7 +606,7 @@ app.get('*', (req, res) => {
 // Last-resort error handler: log server-side, never send stack traces.
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
-  console.error(`[error] ${req.method} ${req.originalUrl}:`, err);
+  logger.error(`[error] ${req.method} ${req.originalUrl}:`, err);
   if (res.headersSent) return;
   const status = err.status || err.statusCode || 500;
   if (req.originalUrl.startsWith('/api/')) return res.status(status).json({ error: status >= 500 ? 'Internal server error' : err.message });
@@ -614,12 +615,12 @@ app.use((err, req, res, next) => {
 
 // Background work (lottery draws, timers) must not kill the web process either.
 process.on('unhandledRejection', (reason) => {
-  console.error('[unhandledRejection]', reason);
+  logger.error('[unhandledRejection]', reason);
 });
 
 // Démarrer le serveur sec change to ,'0.0.0.0'
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
+  logger.info(`Serveur démarré sur http://localhost:${PORT}`);
 });
 
 //----------------------------------------------------------------------------
@@ -634,7 +635,7 @@ setInterval(async () => {
   try {
     await performLotteryDraw();
   } catch (err) {
-    console.error("Draw error:", err.message);
+    logger.error("Draw error:", err.message);
   } finally {
     isDrawing = false;
   }

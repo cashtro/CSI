@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
 const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
@@ -140,7 +141,7 @@ router.post('/lotteryData',checkAdmin, upload.single('imageProduit'), async (req
                 });
 
             if (uploadError) {
-                console.error('Erreur d\'upload:', uploadError);
+                logger.error('Erreur d\'upload:', uploadError);
                 // Suppression de l'entrée loterie si l'upload échoue
                 await supabase.from('Lottery').delete().eq('lotteryId', lotteryId);
                 return res.status(500).json({ error: 'Échec de l\'upload de l\'image' });
@@ -170,7 +171,7 @@ router.post('/lotteryData',checkAdmin, upload.single('imageProduit'), async (req
         return res.status(201).json(finalData);
 
     } catch (err) {
-        console.error('Erreur:', err);
+        logger.error('Erreur:', err);
         return res.status(500).json({ 
             error: 'Erreur interne du serveur',
             details: process.env.NODE_ENV === 'development' ? err.message : null
@@ -206,7 +207,7 @@ router.get('/lotteryData', async (req, res) => {
         return res.status(200).json(data);
 
     } catch (err) {
-        console.error('Erreur:', err);
+        logger.error('Erreur:', err);
         return res.status(500).json({ 
             error: 'Erreur lors de la récupération des données' 
         });
@@ -227,7 +228,7 @@ router.get('/lotteryDataluckydraw', async (req, res) => {
         return res.status(200).json(data);
 
     } catch (err) { 
-        console.error('Erreur:', err);
+        logger.error('Erreur:', err);
         return res.status(500).json({ 
             error: 'Erreur lors de la récupération des données' 
         });
@@ -250,7 +251,7 @@ router.get('/achats', async (req, res) => {
         // ...autres variables nécessaires
       });
     } catch (error) {
-      console.error('Erreur lors de la récupération des loteries', error);
+      logger.error('Erreur lors de la récupération des loteries', error);
       res.render('achats', { 
         lotteries: [], // Valeur par défaut en cas d'erreur
         // ...autres variables nécessaires
@@ -270,7 +271,7 @@ router.get('/lotteryUserData', async (req, res) => {
             try {
                 const { data: { user }, error: authError } = await supabase.auth.getUser(token);
                 if (authError) {
-                    console.error('Erreur d\'authentification:', authError);
+                    logger.error('Erreur d\'authentification:', authError);
                     // Continue without authentication if token is invalid
                 } else if (user) {
                     userId = user.id;
@@ -281,7 +282,7 @@ router.get('/lotteryUserData', async (req, res) => {
                         .select('lotteryId, entryCount')
                         .eq('userId', userId);
                     if (entriesError) {
-                        console.error('Erreur lors de la récupération des entrées:', entriesError);
+                        logger.error('Erreur lors de la récupération des entrées:', entriesError);
                     }
                     if (!entriesError && entries) {
                         userEntriesMap = {};
@@ -291,7 +292,7 @@ router.get('/lotteryUserData', async (req, res) => {
                       }
                 }
             } catch (error) {
-                console.error('Erreur lors de la vérification du token:', error);
+                logger.error('Erreur lors de la vérification du token:', error);
                 // Continue without authentication if there's any error
             }
         }
@@ -305,7 +306,7 @@ router.get('/lotteryUserData', async (req, res) => {
             .order(lotterySort(sort), { ascending: order === 'asc' });
 
         if (lotteryError) {
-            console.error('Erreur lors de la récupération des lotteries:', lotteryError);
+            logger.error('Erreur lors de la récupération des lotteries:', lotteryError);
             throw lotteryError;
         }
 
@@ -322,7 +323,7 @@ router.get('/lotteryUserData', async (req, res) => {
         return res.status(200).json(enhancedLotteries);
 
     } catch (err) {
-        console.error('Erreur:', err);
+        logger.error('Erreur:', err);
         return res.status(500).json({ 
             error: 'Erreur lors de la récupération des données',
             details: process.env.NODE_ENV === 'development' ? err.message : null
@@ -366,7 +367,7 @@ router.get('/lotteryData/:id', async (req, res) => {
                     error: "Lottery introuvable" 
                 });
             }
-           console.error(`Erreur Supabase: ${error.message}`);
+           logger.error(`Erreur Supabase: ${error.message}`);
         }
 
         // 4. Vérification supplémentaire des données
@@ -384,7 +385,7 @@ router.get('/lotteryData/:id', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Erreur serveur:', err);
+        logger.error('Erreur serveur:', err);
         return res.status(500).json({ 
             success: false,
             error: 'Erreur interne du serveur',
@@ -492,7 +493,7 @@ router.put('/lotteryData/:id',checkAdmin, upload.single('imageProduit'), async (
         return res.status(200).json(updatedData);
 
     } catch (err) {
-        console.error('Erreur:', err);
+        logger.error('Erreur:', err);
         return res.status(500).json({ 
             error: 'Erreur de mise à jour,',
             msg: err,
@@ -533,7 +534,7 @@ router.get('/lotteryCanvasData/:id', authenticateUser, async (req, res) => {
             .limit(1000); // Add a reasonable limit
 
         if (error) {
-            console.error('Erreur Supabase:', error);
+            logger.error('Erreur Supabase:', error);
             return res.status(500).json({ 
                 success: false,
                 error: "Erreur de base de données" 
@@ -547,7 +548,7 @@ router.get('/lotteryCanvasData/:id', authenticateUser, async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Erreur serveur:', err);
+        logger.error('Erreur serveur:', err);
         return res.status(500).json({ 
             success: false,
             error: 'Erreur interne'
@@ -592,7 +593,7 @@ router.get('/lotteryGagnant/:id', async (req, res) => {
         });
 
     } catch (error) {
-        console.error(`[ERROR] Tirage ${lotteryId}:`, error.message);
+        logger.error(`[ERROR] Tirage ${lotteryId}:`, error.message);
         res.status(500).json({ 
             error: "Échec du tirage",
             details: process.env.NODE_ENV === 'development' ? error.message : undefined

@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const logger = require('./logger');
 const { createClient } = require('@supabase/supabase-js');
 
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -87,7 +88,7 @@ const createRendezvous = async (req, res, next) => {
     if (!FULFILLED.includes(result.status)) return res.status(402).json({ message: 'Payment not completed' });
     next();
   } catch (error) {
-    console.error('[rdv verify]', error);
+    logger.error('[rdv verify]', error);
     res.status(500).json({ message: 'Unable to confirm the booking' });
   }
 };
@@ -144,7 +145,7 @@ const handleCoursePayment = async (req, res, next) => {
     req.stripeSession = session;
     res.json({ id: session.id })
   } catch (error) {
-    console.error(error)
+    logger.error(error)
     res.status(400).json({ message: error.message });
   }
 };
@@ -155,7 +156,7 @@ const enrollStudent = async (req, res, next) => {
     if (!FULFILLED.includes(result.status)) return res.status(402).json({ message: 'Payment not completed' });
     next();
   } catch (error) {
-    console.error('[course verify]', error);
+    logger.error('[course verify]', error);
     res.status(500).json({ message: 'Unable to confirm the enrollment' });
   }
 };
@@ -230,7 +231,7 @@ const confirmSubscription = async (req, res, next) => {
     if (!FULFILLED.includes(result.status)) return res.status(402).json({ message: 'Initial subscription payment failed' });
     next();
   } catch (error) {
-    console.error('[subscription verify]', error);
+    logger.error('[subscription verify]', error);
     res.status(500).json({ message: 'Unable to confirm the subscription' });
   }
 };
@@ -303,7 +304,7 @@ const handleLotteryPayment = async (req, res) => {
     res.json({ id: session.id });
 
   } catch (error) {
-    console.error('Error in handleLotteryPayment:', error);
+    logger.error('Error in handleLotteryPayment:', error);
     res.status(400).json({
       success: false,
       error: error.message
@@ -321,7 +322,7 @@ const verifyStripePayment = async (req, res) => {
     if (result.status === 'lottery_closed') return back('error=lottery_closed');
     return back('error=payment_failed');
   } catch (error) {
-    console.error('Verification error:', error);
+    logger.error('Verification error:', error);
     return back('error=verification_error');
   }
 };
@@ -403,7 +404,7 @@ const handleProductPurchase = async (req, res) => {
     res.json({ id: session.id });
 
   } catch (error) {
-    console.error('Error in handleProductPurchase:', error);
+    logger.error('Error in handleProductPurchase:', error);
     res.status(400).json({ success: false, error: error.message });
   }
 };
@@ -418,7 +419,7 @@ const verifyProductPurchase = async (req, res) => {
     }
     return back('error=payment_failed');
   } catch (error) {
-    console.error('Verification error:', error);
+    logger.error('Verification error:', error);
     return back('error=verification_error');
   }
 };

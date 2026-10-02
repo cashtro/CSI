@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
@@ -97,7 +98,7 @@ router.get('/validateToken', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Token validation error:', err);
+        logger.error('Token validation error:', err);
         // Send JSON error (don't mix res.json() and res.redirect())
         res.status(401).json({ 
             success: false, 
@@ -188,7 +189,7 @@ router.post('/register', authLimiter, registrationValidation, async (req, res) =
             }]);
 
         if (insertError) {
-            console.error('Database Insert Error:', insertError);
+            logger.error('Database Insert Error:', insertError);
             // Needs the service client; the anon client can never delete users.
             await supabaseAdmin.auth.admin.deleteUser(data.user.id);
             throw insertError;
@@ -199,7 +200,7 @@ router.post('/register', authLimiter, registrationValidation, async (req, res) =
         });
 
     } catch (error) {
-        console.error('Registration Error:', error);
+        logger.error('Registration Error:', error);
         res.status(500).json({
             message: "Server error during registration",
             details: error.message
@@ -213,14 +214,14 @@ router.post('/logout', authenticateUser, async (req, res) => {
         // Revoke this session's refresh token. The stateless anon client holds
         // no session, so its signOut() was a no-op that left the token valid.
         const { error: logoutError } = await supabaseAdmin.auth.admin.signOut(req.accessToken, 'local');
-        if (logoutError) console.warn('Logout revoke failed:', logoutError.message);
+        if (logoutError) logger.warn('Logout revoke failed:', logoutError.message);
 
         // Clear cookies with the same attributes they were set with.
         clearAuthCookies(res);
 
         return res.status(200).json({ message: "Déconnexion réussie !" });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return res.status(500).json({ message: "Erreur lors de la déconnexion" });
     }
 });
@@ -253,7 +254,7 @@ router.post('/login', authLimiter, loginValidation, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Login error:', error);
+        logger.error('Login error:', error);
         return res.status(401).json({
             message: "Échec de l'authentification",
             error: error.message
@@ -277,7 +278,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
 
         const session = await getAndValidateSession(tempSessionId, req);
         if (!session) {
-            console.error('Invalid session in verify-2fa');
+            logger.error('Invalid session in verify-2fa');
             return res.status(401).json({ error: 'Invalid or expired session' });
         }
 
@@ -335,7 +336,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         });
 
         if (!isValid) {
-            console.warn(`Invalid 2FA code attempt for user ${user.email}`);
+            logger.warn(`Invalid 2FA code attempt for user ${user.userId}`);
             return res.status(401).json({ error: 'Invalid 2FA code' });
         }
 
@@ -352,7 +353,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
                 });
 
             if (updateError) {
-                console.error("2FA setup error:", updateError);
+                logger.error("2FA setup error:", updateError);
                 throw updateError;
             }
         }
@@ -367,7 +368,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("2FA Verification Error:", error);
+        logger.error("2FA Verification Error:", error);
         return res.status(500).json({
             error: error.message || "Server error during 2FA verification"
         });
@@ -416,7 +417,7 @@ router.post('/toggle-2fa', authenticateUser, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Toggle 2FA Error:", error.message);
+        logger.error("Toggle 2FA Error:", error.message);
         return res.status(500).json({ message: "Erreur lors de la modification du 2FA" });
     }
 });
@@ -476,7 +477,7 @@ router.post('/UserProvider', async (req, res) => {
         res.status(201).json({ message: 'User created', requires2FACheck: true });
 
     } catch (err) {
-        console.error('Insert User Error:', err);
+        logger.error('Insert User Error:', err);
         res.status(500).json({ message: 'Error processing user', error: err.message });
     }
 });
@@ -509,7 +510,7 @@ router.get('/user/:userId', authenticateUser, async (req, res) => {
         if (error) throw error;
         res.json(data);
     } catch (error) {
-        console.error('Error fetching user:', error.message);
+        logger.error('Error fetching user:', error.message);
         res.status(500).json({ error: 'Unable to fetch user' });
     }
 });
@@ -549,7 +550,7 @@ router.post('/regenerate-2fa', twoFaLimiter, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Regenerate 2FA error:', error);
+        logger.error('Regenerate 2FA error:', error);
         return res.status(500).json({ message: "Erreur lors de la régénération du 2FA" });
     }
 });
@@ -571,7 +572,7 @@ router.post('/check-email', async (req, res) => {
         
         res.json({ exists: !!data });
     } catch (error) {
-        console.error('Error checking email:', error);
+        logger.error('Error checking email:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -619,7 +620,7 @@ router.post('/link-account', async (req, res) => {
         // No cookies here: the client signs in again through check-2fa.
         res.json({ success: true, message: 'Accounts linked successfully', requires2FACheck: true });
     } catch (error) {
-        console.error('Error linking accounts:', error.message);
+        logger.error('Error linking accounts:', error.message);
         res.status(500).json({ error: 'Unable to link accounts' });
     }
 });
@@ -644,7 +645,7 @@ router.post('/check-linked', async (req, res) => {
         
         res.json({ isLinked });
     } catch (error) {
-        console.error('Error checking linked account:', error);
+        logger.error('Error checking linked account:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -672,7 +673,7 @@ router.post('/check-2fa', async (req, res) => {
         return res.status(200).json({ requires2FA: false });
 
     } catch (error) {
-        console.error('Check 2FA Error:', error);
+        logger.error('Check 2FA Error:', error);
         return res.status(500).json({ message: 'Error checking 2FA status' });
     }
 });
@@ -710,7 +711,7 @@ router.post('/check-confirmation', authLimiter, async (req, res) => {
         res.json({ confirmed: isConfirmed, exists: true });
 
     } catch (error) {
-        console.error('Error checking confirmation:', error?.message);
+        logger.error('Error checking confirmation:', error?.message);
         res.status(500).json({ error: 'Unable to check confirmation status' });
     }
 });
@@ -741,7 +742,7 @@ router.post('/resend-confirmation', authLimiter, async (req, res) => {
     } catch (error) {
         // NOTE: previously logged `error.body.errors`, which threw a TypeError when
         // `error.body` was undefined, masking the real failure.
-        console.error('Error resending confirmation:', error?.message);
+        logger.error('Error resending confirmation:', error?.message);
         res.status(500).json({ error: 'Unable to resend confirmation email' });
     }
 });

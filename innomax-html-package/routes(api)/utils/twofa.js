@@ -11,6 +11,7 @@
 // secret; a token minted for "new" may not.
 
 const crypto = require('crypto');
+const logger = require('./logger');
 
 let ephemeralKey;
 
@@ -19,7 +20,7 @@ function setupKey() {
   if (raw) return crypto.createHash('sha256').update(`twofa-setup:${raw}`).digest();
   if (!ephemeralKey) {
     // Tokens then only survive inside this process (fine for a single PM2 fork).
-    console.warn('TWOFA_SETUP_KEY/TOTP_ENC_KEY not set: 2FA setup tokens use a per-process key.');
+    logger.warn('TWOFA_SETUP_KEY/TOTP_ENC_KEY not set: 2FA setup tokens use a per-process key.');
     ephemeralKey = crypto.randomBytes(32);
   }
   return ephemeralKey;

@@ -1,4 +1,5 @@
 // Central environment validation + boot-safety.
+const logger = require('./logger');
 //
 // Several modules build SDK clients at import time
 // (`require('stripe')(KEY)`, `createClient(URL, KEY)`), which THROW when the
@@ -42,7 +43,7 @@ for (const [key, sentinel] of Object.entries(SENTINELS)) {
 const allowDegraded = process.env.ALLOW_DEGRADED_BOOT === 'true' || process.env.NODE_ENV === 'test';
 
 if (missingEnv.length > 0 && !allowDegraded) {
-  console.error(
+  logger.error(
     `[config] Missing required env vars: ${missingEnv.join(', ')}. ` +
       'Refusing to start. Set them in .env, or set ALLOW_DEGRADED_BOOT=true for local/CI runs.'
   );
@@ -50,7 +51,7 @@ if (missingEnv.length > 0 && !allowDegraded) {
 }
 
 if (missingEnv.length > 0) {
-  console.warn(
+  logger.warn(
     `[config] Missing required env vars: ${missingEnv.join(', ')}. ` +
       'Booting in DEGRADED mode — pages render, but live Supabase/Stripe/SendGrid ' +
       'calls will fail. Set these via Cloud Agent Secrets or a root-level .env.'

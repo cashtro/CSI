@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
 const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
@@ -405,7 +406,7 @@ router.put('/update/:id',authenticateUser, upload.array('files'), async (req, re
 
                 imageUrl = publicUrl;
             } catch (imageError) {
-                console.error("Erreur lors de l'upload de l'image:", imageError);
+                logger.error("Erreur lors de l'upload de l'image:", imageError);
                 // Continuer même en cas d'erreur d'upload d'image
             }
         }
@@ -425,7 +426,7 @@ router.put('/update/:id',authenticateUser, upload.array('files'), async (req, re
                 });
             }
         } else {
-            // console.log('Aucun fichier de leçon téléchargé pour cette mise à jour');
+            // logger.info('Aucun fichier de leçon téléchargé pour cette mise à jour');
         }
 
         // Mettre à jour le cours avec les nouvelles données
@@ -449,7 +450,7 @@ router.put('/update/:id',authenticateUser, upload.array('files'), async (req, re
         
         res.json(data);
     } catch (error) {
-        console.error('Erreur de mise à jour:', error);
+        logger.error('Erreur de mise à jour:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -552,7 +553,7 @@ router.get('/total-courses', authenticateUser, async (req, res) => {
             .select('*', { count: 'exact' , head:true});
 
         if (error) {
-            console.error("ERREUR Supabase détaillée:", {
+            logger.error("ERREUR Supabase détaillée:", {
                 message: error.message,
                 code: error.code,
                 details: error.details
@@ -563,7 +564,7 @@ router.get('/total-courses', authenticateUser, async (req, res) => {
         res.json({ total: count });
 
     } catch (error) {
-        console.error("ERREUR COMPLETE:", {
+        logger.error("ERREUR COMPLETE:", {
             name: error.name,
             message: error.message,
             stack: error.stack
@@ -596,7 +597,7 @@ router.get('/my-courses', authenticateUser, async (req, res) => {
         res.json({ total: count });
 
     } catch (error) {
-        console.error('Erreur détaillée:', error);
+        logger.error('Erreur détaillée:', error);
         res.status(500).json({ error: 'Impossible de récupérer les cours' });
     }
 });
@@ -898,7 +899,7 @@ router.get('/student-progress/:student_id', authenticateUser, async (req, res) =
         
         res.json(enhancedProgress);
     } catch (error) {
-        console.error('Error fetching student progress:', error);
+        logger.error('Error fetching student progress:', error);
         res.status(500).json({
             error: error.message,
             ...(process.env.NODE_ENV === 'development' && { stack: error.stack })

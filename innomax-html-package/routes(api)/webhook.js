@@ -10,12 +10,13 @@
 // be verified against the exact bytes Stripe signed.
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const logger = require('./utils/logger');
 const { fulfillCheckoutSession } = require('./utils/fulfill');
 
 async function stripeWebhookHandler(req, res) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   if (!secret) {
-    console.warn('[webhook] STRIPE_WEBHOOK_SECRET not set — cannot verify events.');
+    logger.warn('[webhook] STRIPE_WEBHOOK_SECRET not set — cannot verify events.');
     return res.status(503).json({ error: 'Webhook not configured' });
   }
 
@@ -27,7 +28,7 @@ async function stripeWebhookHandler(req, res) {
       secret
     );
   } catch (err) {
-    console.error('[webhook] signature verification failed:', err.message);
+    logger.error('[webhook] signature verification failed:', err.message);
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -37,12 +38,12 @@ async function stripeWebhookHandler(req, res) {
     if (event.type === 'checkout.session.completed' || event.type === 'checkout.session.async_payment_succeeded') {
       const session = event.data.object;
       const result = await fulfillCheckoutSession(session);
-      console.log(`[webhook] ${event.type} ${session.id}: ${result.kind} ${result.status}`);
+      logger.info(`[webhook] ${event.type} ${session.id}: ${result.kind} ${result.status}`);
     }
     return res.status(200).json({ received: true });
   } catch (err) {
     // 500 makes Stripe retry; fulfillment released its claim, so the retry can grant.
-    console.error('[webhook] fulfillment failed:', err.message);
+    logger.error('[webhook] fulfillment failed:', err.message);
     return res.status(500).json({ error: 'fulfillment_failed' });
   }
 }

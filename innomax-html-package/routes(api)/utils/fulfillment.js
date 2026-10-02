@@ -14,6 +14,7 @@
 // never block each other.
 
 const { createSupabaseAdmin } = require('./supabaseUtil');
+const logger = require('./logger');
 
 const UNIQUE_VIOLATION = '23505';
 
@@ -74,7 +75,7 @@ async function wasFulfilled(key) {
 async function releaseFulfillment(key) {
   const admin = createSupabaseAdmin();
   const { error } = await admin.from('fulfillments').delete().eq('key', key);
-  if (error) console.error(`[fulfillment] could not release ${key}:`, error.message);
+  if (error) logger.error(`[fulfillment] could not release ${key}:`, error.message);
 }
 
 module.exports = { claimFulfillment, releaseFulfillment, wasFulfilled };

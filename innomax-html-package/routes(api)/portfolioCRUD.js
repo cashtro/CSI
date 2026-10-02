@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
 const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
@@ -72,7 +73,7 @@ router.post('/portfolio', checkAdmin, upload.single('file'), async (req, res) =>
                 });
 
                 if (uploadError) {
-                    console.error("Erreur Supabase upload:", uploadError.message, uploadError);
+                    logger.error("Erreur Supabase upload:", uploadError.message, uploadError);
                     await supabase.from('Portfolio').delete().eq('id', portfolioId);
                     return res.status(500).json({ 
                       error: 'Échec de l\'upload de l\'image',
@@ -104,7 +105,7 @@ router.post('/portfolio', checkAdmin, upload.single('file'), async (req, res) =>
         return res.status(201).json(finalData);
 
     } catch (err) {
-        console.error('Erreur:', err);
+        logger.error('Erreur:', err);
         return res.status(500).json({
             error: 'Erreur interne du serveur',
         });

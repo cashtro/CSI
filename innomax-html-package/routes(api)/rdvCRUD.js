@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const { handleRDVPayment, createRendezvous } = require('./utils/stripe');
@@ -168,7 +169,7 @@ router.get('/total-rdv', authenticateUser, async (req, res) => {
             .eq('id_eleve',req.user.id);
 
         if (error) {
-            console.error("ERREUR Supabase détaillée:", {
+            logger.error("ERREUR Supabase détaillée:", {
                 message: error.message,
                 code: error.code,
                 details: error.details
@@ -179,7 +180,7 @@ router.get('/total-rdv', authenticateUser, async (req, res) => {
         res.json({ total: count });
 
     } catch (error) {
-        console.error("ERREUR COMPLETE:", {
+        logger.error("ERREUR COMPLETE:", {
             name: error.name,
             message: error.message,
             stack: error.stack

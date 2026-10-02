@@ -74,6 +74,7 @@ npm cache clean --force
     TWOFA_SETUP_KEY='' # optionnel, clé aléatoire pour signer les jetons de configuration 2FA (sinon dérivée de TOTP_ENC_KEY)
     COOKIE_SECURE= # laisser vide en ligne ; false seulement en local sur http
     ALLOW_DEGRADED_BOOT= # laisser vide en ligne ; true seulement en local/CI pour démarrer sans clés
+    LOG_LEVEL=info # error | warn | info | debug
     ```
  
 2. S'assurer que les dépendances sont installées

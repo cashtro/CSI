@@ -1,4 +1,5 @@
 // Password strength validation with detailed feedback
+const logger = require('./logger');
 const validatePassword = (password) => {
     // Precompile regex patterns for better performance
     const UPPER_CASE_REGEX = /[A-Z]/;
@@ -147,7 +148,7 @@ const validatePassword = (password) => {
           
           next();
       } catch (error) {
-          console.error('Sanitization error:', error);
+          logger.error('Sanitization error:', error);
           res.status(400).json({ error: 'Invalid input data' });
       }
   };
