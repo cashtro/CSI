@@ -155,6 +155,11 @@ app.use('/api/portfolio',portfolioRoutes )
 app.use('/api/dispo',dispoRoutes )
 app.use('/api/teacher',teacherRoutes)
 app.use('/api/achats', achatRoutes);
+// Espace entreprises (client space) and the admin console. Each router checks
+// membership / admin + 2FA on the server and requires the CSRF header.
+app.use('/api/espace', require('./routes(api)/espaceCRUD.js'));
+app.use('/api/admin', require('./routes(api)/adminCRUD.js'));
+app.use(require('./routes(api)/espacePages.js'));
 //swagger starts here to wait for all routes to start
 
 //swaggerConfig(app);

@@ -36,6 +36,12 @@ function issueCsrfCookie(req, res, next) {
 
 function csrfGuard(req, res, next) {
   if (process.env.CSRF_ENFORCE !== 'true') return next(); // dark by default
+  return requireCsrf(req, res, next);
+}
+
+// Same check, always enforced. Used by routes whose frontend was written to
+// send the token from day one (espace entreprises, admin console).
+function requireCsrf(req, res, next) {
   if (SAFE_METHODS.has(req.method)) return next();
 
   const authz = req.headers['authorization'] || '';
@@ -49,4 +55,4 @@ function csrfGuard(req, res, next) {
   next();
 }
 
-module.exports = { issueCsrfCookie, csrfGuard, CSRF_COOKIE };
+module.exports = { issueCsrfCookie, csrfGuard, requireCsrf, CSRF_COOKIE };
