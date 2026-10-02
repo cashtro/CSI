@@ -1,0 +1,34 @@
+<%#
+  Shared header of /espace and /admin/console.
+  locals: sousTitre, email, badge, salut, titre, intro, cta {href,label}, nav [{id,label,emoji,count}], vue, base
+%>
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="topbar">
+  <div class="wrap topbar-row">
+    <a class="brand" href="<%= base %>">
+      <img src="/assets/img/logo/cropped-LogoPB512gold-1.webp" alt="" width="36" height="36">
+      <span>Pandora<small><%= sousTitre %></small></span>
+    </a>
+    <div class="topbar-actions">
+      <% if (email) { %><span class="who"><%= email %><% if (badge) { %> · <%= badge %><% } %></span><% } %>
+      <button type="button" class="icon-btn" data-theme-toggle hidden aria-label="Changer de thème">🌙</button>
+      <a class="topbar-link topbar-link--site" href="/">Voir le site</a>
+      <% if (email) { %><a class="topbar-link" href="/login" data-logout>Déconnexion</a><% } %>
+    </div>
+  </div>
+  <div class="wrap hero">
+    <div>
+      <p class="greet"><%= salut %></p>
+      <h1><%= titre %></h1>
+      <% if (intro) { %><p class="intro"><%= intro %></p><% } %>
+    </div>
+    <% if (cta) { %><a class="btn btn--gold" href="<%= cta.href %>"><%= cta.label %></a><% } %>
+  </div>
+  <% if (nav && nav.length) { %>
+  <nav class="wrap tabs" aria-label="Sections">
+    <% nav.forEach(function (n) { %>
+    <a href="<%= base %>?vue=<%= n.id %>"<% if (vue === n.id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= n.emoji %></span><%= n.label %><% if (n.count) { %><span class="count"><%= n.count %></span><% } %></a>
+    <% }) %>
+  </nav>
+  <% } %>
+</header>

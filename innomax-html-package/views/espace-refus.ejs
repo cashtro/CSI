@@ -4,10 +4,13 @@
   <%- include('partials/pilotage/head', { title: 'Accès refusé' }) %>
 </head>
 <body class="pl">
-  <main class="pl-main">
-    <%- include('partials/pilotage/brand', { sousTitre: 'Poste de pilotage' }) %>
+<%- include('partials/pilotage/topbar', {
+  sousTitre: 'Pandora', email: null, badge: null, salut: '🔒 Zone protégée', titre: 'Accès refusé',
+  intro: null, cta: null, nav: [], vue: null, base: '/'
+}) %>
+  <main class="wrap main" id="contenu">
     <section class="panel pl-stack" aria-labelledby="refus-titre">
-      <h1 id="refus-titre">Accès refusé</h1>
+      <h2 id="refus-titre">On ne peut pas vous laisser entrer ici</h2>
       <p><%= message %></p>
       <div class="actions">
         <a class="btn" href="/login">Se reconnecter</a>

@@ -10,7 +10,8 @@ const { getValidUser } = require('./auth-middleware');
 const { verifyMfaProof, MFA_COOKIE } = require('./twofa');
 const logger = require('./logger');
 
-const ETAPES = ['Réception', 'Analyse', 'Production', 'Révision', 'Livraison'];
+// Display names of the five steps (the database stores the index 0-4).
+const ETAPES = ['Reçu', 'Diagnostic', 'En production', 'Révision', 'Livré'];
 const STATUTS_MANDAT = ['actif', 'en_pause', 'termine', 'annule'];
 const DECISIONS = ['approuve', 'modification_demandee'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -193,8 +194,17 @@ const fmt = {
     return t.toLocaleDateString('fr-CA', { year: 'numeric', month: 'short', day: 'numeric', timeZone });
   },
   statut: {
-    actif: 'Actif', en_pause: 'En pause', termine: 'Terminé', annule: 'Annulé',
-    en_attente: 'À approuver', approuve: 'Approuvé', modification_demandee: 'Modification demandée',
+    actif: '🚀 Actif', en_pause: '⏸️ En pause', termine: '✅ Terminé', annule: '✖️ Annulé',
+    en_attente: '👀 À approuver', approuve: '🎉 Approuvé', modification_demandee: '✏️ Modification demandée',
+  },
+  etapeEmoji: ['📝', '🔍', '🛠️', '🔁', '✅'],
+  // Greeting by the hour in Québec: morning, afternoon, evening.
+  salut(now = new Date()) {
+    const parts = new Intl.DateTimeFormat('en-CA', { hour: 'numeric', hourCycle: 'h23', timeZone: 'America/Toronto' }).formatToParts(now);
+    const h = Number((parts.find((p) => p.type === 'hour') || {}).value);
+    if (h >= 5 && h < 12) return '☀️ Bonjour';
+    if (h >= 12 && h < 18) return '🌤️ Bon après-midi';
+    return '🌙 Bonsoir';
   },
 };
 

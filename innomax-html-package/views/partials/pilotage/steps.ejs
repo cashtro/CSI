@@ -1,6 +1,9 @@
-<ol class="steps" aria-label="Avancement : étape <%= Number(m.etape || 0) + 1 %> sur <%= etapes.length %>">
+<% const ici = Number(m.etape || 0); %>
+<ol class="steps" aria-label="Avancement : étape <%= ici + 1 %> sur <%= etapes.length %>">
   <% etapes.forEach(function (nom, i) { %>
-  <li class="<%= i < m.etape ? 'is-done' : (i === Number(m.etape) ? 'is-current' : '') %>"<% if (i === Number(m.etape)) { %> aria-current="step"<% } %>><%= nom %></li>
+  <li class="<%= i < ici ? 'is-done' : (i === ici ? 'is-current' : '') %>"<% if (i === ici) { %> aria-current="step"<% } %>>
+    <span class="dot" aria-hidden="true"><%= fmt.etapeEmoji[i] %></span><span class="name"><%= nom %></span>
+  </li>
   <% }) %>
 </ol>
-<p class="steps-label">Étape <span class="num"><%= Number(m.etape || 0) + 1 %>/<%= etapes.length %></span> · <%= etapes[m.etape] || '' %></p>
+<p class="steps-label"><span aria-hidden="true"><%= fmt.etapeEmoji[ici] %></span> Étape <span class="num"><%= ici + 1 %>/<%= etapes.length %></span> · <%= etapes[ici] || '' %></p>

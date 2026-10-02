@@ -327,3 +327,28 @@ describe('CMS registry matches the templates', () => {
     }
   });
 });
+
+describe('cheerful theme', () => {
+  const fs = require('fs');
+  const { fmt } = require('../routes(api)/utils/espace');
+  const css = fs.readFileSync(path.join(__dirname, '..', 'assets', 'css', 'pilotage.css'), 'utf8');
+
+  it('greets by the hour in Québec', () => {
+    expect(fmt.salut(new Date('2026-10-02T12:00:00Z'))).toBe('☀️ Bonjour'); // 8 h
+    expect(fmt.salut(new Date('2026-10-02T18:00:00Z'))).toBe('🌤️ Bon après-midi'); // 14 h
+    expect(fmt.salut(new Date('2026-10-03T02:00:00Z'))).toBe('🌙 Bonsoir'); // 22 h
+  });
+
+  it('ships the light/dark toggle as a static script', async () => {
+    const res = await request(app).get('/espace').set('Cookie', cookies('tok-a'));
+    expect(res.text).toContain('<script src="/assets/js/theme.js"></script>');
+    expect(res.text).toContain('data-theme-toggle');
+  });
+
+  it('defines the dark tokens for the system preference and the explicit choice, and calms motion', () => {
+    expect(css).toContain("@media (prefers-color-scheme: dark)");
+    expect(css).toContain(":root:not([data-theme='light'])");
+    expect(css).toContain(":root[data-theme='dark']");
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.confetti \{ display: none; \}/);
+  });
+});
