@@ -223,6 +223,39 @@ describe('agent admin routes (admin + 2FA)', () => {
     server.close();
     expect(chunk).toMatch(/id: 7\nevent: activity\ndata: .*job_done/);
   });
+
+  it('releases the stream slot when the client leaves during the first poll', async () => {
+    const original = mockDb.from;
+    let release;
+    const gate = new Promise((r) => { release = r; });
+    let activityQueries = 0;
+    mockDb.from = (t) => {
+      if (t !== 'agent_activity') return original(t);
+      activityQueries += 1;
+      const q = original(t);
+      const run = q.run.bind(q);
+      q.run = async () => { await gate; return run(); };
+      return q;
+    };
+    const server = app.listen(0);
+    const { port } = server.address();
+    const http = require('http');
+    await new Promise((resolve, reject) => {
+      const r = http.get({ port, path: '/api/admin/agents/stream', headers: as('admin2fa') }, (res) => {
+        res.once('data', () => { r.destroy(); resolve(); }); // "retry:" arrives before the poll ends
+      });
+      r.on('error', (e) => (e.code === 'ECONNRESET' ? resolve() : reject(e)));
+    });
+    await new Promise((r) => setTimeout(r, 30));
+    release();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(adminRoutes._openStreams()).toBe(0);
+    const after = activityQueries;
+    await new Promise((r) => setTimeout(r, 50));
+    expect(activityQueries).toBe(after);
+    mockDb.from = original;
+    server.close();
+  });
 });
 
 describe('client read routes', () => {

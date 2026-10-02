@@ -255,11 +255,35 @@ router.get('/usage', async (req, res) => {
 // ------------------------------------------------------------ live stream (SSE)
 
 const MAX_STREAMS = 20;
+// A stream is closed by the server after this long; EventSource reconnects
+// on its own (with Last-Event-ID), so a forgotten tab cannot hold a slot.
+const STREAM_MAX_MS = parseInt(process.env.AGENTS_STREAM_MAX_MS, 10) || 30 * 60 * 1000;
 let openStreams = 0;
 
 router.get('/stream', async (req, res) => {
   if (openStreams >= MAX_STREAMS) return res.status(503).json({ error: 'Trop de flux ouverts' });
   openStreams += 1;
+
+  let lastId = parseInt(req.get('Last-Event-ID'), 10);
+  let closed = false;
+  let polling = false;
+  let pollTimer = null;
+  let pingTimer = null;
+  let lifeTimer = null;
+
+  // Registered BEFORE the first (async) poll: a client that leaves during it
+  // must still release its slot and never leave timers running.
+  const cleanup = () => {
+    if (closed) return;
+    closed = true;
+    openStreams -= 1;
+    clearInterval(pollTimer);
+    clearInterval(pingTimer);
+    clearTimeout(lifeTimer);
+  };
+  res.on('close', cleanup);
+  res.on('error', cleanup);
+
   res.set({
     'Content-Type': 'text/event-stream; charset=utf-8',
     'Cache-Control': 'no-cache, no-transform',
@@ -268,11 +292,15 @@ router.get('/stream', async (req, res) => {
   });
   res.flushHeaders();
   // compression() buffers responses; flush after each event.
-  const send = (chunk) => { res.write(chunk); if (typeof res.flush === 'function') res.flush(); };
-
-  let lastId = parseInt(req.get('Last-Event-ID'), 10);
-  let closed = false;
-  let polling = false;
+  const send = (chunk) => {
+    if (closed || res.writableEnded) return;
+    try {
+      res.write(chunk);
+      if (typeof res.flush === 'function') res.flush();
+    } catch (err) {
+      cleanup();
+    }
+  };
 
   async function poll() {
     if (closed || polling) return;
@@ -298,14 +326,11 @@ router.get('/stream', async (req, res) => {
 
   send('retry: 5000\n\n');
   await poll();
-  const pollTimer = setInterval(poll, 2000);
-  const pingTimer = setInterval(() => send(': ping\n\n'), 15000);
-  req.on('close', () => {
-    closed = true;
-    openStreams -= 1;
-    clearInterval(pollTimer);
-    clearInterval(pingTimer);
-  });
+  if (closed) return;
+  pollTimer = setInterval(poll, 2000);
+  pingTimer = setInterval(() => send(': ping\n\n'), 15000);
+  lifeTimer = setTimeout(() => res.end(), STREAM_MAX_MS);
+  if (lifeTimer.unref) lifeTimer.unref();
 });
 
 // ------------------------------------------------------------ import / export
@@ -380,3 +405,4 @@ router.post('/import', importLimiter, async (req, res) => {
 module.exports = router;
 module.exports.requireAdminMfa = requireAdminMfa;
 module.exports.normaliseAgent = normaliseAgent;
+module.exports._openStreams = () => openStreams;
