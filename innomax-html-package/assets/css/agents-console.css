@@ -1,8 +1,7 @@
 /* ==========================================================================
    Pandora · onglets Agents de la console admin (/admin/console?vue=agents…)
-   Complète pilotage.css. Aucune couleur écrite en dur : tout vient des jetons
-   de pilotage.css (var(--…)), avec un repli pour l'ancien et le nouveau jeu
-   de noms, et color-mix() pour distinguer les équipes. Le canevas du réseau
+   Complète pilotage.css. Aucune couleur écrite en dur : tout vient du BLOC
+   MARQUE de pilotage.css (Panda : cadre noir et blanc, intérieur néon). Le canevas du réseau
    lit ces mêmes variables (assets/js/agents-console.js).
 
    1. Jetons locaux        6. Journal et cartes
@@ -14,33 +13,47 @@
 
 
 /* 1. Jetons locaux --------------------------------------------------------- */
+/* Tout dérive du BLOC MARQUE de pilotage.css (Panda) : cadre noir et blanc
+   (--frame*, --line-strong, --ink), intérieur et réseau néon (--neon-*,
+   --magenta, --cyan-neon, --orchidee, --or, --indigo), rayons (--r-*). */
 
 .ag {
-  --ag-ink: var(--ink, var(--text));
-  --ag-muted: var(--muted, var(--text-muted));
-  --ag-line: var(--line, var(--border));
+  --ag-ink: var(--ink);
+  --ag-muted: var(--muted);
+  --ag-line: var(--line);
+  --ag-frame: var(--line-strong);
   --ag-surface: var(--surface);
-  --ag-surface-2: var(--surface-2, var(--bg));
-  --ag-accent: var(--accent, var(--action));
-  --ag-ok: var(--ok);
-  --ag-warn: var(--warn);
-  --ag-bad: var(--bad, var(--warn));
-  --ag-work: var(--money, var(--warn));
-  --ag-core: var(--accent, var(--action));
-  --ag-core-ink: var(--on-accent, var(--on-action));
-  --ag-r: var(--r-md, 14px);
+  --ag-surface-2: var(--surface-2);
+  --ag-accent: var(--accent);
+  --ag-accent-ink: var(--accent-ink);
+  --ag-ok: var(--ok-ink);
+  --ag-bad: var(--bad);
+  --ag-warn: var(--or);
+  --ag-work: var(--magenta);
+  --ag-r: var(--r-lg);
 
-  /* Couleurs d'équipe : mélanges des jetons du thème. */
-  --ag-team-infra: var(--ag-accent);
-  --ag-team-contenu: color-mix(in srgb, var(--ag-accent) 45%, var(--ag-bad));
-  --ag-team-web: var(--ag-ok);
-  --ag-team-ventes: color-mix(in srgb, var(--ag-accent) 60%, var(--ag-ink));
-  --ag-team-studio: var(--ag-warn);
-  --ag-team-conseil: color-mix(in srgb, var(--ag-ok) 50%, var(--ag-work));
-  --ag-team-marketing: color-mix(in srgb, var(--ag-bad) 55%, var(--ag-accent));
-  --ag-team-planif: var(--ag-muted);
-  --ag-team-contra: var(--ag-bad);
-  --ag-team-revue: color-mix(in srgb, var(--ag-ok) 55%, var(--ag-accent));
+  /* Le réseau, le journal et les jauges : néon sur fond indigo. */
+  --ag-net-bg: var(--neon-panel);
+  --ag-net-line: color-mix(in srgb, var(--on-neon) 22%, transparent);
+  --ag-net-ink: var(--on-neon);
+  --ag-net-muted: var(--on-neon-muted);
+  --ag-net-surface: var(--neon-from);
+  --ag-net-work: var(--or);
+  --ag-net-accent: var(--cyan-neon);
+  --ag-net-core: var(--magenta);
+  --ag-net-core-ink: var(--on-accent);
+
+  /* Couleurs d'équipe, néon. */
+  --ag-team-infra: var(--cyan-neon);
+  --ag-team-contenu: var(--magenta);
+  --ag-team-web: color-mix(in srgb, var(--cyan-neon) 55%, var(--on-neon));
+  --ag-team-ventes: color-mix(in srgb, var(--or) 60%, var(--magenta));
+  --ag-team-studio: var(--orchidee);
+  --ag-team-conseil: var(--cyan-2);
+  --ag-team-marketing: color-mix(in srgb, var(--magenta) 55%, var(--orchidee));
+  --ag-team-planif: var(--on-neon-muted);
+  --ag-team-contra: color-mix(in srgb, var(--bad) 70%, var(--magenta));
+  --ag-team-revue: color-mix(in srgb, var(--cyan-neon) 50%, var(--orchidee));
   --ag-c: var(--ag-muted);
 }
 
@@ -66,8 +79,8 @@
 .ag-banner {
   margin: 0;
   padding: var(--s-3) var(--s-4);
-  border: 1px solid var(--ag-line);
-  border-left: 4px solid var(--ag-warn);
+  border: 1px solid var(--ag-frame);
+  border-left: 6px solid var(--ag-warn);
   border-radius: var(--ag-r);
   background: var(--ag-surface);
 }
@@ -88,7 +101,7 @@
   background: var(--ag-muted);
 }
 .ag-live--on { color: var(--ag-ok); }
-.ag-live--on::before { background: var(--ag-ok); animation: ag-blink 2s ease-in-out infinite; }
+.ag-live--on::before { background: var(--cyan-neon); box-shadow: 0 0 8px var(--cyan-neon); animation: ag-blink 2s ease-in-out infinite; }
 .ag-live--poll::before { background: var(--ag-accent); }
 .ag-live--wait::before { background: var(--ag-warn); }
 
@@ -97,7 +110,7 @@
   align-items: center;
   gap: 4px;
   padding: 1px 8px;
-  border: 1px solid var(--ag-line);
+  border: 1px solid var(--ag-frame);
   border-radius: var(--r-pill);
   font-size: var(--fs-xs);
   font-weight: 700;
@@ -105,10 +118,11 @@
   color: var(--ag-ink);
   background: var(--ag-surface);
 }
-.ag-pill--ok { color: var(--ag-ok); border-color: color-mix(in srgb, var(--ag-ok) 45%, var(--ag-surface)); }
-.ag-pill--run { color: var(--ag-work); border-color: color-mix(in srgb, var(--ag-work) 50%, var(--ag-surface)); }
-.ag-pill--bad { color: var(--ag-bad); border-color: color-mix(in srgb, var(--ag-bad) 45%, var(--ag-surface)); }
+.ag-pill--ok { color: var(--on-ok); background: var(--ok); border-color: var(--ok); }
+.ag-pill--run { color: var(--on-accent); background: var(--neon-btn); background-size: 300% 100%; border-color: transparent; }
+.ag-pill--bad { color: var(--ag-bad); border-color: var(--ag-bad); }
 .ag-pill--off { color: var(--ag-muted); }
+.ag-pill--idle { color: var(--ag-ink); background: var(--ag-surface); }
 
 .ag-out {
   white-space: pre-wrap;
@@ -141,7 +155,7 @@
 .ag-liveline {
   margin: 0;
   font-weight: 700;
-  color: var(--ag-work);
+  color: var(--ag-accent-ink);
   animation: ag-breathe 2.4s ease-in-out infinite;
 }
 
@@ -174,13 +188,15 @@
 }
 .ag-legend li { display: inline-flex; align-items: center; gap: 6px; }
 .ag-legend i { width: 10px; height: 10px; border-radius: 50%; border: 2px solid var(--ag-c); }
-.ag-legend-work i { border-color: var(--ag-work); background: var(--ag-work); }
+.ag-legend i { background: var(--ag-c); border-color: var(--ag-frame); }
+.ag-legend-work i { border-color: var(--ag-frame); background: var(--or); }
 
 .ag-stage {
   position: relative;
-  border: 1px solid var(--ag-line);
+  border: 1px solid var(--neon-edge);
   border-radius: var(--ag-r);
-  background: var(--ag-surface);
+  background: var(--ag-net-bg);
+  box-shadow: var(--neon-glow);
   overflow: hidden;
 }
 .ag-stage canvas { display: block; width: 100%; height: 520px; cursor: crosshair; }
@@ -192,11 +208,11 @@
   display: grid;
   gap: 2px;
   padding: var(--s-2) var(--s-3);
-  border: 1px solid var(--ag-line);
+  border: 1px solid var(--neon-edge);
   border-radius: var(--r-sm);
-  background: var(--ag-surface);
-  color: var(--ag-ink);
-  box-shadow: var(--shadow-2);
+  background: var(--ag-net-surface);
+  color: var(--ag-net-ink);
+  box-shadow: var(--neon-glow);
   font-size: var(--fs-xs);
   pointer-events: none;
 }
@@ -218,8 +234,8 @@
   gap: var(--s-2);
   align-content: start;
   padding: var(--s-3);
-  border: 1px solid var(--ag-line);
-  border-top: 3px solid var(--ag-c);
+  border: 1px solid var(--ag-frame);
+  border-top: 5px solid var(--ag-c);
   border-radius: var(--ag-r);
   background: var(--ag-surface);
   min-width: 0;
@@ -238,12 +254,12 @@
 }
 
 .ag-seg { display: flex; gap: 3px; height: 6px; }
-.ag-seg i { flex: 1; border-radius: 3px; background: color-mix(in srgb, var(--ag-c) 30%, var(--ag-surface)); }
+.ag-seg i { flex: 1; border-radius: var(--r-pill); background: color-mix(in srgb, var(--ag-c) 45%, var(--ag-surface)); }
 .ag-seg i.is-w { background: var(--ag-work); }
 .ag-seg i.is-p { background: var(--ag-line); }
 .ag-seg i.is-none { background: var(--ag-line); }
 .ag-legend2 { display: flex; flex-wrap: wrap; gap: var(--s-1) var(--s-3); margin: 0; font-size: var(--fs-xs); color: var(--ag-muted); }
-.ag-legend2 .is-w { color: var(--ag-work); font-weight: 700; }
+.ag-legend2 .is-w { color: var(--ag-accent-ink); font-weight: 700; }
 
 .ag-agent-btn {
   display: grid;
@@ -264,7 +280,7 @@
 }
 .ag-agent-btn:hover { border-color: var(--ag-line); background: var(--ag-surface-2); }
 .ag-agent-btn[aria-pressed='true'] { border-color: var(--ag-c); background: var(--ag-surface-2); }
-.ag-agent-btn.is-working { border-color: color-mix(in srgb, var(--ag-work) 45%, var(--ag-surface)); }
+.ag-agent-btn.is-working { border-color: var(--ag-work); box-shadow: var(--shadow-neon); }
 .ag-agent-btn.is-paused { opacity: 0.6; }
 .ag-avatar {
   grid-area: av;
@@ -328,8 +344,12 @@
   display: grid;
   gap: 0;
   margin: 0;
-  padding: 0;
+  padding: var(--s-2) var(--s-4);
   list-style: none;
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-md);
+  background: var(--ag-net-bg);
+  color: var(--ag-net-ink);
   max-height: 30rem;
   overflow-y: auto;
   font-size: var(--fs-sm);
@@ -339,16 +359,17 @@
   grid-template-columns: 4.4rem 1.4rem minmax(0, 1fr);
   gap: var(--s-2);
   padding: var(--s-2) 0;
-  border-bottom: 1px solid var(--ag-line);
+  border-bottom: 1px solid var(--ag-net-line);
   overflow-wrap: anywhere;
 }
-.ag-feed li.empty { display: block; }
-.ag-feed time { color: var(--ag-muted); font-variant-numeric: tabular-nums; font-size: var(--fs-xs); padding-top: 2px; }
-.ag-feed b { color: var(--ag-ink); }
+.ag-feed li:last-child { border-bottom: 0; }
+.ag-feed li.empty { display: block; background: transparent; border: 0; color: var(--ag-net-muted); }
+.ag-feed time { color: var(--cyan-neon); font-variant-numeric: tabular-nums; font-size: var(--fs-xs); padding-top: 2px; }
+.ag-feed b { color: var(--ag-net-ink); }
 .ag-feed li[class*='ag-t-'] b { box-shadow: inset 0 -2px 0 var(--ag-c); }
 
 .ag-list { display: grid; gap: var(--s-2); }
-.ag-card { border: 1px solid var(--ag-line); border-radius: var(--ag-r); background: var(--ag-surface); }
+.ag-card { border: 1px solid var(--ag-frame); border-radius: var(--r-md); background: var(--ag-surface); }
 .ag-card > summary {
   display: flex;
   flex-wrap: wrap;
@@ -398,7 +419,7 @@
   z-index: 0;
 }
 .ag-frieze li:first-child::before { display: none; }
-.ag-frieze li.is-done::before, .ag-frieze li.is-on::before { background: var(--ag-ok); }
+.ag-frieze li.is-done::before, .ag-frieze li.is-on::before { background: var(--neon-bar); background-size: 300% 100%; }
 .ag-node {
   position: relative;
   z-index: 1;
@@ -406,50 +427,53 @@
   place-items: center;
   width: 32px;
   height: 32px;
-  border: 2px solid var(--ag-line);
+  border: 2px solid var(--ag-frame);
   border-radius: 50%;
   background: var(--ag-surface);
   font-weight: 800;
   color: var(--ag-ink);
 }
 .ag-frieze li.is-done { color: var(--ag-ink); }
-.ag-frieze li.is-done .ag-node { border-color: var(--ag-ok); color: var(--ag-ok); }
+.ag-frieze li.is-done .ag-node { border-color: var(--ag-ink); background: var(--ag-ink); color: var(--ag-surface); }
 .ag-frieze li.is-on { color: var(--ag-ink); font-weight: 700; }
-.ag-frieze li.is-on .ag-node { border-color: var(--ag-work); color: var(--ag-work); animation: ag-breathe 1.6s ease-in-out infinite; }
+.ag-frieze li.is-on .ag-node { border-color: var(--magenta); color: var(--ag-ink); box-shadow: var(--shadow-neon); animation: ag-breathe 1.6s ease-in-out infinite; }
 
-.ag-gauge { display: grid; gap: var(--s-2); padding: var(--s-3); border: 1px solid var(--ag-line); border-radius: var(--r-sm); }
+.ag-gauge { display: grid; gap: var(--s-2); padding: var(--s-3) var(--s-4); border: 1px solid var(--neon-edge); border-radius: var(--r-md); background: var(--ag-net-bg); color: var(--ag-net-ink); }
+.ag-gauge .dim { color: var(--ag-net-muted); }
 .ag-gauge-top, .ag-gauge-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2); font-size: var(--fs-sm); }
-.ag-gauge-top .is-reach { color: var(--ag-ok); }
-.ag-gauge-top .is-short { color: var(--ag-warn); }
+.ag-gauge-top .is-reach { color: var(--cyan-neon); }
+.ag-gauge-top .is-short { color: var(--or); }
 .ag-gauge-track {
   --pct: 0%;
   --thr: 70%;
   position: relative;
   height: 12px;
   border-radius: var(--r-pill);
-  background: var(--ag-surface-2);
-  border: 1px solid var(--ag-line);
+  background: color-mix(in srgb, var(--on-neon) 12%, transparent);
+  border: 1px solid var(--ag-net-line);
 }
 .ag-gauge-fill {
   position: absolute;
   inset: 0 auto 0 0;
   width: var(--pct);
   border-radius: var(--r-pill);
-  background: var(--ag-warn);
+  background: color-mix(in srgb, var(--or) 80%, var(--magenta));
   transition: width 0.6s ease;
 }
-.ag-gauge-track.is-reach .ag-gauge-fill { background: var(--ag-ok); }
-.ag-gauge-thr { position: absolute; top: -4px; bottom: -4px; left: var(--thr); width: 2px; background: var(--ag-ink); }
+.ag-gauge-track.is-reach .ag-gauge-fill { background: var(--neon-bar); background-size: 300% 100%; box-shadow: 0 0 12px var(--neon-edge); }
+.ag-gauge-thr { position: absolute; top: -4px; bottom: -4px; left: var(--thr); width: 2px; background: var(--ag-net-ink); }
 .ag-votes { display: flex; flex-wrap: wrap; gap: 3px; }
 .ag-votes i { width: 12px; height: 12px; border-radius: 50%; }
-.ag-votes i.is-pour { background: var(--ag-ok); }
-.ag-votes i.is-contre { background: var(--ag-bad); }
+.ag-votes i.is-pour { background: var(--cyan-neon); }
+.ag-votes i.is-contre { background: var(--magenta); }
 .ag-ok { color: var(--ag-ok); font-weight: 700; }
+.ag-gauge .ag-ok { color: var(--cyan-neon); }
 .ag-decision {
   padding: var(--s-3) var(--s-4);
-  border-left: 4px solid var(--ag-ok);
-  border-radius: var(--r-sm);
-  background: var(--ag-surface-2);
+  border: 1px solid var(--ag-frame);
+  border-left: 6px solid var(--magenta);
+  border-radius: var(--r-md);
+  background: var(--accent-soft);
 }
 
 
@@ -475,7 +499,7 @@
 
 /* 9. Réglages -------------------------------------------------------------- */
 
-.ag-switch { border-width: 2px; }
+.ag-switch { border-width: 2px; border-color: var(--ag-bad); }
 .pl .btn.ag-stop {
   min-height: 64px;
   padding: 0 var(--s-6);
@@ -489,12 +513,12 @@
   position: relative;
   height: 14px;
   margin: 0 0 var(--s-2);
-  border: 1px solid var(--ag-line);
+  border: 1px solid var(--ag-frame);
   border-radius: var(--r-pill);
   background: var(--ag-surface-2);
   overflow: hidden;
 }
-.ag-meter i { position: absolute; inset: 0 auto 0 0; width: var(--pct); background: var(--ag-ok); transition: width 0.6s ease; }
+.ag-meter i { position: absolute; inset: 0 auto 0 0; width: var(--pct); border-radius: var(--r-pill); background: var(--neon-bar); background-size: 300% 100%; transition: width 0.6s ease; }
 .ag-meter.is-high i { background: var(--ag-bad); }
 .ag-usage { margin-bottom: var(--s-4); }
 

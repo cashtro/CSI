@@ -400,7 +400,7 @@
       onclick: function () { focusAgent(S.focus === a.id ? null : a.id); },
     },
     el('span', { class: 'ag-avatar', 'aria-hidden': 'true' }, initials(a.name), el('i', { class: 'ag-mood' }, working ? '🔥' : paused ? '😴' : '😊')),
-    el('span', { class: 'ag-nm' }, txt(a.name), el('span', { class: 'ag-pill ' + (working ? 'ag-pill--run' : paused ? 'ag-pill--off' : 'ag-pill--ok') }, working ? 'au travail' : paused ? 'en pause' : 'disponible')),
+    el('span', { class: 'ag-nm' }, txt(a.name), el('span', { class: 'ag-pill ' + (working ? 'ag-pill--run' : paused ? 'ag-pill--off' : 'ag-pill--idle') }, working ? 'au travail' : paused ? 'en pause' : 'disponible')),
     el('span', { class: 'ag-st' }, working ? 'Au travail : ' + clip(a.current_task || 'une tâche', 90) : txt(a.role)));
   }
 
@@ -456,7 +456,7 @@
       arr(a.tools).length ? el('p', { class: 'ag-tools' }, arr(a.tools).map(function (x) { return el('span', { class: 'tag' }, '🧰 ' + txt(x)); })) : null,
       a.method ? el('details', { class: 'ag-sub', 'data-k': 'm-' + a.id }, el('summary', {}, '📋 Sa méthode'), out(a.method)) : null,
       el('div', { class: 'actions' }, el('button', {
-        class: 'btn btn--gold btn--sm',
+        class: 'btn btn--accent btn--sm',
         type: 'button',
         onclick: function () {
           var who = document.getElementById('ag-o-who');
@@ -500,8 +500,8 @@
       return 'rgb(' + d[0] + ', ' + d[1] + ', ' + d[2] + ')';
     };
     var C = {
-      line: get('--ag-line'), ink: get('--ag-ink'), muted: get('--ag-muted'), surface: get('--ag-surface'),
-      work: get('--ag-work'), accent: get('--ag-accent'), core: get('--ag-core'), coreInk: get('--ag-core-ink'), team: {},
+      line: get('--ag-net-line'), ink: get('--ag-net-ink'), muted: get('--ag-net-muted'), surface: get('--ag-net-surface'),
+      work: get('--ag-net-work'), accent: get('--ag-net-accent'), core: get('--ag-net-core'), coreInk: get('--ag-net-core-ink'), team: {},
     };
     S.teams.forEach(function (t) { C.team[t.key] = get('--ag-team-' + t.key); });
     root.removeChild(probe);
@@ -614,7 +614,7 @@
         g.globalAlpha = paused ? 0.45 : 1; g.shadowBlur = 0; g.strokeStyle = busy ? C.work : hb.col; g.lineWidth = 2; g.stroke(); g.restore();
         if (focus) { g.save(); g.strokeStyle = C.accent; g.lineWidth = 2; circle(g, x, y, r + 6); g.stroke(); g.restore(); }
         if (!narrow || busy || focus) {
-          g.save(); g.font = '600 ' + (narrow ? 10 : 11) + 'px system-ui, sans-serif'; g.textAlign = 'center';
+          g.save(); g.font = '600 ' + (narrow ? 10 : 11) + 'px "DM Sans", system-ui, sans-serif'; g.textAlign = 'center';
           g.fillStyle = paused ? C.muted : busy || focus ? C.ink : C.muted;
           g.fillText(txt(a.name), x, y + (y >= hb.y ? r + 14 : -r - 7)); g.restore();
         }
@@ -624,11 +624,11 @@
       var load = members.filter(function (a) { return a.status === 'working'; }).length;
       var HR = narrow ? 16 : 19;
       g.save(); circle(g, hb.x, hb.y, HR); g.fillStyle = C.surface; g.fill(); g.lineWidth = 2; g.strokeStyle = hb.col; g.shadowColor = hb.col; g.shadowBlur = load ? 16 : 4; g.stroke(); g.restore();
-      g.save(); g.font = (narrow ? 14 : 16) + 'px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(hb.emoji, hb.x, hb.y + 1); g.restore();
+      g.save(); g.font = (narrow ? 14 : 16) + 'px "DM Sans", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(hb.emoji, hb.x, hb.y + 1); g.restore();
       if (!narrow || hb.inner) {
         var inward = hb.inner ? 0 : hb.x > cx + 4 ? -1 : hb.x < cx - 4 ? 1 : 0;
         var label = hb.short + ' · ' + members.length;
-        g.save(); g.font = '700 ' + (narrow ? 10.5 : 12) + 'px system-ui, sans-serif';
+        g.save(); g.font = '700 ' + (narrow ? 10.5 : 12) + 'px "DM Sans", system-ui, sans-serif';
         g.textAlign = inward > 0 ? 'left' : inward < 0 ? 'right' : 'center'; g.textBaseline = 'middle';
         var lw = g.measureText(label).width;
         var lx = hb.x + inward * (HR + 8);
@@ -644,7 +644,7 @@
     var R0 = 30 + (still ? 0 : Math.sin(s * 1.6) * (busyAll ? 2 : 1));
     g.save(); g.globalAlpha = 0.35; circle(g, cx, cy, R0 + 8); g.strokeStyle = C.core; g.lineWidth = 1; g.stroke(); g.restore();
     g.save(); circle(g, cx, cy, R0); g.fillStyle = C.core; g.shadowColor = C.core; g.shadowBlur = busyAll ? 26 : 12; g.fill(); g.restore();
-    g.save(); g.fillStyle = C.coreInk; g.font = '800 10px system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('PANDORA', cx, cy); g.restore();
+    g.save(); g.fillStyle = C.coreInk; g.font = '800 10px "DM Sans", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('PANDORA', cx, cy); g.restore();
   }
 
   function drawOnce() { if (Net.canvas) drawNet(performance.now()); }
