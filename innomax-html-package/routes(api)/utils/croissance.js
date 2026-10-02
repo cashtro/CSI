@@ -382,7 +382,8 @@ function backlinkIdeas(job) {
     const url = optUrl(s && s.url).value;
     if (!url || seen.has(url.toLowerCase())) continue;
     seen.add(url.toLowerCase());
-    const title = str(s.title, 200) || hostOf(url) || url;
+    // agents/protocol.extractSources: { url, titre, cite, extrait }.
+    const title = str(s.titre || s.title, 200) || hostOf(url) || url;
     out.push({
       cible: title,
       url,
@@ -391,7 +392,7 @@ function backlinkIdeas(job) {
       type: guessBacklinkType(`${title} ${url}`),
       statut: 'idee',
       source: `Recherche web de l’agent ${job.result.agent_name || 'Racine'}, ${day}`,
-      note: optStr(s.cited_text, 4000),
+      note: optStr(s.extrait || s.cited_text, 4000),
     });
   }
   return out.slice(0, 40);

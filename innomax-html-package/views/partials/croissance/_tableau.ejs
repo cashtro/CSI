@@ -8,7 +8,7 @@
 %>
 <div class="pl-stack">
   <div class="kpis">
-    <div class="panel panel--accent kpi kpi--accent kpi--vedette"><span class="emoji" aria-hidden="true">🔍</span><span class="label">Score SEO moyen</span><span class="value"><%= b.scoreMoyen === null ? '—' : b.scoreMoyen + ' / 100' %></span></div>
+    <div class="panel panel--accent kpi kpi--accent kpi--vedette"><span class="emoji" aria-hidden="true">🔍</span><span class="label">Score SEO moyen (sur 100)</span><span class="value"><%= b.scoreMoyen === null ? '—' : b.scoreMoyen %></span></div>
     <div class="panel kpi"><span class="emoji" aria-hidden="true">🔗</span><span class="label">Backlinks obtenus</span><span class="value"><%= b.backlinksObtenus %></span></div>
     <div class="panel kpi"><span class="emoji" aria-hidden="true">🗓️</span><span class="label">Prévus cette semaine</span><span class="value"><%= b.prevusSemaine %></span></div>
     <div class="panel kpi"><span class="emoji" aria-hidden="true">📣</span><span class="label">Publiés cette semaine</span><span class="value"><%= b.publiesSemaine %></span></div>

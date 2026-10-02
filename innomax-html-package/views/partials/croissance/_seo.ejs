@@ -27,11 +27,12 @@
   </section>
 
   <% if (c.audit) { c.audit.pages.forEach(function (p) { const j = c.lastSeo[p.id]; const prop = j && j.proposal; const editable = c.pages.some(function (x) { return x.id === p.id; }); %>
-  <section class="panel" id="seo-<%= p.id %>" aria-labelledby="seo-h-<%= p.id %>">
-    <div class="panel-head">
-      <h2 id="seo-h-<%= p.id %>"><%= p.label %></h2>
-      <span class="cr-score cr-score--lg"><meter min="0" max="100" low="60" high="85" optimum="100" value="<%= p.score %>"><%= p.score %></meter><span class="num"><%= p.score %> / 100</span></span>
-    </div>
+  <details class="panel cr-page" id="seo-<%= p.id %>"<% if (prop && !j.importe_le) { %> open<% } %>>
+    <summary class="cr-page-sum">
+      <span class="cr-page-titre"><%= p.label %> <span class="dim mono"><%= p.path %></span></span>
+      <span class="cr-page-meta"><% if (p.corrections.length) { %><span class="cr-pill cr-pill--en_attente"><%= p.corrections.length %> correction(s)</span><% } %><% if (prop && !j.importe_le) { %><span class="cr-pill cr-pill--suggeree">🌱 Proposition à relire</span><% } %>
+      <span class="cr-score cr-score--lg"><meter min="0" max="100" low="60" high="85" optimum="100" value="<%= p.score %>"><%= p.score %></meter><span class="num"><%= p.score %> / 100</span></span></span>
+    </summary>
     <dl class="cr-dl">
       <div><dt>Titre</dt><dd><%= p.title || '—' %></dd></div>
       <div><dt>Description</dt><dd><%= p.description || '—' %></dd></div>
@@ -80,6 +81,6 @@
       </form>
     </div>
     <% } %>
-  </section>
+  </details>
   <% }) } %>
 </div>

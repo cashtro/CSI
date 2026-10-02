@@ -131,9 +131,9 @@ describe('backlinks CRUD', () => {
       result: {
         agent_name: 'Racine',
         sources: [
-          { url: 'https://www.fccq.ca/', title: 'FCCQ — Fédération des chambres de commerce du Québec' },
-          { url: 'https://www.qub.ca/balado/tech', title: 'Balado techno QUB', cited_text: 'Un balado sur la tech.' },
-          { url: 'https://annuaire.quebec/entreprises', title: 'Annuaire des entreprises du Québec' },
+          { url: 'https://www.fccq.ca/', titre: 'FCCQ — Fédération des chambres de commerce du Québec', cite: true, extrait: null },
+          { url: 'https://www.qub.ca/balado/tech', titre: 'Balado techno QUB', cite: true, extrait: 'Un balado sur la tech.' },
+          { url: 'https://annuaire.quebec/entreprises', titre: 'Annuaire des entreprises du Québec', cite: false, extrait: null },
           { url: 'javascript:alert(1)', title: 'piège' },
         ],
       },
@@ -390,7 +390,7 @@ describe('the Croissance tab', () => {
     expect(data.board).toMatchObject({ scoreMoyen: 88, backlinksObtenus: 1, prevusSemaine: 1, publiesSemaine: 1, campagnesActives: 1 });
     const res = await request(app).get('/admin/console?vue=croissance').set('Cookie', adminCookie());
     expect(res.text).toContain('Score SEO moyen');
-    expect(res.text).toMatch(/\d+ \/ 100/);
+    expect(res.text).toMatch(/Score SEO moyen \(sur 100\)<\/span><span class="value">\d+</);
   });
 
   it('says to run 008 when the tables are missing', async () => {
@@ -425,5 +425,29 @@ describe('db/008_croissance.sql', () => {
     expect(sql).toContain(`check (statut in (${Object.keys(C.CONTENU_STATUTS).map((x) => `'${x}'`).join(', ')}))`);
     expect(sql).toContain(`check (statut in (${Object.keys(C.CAMPAGNE_STATUTS).map((x) => `'${x}'`).join(', ')}))`);
     expect(sql).toContain(`check (type in (${C.JOB_TYPES.map((x) => `'${x}'`).join(', ')}))`);
+  });
+});
+
+describe('with the real agent protocol (fake Anthropic of the demo)', () => {
+  const { createFakeAnthropic } = require('../scripts/demo/fake-anthropic');
+  const { createLLM } = require('../agents/llm');
+  const { runOrder, runResearch } = require('../agents/protocol');
+  const llm = createLLM({ env: { ANTHROPIC_API_KEY: 'demo', AGENTS_REFUSAL_FALLBACK: 'false' }, fetchImpl: createFakeAnthropic({ delayMs: 0 }) });
+  const deps = { llm, getAgent: async () => ({ id: 'marketing-seo', name: 'Racine' }), saveProgress: async () => {}, env: {} };
+
+  it('turns the sources of a research result into backlink ideas', async () => {
+    const result = await runResearch({ ...deps, job: { payload: { agent_id: 'marketing-seo', question: C.backlinksQuestion('') } } });
+    const ideas = C.backlinkIdeas({ result });
+    expect(ideas.length).toBe(3);
+    expect(ideas[0]).toMatchObject({ statut: 'idee', url: expect.stringMatching(/^https:\/\//), cible: expect.stringMatching(/Source de démonstration/) });
+    expect(ideas.some((i) => i.note)).toBe(true);
+  });
+
+  it('reads the SEO proposal of an order result', async () => {
+    const page = seo.PAGES.find((p) => p.id === 'portfolio');
+    const result = await runOrder({ ...deps, job: { payload: { agent_id: 'marketing-seo', instruction: C.seoInstruction(page, null) } } });
+    const prop = C.seoProposal({ result });
+    expect(prop.title).toMatch(/Portfolio/);
+    expect(prop.description.length).toBeLessThanOrEqual(160);
   });
 });

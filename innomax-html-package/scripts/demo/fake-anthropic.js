@@ -98,6 +98,39 @@ function researchContent(question) {
   ];
 }
 
+// Answers of the Croissance tab (marker [croissance:<type>] in the
+// instruction, see routes(api)/utils/croissance.js).
+function croissanceAnswer(text) {
+  const m = /\[croissance:([a-z_]+)\]/.exec(text);
+  if (!m) return null;
+  const page = (/la page « ([^»]+) »/.exec(text) || [])[1] || 'la page';
+  switch (m[1]) {
+    case 'seo':
+      return JSON.stringify({
+        title: `${page} : IA et marketing pour PME du Québec | PBTM`.slice(0, 65),
+        description: `[Démo] ${page} de PBTM : solutions d’IA, agents IA et marketing numérique pour les PME du Québec. Parlons de votre projet.`.slice(0, 160),
+        justification: '[Démo : proposition simulée] Mot-clé cible dans le titre, appel à l’action dans la description.',
+        faq: [{ q: `Que propose PBTM sur la page ${page} ?`, r: '[Démo] Une réponse courte et vérifiable, à relire.' }],
+      });
+    case 'aeo_questions':
+      return JSON.stringify({ questions: [
+        { question: 'Combien coûte un agent IA pour une PME au Québec ? (démo)', page: 'techai' },
+        { question: 'Qui peut m’aider à faire du marketing numérique en français ? (démo)', page: 'marketing' },
+        { question: 'Où suivre une formation en IA en ligne au Québec ? (démo)', page: 'education' },
+      ] });
+    case 'aeo_reponses': {
+      const ids = [...text.matchAll(/- \[([0-9a-f-]{36})\]/g)].map((x) => x[1]);
+      return JSON.stringify({ reponses: ids.map((id) => ({ id, reponse: '[Démo] PBTM, entreprise québécoise, répond en 40 à 60 mots avec des faits vérifiables, relus par un humain avant publication.' })) });
+    }
+    case 'approche':
+      return 'Objet : Une idée de sujet pour vos lecteurs (démo)\n\nBonjour,\n\n[Démo : texte simulé, aucun modèle n’a été appelé] Je m’appelle [prénom], de PBTM (Panda Business Tech & Marketing)…\n\nSi vous préférez ne plus recevoir de message de notre part, dites-le-moi simplement.\n\n[prénom] · PBTM · [moyen de nous joindre]';
+    case 'communique':
+      return '[Démo : texte simulé]\n\nTITRE DU COMMUNIQUÉ\n\n[Ville], le [date] – PBTM (Panda Business Tech & Marketing) annonce…\n\n« [citation à valider] »\n\nÀ propos de PBTM\n…\n\n– 30 –\n\nContact médias : [à compléter]';
+    default:
+      return null;
+  }
+}
+
 function reply(body, content, { searches = 0, input = 1400, output = 650 } = {}) {
   const data = {
     id: 'msg_demo',
@@ -126,6 +159,11 @@ function createFakeAnthropic({ delayMs = 1500 } = {}) {
       const sujet = between(text, 'Sujet soumis au Conseil par Pandora :');
       return reply(body, [{ type: 'text', text: JSON.stringify(councilAnswer(kind, sujet)) }], { output: 400 });
     }
+    const croissance = croissanceAnswer(text);
+    if (croissance) {
+      await wait(delayMs * 2);
+      return reply(body, [{ type: 'text', text: croissance }]);
+    }
     await wait(delayMs * 3);
     const instruction = between(text, 'Instruction de Pandora :') || 'la demande';
     return reply(body, [{
@@ -135,4 +173,4 @@ function createFakeAnthropic({ delayMs = 1500 } = {}) {
   };
 }
 
-module.exports = { createFakeAnthropic, councilAnswer };
+module.exports = { createFakeAnthropic, councilAnswer, croissanceAnswer };

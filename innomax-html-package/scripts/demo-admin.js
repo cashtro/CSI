@@ -1,8 +1,10 @@
 #!/usr/bin/env node
-// Local demo of the admin "Agents" tabs, for the founder.
+// Local demo of the admin "Agents" and "Croissance" tabs, for the founder.
 //
 //   DEMO_MODE=true node scripts/demo-admin.js
 //   then open http://127.0.0.1:3999/demo/connexion
+//   (or /demo/connexion?vue=croissance for the Croissance tab; /faq, /presse,
+//   /sitemap.xml, /robots.txt and /llms.txt are served too)
 //
 // Refused when NODE_ENV=production, under PM2, or without DEMO_MODE=true
 // (scripts/demo/guard.js). It runs the real routers, views, guards and agent
@@ -79,12 +81,15 @@ const { createLLM } = require('../agents/llm');
 const { createWorker } = require('../agents/worker');
 const { createFakeAnthropic } = require('./demo/fake-anthropic');
 const { seedDemo, ADMIN_ID } = require('./demo/data');
+const { seedCroissance } = require('./demo/croissance-data');
+const seo = require('../routes(api)/utils/seo');
 
 const PORT = parseInt(process.env.DEMO_PORT, 10) || 3999;
 const HOST = '127.0.0.1';
 
 async function main() {
   await seedDemo(db);
+  seedCroissance(db, ADMIN_ID);
 
   const app = express();
   app.disable('x-powered-by');
@@ -98,6 +103,7 @@ async function main() {
   app.use(issueCsrfCookie);
   app.use(express.json());
   app.use(cms.middleware);
+  app.use(seo.middleware);
 
   // Demo sign-in: an admin session with the 2FA proof, no password.
   app.get(['/', '/demo/connexion'], (req, res) => {
@@ -106,14 +112,17 @@ async function main() {
     const opts = { httpOnly: true, sameSite: 'lax', secure: false, path: '/' };
     res.cookie('accessToken', token, opts);
     res.cookie(MFA_COOKIE, signMfaProof(ADMIN_ID, Date.now() + 12 * 3600 * 1000), opts);
-    res.redirect('/admin/console?vue=agents');
+    const vue = ['agents', 'croissance'].includes(req.query.vue) ? req.query.vue : 'agents';
+    res.redirect(`/admin/console?vue=${vue}`);
   });
   app.get('/login', (req, res) => res.type('text').send('Démo : ouvrez /demo/connexion pour vous reconnecter.'));
   app.post('/api/auth/logout', (req, res) => { res.clearCookie('accessToken'); res.clearCookie(MFA_COOKIE); res.json({ ok: true }); });
 
   app.use('/api/admin/agents', require('../routes(api)/agentsAdmin'));
+  app.use('/api/admin/croissance', require('../routes(api)/croissanceAdmin'));
   app.use('/api/admin', require('../routes(api)/adminCRUD'));
   app.use(require('../routes(api)/espacePages'));
+  app.use(require('../routes(api)/seoRoutes'));
   app.use((req, res) => res.status(404).type('text').send('Introuvable dans la démo.'));
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {

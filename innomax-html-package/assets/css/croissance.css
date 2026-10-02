@@ -235,3 +235,43 @@ a.cr-chip:hover { background: var(--accent-soft); }
   .cr-chip { white-space: normal; font-size: var(--fs-sm); padding: var(--s-2) var(--s-3); }
   .cr-cal-head { flex-direction: column; align-items: flex-start; }
 }
+
+/* 9. Détail des pages de l'audit (repliable) ------------------------------- */
+
+.cr-page { padding: 0; }
+.cr-page > :not(summary) { margin-left: var(--s-5); margin-right: var(--s-5); }
+.cr-page > :last-child { margin-bottom: var(--s-5); }
+.cr-page-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--r-lg);
+}
+.cr-page-sum::-webkit-details-marker { display: none; }
+.cr-page-sum::before { content: '▸'; color: var(--muted); transition: transform 0.2s ease; }
+.cr-page[open] > .cr-page-sum::before { transform: rotate(90deg); }
+.cr-page-sum:hover { background: var(--surface-2); }
+.cr-page-sum:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cr-page-titre { flex: 1 1 auto; font-family: var(--font-title); font-weight: 700; font-size: var(--fs-md); }
+.cr-page-meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+@media (max-width: 760px) {
+  .cr-page-sum { padding: var(--s-4); }
+  .cr-page > :not(summary) { margin-left: var(--s-4); margin-right: var(--s-4); }
+  .cr-score--lg meter { width: 96px; }
+}
+
+/* Champ de recherche de /faq (hors .field). */
+.cr-search input {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-input);
+  border-radius: var(--r-pill);
+  padding: var(--s-3) var(--s-5);
+}
+.cr-search input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-color: var(--accent); }
