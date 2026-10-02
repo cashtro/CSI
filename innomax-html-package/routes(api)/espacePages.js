@@ -9,16 +9,25 @@ const { requireMember, requireAdmin, noStore, loadEspace, loadAdmin, fmt, ETAPES
 
 const router = express.Router();
 
+// Voice dictation (assets/js/dictee.js) needs the microphone. helmet 7 sends
+// no Permissions-Policy, so browsers already allow it for the page's own
+// origin; say so explicitly on these two pages only, and keep the camera and
+// location off.
+function allowMicrophone(req, res, next) {
+  res.set('Permissions-Policy', 'microphone=(self), camera=(), geolocation=()');
+  next();
+}
+
 const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'mandats', 'livrables', 'cms'];
 const CLIENT_VUES = ['apercu', 'mandats', 'livrables', 'achats', 'nouveau'];
 
-router.get('/espace', noStore, requireMember({ page: true }), async (req, res) => {
+router.get('/espace', noStore, allowMicrophone, requireMember({ page: true }), async (req, res) => {
   const vue = CLIENT_VUES.includes(req.query.vue) ? req.query.vue : 'apercu';
   const data = req.membership ? await loadEspace(createSupabaseAdmin(), req.membership.entreprise_id) : null;
   res.render('espace-client', { vue, data, fmt, etapes: ETAPES, email: req.user.email || '' });
 });
 
-router.get('/admin/console', noStore, requireAdmin({ page: true }), async (req, res) => {
+router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true }), async (req, res) => {
   const vue = ADMIN_VUES.includes(req.query.vue) ? req.query.vue : 'apercu';
   const admin = createSupabaseAdmin();
   const data = await loadAdmin(admin);

@@ -386,6 +386,23 @@ details.reveal summary { cursor: pointer; list-style: none; }
 details.reveal summary::-webkit-details-marker { display: none; }
 details.reveal[open] summary { margin-bottom: 10px; }
 
+/* ------------------------------------------------------------ Voice dictation */
+
+.dictee { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; }
+.dictee-btn::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  border: 1px solid currentColor;
+}
+.pl .dictee-btn.is-listening { color: #1a0505; background: var(--warn); box-shadow: none; }
+.dictee-btn.is-listening::before { background: #1a0505; border-color: #1a0505; animation: pl-pulse 1s ease-in-out infinite; }
+.pl input.is-listening, .pl textarea.is-listening { border-color: var(--warn); box-shadow: 0 0 0 3px rgba(255, 138, 91, 0.18); }
+.dictee-note { margin: 0; font-size: 0.8rem; color: var(--text-dim); }
+.dictee-note:empty { display: none; }
+.dictee-note.is-help { flex-basis: 100%; padding: 8px 10px; color: var(--text); border: 1px dashed var(--line-strong); }
+
 /* ------------------------------------------------------------ CMS */
 
 .cms-zone { display: grid; gap: 10px; }

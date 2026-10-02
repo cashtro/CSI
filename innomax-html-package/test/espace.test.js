@@ -301,3 +301,16 @@ describe('pages render every tab', () => {
     expect(res.text).not.toMatch(/style=|<script>/);
   });
 });
+
+describe('voice dictation', () => {
+  it('allows the microphone for the page origin only, and marks the large fields', async () => {
+    const client = await request(app).get('/espace?vue=nouveau').set('Cookie', cookies('tok-a'));
+    expect(client.headers['permissions-policy']).toBe('microphone=(self), camera=(), geolocation=()');
+    expect(client.text).toMatch(/<textarea id="description"[^>]*data-dictee/);
+    expect(client.text).toContain('/assets/js/dictee.js');
+
+    const admin = await request(app).get('/admin/console?vue=livrables').set('Cookie', adminCookies());
+    expect(admin.headers['permissions-policy']).toBe('microphone=(self), camera=(), geolocation=()');
+    expect(admin.text).toMatch(/<textarea id="l-d"[^>]*data-dictee/);
+  });
+});

@@ -194,7 +194,7 @@
               </div>
               <div class="field"><label for="nm-t">Titre</label><input id="nm-t" name="titre" type="text" maxlength="200" required></div>
             </div>
-            <div class="field"><label for="nm-d">Description</label><textarea id="nm-d" name="description" maxlength="5000"></textarea></div>
+            <div class="field"><label for="nm-d">Description</label><textarea id="nm-d" name="description" maxlength="5000" data-dictee></textarea></div>
             <div class="form-row">
               <div class="field"><label for="nm-b">Budget ($ CA)</label><input id="nm-b" name="budget" type="number" min="0" step="100"></div>
               <div class="field"><label for="nm-ech">Échéance</label><input id="nm-ech" name="echeance" type="date"></div>
@@ -263,7 +263,7 @@
             <div class="field"><label for="l-p">Produit par (agent)</label><input id="l-p" name="produit_par" type="text" maxlength="120" placeholder="Ex. : Agent rédaction"></div>
           </div>
           <div class="field"><label for="l-u">Lien du livrable (https://)</label><input id="l-u" name="url" type="url" pattern="https://.*" placeholder="https://"></div>
-          <div class="field"><label for="l-d">Description</label><textarea id="l-d" name="description" maxlength="5000"></textarea></div>
+          <div class="field"><label for="l-d">Description</label><textarea id="l-d" name="description" maxlength="5000" data-dictee></textarea></div>
           <div class="actions"><button class="btn" type="submit">Déposer</button></div>
           <p class="status" data-status role="status"></p>
         </form>
@@ -336,7 +336,7 @@
                 <input id="v-<%= z.key %>" name="value" type="text" value="<%= current %>">
                 <span class="hint">Adresse https:// ou chemin assets/…, ou envoyez un fichier ci-dessous.</span>
               <% } else { %>
-                <input id="v-<%= z.key %>" name="value" type="text" value="<%= current %>">
+                <input id="v-<%= z.key %>" name="value" type="text" value="<%= current %>" data-dictee>
               <% } %>
             </div>
             <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
