@@ -34,8 +34,9 @@ function issueCsrfCookie(req, res, next) {
   next();
 }
 
-function csrfGuard(req, res, next) {
-  if (process.env.CSRF_ENFORCE !== 'true') return next(); // dark by default
+// Always enforced. Used directly by routes that never had a legacy client
+// (the agent admin API), so they do not wait for CSRF_ENFORCE.
+function requireCsrf(req, res, next) {
   if (SAFE_METHODS.has(req.method)) return next();
 
   const authz = req.headers['authorization'] || '';
@@ -49,4 +50,9 @@ function csrfGuard(req, res, next) {
   next();
 }
 
-module.exports = { issueCsrfCookie, csrfGuard, CSRF_COOKIE };
+function csrfGuard(req, res, next) {
+  if (process.env.CSRF_ENFORCE !== 'true') return next(); // dark by default
+  return requireCsrf(req, res, next);
+}
+
+module.exports = { issueCsrfCookie, csrfGuard, requireCsrf, CSRF_COOKIE };
