@@ -23,6 +23,7 @@ function kindOf(session) {
   if (m.type === 'lottery_entry') return 'lottery_entry';
   if (m.type === 'product') return 'product';
   if (m.type === 'achat') return 'achat';
+  if (m.type === 'robot') return 'robot';
   if (m.disponibilite_id) return 'rendez_vous';
   if (m.course_id) return session.mode === 'subscription' ? 'subscription' : 'course';
   return 'unknown';
@@ -243,8 +244,66 @@ async function grantAchat(admin, session) {
   return { status: 'granted', id: productId };
 }
 
+// Robot subscription (routes(api)/robotsCRUD.js, ROBOTS.md): one robots_actifs
+// row per Stripe subscription. The company and the robot come from the
+// metadata the server itself set when it created the session.
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+const stripeId = (v) => (typeof v === 'string' ? v : (v && typeof v.id === 'string' ? v.id : null));
+
+async function grantRobot(admin, session) {
+  const { entreprise_id: entrepriseId, robot, user_id: userId } = session.metadata;
+  if (!UUID_RE.test(String(entrepriseId)) || !/^[a-z0-9][a-z0-9-]{1,59}$/.test(String(robot))) throw new Error('invalid robot metadata');
+  const { data: offre, error: offreError } = await admin.from('robots_offres').select('slug').eq('slug', robot).maybeSingle();
+  if (offreError) throw offreError;
+  if (!offre) throw new Error(`robot ${robot} not found`);
+  const { data: entreprise, error: entError } = await admin.from('entreprises').select('id').eq('id', entrepriseId).maybeSingle();
+  if (entError) throw entError;
+  if (!entreprise) throw new Error('entreprise not found');
+
+  const subscriptionId = stripeId(session.subscription);
+  const customerId = stripeId(session.customer);
+  const now = new Date().toISOString();
+  if (subscriptionId) {
+    const { data: same } = await admin.from('robots_actifs').select('id').eq('stripe_subscription_id', subscriptionId).maybeSingle();
+    if (same) return { status: 'granted', id: same.id };
+  }
+  const { data: rowsOfRobot, error: readError } = await admin.from('robots_actifs').select('*').eq('entreprise_id', entrepriseId).eq('robot', robot);
+  if (readError) throw readError;
+  const vivant = (rowsOfRobot || []).find((r) => r.statut !== 'annule');
+  let id;
+  let undo;
+  if (vivant) {
+    // A second checkout for a robot that is already live (two tabs): keep one
+    // row, point it at the newest subscription, and flag the other one.
+    if (vivant.stripe_subscription_id && vivant.stripe_subscription_id !== subscriptionId) {
+      logger.warn(`[fulfill] robot ${robot}: entreprise ${entrepriseId} has two subscriptions (${vivant.stripe_subscription_id}, ${subscriptionId}); cancel one in Stripe.`);
+    }
+    const before = { statut: vivant.statut, stripe_subscription_id: vivant.stripe_subscription_id, stripe_customer_id: vivant.stripe_customer_id };
+    const { error } = await admin.from('robots_actifs')
+      .update({ statut: 'actif', stripe_subscription_id: subscriptionId, stripe_customer_id: customerId, updated_at: now })
+      .eq('id', vivant.id);
+    if (error) throw error;
+    id = vivant.id;
+    undo = () => admin.from('robots_actifs').update(before).eq('id', id);
+  } else {
+    const { data, error } = await admin.from('robots_actifs')
+      .insert({
+        entreprise_id: entrepriseId, robot, statut: 'actif', stripe_subscription_id: subscriptionId, stripe_customer_id: customerId,
+        depuis: now, reglages: {}, created_by: UUID_RE.test(String(userId)) ? userId : null,
+      })
+      .select('id')
+      .single();
+    if (error) throw error;
+    id = data.id;
+    undo = () => admin.from('robots_actifs').delete().eq('id', id);
+  }
+  await orUndo(() => insertBill(admin, UUID_RE.test(String(userId)) ? userId : null, `robot:${robot}`, session), undo);
+  return { status: 'granted', id };
+}
+
 const GRANTS = {
   achat: grantAchat,
+  robot: grantRobot,
   rendez_vous: grantRendezVous,
   course: grantCourse,
   subscription: grantCourse,
@@ -260,7 +319,10 @@ const GRANTS = {
  */
 async function fulfillCheckoutSession(session) {
   const kind = kindOf(session);
-  if (session.payment_status !== 'paid') return { status: 'not_paid', kind };
+  // A subscription started with a free trial or a 100 % coupon has nothing to
+  // pay yet, but it is a real subscription (robots only).
+  const paid = session.payment_status === 'paid' || (kind === 'robot' && session.payment_status === 'no_payment_required');
+  if (!paid) return { status: 'not_paid', kind };
   const grant = GRANTS[kind];
   if (!grant) return { status: 'unknown', kind };
 

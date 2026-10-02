@@ -1,0 +1,20 @@
+<%# En-tête HTML des pages publiques des robots (/robots, activation). Indexable,
+    contrairement à partials/pilotage/head.ejs. locals : title, description, index (bool). %>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<% if (typeof index !== 'undefined' && index) { %><meta name="robots" content="index, follow"><% } else { %><meta name="robots" content="noindex, nofollow"><% } %>
+<meta name="color-scheme" content="light dark">
+<title><%= title %> · <%= include('../pilotage/marque') %></title>
+<% if (typeof description === 'string' && description) { %><meta name="description" content="<%= description %>">
+<meta property="og:title" content="<%= title %>">
+<meta property="og:description" content="<%= description %>">
+<meta property="og:type" content="website"><% } %>
+<link rel="icon" href="/assets/img/logo/cropped-LogoPB512gold-1.webp" type="image/webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=Unbounded:wght@500..800&display=swap">
+<link rel="stylesheet" href="/assets/css/pilotage.css">
+<link rel="stylesheet" href="/assets/css/robots.css">
+<script src="/assets/js/theme.js"></script>
+<script src="/assets/js/reflets.js" defer></script>
+<script src="/assets/js/espace.js" defer></script>

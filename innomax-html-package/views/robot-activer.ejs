@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <%- include('partials/robots/head', { title: 'Activer ' + offre.nom, description: offre.pitch, index: false }) %>
+</head>
+<%
+  const proprio = membership && membership.role === 'proprietaire';
+%>
+<body class="pl">
+<%- include('partials/robots/top') %>
+
+<main id="contenu" class="main-robots">
+  <section class="rb-hero" aria-labelledby="act-titre">
+    <span class="rb-kicker"><span aria-hidden="true"><%= offre.emoji %></span> Activation</span>
+    <h1 id="act-titre"><%= offre.nom %></h1>
+    <p class="rb-lead"><%= offre.pitch %></p>
+  </section>
+
+  <div class="wrap rb-section">
+    <div class="rb-recap">
+      <section class="panel" aria-labelledby="recap-titre">
+        <div class="panel-head"><h2 id="recap-titre">Ce que vous activez</h2><span class="tag">Connecté : <%= email %></span></div>
+        <% if (offre.fait.length) { %>
+        <ul class="rb-fait">
+          <% offre.fait.forEach(function (f) { %><li><%= f %></li><% }) %>
+        </ul>
+        <% } %>
+        <div class="rb-humain">
+          <span aria-hidden="true">🧑‍⚖️</span>
+          <p>Chaque résultat est relu par l’équipe <%= include('partials/pilotage/marque') %> avant d’apparaître dans votre espace, et rien n’est envoyé sans votre accord.</p>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="paiement-titre">
+        <div class="panel-head"><h2 id="paiement-titre">Votre abonnement</h2></div>
+        <div class="rb-total">
+          <div class="rb-ligne"><span>Abonnement mensuel</span><span class="money"><%= fmt.prix(offre.prix_mensuel) %></span></div>
+          <div class="rb-ligne"><span>Mise en place (une fois)</span><span class="money"><%= fmt.prix(offre.prix_mise_en_place) %></span></div>
+          <div class="rb-ligne"><span>Inclus chaque mois</span><span><%= offre.quota_taches_mois %> <%= offre.mode === 'conseil' ? 'décisions' : 'tâches' %></span></div>
+          <div class="rb-ligne"><span>Premier paiement</span><span class="money"><%= fmt.prix(offre.prix_mensuel + offre.prix_mise_en_place) %> + taxes</span></div>
+        </div>
+
+        <% if (deja) { %>
+          <p class="rb-alert rb-alert--ok">✅ Ce robot est déjà actif pour votre entreprise.</p>
+          <div class="actions"><a class="btn btn--accent" href="/espace?vue=robots">🤖 Voir mes robots</a></div>
+        <% } else if (membership && !proprio) { %>
+          <p class="rb-alert">Seul le propriétaire du compte de votre entreprise peut activer un robot. Transmettez-lui ce lien.</p>
+        <% } else { %>
+          <form class="form" data-api="/api/robots/<%= offre.slug %>/activer" data-redirect>
+            <% if (!membership) { %>
+            <div class="field">
+              <label for="entreprise_nom">Nom de votre entreprise</label>
+              <input id="entreprise_nom" name="entreprise_nom" type="text" maxlength="200" required autocomplete="organization" placeholder="Ex. : Clinique Dupont inc.">
+              <span class="hint">Votre espace entreprise est créé avec vous comme propriétaire.</span>
+            </div>
+            <% } %>
+            <label class="rb-check">
+              <input type="checkbox" name="conditions" required>
+              <span>Je comprends que l’abonnement se renouvelle chaque mois et que je peux le mettre en pause ou l’annuler en tout temps depuis mon espace.</span>
+            </label>
+            <div class="actions"><button class="btn btn--accent rb-cta" type="submit">⚡ Activer et payer</button></div>
+            <p class="status" data-status role="status"></p>
+            <p class="rb-note">Paiement sécurisé par Stripe. Vous serez redirigé vers sa page de paiement.</p>
+          </form>
+        <% } %>
+      </section>
+    </div>
+    <p class="rb-note"><a href="/robots#robot-<%= offre.slug %>">← Retour aux robots</a></p>
+  </div>
+</main>
+<%- include('partials/pilotage/footer') %>
+</body>
+</html>

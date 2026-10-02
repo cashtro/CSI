@@ -29,6 +29,7 @@ obligatoire.** Chaque fichier peut être relancé sans danger.
 - [ ] `db/003_moteur_agents.sql` (moteur des agents)
 - [ ] `db/004_protection_comptes.sql` (un compte ne peut pas se donner le rôle admin)
 - [ ] `db/005_recherche_agents.sql` (recherche web des agents)
+- [ ] `db/006_robots.sql` (robots clients, connexions : voir ROBOTS.md)
 - [ ] Supabase → Authentication → Policies : vérifiez que `anon` et `authenticated` ne peuvent
       **pas écrire** dans `Entry`, `cours_students`, `rendez_vous`, `disponibilites`, `bills`,
       `Lottery`, `Achat`.
@@ -95,7 +96,7 @@ Pour fabriquer une clé au hasard : `openssl rand -hex 32`.
 Stripe → Developers → Webhooks → **Add endpoint**.
 
 - [ ] URL : `https://pandorabrains.com/webhook`
-- [ ] Événements : `checkout.session.completed` et `checkout.session.async_payment_succeeded`
+- [ ] Événements : `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `customer.subscription.updated` et `customer.subscription.deleted` (robots, voir ROBOTS.md)
 - [ ] Copiez le **Signing secret** (`whsec_…`) dans `STRIPE_WEBHOOK_SECRET` du `.env`.
 
 ## 5. Installer et lancer avec PM2 (le site + un seul worker)

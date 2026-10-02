@@ -8,6 +8,8 @@ const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { requireMember, requireAdmin, noStore, loadEspace, loadAdmin, fmt, ETAPES, STATUTS_MANDAT } = require('./utils/espace');
 const logger = require('./utils/logger');
 const catalog = require('../agents/catalog');
+const robots = require('./utils/robots');
+const cx = require('./utils/connexions');
 
 const router = express.Router();
 
@@ -23,7 +25,8 @@ function allowMicrophone(req, res, next) {
 // Agent tabs (views/partials/agents/*.ejs, assets/js/agents-console.js): the
 // page renders the forms; the script reads /api/admin/agents for live data.
 const AGENT_VUES = ['agents', 'conseil', 'travail', 'recherche', 'reglages-agents'];
-const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'mandats', 'livrables', 'cms', ...AGENT_VUES];
+const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'mandats', 'livrables', 'robots', 'cms', ...AGENT_VUES];
+const ROBOTS_ABSENT = 'Les tables des robots sont introuvables : exécutez db/006_robots.sql.';
 
 // Agents for the forms' selects. A missing table (db/003 not run) shows a
 // message instead of failing the page.
@@ -35,12 +38,49 @@ async function loadAgentsForForms(admin) {
   }
   return { agents: data || [], agentsError: null };
 }
-const CLIENT_VUES = ['apercu', 'mandats', 'livrables', 'achats', 'nouveau'];
+const CLIENT_VUES = ['apercu', 'mandats', 'livrables', 'robots', 'connexions', 'achats', 'nouveau'];
+
+// Messages shown after a redirect (Stripe, OAuth). Only known values.
+const MESSAGES = {
+  etat: { kind: 'error', text: 'Le lien de connexion est invalide ou expiré. Recommencez depuis cette page.' },
+  refus: { kind: 'error', text: 'La connexion a été annulée chez le fournisseur. Rien n’a été enregistré.' },
+  echange: { kind: 'error', text: 'Le fournisseur n’a pas confirmé la connexion. Réessayez dans un instant.' },
+};
+
+// Connections of a company, as the page may show them (never the tokens).
+async function loadConnexions(admin, entrepriseId) {
+  const { data, error } = await admin.from('connexions').select('id, fournisseur, statut, portee, compte, expire_at, consenti_at, erreur, created_at, updated_at').eq('entreprise_id', entrepriseId);
+  if (error) throw new Error(error.message);
+  const par = Object.fromEntries((data || []).map((r) => [r.fournisseur, cx.vuePublique(r)]));
+  return cx.IDS.map((id) => ({ id, ...cx.FOURNISSEURS[id], oauth: undefined, configure: id === 'site_web' ? cx.canEncrypt() : cx.isConfigured(id) && cx.canEncrypt(), connexion: par[id] || null }));
+}
 
 router.get('/espace', noStore, allowMicrophone, requireMember({ page: true }), async (req, res) => {
   const vue = CLIENT_VUES.includes(req.query.vue) ? req.query.vue : 'apercu';
-  const data = req.membership ? await loadEspace(createSupabaseAdmin(), req.membership.entreprise_id) : null;
-  res.render('espace-client', { vue, data, fmt, etapes: ETAPES, email: req.user.email || '' });
+  const admin = createSupabaseAdmin();
+  const data = req.membership ? await loadEspace(admin, req.membership.entreprise_id) : null;
+  let robotsData = null;
+  let connexions = null;
+  let robotsError = null;
+  if (data && (vue === 'robots' || vue === 'connexions' || vue === 'apercu')) {
+    try {
+      robotsData = await robots.loadRobotsEspace(admin, req.membership.entreprise_id);
+      if (vue === 'connexions') connexions = await loadConnexions(admin, req.membership.entreprise_id);
+    } catch (err) {
+      logger.warn('[espace] robots unreadable:', err.message);
+      robotsError = ROBOTS_ABSENT;
+    }
+  }
+  const q = req.query;
+  const flash = MESSAGES[q.erreur] || (typeof q.ok === 'string' && cx.IDS.includes(q.ok)
+    ? { kind: 'ok', text: `${cx.FOURNISSEURS[q.ok].nom} est connecté. Vous pouvez retirer cette autorisation en tout temps.` } : null);
+  const bienvenue = typeof q.bienvenue === 'string' && (q.bienvenue === '1' || robots.SLUG.test(q.bienvenue))
+    ? ((robotsData && robotsData.robots.find((r) => r.robot === q.bienvenue)) || { offre: null }) : null;
+  res.render('espace-client', {
+    vue, data, fmt, etapes: ETAPES, email: req.user.email || '',
+    robotsData, connexions, robotsError, flash, bienvenue,
+    proprietaire: Boolean(req.membership && req.membership.role === 'proprietaire'),
+  });
 });
 
 router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true }), async (req, res) => {
@@ -57,11 +97,24 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
   const langue = req.query.langue === 'en' ? 'en' : 'fr';
   const agentVue = AGENT_VUES.includes(vue);
   const agentData = agentVue ? await loadAgentsForForms(admin) : { agents: [], agentsError: null };
+  let robotsAdmin = null;
+  let robotsError = null;
+  if (vue === 'robots') {
+    try {
+      robotsAdmin = await robots.loadRobotsAdmin(admin);
+    } catch (err) {
+      logger.warn('[admin] robots unreadable:', err.message);
+      robotsError = ROBOTS_ABSENT;
+    }
+  }
   res.render('admin-console', {
     vue, data, site, cmsError, langue, fmt, etapes: ETAPES, statuts: STATUTS_MANDAT, email: req.user.email || '',
+    robotsAdmin, robotsError, fournisseurs: cx.FOURNISSEURS,
     agentVue, agents: agentData.agents, agentsError: agentData.agentsError, teams: catalog.TEAMS, defaultResearchAgent: catalog.DEFAULT_RESEARCH_AGENT,
   });
 });
 
 module.exports = router;
 module.exports.AGENT_VUES = AGENT_VUES;
+module.exports.CLIENT_VUES = CLIENT_VUES;
+module.exports.ADMIN_VUES = ADMIN_VUES;

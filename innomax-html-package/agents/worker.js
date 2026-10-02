@@ -18,6 +18,7 @@ const { createLLM, CircuitOpenError } = require('./llm');
 const { createBudget, meteredLLM, BudgetExceededError } = require('./budget');
 const { runOrder, runResearch, runCouncil, CancelledError } = require('./protocol');
 const store = require('./store');
+const { livrableDepuisJob } = require('./robots');
 
 const STALE_MINUTES = 15;
 const KIND_LABEL = { order: 'Ordre', debate: 'Conseil', research: 'Recherche' };
@@ -108,6 +109,16 @@ function createWorker({
       await updateJob(job.id, { status: 'done', result, error: null, finished_at: now().toISOString(), locked_by: null, ...money() });
       const searched = totals.webSearches ? `, ${totals.webSearches} recherche(s) web` : '';
       await store.logActivity(db, { job_id: job.id, agent_id: agentId || null, kind: 'job_done', message: `${KIND_DONE[job.kind] || 'Travail terminé'} (${totals.calls} appels${searched}, ${totals.costUsd.toFixed(4)} $)` });
+      // A robot's result waits for PBTM's validation as a deliverable (ROBOTS.md).
+      if (job.robot || (job.payload && job.payload.robot)) {
+        try {
+          const livrableId = await livrableDepuisJob(db, job, result);
+          if (livrableId) await store.logActivity(db, { job_id: job.id, kind: 'livrable_a_valider', message: 'Livrable du robot à valider par PBTM' });
+        } catch (err) {
+          logger.error(`[agents] job ${job.id}: livrable not created:`, err.message);
+          await store.logActivity(db, { job_id: job.id, kind: 'livrable_error', message: 'Le livrable du robot n’a pas pu être créé : déposez-le à la main.' });
+        }
+      }
       return 'done';
     } catch (err) {
       if (err instanceof CancelledError) {

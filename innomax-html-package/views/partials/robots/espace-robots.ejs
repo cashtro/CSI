@@ -1,0 +1,163 @@
+<%# Onglet « 🤖 Mes robots » de /espace. locals : robotsData, robotsError, bienvenue, proprietaire, fmt. %>
+<%
+  const ETATS = { en_cours: '⏳ En cours', verification: '🕵️ Vérification PBTM', livre: '📦 Livré', arrete: '⚠️ Arrêté' };
+  const STATUT_ROBOT = { actif: '🟢 Actif', en_pause: '⏸️ En pause', annule: '✖️ Annulé' };
+%>
+<div class="pl-stack">
+  <% if (bienvenue) { %>
+    <% if (bienvenue.offre) { %>
+    <p class="rb-alert rb-alert--ok" role="status">🎉 Bienvenue ! <strong><%= bienvenue.offre.nom %></strong> est activé. Donnez-lui sa première tâche ci-dessous.</p>
+    <% } else { %>
+    <p class="rb-alert rb-alert--ok" role="status">🎉 Paiement reçu. Votre robot apparaît ici dans quelques secondes : rechargez la page s’il n’y est pas encore.</p>
+    <% } %>
+  <% } %>
+
+  <% if (robotsError) { %>
+    <p class="empty"><%= robotsError %></p>
+  <% } else { %>
+
+  <div class="rb-humain">
+    <span aria-hidden="true">🧑‍⚖️</span>
+    <p><strong>Rien ne part sans validation humaine.</strong> Chaque résultat de vos robots est relu par l’équipe <%= include('../pilotage/marque') %>, puis il arrive dans <a href="/espace?vue=livrables">Livrables</a> pour que vous l’approuviez.</p>
+  </div>
+
+  <% if (!robotsData.vivants.length) { %>
+  <section class="panel" aria-labelledby="aucun-robot">
+    <h2 id="aucun-robot">Aucun robot pour l’instant</h2>
+    <p>Un robot prépare votre contenu, vos réponses, votre prospection ou vos décisions, et vous gardez le dernier mot.</p>
+    <div class="actions"><a class="btn btn--accent" href="/robots">⚡ Découvrir les robots</a></div>
+  </section>
+  <% } %>
+
+  <div class="rb-mes">
+  <% robotsData.vivants.forEach(function (r) { %>
+    <section class="panel rb-robot" aria-labelledby="r-<%= r.id %>">
+      <div class="rb-robot-head">
+        <div class="rb-card-head">
+          <span class="rb-emoji" aria-hidden="true"><%= r.offre.emoji %></span>
+          <div>
+            <h2 id="r-<%= r.id %>"><%= r.offre.nom %></h2>
+            <span class="dim">Depuis le <span class="num"><%= fmt.jour(r.depuis) %></span></span>
+          </div>
+        </div>
+        <span class="badge badge--<%= r.statut %>"><%= STATUT_ROBOT[r.statut] || r.statut %></span>
+      </div>
+      <% if (r.annulation_prevue_le) { %><p class="rb-alert">Annulation prévue le <span class="num"><%= fmt.jour(r.annulation_prevue_le) %></span>. Le robot travaille jusqu’à cette date.</p><% } %>
+
+      <div class="rb-chiffres">
+        <div class="rb-chiffre"><span class="label">Tâches ce mois</span><span class="value"><%= r.utilisees %> / <%= r.quota %></span></div>
+        <div class="rb-chiffre"><span class="label">Terminées</span><span class="value"><%= r.faits.total %></span></div>
+        <div class="rb-chiffre"><span class="label">En cours</span><span class="value"><%= r.faits.enCours %></span></div>
+        <div class="rb-chiffre"><span class="label">Livrées</span><span class="value"><%= r.faits.livres %></span></div>
+      </div>
+      <div class="rb-quota">
+        <progress max="<%= Math.max(1, r.quota) %>" value="<%= Math.min(r.utilisees, Math.max(1, r.quota)) %>" aria-label="Tâches utilisées ce mois"><%= r.utilisees %> sur <%= r.quota %></progress>
+        <span class="dim"><%= r.restantes %> tâche(s) restante(s) ce mois-ci · le compteur repart le 1er du mois</span>
+      </div>
+
+      <% if (r.statut === 'actif') { %>
+      <form class="form rb-tache" data-api="/api/robots/actifs/<%= r.id %>/taches" data-ok="✅ Tâche envoyée. Vous la retrouverez dans Livrables une fois vérifiée.">
+        <div class="field">
+          <label for="t-<%= r.id %>">🎯 Donner une tâche</label>
+          <textarea id="t-<%= r.id %>" name="instruction" maxlength="4000" required data-dictee placeholder="<%= r.offre.mode === 'conseil' ? 'Ex. : Devrions-nous ouvrir une deuxième succursale à Laval en 2027 ?' : 'Ex. : Écris un article de blogue sur nos nouveaux services, ton chaleureux, 800 mots.' %>"></textarea>
+        </div>
+        <div class="actions">
+          <button class="btn btn--accent" type="submit"<% if (!r.restantes) { %> disabled<% } %>>🚀 Envoyer la tâche</button>
+          <% if (!r.restantes) { %><span class="dim">Quota du mois atteint.</span><% } %>
+        </div>
+        <p class="status" data-status role="status"></p>
+      </form>
+      <% } else { %>
+      <p class="empty">⏸️ Ce robot est en pause : il ne prend pas de nouvelles tâches.</p>
+      <% } %>
+
+      <% if (r.recents.length) { %>
+      <div>
+        <h3>Ce qu’il a fait récemment</h3>
+        <ul class="rb-recents">
+          <% r.recents.forEach(function (j) { %>
+          <li><span class="num"><%= fmt.jour(j.created_at) %></span><span class="badge badge--<%= j.etat %>"><%= ETATS[j.etat] %></span></li>
+          <% }) %>
+        </ul>
+      </div>
+      <% } %>
+
+      <details class="reveal">
+        <summary class="btn btn--ghost btn--sm">📝 Consignes permanentes</summary>
+        <form class="form" data-api="/api/robots/actifs/<%= r.id %>/consignes" data-method="PUT" data-ok="Consignes enregistrées.">
+          <div class="field">
+            <label for="c-<%= r.id %>">Ce que le robot doit toujours savoir (ton, clientèle, produits, interdits)</label>
+            <textarea id="c-<%= r.id %>" name="consignes" maxlength="2000" data-dictee><%= r.consignes %></textarea>
+          </div>
+          <div class="actions"><button class="btn" type="submit">Enregistrer</button></div>
+          <p class="status" data-status role="status"></p>
+        </form>
+      </details>
+
+      <% if (proprietaire) { %>
+      <div class="actions">
+        <% if (r.statut === 'actif') { %>
+        <form data-api="/api/robots/actifs/<%= r.id %>/pause" data-confirm="Mettre ce robot en pause ? La facturation est suspendue et il ne prend plus de tâches.">
+          <input type="hidden" name="pause" value="true">
+          <button class="btn btn--ghost btn--sm" type="submit">⏸️ Mettre en pause</button>
+          <span class="status" data-status role="status"></span>
+        </form>
+        <% } else if (r.statut === 'en_pause') { %>
+        <form data-api="/api/robots/actifs/<%= r.id %>/pause">
+          <input type="hidden" name="pause" value="false">
+          <button class="btn btn--accent btn--sm" type="submit">▶️ Réactiver</button>
+          <span class="status" data-status role="status"></span>
+        </form>
+        <% } %>
+        <% if (!r.annulation_prevue_le) { %>
+        <form data-api="/api/robots/actifs/<%= r.id %>/annuler" data-redirect data-confirm="Annuler ce robot ? Vous allez être dirigé vers le portail sécurisé de Stripe pour confirmer.">
+          <button class="btn btn--danger btn--sm" type="submit">✖️ Annuler</button>
+          <span class="status" data-status role="status"></span>
+        </form>
+        <% } %>
+      </div>
+      <% } %>
+    </section>
+  <% }) %>
+  </div>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="outils-titre">
+      <div class="panel-head"><h2 id="outils-titre">🔌 Vos outils</h2></div>
+      <p>Connectez Google, Microsoft 365, Facebook, HubSpot, Shopify ou votre site pour que vos robots travaillent avec vos vraies données.</p>
+      <div class="actions"><a class="btn" href="/espace?vue=connexions">Connecter mes outils</a></div>
+    </section>
+    <% if (proprietaire && robotsData.aClient) { %>
+    <section class="panel" aria-labelledby="factu-titre">
+      <div class="panel-head"><h2 id="factu-titre">💳 Facturation</h2></div>
+      <p>Carte, factures et reçus de vos abonnements, sur le portail sécurisé de Stripe.</p>
+      <form data-api="/api/robots/portail" data-redirect>
+        <button class="btn" type="submit">Ouvrir le portail de facturation</button>
+        <span class="status" data-status role="status"></span>
+      </form>
+    </section>
+    <% } %>
+  </div>
+
+  <% if (robotsData.proposes.length) { %>
+  <section class="panel" aria-labelledby="ajouter-titre">
+    <div class="panel-head"><h2 id="ajouter-titre">Ajouter un robot</h2><a href="/robots">Tout voir →</a></div>
+    <div class="rb-offres-mini">
+      <% robotsData.proposes.forEach(function (o) { %>
+      <a class="rb-offre-mini" href="/robots/<%= o.slug %>/activer"><span><span aria-hidden="true"><%= o.emoji %></span> <%= o.nom %></span><span class="money"><%= fmt.prix(o.prix_mensuel) %>/mois</span></a>
+      <% }) %>
+    </div>
+  </section>
+  <% } %>
+
+  <% const anciens = robotsData.robots.filter(function (r) { return r.statut === 'annule' && !robotsData.vivants.some(function (v) { return v.robot === r.robot; }); }); %>
+  <% if (anciens.length) { %>
+  <section class="panel" aria-labelledby="anciens-titre">
+    <div class="panel-head"><h2 id="anciens-titre">Robots annulés</h2></div>
+    <ul class="rb-recents">
+      <% anciens.forEach(function (r) { %><li><span><%= r.offre.emoji %> <%= r.offre.nom %></span><a href="/robots/<%= r.robot %>/activer">Réactiver</a></li><% }) %>
+    </ul>
+  </section>
+  <% } %>
+  <% } %>
+</div>

@@ -49,7 +49,7 @@ Faites les étapes dans l'ordre.
 Ouvrez l'éditeur SQL de Supabase et exécutez les fichiers **dans cet ordre, obligatoirement** :
 `db/001_fulfillments.sql`, puis `db/002_espace_entreprises.sql`, puis `db/003_moteur_agents.sql`,
 puis `db/004_protection_comptes.sql` (protection des comptes, audit), puis
-`db/005_recherche_agents.sql` (recherche web des agents).
+`db/005_recherche_agents.sql` (recherche web des agents), puis `db/006_robots.sql` (robots clients, voir `ROBOTS.md`).
 Chaque fichier peut être exécuté plusieurs fois sans danger.
 
 003 ajoute une règle qui permet à un membre (table `membres` de 002) de lire l'état des travaux de

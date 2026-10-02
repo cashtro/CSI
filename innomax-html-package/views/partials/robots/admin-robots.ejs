@@ -1,0 +1,181 @@
+<%# Onglet « ⚡ Robots » de /admin/console. locals : robotsAdmin, robotsError, fournisseurs, fmt. %>
+<%
+  const STATUT_ROBOT = { actif: '🟢 Actif', en_pause: '⏸️ En pause', annule: '✖️ Annulé' };
+  const STATUT_CX = { demandee: '📨 Demandée', connectee: '✅ Connectée', erreur: '⚠️ Erreur' };
+%>
+<% function champsOffre(o, p) { %>
+  <div class="form-row">
+    <div class="field"><label for="<%= p %>-nom">Nom</label><input id="<%= p %>-nom" name="nom" type="text" maxlength="120" required value="<%= o.nom || '' %>"></div>
+    <div class="field"><label for="<%= p %>-emoji">Emoji</label><input id="<%= p %>-emoji" name="emoji" type="text" maxlength="16" value="<%= o.emoji || '🤖' %>"></div>
+    <div class="field"><label for="<%= p %>-ordre">Ordre d’affichage</label><input id="<%= p %>-ordre" name="ordre" type="number" step="1" value="<%= o.ordre || 0 %>"></div>
+  </div>
+  <div class="field"><label for="<%= p %>-pitch">Accroche</label><input id="<%= p %>-pitch" name="pitch" type="text" maxlength="400" value="<%= o.pitch || '' %>"></div>
+  <div class="field"><label for="<%= p %>-fait">Ce qu’il fait (une ligne par point)</label><textarea id="<%= p %>-fait" name="fait" maxlength="3000"><%= (o.fait || []).join('\n') %></textarea></div>
+  <div class="field"><label for="<%= p %>-qui">Pour qui</label><input id="<%= p %>-qui" name="pour_qui" type="text" maxlength="400" value="<%= o.pour_qui || '' %>"></div>
+  <div class="form-row">
+    <div class="field"><label for="<%= p %>-pm">Prix mensuel ($ CA)</label><input id="<%= p %>-pm" name="prix_mensuel" type="number" min="0" step="1" required value="<%= o.prix_mensuel != null ? o.prix_mensuel : '' %>"></div>
+    <div class="field"><label for="<%= p %>-pmp">Mise en place ($ CA)</label><input id="<%= p %>-pmp" name="prix_mise_en_place" type="number" min="0" step="1" value="<%= o.prix_mise_en_place || 0 %>"></div>
+    <div class="field"><label for="<%= p %>-q">Tâches par mois</label><input id="<%= p %>-q" name="quota_taches_mois" type="number" min="0" step="1" value="<%= o.quota_taches_mois != null ? o.quota_taches_mois : 20 %>"></div>
+  </div>
+  <div class="form-row">
+    <div class="field"><label for="<%= p %>-price">Price id Stripe (facultatif)</label><input id="<%= p %>-price" name="stripe_price_id" type="text" maxlength="220" pattern="price_[A-Za-z0-9]+" placeholder="price_…" value="<%= o.stripe_price_id || '' %>"><span class="hint">Vide : le prix mensuel ci-dessus est envoyé à Stripe.</span></div>
+    <div class="field"><label for="<%= p %>-mode">Mode</label>
+      <select id="<%= p %>-mode" name="mode">
+        <option value="ordre"<%= o.mode !== 'conseil' ? ' selected' : '' %>>Ordre (un agent)</option>
+        <option value="conseil"<%= o.mode === 'conseil' ? ' selected' : '' %>>Conseil (débat)</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="field"><label for="<%= p %>-agents">Agents (ids, séparés par des virgules ; le premier travaille)</label><input id="<%= p %>-agents" name="agents" type="text" maxlength="1200" value="<%= (o.agents || []).join(', ') %>"></div>
+    <div class="field"><label for="<%= p %>-eq">Équipes</label><input id="<%= p %>-eq" name="equipes" type="text" maxlength="400" value="<%= (o.equipes || []).join(', ') %>"></div>
+  </div>
+  <label class="rb-check"><input type="checkbox" name="actif"<%= o.actif !== false ? ' checked' : '' %>><span>Visible sur /robots et activable</span></label>
+<% } %>
+
+<% if (robotsError) { %>
+  <p class="empty"><%= robotsError %></p>
+<% } else { const R = robotsAdmin; const demandes = R.connexions.filter(function (c) { return c.statut === 'demandee'; }); %>
+<div class="pl-stack">
+  <div class="kpis">
+    <div class="panel kpi kpi--accent kpi--vedette"><span class="emoji" aria-hidden="true">💸</span><span class="label">Revenu mensuel récurrent</span><span class="value"><%= fmt.money(R.mrrTotal) %></span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">🤖</span><span class="label">Robots actifs</span><span class="value"><%= R.nbActifs %></span></div>
+    <div class="panel panel--accent kpi kpi--accent"><span class="emoji" aria-hidden="true">🕵️</span><span class="label">Livrables à valider</span><span class="value"><%= R.aValider.length %></span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">📨</span><span class="label">Connexions demandées</span><span class="value"><%= demandes.length %></span></div>
+  </div>
+
+  <section class="panel" aria-labelledby="a-valider">
+    <div class="panel-head"><h2 id="a-valider">🕵️ Livrables des robots à valider</h2><span class="tag">Le client ne voit rien avant votre publication</span></div>
+    <% if (!R.aValider.length) { %><p class="empty">🌴 Aucun livrable de robot en attente.</p><% } else { %>
+    <ul class="items">
+      <% R.aValider.forEach(function (l) { %>
+      <li class="item item--accent">
+        <div class="item-head"><h3><%= l.titre %></h3><span class="badge badge--a_valider"><%= fmt.statut.a_valider %></span></div>
+        <div class="item-meta"><%= l.entreprise %> · <%= l.offre ? l.offre.nom : l.robot %> · <span class="num"><%= fmt.jour(l.created_at) %></span><% if (l.produit_par) { %> · <%= l.produit_par %><% } %></div>
+        <% if (l.description) { %><p><%= l.description %></p><% } %>
+        <form class="form" data-api="/api/admin/robots/livrables/<%= l.id %>/validation" data-ok="Décision enregistrée.">
+          <div class="field">
+            <label for="v-t-<%= l.id %>">Titre</label>
+            <input id="v-t-<%= l.id %>" name="titre" type="text" maxlength="200" value="<%= l.titre %>">
+          </div>
+          <div class="field">
+            <label for="v-<%= l.id %>">Livrable (corrigez avant de publier)</label>
+            <textarea id="v-<%= l.id %>" name="contenu" class="code rb-editeur" maxlength="100000"><%= l.contenu || '' %></textarea>
+          </div>
+          <div class="actions">
+            <button class="btn btn--accent" type="submit" name="decision" value="publier">✅ Publier pour le client</button>
+            <button class="btn btn--danger" type="submit" name="decision" value="refuser">🚫 Refuser</button>
+          </div>
+          <p class="status" data-status role="status"></p>
+        </form>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="mrr-titre">
+      <div class="panel-head"><h2 id="mrr-titre">💸 Revenu récurrent par robot</h2><span class="tag">Robots actifs × prix du catalogue</span></div>
+      <div class="table-wrap">
+        <table class="grid stack">
+          <thead><tr><th>Robot</th><th class="right">Actifs</th><th class="right">En pause</th><th class="right">Prix</th><th class="right">Par mois</th></tr></thead>
+          <tbody>
+            <% R.mrr.forEach(function (m) { %>
+            <tr>
+              <td data-label="Robot"><%= m.emoji %> <%= m.nom %></td>
+              <td data-label="Actifs" class="right num"><%= m.actifs %></td>
+              <td data-label="En pause" class="right num"><%= m.enPause %></td>
+              <td data-label="Prix" class="right money"><%= fmt.prix(m.prix) %></td>
+              <td data-label="Par mois" class="right money"><%= fmt.money(m.mrr) %></td>
+            </tr>
+            <% }) %>
+            <tr><td data-label="Total"><strong>Total</strong></td><td></td><td></td><td></td><td data-label="Par mois" class="right money"><%= fmt.money(R.mrrTotal) %></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel" aria-labelledby="cx-titre">
+      <div class="panel-head"><h2 id="cx-titre">🔌 Connexions des clients</h2><span class="tag"><%= demandes.length %> à traiter</span></div>
+      <% if (!R.connexions.length) { %><p class="empty">Aucune connexion pour l’instant.</p><% } else { %>
+      <div class="table-wrap">
+        <table class="grid stack">
+          <thead><tr><th>Entreprise</th><th>Outil</th><th>Statut</th><th>Compte</th><th>Mis à jour</th></tr></thead>
+          <tbody>
+            <% R.connexions.forEach(function (c) { %>
+            <tr>
+              <td data-label="Entreprise"><%= c.entreprise %></td>
+              <td data-label="Outil"><%= fournisseurs[c.fournisseur] ? fournisseurs[c.fournisseur].nom : c.fournisseur %></td>
+              <td data-label="Statut"><span class="badge badge--<%= c.statut %>"><%= STATUT_CX[c.statut] || c.statut %></span></td>
+              <td data-label="Compte"><%= c.compte || '—' %></td>
+              <td data-label="Mis à jour" class="num"><%= fmt.jour(c.updated_at || c.created_at) %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+      </div>
+      <% } %>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="par-ent">
+    <div class="panel-head"><h2 id="par-ent">🏢 Robots par entreprise</h2><span class="tag"><%= R.parEntreprise.length %> abonnement(s)</span></div>
+    <% if (!R.parEntreprise.length) { %><p class="empty">Aucun robot activé pour l’instant.</p><% } else { %>
+    <div class="table-wrap">
+      <table class="grid stack">
+        <thead><tr><th>Entreprise</th><th>Robot</th><th>Statut</th><th>Depuis</th><th class="right">Tâches ce mois</th><th>Abonnement Stripe</th></tr></thead>
+        <tbody>
+          <% R.parEntreprise.forEach(function (a) { %>
+          <tr>
+            <td data-label="Entreprise"><%= a.entreprise %></td>
+            <td data-label="Robot"><%= a.offre ? a.offre.emoji + ' ' + a.offre.nom : a.robot %></td>
+            <td data-label="Statut"><span class="badge badge--<%= a.statut %>"><%= STATUT_ROBOT[a.statut] || a.statut %></span><% if (a.annulation_prevue_le) { %> <span class="dim">fin le <%= fmt.jour(a.annulation_prevue_le) %></span><% } %></td>
+            <td data-label="Depuis" class="num"><%= fmt.jour(a.depuis || a.created_at) %></td>
+            <td data-label="Tâches" class="right num"><%= a.taches %> / <%= a.offre ? a.offre.quota_taches_mois : '—' %></td>
+            <td data-label="Stripe" class="mono dim"><%= a.stripe_subscription_id || '—' %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
+
+  <section class="panel" aria-labelledby="catalogue">
+    <div class="panel-head"><h2 id="catalogue">🗂️ Catalogue des robots</h2><span class="tag"><%= R.offres.length %> robot(s) · prix en estimation, à valider</span></div>
+    <% if (R.depuisSeed) { %><p class="empty">La table robots_offres est introuvable : exécutez db/006_robots.sql. La vitrine affiche en attendant les 6 robots de départ.</p><% } %>
+    <form class="actions" data-api="/api/admin/robots/seed" data-ok="Robots de départ ajoutés.">
+      <button class="btn btn--ghost btn--sm" type="submit">🌱 Ajouter les 6 robots de départ manquants</button>
+      <span class="status" data-status role="status"></span>
+    </form>
+    <ul class="items">
+      <% R.offres.forEach(function (o) { %>
+      <li class="item">
+        <details class="rb-admin-offre">
+          <summary>
+            <span class="rb-card-head"><span class="rb-emoji" aria-hidden="true"><%= o.emoji %></span><h3><%= o.nom %></h3></span>
+            <span class="dim"><span class="mono"><%= o.slug %></span> · <%= fmt.prix(o.prix_mensuel) %>/mois · ordre <%= o.ordre %> · <span class="badge badge--<%= o.actif ? 'actif' : 'en_pause' %>"><%= o.actif ? 'Visible' : 'Masqué' %></span></span>
+          </summary>
+          <form class="form" data-api="/api/admin/robots/<%= o.slug %>" data-method="PUT" data-ok="Robot enregistré.">
+            <% champsOffre(o, 'o-' + o.slug) %>
+            <div class="actions"><button class="btn btn--accent" type="submit">💾 Enregistrer</button></div>
+            <p class="status" data-status role="status"></p>
+          </form>
+        </details>
+      </li>
+      <% }) %>
+    </ul>
+  </section>
+
+  <section class="panel" aria-labelledby="nouveau-robot">
+    <div class="panel-head"><h2 id="nouveau-robot">✨ Nouveau robot</h2></div>
+    <form class="form" data-api="/api/admin/robots" data-ok="Robot créé.">
+      <div class="field"><label for="n-slug">Identifiant (dans l’adresse, ne change plus)</label><input id="n-slug" name="slug" type="text" required pattern="[a-z0-9][a-z0-9\-]{1,59}" placeholder="ex. service-client"></div>
+      <% champsOffre({ actif: true, quota_taches_mois: 20, ordre: (R.offres.length + 1) * 10 }, 'n') %>
+      <div class="actions"><button class="btn btn--accent" type="submit">✨ Créer le robot</button></div>
+      <p class="status" data-status role="status"></p>
+    </form>
+  </section>
+</div>
+<% } %>
