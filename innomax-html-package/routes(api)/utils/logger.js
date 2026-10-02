@@ -11,7 +11,7 @@ const LEVELS = { error: 0, warn: 1, info: 2, debug: 3 };
 const configured = (process.env.LOG_LEVEL || 'info').toLowerCase();
 const threshold = LEVELS[configured] !== undefined ? LEVELS[configured] : LEVELS.info;
 
-const SECRET_KEY = /(token|secret|password|authorization|api[-_]?key|access_token|refresh_token|email)/i;
+const SECRET_KEY = /(token|secret|password|authorization|api[-_]?key|access_token|refresh_token|email|session_?id|cookie)/i;
 
 function redact(value, depth = 0) {
   if (value == null || typeof value !== 'object' || depth > 4) return value;
@@ -27,7 +27,9 @@ function emit(level, args) {
   if (LEVELS[level] > threshold) return;
   const prefix = `${new Date().toISOString()} [${level.toUpperCase()}]`;
   const sink = level === 'error' ? console.error : level === 'warn' ? console.warn : console.log;
-  sink(prefix, ...args);
+  // Plain objects are scrubbed automatically (a call site that logs a row or
+  // a request object must not leak a token). Errors keep message and stack.
+  sink(prefix, ...args.map((a) => (a && typeof a === 'object' && !(a instanceof Error) ? redact(a) : a)));
 }
 
 module.exports = {

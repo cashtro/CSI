@@ -55,4 +55,15 @@ describe('utils/logger', () => {
     expect(clean.nested.ok).toBe(1);
     expect(clean.ok).toBe('visible');
   });
+
+  it('scrubs plain objects passed to the log methods, keeps errors', () => {
+    const logger = require('../routes(api)/utils/logger');
+    const err = new Error('boom');
+    logger.warn('Invalid session attempt:', { sessionId: 'abcdef123456', ip: '1.2.3.4', headers: { cookie: 'accessToken=eyJ' } }, err);
+    const [, , obj, e] = warnSpy.mock.calls[0];
+    expect(obj.sessionId).toBe('[redacted]');
+    expect(obj.headers.cookie).toBe('[redacted]');
+    expect(obj.ip).toBe('1.2.3.4');
+    expect(e).toBe(err);
+  });
 });
