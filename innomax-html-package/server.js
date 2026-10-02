@@ -3,6 +3,9 @@ const path = require('path');
 const bodyParser = require('body-parser');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+// Boot-safety: validate env and install non-throwing sentinels BEFORE any route
+// (and its SDK clients) is required, so a missing credential can't crash startup.
+require('./routes(api)/utils/config');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf'); // ✅ Protection CSRF
 const compression = require('compression');

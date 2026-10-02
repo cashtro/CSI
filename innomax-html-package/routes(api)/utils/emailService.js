@@ -1,8 +1,13 @@
 const nodemailer = require('nodemailer');
 const sendgridMail = require('@sendgrid/mail');
 
-// Set your SendGrid API Key (from your SendGrid dashboard)
-sendgridMail.setApiKey(process.env.SENDGRID_API_KEY); // Ensure your API key is stored in an environment variable
+// Set your SendGrid API Key (from your SendGrid dashboard).
+// Guarded so a missing key doesn't throw at import time (boot-safety).
+if (process.env.SENDGRID_API_KEY) {
+    sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
+} else {
+    console.warn('[emailService] SENDGRID_API_KEY not set — email sending is disabled.');
+}
 // Create a transporter using environment variables
 
 
