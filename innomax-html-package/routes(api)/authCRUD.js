@@ -453,16 +453,19 @@ router.post('/toggle-2fa', authenticateUser, async (req, res) => {
 // In routes(api)/authCRUD.js
 router.post('/UserProvider', async (req, res) => {
     const { session } = req.body;
-    const provider = session.user.app_metadata.provider;
-
-
 
     try {
-        // Use access_token to get user info securely
+        if (!session || !session.access_token) {
+            return res.status(400).json({ message: 'Missing OAuth session' });
+        }
+
+        // Verify the token server-side and derive identity/provider from the
+        // VERIFIED user — never trust fields on the client-supplied session.
         const { data: { user }, error } = await supabase.auth.getUser(session.access_token);
         if (error || !user) {
             return res.status(401).json({ message: 'Invalid token or user not found' });
         }
+        const provider = user.app_metadata?.provider || null;
 
 
         // Check if user already exists
@@ -489,7 +492,7 @@ router.post('/UserProvider', async (req, res) => {
             .from('Users')
             .insert({
                 userId: user.id,
-                username: user.user_metadata.name,
+                username: user.user_metadata?.name,
                 email: user.email,
                 age: null,
                 useProvider: true,
@@ -610,40 +613,51 @@ router.post('/check-email', async (req, res) => {
 
 // Link OAuth account with existing password account
 router.post('/link-account', async (req, res) => {
-    const { email, password, provider, session } = req.body;
-    
+    const { email, password, session } = req.body;
+
     try {
-        // 1. Verify the password is correct
-        const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
-        
+        // 1. Verify the password identity.
+        const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
         if (authError) {
             return res.status(401).json({ error: 'Invalid password' });
         }
-        
-        // 2. Update the user's record to include the OAuth provider
+
+        // 2. Verify the OAuth session SERVER-SIDE and bind it to the same email.
+        // Previously the OAuth providerId came straight from req.body.session,
+        // so a user who knew a password could attach an arbitrary OAuth identity.
+        if (!session || !session.access_token) {
+            return res.status(400).json({ error: 'Missing OAuth session' });
+        }
+        const { data: { user: oauthUser }, error: oauthError } = await supabase.auth.getUser(session.access_token);
+        if (oauthError || !oauthUser) {
+            return res.status(401).json({ error: 'Invalid OAuth session' });
+        }
+        if ((oauthUser.email || '').toLowerCase() !== (email || '').toLowerCase()) {
+            return res.status(403).json({ error: 'OAuth account email does not match this account' });
+        }
+        const provider = oauthUser.app_metadata?.provider || null;
+
+        // 3. Link using the VERIFIED OAuth identity.
         const { error: updateError } = await supabase
             .from('Users')
             .update({
                 useProvider: true,
                 provider: provider,
-                providerId: session.user.id
+                providerId: oauthUser.id
             })
             .eq('email', email);
-            
+
         if (updateError) {
             throw updateError;
         }
-        
-        // 3. Set auth cookies with the OAuth session
+
+        // 4. Set auth cookies with the verified OAuth session.
         setAuthCookies(res, session.access_token, session.refresh_token, true);
-        
+
         res.json({ success: true, message: 'Accounts linked successfully' });
     } catch (error) {
-        console.error('Error linking accounts:', error);
-        res.status(500).json({ error: error.message });
+        console.error('Error linking accounts:', error.message);
+        res.status(500).json({ error: 'Unable to link accounts' });
     }
 });
 
