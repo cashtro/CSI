@@ -351,4 +351,48 @@ describe('cheerful theme', () => {
     expect(css).toContain(":root[data-theme='dark']");
     expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.confetti \{ display: none; \}/);
   });
+
+  // Rebranding: every colour lives in one brand block at the top of the file.
+  const TOKENS = ['--bg', '--surface', '--ink', '--muted', '--line', '--line-strong', '--accent', '--accent-2', '--accent-ink', '--on-accent', '--ok', '--warn', '--bad'];
+  const start = css.indexOf('/* 0. BLOC MARQUE');
+  const end = css.indexOf('/* FIN DU BLOC MARQUE');
+  const block = css.slice(start, end);
+
+  it('keeps the brand tokens in one block, in the light, system-dark and chosen-dark states', () => {
+    expect(start).toBeGreaterThan(-1);
+    expect(end).toBeGreaterThan(start);
+    const states = [
+      block.slice(block.indexOf(':root {'), block.indexOf('@media (prefers-color-scheme: dark)')),
+      block.slice(block.indexOf(":root:not([data-theme='light'])"), block.indexOf(":root[data-theme='dark']")),
+      block.slice(block.indexOf(":root[data-theme='dark']")),
+    ];
+    states.forEach((state) => {
+      TOKENS.forEach((token) => expect(state).toMatch(new RegExp(`\\s${token}: #[0-9a-f]{6};`)));
+    });
+  });
+
+  it('hard-codes no colour outside the brand block, so a rebrand is one replacement', () => {
+    const rest = css.slice(0, start) + css.slice(end);
+    expect(rest).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+    const topbar = fs.readFileSync(path.join(__dirname, '..', 'views', 'partials', 'pilotage', 'topbar.ejs'), 'utf8');
+    expect(topbar).not.toMatch(/#[0-9a-fA-F]{3,8}\b/);
+  });
+
+  it('stops every animation with reduced motion and only animates transform, opacity or background-position', () => {
+    expect(css).toMatch(/@media \(prefers-reduced-motion: reduce\) \{\s*\*, \*::before, \*::after \{\s*animation: none !important;\s*transition: none !important;/);
+    const frames = css.match(/@keyframes [\w-]+ \{[^@]*?\}\s*\}/g) || [];
+    expect(frames.length).toBeGreaterThan(5);
+    frames.forEach((f) => {
+      const props = f.replace(/^@keyframes [\w-]+ \{/, '').match(/[a-z-]+(?=:)/g) || [];
+      props.forEach((prop) => expect(['transform', 'opacity', 'background-position']).toContain(prop));
+    });
+  });
+
+  it('renders the animated Pandora box logo and loads the motion script deferred', async () => {
+    const res = await request(app).get('/admin/console').set('Cookie', adminCookies());
+    expect(res.text).toContain('class="pb-mark" data-pandora-mark');
+    expect(res.text).toContain('<script src="/assets/js/reflets.js" defer></script>');
+    expect(res.text.match(/kpi--vedette/g)).toHaveLength(1);
+    expect(res.text).toMatch(/<span class="hero-emoji">🏠<\/span><span class="foil">Aperçu<\/span>/);
+  });
 });
