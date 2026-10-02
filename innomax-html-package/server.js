@@ -75,6 +75,11 @@ app.use(cookieParser());
 // registered BEFORE the JSON body parser (which would otherwise consume it).
 const { stripeWebhookHandler } = require('./routes(api)/webhook');
 app.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler);
+// Content-Security-Policy in report-only mode (never blocks; collects violation
+// reports to build an enforcing policy later). Report sink accepts + drops.
+const { cspReportOnly } = require('./routes(api)/utils/csp');
+app.use(cspReportOnly);
+app.post('/api/csp-report', express.json({ type: ['application/json', 'application/csp-report', 'application/reports+json'] }), (req, res) => res.sendStatus(204));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
