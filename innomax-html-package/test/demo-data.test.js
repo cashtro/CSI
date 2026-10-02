@@ -31,3 +31,20 @@ describe('demo data', () => {
     expect(r.sources.length).toBe(3);
   });
 });
+
+describe('demo robots', () => {
+  it('seeds a client with robots, a deliverable to validate, and a fake Stripe that charges nothing', async () => {
+    const { seedRobotsDemo, createFakeStripe, CLIENT_ID } = require('../scripts/demo/robots');
+    const db = createMockDb({}, {}, { uuid: true });
+    await seedDemo(db);
+    seedRobotsDemo(db);
+    expect(db.tables.robots_offres).toHaveLength(6);
+    expect(db.tables.membres.find((m) => m.user_id === CLIENT_ID).role).toBe('proprietaire');
+    expect(db.tables.livrables.some((l) => l.statut === 'a_valider')).toBe(true);
+    expect(db.tables.connexions.every((c) => c.jetons === null)).toBe(true);
+    const stripe = createFakeStripe()('sk_none');
+    const s = await stripe.checkout.sessions.create({ mode: 'subscription', metadata: { type: 'robot' } });
+    expect(s.url).toMatch(/^\/demo\/stripe\/cs_demo_/);
+    expect((await stripe.checkout.sessions.retrieve(s.id)).payment_status).toBe('paid');
+  });
+});

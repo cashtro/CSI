@@ -2,7 +2,9 @@
 // Local demo of the admin "Agents" tabs, for the founder.
 //
 //   DEMO_MODE=true node scripts/demo-admin.js
-//   then open http://127.0.0.1:3999/demo/connexion
+//   then open http://127.0.0.1:3999/demo/connexion (admin)
+//   or http://127.0.0.1:3999/demo/client (a client, owner of the demo clinic),
+//   and http://127.0.0.1:3999/robots (the public robots page)
 //
 // Refused when NODE_ENV=production, under PM2, or without DEMO_MODE=true
 // (scripts/demo/guard.js). It runs the real routers, views, guards and agent
@@ -10,7 +12,10 @@
 //   - the in-memory Supabase of the tests (test/helpers/mock-supabase.js);
 //   - a fake Anthropic API (scripts/demo/fake-anthropic.js): answers are
 //     simulated and say so, nothing is sent anywhere, nothing is paid;
-//   - an admin already signed in with the 2FA proof (/demo/connexion).
+//   - an admin already signed in with the 2FA proof (/demo/connexion);
+//   - a client already signed in (/demo/client) and a FAKE Stripe
+//     (scripts/demo/robots.js): "Activer ce robot" ends on a simulated
+//     payment, nothing is charged.
 // Data lives in memory and is lost when the process stops.
 
 const { demoAllowed } = require('./demo/guard');
@@ -35,6 +40,9 @@ Object.assign(process.env, {
   AGENTS_ENABLED: 'true',
   AGENTS_REFUSAL_FALLBACK: 'false',
   COOKIE_SECURE: 'false',
+  // Throwaway key of this process only: lets the demo encrypt a website key.
+  TOTP_ENC_KEY: require('crypto').randomBytes(32).toString('hex'),
+  APP_URL: `http://127.0.0.1:${parseInt(process.env.DEMO_PORT, 10) || 3999}`,
 });
 
 const crypto = require('crypto');
@@ -68,6 +76,11 @@ require.cache[supabaseUtil] = {
   exports: { createSupabaseClient: () => db, createSupabaseAdmin: () => db, createSupabaseClientWithAuth: () => db },
 };
 
+// Every require('stripe') of the routes gets the fake Stripe of the demo.
+const { seedRobotsDemo, createFakeStripe, CLIENT_ID } = require('./demo/robots');
+const stripePath = require.resolve('stripe');
+require.cache[stripePath] = { id: stripePath, filename: stripePath, loaded: true, exports: createFakeStripe() };
+
 const helmet = require('helmet');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
@@ -85,6 +98,7 @@ const HOST = '127.0.0.1';
 
 async function main() {
   await seedDemo(db);
+  seedRobotsDemo(db);
 
   const app = express();
   app.disable('x-powered-by');
@@ -108,12 +122,28 @@ async function main() {
     res.cookie(MFA_COOKIE, signMfaProof(ADMIN_ID, Date.now() + 12 * 3600 * 1000), opts);
     res.redirect('/admin/console?vue=agents');
   });
-  app.get('/login', (req, res) => res.type('text').send('Démo : ouvrez /demo/connexion pour vous reconnecter.'));
+  // Demo sign-in as a client (owner of the demo clinic), no password.
+  app.get('/demo/client', (req, res) => {
+    const token = crypto.randomBytes(24).toString('hex');
+    sessions[token] = { id: CLIENT_ID, email: 'proprio@horizon.demo' };
+    res.cookie('accessToken', token, { httpOnly: true, sameSite: 'lax', secure: false, path: '/' });
+    res.clearCookie(MFA_COOKIE);
+    res.redirect('/espace?vue=robots');
+  });
+  // Fake Stripe pages: the payment is simulated, then Stripe's success_url.
+  app.get('/demo/stripe/:id', (req, res) => res.redirect(`/robots/merci?session_id=${encodeURIComponent(req.params.id)}`));
+  app.get('/demo/stripe-portail', (req, res) => res.type('text').send('Démo : ici s’ouvrirait le portail client de Stripe (carte, factures, annulation). Revenez à /espace?vue=robots.'));
+  app.get('/login', (req, res) => res.type('text').send('Démo : ouvrez /demo/client (client) ou /demo/connexion (admin) pour vous connecter.'));
   app.post('/api/auth/logout', (req, res) => { res.clearCookie('accessToken'); res.clearCookie(MFA_COOKIE); res.json({ ok: true }); });
 
   app.use('/api/admin/agents', require('../routes(api)/agentsAdmin'));
+  app.use('/api/admin/robots', require('../routes(api)/adminRobots'));
+  app.use('/api/robots', require('../routes(api)/robotsCRUD'));
+  app.use('/api/espace', require('../routes(api)/espaceCRUD'));
   app.use('/api/admin', require('../routes(api)/adminCRUD'));
   app.use(require('../routes(api)/espacePages'));
+  app.use(require('../routes(api)/robotsPages'));
+  app.use(require('../routes(api)/connexionsRoutes'));
   app.use((req, res) => res.status(404).type('text').send('Introuvable dans la démo.'));
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
@@ -153,7 +183,7 @@ async function main() {
   }
 
   const server = app.listen(PORT, HOST, () => {
-    logger.info(`[demo] Démo prête : http://${HOST}:${PORT}/demo/connexion (données en mémoire, réponses simulées).`);
+    logger.info(`[demo] Démo prête : http://${HOST}:${PORT}/demo/connexion (admin), /demo/client (client), /robots (vitrine). Données en mémoire, réponses et paiements simulés.`);
   });
   const stop = async () => {
     await Promise.all(workers.map((w) => w.stop().catch(() => {})));

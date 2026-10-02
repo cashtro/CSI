@@ -26,6 +26,7 @@ body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
 .rb-top { background: var(--frame); color: var(--frame-ink); border-bottom: 1px solid var(--frame-line); }
 .rb-top a { color: var(--frame-ink); }
 .rb-top-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding-top: var(--s-4); padding-bottom: var(--s-4); }
+.rb-top-nav a { white-space: nowrap; }
 .rb-top-nav { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; justify-content: flex-end; }
 
 .rb-hero {
@@ -173,7 +174,7 @@ body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
 
 .rb-preuves { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
 .rb-preuve { position: relative; margin: 0; padding: var(--s-6) var(--s-5) var(--s-5); border: 1px dashed var(--line-input); border-radius: var(--r-lg); background: var(--surface-2); }
-.rb-preuve blockquote { margin: 0 0 var(--s-4); font-size: var(--fs-md); }
+.rb-preuve blockquote { margin: var(--s-3) 0 var(--s-4); font-size: var(--fs-md); }
 .rb-preuve figcaption { font-size: var(--fs-sm); color: var(--muted); }
 .rb-exemple { position: absolute; top: var(--s-3); right: var(--s-3); padding: 2px var(--s-3); border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: var(--fs-xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
 
@@ -235,6 +236,8 @@ body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
 .rb-humain p { margin: 0; }
 .rb-offres-mini { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
 .rb-offre-mini { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-3) var(--s-4); border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--surface); }
+.pl .rb-offre-mini { color: var(--ink); text-decoration: none; transition: transform 0.2s ease; }
+.pl .rb-offre-mini:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
 .rb-offre-mini span { font-weight: 800; }
 .livrable-texte {
   margin: var(--s-3) 0 0;
@@ -278,6 +281,8 @@ body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
 
 @media (max-width: 760px) {
   .rb-top-nav .topbar-link--site { display: none; }
+  .rb-top-nav { flex-wrap: nowrap; gap: var(--s-1); }
+  .rb-top-row { padding-top: var(--s-3); padding-bottom: var(--s-3); }
   .rb-hero { width: calc(100% - 2 * var(--s-4)); padding: var(--s-7) var(--s-4) var(--s-6); margin-top: var(--s-4); }
   .rb-hero .actions .btn { width: 100%; }
   .rb-hero .rb-lead { font-size: var(--fs-base); }
@@ -301,7 +306,7 @@ body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
     border-top: 1px solid var(--frame-line);
     box-shadow: var(--shadow-2);
   }
-  .rb-sticky .btn { width: 100%; }
+  .rb-sticky .btn { width: 100%; white-space: nowrap; }
 }
 
 
@@ -311,3 +316,4 @@ body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
   .rb-hero::before, .rb-hero::after, .rb-etapes li::before { animation: none; }
   .rb-card, .rb-card:hover { transition: none; transform: none; }
 }
+.pl textarea.rb-editeur { min-height: 260px; }

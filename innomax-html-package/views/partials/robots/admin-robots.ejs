@@ -60,7 +60,7 @@
           </div>
           <div class="field">
             <label for="v-<%= l.id %>">Livrable (corrigez avant de publier)</label>
-            <textarea id="v-<%= l.id %>" name="contenu" class="code" maxlength="100000"><%= l.contenu || '' %></textarea>
+            <textarea id="v-<%= l.id %>" name="contenu" class="code rb-editeur" maxlength="100000"><%= l.contenu || '' %></textarea>
           </div>
           <div class="actions">
             <button class="btn btn--accent" type="submit" name="decision" value="publier">✅ Publier pour le client</button>

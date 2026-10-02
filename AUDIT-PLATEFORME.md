@@ -83,6 +83,7 @@ Dans l'éditeur SQL de Supabase, un fichier à la fois :
 3. `db/003_moteur_agents.sql`
 4. `db/004_protection_comptes.sql` (nouveau, **fortement recommandé**)
 5. `db/005_recherche_agents.sql` (recherche web des agents, onglet Agents de l'admin)
+6. `db/006_robots.sql` (robots clients et connexions, voir `ROBOTS.md`)
 
 Chaque fichier peut être relancé sans danger. Si 003 a été exécuté avant 002, relancez 003.
 Les cinq fichiers ont été essayés dans cet ordre, deux fois de suite, sur PostgreSQL 16 avec
@@ -119,7 +120,7 @@ Après un test sur un environnement d'essai (connexion, achat, tableaux de bord)
 Stripe → Developers → Webhooks → Add endpoint :
 
 - URL : `https://pandorabrains.com/webhook`
-- Événements : `checkout.session.completed` et `checkout.session.async_payment_succeeded`
+- Événements : `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `customer.subscription.updated` et `customer.subscription.deleted` (robots)
 - Copiez le « Signing secret » dans `STRIPE_WEBHOOK_SECRET`.
 
 Les achats de la boutique (`/achats`) passent maintenant aussi par ce webhook.

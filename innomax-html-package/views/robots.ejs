@@ -188,7 +188,7 @@
 </main>
 
 <div class="rb-sticky">
-  <a class="btn btn--accent" href="#robots">⚡ Activer un robot<% if (deFrom !== null) { %> · dès <%= fmt.prix(deFrom) %>/mois<% } %></a>
+  <a class="btn btn--accent" href="#robots">⚡ Activer<% if (deFrom !== null) { %> · dès <%= fmt.prix(deFrom) %>/mois<% } else { %> un robot<% } %></a>
 </div>
 <%- include('partials/pilotage/footer') %>
 </body>
