@@ -12,6 +12,17 @@ const supabase = createClient(
 
 const multer = require('multer');
 const { authenticateUser, checkAdmin } = require('./utils/auth-middleware');
+const { createSupabaseAdmin } = require('./utils/supabaseUtil');
+
+// A student's enrolments are visible to that student and to admins only
+// (the id comes from the URL, so any signed-in user could read anyone's).
+async function selfOrAdmin(req, res, studentId) {
+    if (req.user && req.user.id === studentId) return true;
+    const { data } = await createSupabaseAdmin().from('Users').select('isAdmin').eq('userId', req.user.id).maybeSingle();
+    if (data && data.isAdmin === true) return true;
+    res.status(403).json({ error: 'Forbidden' });
+    return false;
+}
 
 const storage = multer.memoryStorage();
 // Lesson files (video, audio, PDF, images). Anything a browser would run as
@@ -252,7 +263,8 @@ router.get('/all-courses', async (req, res) => {
 router.get('/student-courses/:studentId', authenticateUser, async (req, res) => {
     try {
         const { studentId } = req.params;
-        
+        if (!(await selfOrAdmin(req, res, studentId))) return;
+
         const { data, error } = await supabase
             .from('cours_students')
             .select('cours_id')
@@ -278,6 +290,7 @@ router.get('/student-courses/:studentId', authenticateUser, async (req, res) => 
 // GET /api/course/student-courses-count/:studentId
 router.get('/student-courses-count/:studentId', authenticateUser, async (req, res) => {
     try {
+        if (!(await selfOrAdmin(req, res, req.params.studentId))) return;
         const { count } = await supabase
             .from('cours_students')
             .select('*', { count: 'exact', head: true })
