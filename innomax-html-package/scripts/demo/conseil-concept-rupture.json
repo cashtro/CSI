@@ -1,0 +1,545 @@
+{
+  "clientId": "",
+  "contexte": "Recherche web du 2 octobre 2026 (résumés de sources secondaires, prix à vérifier) : les plateformes « AI workforce » (Sintra 54 à 97 $/mois, Lindy 30 $, Relevance AI, Artisan 250 à 600 $) sont anglophones, génériques et sans contre-vérification ; les agences québécoises facturent à l'heure (environ 120 $/h) ou en gros forfaits mensuels. Personne de visible ne combine français québécois natif, conformité Loi 25 intégrée et délibération multi-agents vérifiable à prix PME. Études : le débat entre agents identiques plafonne ; les rôles et modèles différents avec un agrégateur gagnent (Mixture-of-Agents) ; un contradicteur permanent peut nuire, il faut l'utiliser contre un consensus trop rapide. Outils gratuits ou peu coûteux : Buffer MCP, Remotion, BlenderMCP, UEMCP, ElevenLabs (voix québécoises, 22 $/mois), Canva/Adobe MCP, HubSpot et GA4 MCP. Budget d'outils de Pandora : moins de 100 $/mois.",
+  "createdAt": "2026-10-02T09:30:00Z",
+  "mode": "auto",
+  "run": {
+    "cast": {
+      "arbiter": "Arbitre",
+      "critics": [
+        "Contre",
+        "Miroir",
+        "Faille"
+      ],
+      "planner": "Jalon",
+      "proposers": [
+        "Cap",
+        "Plume",
+        "Volume",
+        "Boussole",
+        "Ossature",
+        "Atlas"
+      ],
+      "reviewer": "Sceau"
+    },
+    "contre_propositions": {
+      "Contre": "Test de prévente de 21 jours sur la demande : abonnement « Studio Vérifié » (B) avec fiche de conformité et second passage d'IA configuré différemment, livraison manuelle sans portail, 8-10 PME, critère d'arrêt : 3 engagements écrits en 30 jours, sinon pivot vers A en diagnostic payant après avis juridique; mesurer le temps réel de validation.",
+      "Faille": "A cadré comme service consultatif à périmètre restreint : exclure les décisions à risque élevé, contrat de pilote écrit révisé une fois par un avocat (coût à confirmer, estimation), aucun renseignement personnel, journal de délibération en PDF, ÉFVP simple pour tout transfert hors Québec, outils sous 100 $/mois sans HubSpot/GA4 au départ, prospection limitée à la relation existante, validation du patron; abandon vers B si moins de 2 engagements.",
+      "Miroir": "A emballé en produit compréhensible en 10 secondes : une décision tranchée, avec sources, risques Loi 25 et plan d'action, livrée en 48 h pour 290 $ (estimation); pilote 21 jours avec 3 à 5 PME contre témoignage, puis abonnement 900 $/mois (estimation) avec décisions définies; exemple de rapport anonymisé, garantie à valider avec le patron, recommandation claire d'abord et désaccords en annexe; C écartée, B plus tard."
+    },
+    "final": {
+      "decision": "Lancer en premier le concept A « Le Conseil » sous forme de test unique de 21 jours : offre d'entrée étroite, sans portail et sans renseignements personnels (décision tranchée en 48 h, 290 $ (estimation)), livrée manuellement, recommandation en première page et désaccords en annexe, 3 à 5 PME de relation existante. Aucune vente avant la révision du contrat de pilote par un avocat. Repli décidé d'avance : B « Studio Vérifié ». C est écartée pour 90 jours. Arrêt à J30 : ≥3 engagements écrits signés dont ≥2 d'intention d'abonnement à 900 $/mois (estimation) = on poursuit A; à 2 engagements, le patron décide (prolonger de 14 jours une seule fois, ou basculer); en dessous, bascule vers B avec 8 à 10 PME.",
+      "dissidence": "Contre (confiance 62) a voté contre : aucune preuve de demande, relations existantes assimilables à de la courtoisie, échantillon petit, clause de responsabilité et zone grise non résolues; ses conditions sont intégrées comme prérequis et tâches. Plume et Volume jugeaient B plus récurrent et cèdent sur l'ordre seulement.",
+      "justification": "A répond le mieux à la différenciation et au pilote ≤21 jours avec des outils sous 100 $/mois (livraison manuelle, aucun portail). Accord de 90,8 % au tour 1 (9 pour, 1 contre). Limites : le critère ≥60 % récurrent n'est pas atteint pendant le pilote (la décision à 290 $ (estimation) est ponctuelle) et dépend de la conversion en abonnement; aucune preuve de demande n'existe à ce jour et les relations existantes peuvent produire de la courtoisie, d'où l'engagement écrit défini strictement (lettre signée avec prix, date et dépôt) et le repli B préparé en parallèle. Tous les montants sont des estimations à valider. Conformité : Loi 25 (formulaire sans renseignements personnels, hébergement à vérifier), Loi 96 (tout en français d'abord), LCAP (consentement documenté; LNNTE/CRTC pour le téléphone).",
+      "plan": [
+        "Semaine 0 : le patron confirme par écrit 5 à 8 PME, obtient devis et délai de l'avocat, fixe la zone grise.",
+        "Semaine 0 : préparer en français l'offre A (page, formulaire, modèle de livrable, facture) et le gabarit de la fiche B.",
+        "Semaine 0 : vérifier l'hébergement des outils d'IA, documenter le consentement LCAP et la LNNTE avant tout contact.",
+        "J0 : signature du contrat de pilote révisé; l'horloge de 21 jours démarre (report si l'avocat ne peut réviser avant J7).",
+        "J1 à J21 : présenter l'offre aux PME consenties, livrer chaque décision en 48 h avec validation du patron (15 à 30 min par livrable (estimation)).",
+        "Après la première décision livrée : proposer l'abonnement à 900 $/mois (estimation) et recueillir les lettres d'engagement signées.",
+        "J30 : bilan selon la règle d'arrêt (≥3 engagements dont ≥2 intentions; 2 = décision du patron; sinon bascule vers B).",
+        "Après 3 clients payants : réaliser une ÉFVP avant d'envisager tout portail."
+      ],
+      "points_a_valider": [
+        "Liste nominative de 5 à 8 PME confirmée par écrit.",
+        "Devis et délai de l'avocat; contrat de pilote signé; clause de responsabilité.",
+        "Zone grise : sujets acceptés et refusés.",
+        "Prix 290 $ par décision et 900 $/mois (estimations non validées); fourchette B 490-990 $/mois (estimation).",
+        "Définition d'« engagement écrit » et seuils de J30.",
+        "Consentement LCAP documenté et vérification LNNTE avant tout contact.",
+        "Hébergement des outils d'IA; total sous 100 $/mois.",
+        "Plafond de validation de 15 à 30 min par livrable (estimation).",
+        "Textes de l'offre, du formulaire et de la fiche B : français d'abord, sans « conforme » ni « certifié ».",
+        "Autorisation expresse du patron avant tout envoi, signature, contact externe ou paiement."
+      ],
+      "risques": [
+        "Responsabilité d'une « décision IA » : clause révisée par l'avocat, zone grise, validation du patron.",
+        "Fuite de renseignements personnels par le formulaire (Loi 25).",
+        "Fiche B perçue comme attestation de conformité : bannir « conforme » et « certifié ».",
+        "LCAP/LNNTE : aucun envoi ni appel sans consentement documenté.",
+        "Critère ≥60 % récurrent non atteint avant conversion.",
+        "Biais de complaisance des PME de relation existante et des livrables.",
+        "Retard de l'avocat : l'horloge ne démarre qu'à la signature.",
+        "Loi 96 : toute pièce en français d'abord."
+      ],
+      "taches": [
+        {
+          "detail": "Confirmer par écrit 5 à 8 PME de relation existante (nom, contact, accord de principe de recevoir l'offre). Prérequis du départ de l'horloge.",
+          "equipe": "ventes",
+          "responsable": "toi",
+          "titre": "Liste nominative des PME"
+        },
+        {
+          "detail": "Mandater l'avocat, obtenir devis et délai, faire réviser le contrat (limitation de responsabilité, avis que la décision n'est pas un avis professionnel). Horloge de 21 jours à la signature; report si révision impossible avant J7.",
+          "equipe": "conseil",
+          "responsable": "toi",
+          "titre": "Contrat de pilote et devis juridique"
+        },
+        {
+          "detail": "Rédiger la liste des sujets que Le Conseil accepte et refuse (aucun avis juridique, médical ou financier réglementé), à faire approuver par le patron et l'avocat.",
+          "equipe": "conseil",
+          "responsable": "agents",
+          "titre": "Fixer la zone grise"
+        },
+        {
+          "detail": "Page d'offre A (décision en 48 h, 290 $ (estimation)), formulaire sans renseignements personnels avec consigne explicite et procédure d'effacement. Français d'abord (Loi 96).",
+          "equipe": "contenu",
+          "responsable": "agents",
+          "titre": "Page d'offre et formulaire en français"
+        },
+        {
+          "detail": "Publier la page et le formulaire sans portail ni compte client, après validation du patron; vérifier qu'aucun renseignement personnel superflu n'est collecté.",
+          "equipe": "web",
+          "responsable": "agents",
+          "titre": "Mise en ligne manuelle de l'offre"
+        },
+        {
+          "detail": "Documenter où sont hébergées les données des outils d'IA et leurs conditions; confirmer un total d'outils sous 100 $/mois.",
+          "equipe": "infra",
+          "responsable": "agents",
+          "titre": "Vérification hébergement des outils d'IA et coûts"
+        },
+        {
+          "detail": "Préparer le texte de demande de consentement et le registre; vérifier la LNNTE avant tout appel; aucun envoi commercial sans consentement documenté.",
+          "equipe": "ventes",
+          "responsable": "agents",
+          "titre": "Consentement LCAP et LNNTE"
+        },
+        {
+          "detail": "Gabarit (recommandation en première page, désaccords en annexe, limites déclarées) et grille de relecture contre le biais de complaisance.",
+          "equipe": "conseil",
+          "responsable": "agents",
+          "titre": "Gabarit de livrable et grille anti-complaisance"
+        },
+        {
+          "detail": "Fiche de contrôle « Studio Vérifié » sans mention « conforme » ni « certifié », et petit sondage de prévente légère, pour un basculement rapide à J30.",
+          "equipe": "studio",
+          "responsable": "agents",
+          "titre": "Gabarit de la fiche B en parallèle"
+        },
+        {
+          "detail": "Modèle de lettre signée (prix, date, dépôt) qui définit « engagement écrit », à faire valider par l'avocat.",
+          "equipe": "ventes",
+          "responsable": "agents",
+          "titre": "Gabarit de lettre d'engagement"
+        },
+        {
+          "detail": "Contacter les PME consenties, faire signer les lettres, émettre et encaisser les factures manuelles, tenir le tableau de suivi des engagements jusqu'à J30.",
+          "equipe": "ventes",
+          "responsable": "toi",
+          "titre": "Contacts, signatures, facturation et suivi"
+        },
+        {
+          "detail": "Valider chaque livrable (15 à 30 min (estimation)) avant envoi; à J30 appliquer la règle d'arrêt (prolonger de 14 jours une seule fois, ou basculer vers B).",
+          "equipe": "conseil",
+          "responsable": "toi",
+          "titre": "Validation avant envoi et bilan J30"
+        }
+      ]
+    },
+    "finishedAt": "2026-10-02T10:30:00Z",
+    "objections": [
+      {
+        "agent": "Contre",
+        "cible": "Cap",
+        "gravite": 4,
+        "objection": "Aucune preuve que des PME québécoises signent 490-990 $/mois (estimation) pour du contenu avant d'avoir vu un livrable; B est l'option la moins différenciante et la plus facile à copier."
+      },
+      {
+        "agent": "Contre",
+        "cible": "Plume",
+        "gravite": 3,
+        "objection": "Hypothèse cachée : A serait une couche de vérification interne sans coût; la valeur n'est pas démontrée et la validation du patron s'ajoute au lieu de diminuer; goulot de capacité."
+      },
+      {
+        "agent": "Contre",
+        "cible": "Volume",
+        "gravite": 4,
+        "objection": "Un pilote facturé à la décision est ponctuel et contredit le critère ≥60 % récurrent; avis juridique non budgété dans les 21 jours; C en 2e vague est du revenu de projet."
+      },
+      {
+        "agent": "Contre",
+        "cible": "Boussole",
+        "gravite": 3,
+        "objection": "Le diagnostic gratuit fait porter le coût d'acquisition par Pandora (temps du patron) sans engagement; aucune donnée sur la conversion vers l'abonnement."
+      },
+      {
+        "agent": "Contre",
+        "cible": "Ossature",
+        "gravite": 4,
+        "objection": "MVP Next.js/Stripe en 7-10 jours sans preuve; construit l'infrastructure avant un client payant et ajoute des obligations Loi 25; un formulaire, un courriel et une facture manuelle testeraient la demande en 2-3 jours."
+      },
+      {
+        "agent": "Contre",
+        "cible": "Atlas",
+        "gravite": 3,
+        "objection": "Enchaîne trois paris conditionnels; rien ne montre que le socle de A sert à produire du contenu (B); B n'arrive qu'au mois 3-4, trop tard pour le récurrent à 90 jours."
+      },
+      {
+        "agent": "Miroir",
+        "cible": "Cap",
+        "gravite": 4,
+        "objection": "Le client sceptique peut obtenir du contenu québécois avec un outil IA ou une pigiste à 50-80 $/h (estimation); écarter A jette l'unique vrai différenciateur; un abonnement sans résultats mesurables est coupé en premier."
+      },
+      {
+        "agent": "Miroir",
+        "cible": "Plume",
+        "gravite": 4,
+        "objection": "Une « couche de vérification » en option à J60-90 est du jargon; si elle n'est pas visible dès la première livraison, elle n'est pas une raison d'acheter et arrive trop tard pour les 3 engagements à J30."
+      },
+      {
+        "agent": "Miroir",
+        "cible": "Volume",
+        "gravite": 3,
+        "objection": "Le client ne sait pas ce qu'il reçoit à la fin du pilote; C est ponctuelle et fait baisser le ratio récurrent; pas de prix clair pour la suite."
+      },
+      {
+        "agent": "Miroir",
+        "cible": "Boussole",
+        "gravite": 4,
+        "objection": "900 $/mois (estimation) avant d'avoir vu un rapport est cher; le diagnostic gratuit attire des curieux; la mensualité suppose des décisions chaque mois, faux pour la plupart des petites PME."
+      },
+      {
+        "agent": "Miroir",
+        "cible": "Ossature",
+        "gravite": 4,
+        "objection": "Un portail avec désaccords entre agents est du jargon interne; le patron veut une recommandation tranchée; la conformité Loi 25 (où sont mes données ?) doit être prouvée avant tout dépôt de données."
+      },
+      {
+        "agent": "Miroir",
+        "cible": "Atlas",
+        "gravite": 3,
+        "objection": "« Pilote prévendu » sans cas client ni référence québécoise : rien ne crée la confiance (garantie, exemple de livrable); construire un socle pour soi n'est pas une offre pour le client."
+      },
+      {
+        "agent": "Faille",
+        "cible": "Cap",
+        "gravite": 4,
+        "objection": "B est facile à copier; risques de contenu IA non étiqueté ou trompeur (publicité trompeuse), de droit d'auteur et d'attrition; aucune parade de validation humaine ni d'ÉFVP si le client fournit des données personnelles."
+      },
+      {
+        "agent": "Faille",
+        "cible": "Plume",
+        "gravite": 3,
+        "objection": "Deux produits en un; promettre une « vérification » sans méthode auditable expose à une responsabilité contractuelle (fausse assurance de conformité); l'étiquette IA ne règle ni le droit d'auteur ni la Loi 96."
+      },
+      {
+        "agent": "Faille",
+        "cible": "Volume",
+        "gravite": 5,
+        "objection": "Décisions à risque : Loi 25 (décision fondée exclusivement sur un traitement automatisé, avis et droit de révision), ÉFVP pour transferts hors Québec vers des LLM, responsabilité civile; aucun cadre contractuel ni périmètre exclu."
+      },
+      {
+        "agent": "Faille",
+        "cible": "Boussole",
+        "gravite": 3,
+        "objection": "Diagnostic gratuit exige des données sensibles avant contrat; prospection téléphonique soumise à la LNNTE et au CRTC, pas seulement la LCAP; « relation existante » a une durée limitée."
+      },
+      {
+        "agent": "Faille",
+        "cible": "Ossature",
+        "gravite": 4,
+        "objection": "Vercel, Stripe, HubSpot et GA4 envoient des renseignements hors Québec sans ÉFVP ni consentement; coût cumulé pouvant dépasser 100 $/mois; risques de sécurité (fuite, injection de prompts); interface et conditions en français (Loi 96)."
+      },
+      {
+        "agent": "Faille",
+        "cible": "Atlas",
+        "gravite": 3,
+        "objection": "L'anonymisation sur de petites PME reste ré-identifiable; l'avis juridique est coûteux et lent (estimation); un pilote prévendu sans contrat écrit (nature consultative, limitation de responsabilité, assurance) laisse le risque à Pandora."
+      }
+    ],
+    "phase": "done",
+    "plan": {
+      "criteres": [
+        "Prévente : au moins 3 engagements écrits en 30 jours pour le concept retenu",
+        "Récurrence : au moins 60 % du revenu visé à 90 jours provient d'abonnements mensuels",
+        "Coût : outils et API sous 100 $/mois, vérifié sur pages de prix à jour",
+        "Délai : premier livrable pilote validé par le patron en 21 jours ou moins",
+        "Différenciation : français québécois natif, Loi 25 intégrée et vérification multi-agents à prix PME"
+      ],
+      "questions": [
+        "Quel concept (A Le Conseil, B Studio, C Vitrine 3D) offre le meilleur rapport délai de première vente, marge et récurrence ?",
+        "Quels prix et offres concurrentes faut-il vérifier à la source avant de fixer nos tarifs ?",
+        "Quelle combinaison d'agents peut livrer en français québécois avec contre-vérification et conformité Loi 25, Loi 96 et LCAP sous 100 $/mois d'outils ?",
+        "Quels 5 à 10 prospects ou clients existants appeler cette semaine pour tester l'intérêt réel ?",
+        "Quel temps de validation du patron par livrable est réaliste, et limite-t-il le volume ?"
+      ],
+      "taches": [
+        {
+          "equipe": "ventes",
+          "responsable": "agents",
+          "titre": "Vérifier les prix et offres concurrentes à la source"
+        },
+        {
+          "equipe": "ventes",
+          "responsable": "toi",
+          "titre": "Sonder 5 à 10 prospects et clients existants sur A, B et C"
+        },
+        {
+          "equipe": "conseil",
+          "responsable": "agents",
+          "titre": "Concevoir l'architecture multi-agents du Conseil et estimer son coût mensuel"
+        },
+        {
+          "equipe": "contenu",
+          "responsable": "agents",
+          "titre": "Produire 3 exemples de contenu en français québécois et chiffrer le coût par livrable"
+        },
+        {
+          "equipe": "studio",
+          "responsable": "agents",
+          "titre": "Estimer temps de production et marge d'un produit en 3D"
+        },
+        {
+          "equipe": "web",
+          "responsable": "agents",
+          "titre": "Rédiger la page d'offre et de prévente du concept retenu"
+        },
+        {
+          "equipe": "infra",
+          "responsable": "agents",
+          "titre": "Mettre en place le suivi et le contrôle des coûts sous 100 $/mois"
+        },
+        {
+          "equipe": "conseil",
+          "responsable": "toi",
+          "titre": "Comparer les options avec la grille de critères et trancher"
+        },
+        {
+          "equipe": "conseil",
+          "responsable": "toi",
+          "titre": "Livrer un pilote à 1 client et le faire valider avant envoi"
+        },
+        {
+          "equipe": "ventes",
+          "responsable": "agents",
+          "titre": "Planifier le lancement à 90 jours : jalons J30, J60, J90"
+        }
+      ]
+    },
+    "propositions": [
+      {
+        "agent": "Cap",
+        "arguments": [
+          "B est déjà un abonnement (490 à 990 $/mois, estimation), donc récurrent à 100 %; pilote de 21 jours réaliste avec des outils déjà accessibles; A donne un revenu irrégulier et C est ponctuelle et lourde.",
+          "Aucun concurrent visible ne combine français québécois natif, Loi 25 intégrée et vérification; agents à rôles différents plus agrégateur, sous 100 $/mois (estimation, à confirmer).",
+          "Risque : B peut sembler banal, donc vendre la preuve de vérification et la conformité; validation du patron 15 à 20 min par livrable puis 10 min (estimation, à mesurer)."
+        ],
+        "confiance": 66,
+        "equipe": "conseil",
+        "position": "Lancer B « Studio » en premier avec une couche de vérification multi-agents et de conformité Loi 25/96 comme signature; A en phase 2 vendu aux clients Studio; C écartée pour les 90 jours.",
+        "premiere_action": "Appeler 5 à 10 PME du réseau du patron et offrir un pilote payant de 21 jours à tarif fondateur (490 $/mois, estimation) avec 3 publications de démonstration vérifiées; viser 3 lettres d'engagement avant J30; vérifier les prix concurrents."
+      },
+      {
+        "agent": "Plume",
+        "arguments": [
+          "B est le seul concept qui coche délai, marge et récurrence; A demande d'expliquer un concept nouveau, ce qui allonge le cycle de vente; C est ponctuelle.",
+          "Différenciation défendable : la qualité de la langue se juge en 30 secondes; rôles différents plus agrégateur, contenu étiqueté IA, direction créative humaine documentée.",
+          "Plan de validation sur 90 jours : 3 à 5 places pilotes à tarif fondateur, validation 15 à 20 min par livrable (estimation), regroupement hebdomadaire si dépassement; B est plus facile à copier, la fiche de contrôle de conformité devient l'avantage."
+        ],
+        "confiance": 68,
+        "equipe": "contenu",
+        "position": "Lancer B « Studio » en premier, avec A réutilisé en interne comme couche de contre-vérification puis vendu en option au jour 60-90; C reportée.",
+        "premiere_action": "Le patron valide une liste de 8 prospects et la page d'offre pilote; Plume prépare en 48 h 3 contenus d'échantillon étiquetés IA avec fiche de contrôle; vérification des prix concurrents à la source."
+      },
+      {
+        "agent": "Volume",
+        "arguments": [
+          "A offre le meilleur rapport délai/marge/récurrence : ni modélisation ni production de médias; forfait 900 $/mois (estimation) récurrent; décisions à 290-490 $ (estimation) comme entrée à faible friction. C est non récurrente et lourde.",
+          "Prix concurrents à vérifier; 4 à 5 agents aux rôles distincts, contradicteur seulement sur décisions à risque, journal de délibération auditable, sous 100 $/mois (coût API à mesurer).",
+          "Prospects : 5 à 10 dirigeants de PME de 5 à 50 employés; validation 15 à 30 min par décision (estimation); positionner A comme aide à la décision vérifiable; validation juridique avant toute promesse de conformité."
+        ],
+        "confiance": 68,
+        "equipe": "studio",
+        "position": "Lancer A « Le Conseil » en premier en pilote de 21 jours; C reste la deuxième vague après 60 à 90 jours et peut servir de visuel de marque.",
+        "premiere_action": "Le patron appelle 5 à 10 dirigeants de PME pour un pilote de 3 décisions; vérifier les prix concurrents; viser 3 lettres d'engagement signées avant le 1er novembre 2026."
+      },
+      {
+        "agent": "Boussole",
+        "arguments": [
+          "Meilleur rapport délai/marge/récurrence : outils déjà en main, coût marginal surtout le temps du patron; C à la pièce et B plus facile à copier.",
+          "Rapport traçable (options, risques, conformité, sources) difficile à imiter et propice à la prévente; équipe analyste, juriste conformité, financier, exécutant, agrégateur.",
+          "Risques : prix et estimations non validés; si moins de 3 engagements à J30, bascule sur B; gabarit d'une page, validation 30 min ou moins (estimation); subventions possibles à vérifier; LCAP respectée."
+        ],
+        "confiance": 62,
+        "equipe": "ventes",
+        "position": "Lancer A « Le Conseil » en abonnement pilote à 900 $/mois (estimation), le diagnostic IA servant d'entrée et crédité à la signature; B en deuxième vague; C reportée.",
+        "premiere_action": "Dresser 8 prospects, appeler pour un diagnostic IA gratuit de 30 min crédité sur l'abonnement, proposer 3 options de prix (estimation), obtenir 3 lettres d'intention avant le 1er novembre 2026, vérifier les prix concurrents."
+      },
+      {
+        "agent": "Ossature",
+        "arguments": [
+          "Aucune production lourde : rapport texte de 2 à 4 pages par agents à rôles différents avec revue du patron; MVP web prototypable en 7 à 10 jours; abonnement plutôt que décision à l'unité.",
+          "Différenciation maximale : chaque rapport affiche sources, désaccords entre agents et case « validé par un humain »; avertissement clair, pas d'avis juridique ou financier réglementé.",
+          "Pile légère (Next.js, Stripe, Cal.com, HubSpot gratuit, GA4), accessible, consentement Loi 25; validation 15 à 20 min par rapport standard, 30 à 45 min pour les trois premiers (estimation); pivot vers B si moins de 3 engagements à J+30."
+        ],
+        "confiance": 68,
+        "equipe": "web",
+        "position": "Lancer A « Le Conseil » en version minimale vendable (abonnement 900 $/mois, estimation) via un petit portail web en français; B en mois 3 à 6 sur le même moteur; C reportée.",
+        "premiere_action": "J1 : le patron valide une page de vente en français avec offre fondatrice et 8 prospects; démonstration manuelle avec une vraie décision livrée en 48 h; vérifier les prix concurrents."
+      },
+      {
+        "agent": "Atlas",
+        "arguments": [
+          "A et B sont des reconstructions légères sur outils existants, C un chantier lourd; pilote en 21 jours ou moins réaliste; forfait 900 $/mois (estimation) récurrent; risque : confiance du client dans la décision, donc aide à la décision vérifiable.",
+          "Rôles différents plus agrégateur, contradicteur seulement sur décisions à risque, journal d'audit, données minimisées et anonymisées; coût d'outils à chiffrer en pilote (estimation sous 100 $/mois).",
+          "Validation du patron 15 à 20 min par décision (estimation), au-delà de 30 min le modèle ne tient pas; avis juridique sur la responsabilité d'une décision produite par IA; vérifier prix concurrents."
+        ],
+        "confiance": 68,
+        "equipe": "infra",
+        "position": "Lancer A « Le Conseil » en pilote prévendu et réutiliser son socle comme fondation de B en mois 3-4; C seulement si deux clients la demandent.",
+        "premiere_action": "Le patron choisit 8 dirigeants de PME (2 par secteur) et en appelle 5 avec une offre pilote de 3 décisions; Atlas verrouille en 2 jours le gabarit de livrable; vérification des prix concurrents."
+      }
+    ],
+    "revisions": [
+      {
+        "agent": "Cap",
+        "concede": "B en premier était un pari non testé; écarter A était une erreur; l'abonnement sans résultats mesurables est fragile; risques juridiques et ÉFVP sous-estimés; le critère ≥60 % récurrent reste à démontrer.",
+        "position": "A d'abord en pilote étroit et payant de 21 jours (« décision tranchée en 48 h », 290 $, estimation); B en phase 2 greffé sur A; C écartée. Confiance 58. Arrêt : à J30 au moins 3 engagements écrits dont 2 d'intention à 900 $/mois (estimation), sinon bascule vers B « Studio Vérifié ».",
+        "reponse": "Contre et Miroir ont raison : B était un pari sans preuve et A est l'unique différenciateur; les risques juridiques de A se gèrent par un cadrage restreint, sans renseignements personnels, contrat révisé par un avocat et validation humaine."
+      },
+      {
+        "agent": "Plume",
+        "concede": "A n'est plus vendu en option à J60-90; confiance baissée; aucune promesse de vérification sans méthode écrite et contrat révisé; repli explicite vers A.",
+        "position": "Test de prévente de 21 jours « Studio Vérifié » (B avec fiche de conformité visible dès la première livraison), livraison manuelle, 8-10 PME; repli vers A en « décision 48 h » (290 $, estimation) si moins de 3 engagements à J30. Confiance 58.",
+        "reponse": "L'hypothèse de vérification sans coût n'était pas prouvée; la fiche devient un livrable visible, limité et auditable, sans garantie de conformité; B reste premier car l'abonnement répond mieux au critère récurrent."
+      },
+      {
+        "agent": "Volume",
+        "concede": "A en premier contredit le ≥60 % récurrent; avis juridique non budgété; C diluerait le ratio; décisions à risque sans cadre contractuel exclues; la demande réelle pour B n'est pas prouvée.",
+        "position": "B « Studio Vérifié » en premier en test de prévente de 21 jours, livraison manuelle; A en repli (diagnostic payant limité); C écartée pour 90 jours. Confiance 55.",
+        "reponse": "Un pilote A à la décision contredit le critère récurrent; l'avis juridique n'était pas réaliste en 21 jours; B doit offrir un livrable défini et un prix de suite annoncé."
+      },
+      {
+        "agent": "Boussole",
+        "concede": "Pas de diagnostic gratuit; pas d'abonnement d'entrée; critère ≥60 % récurrent non atteint au départ; aucune donnée sensible avant contrat; pas d'appel à froid, validation juridique LCAP/LNNTE/CRTC requise.",
+        "position": "A en pilote étroit : « décision tranchée en 48 h » à 290 $ (estimation), 3-5 PME de relation existante, contrat de pilote écrit, sans renseignements personnels; abonnement 900 $/mois (estimation) seulement après le pilote; bascule vers B si moins de 2 engagements écrits à J30. Confiance 55.",
+        "reponse": "Diagnostic gratuit retiré; l'offre à 290 $ qualifie le client; la récurrence se mesure pendant le pilote; B n'est pas mieux documenté que A et est plus copiable."
+      },
+      {
+        "agent": "Ossature",
+        "concede": "Portail prématuré; jargon « désaccords entre agents » relégué en annexe; HubSpot/GA4 hors du départ; MVP de 7-10 jours contredisait le pilote à risque minimal; critère de récurrence reste le point faible.",
+        "position": "A en premier sans portail : page d'offre en français, formulaire, courriel, facture manuelle; « décision tranchée en 48 h » à 290 $ (estimation), recommandation en première page et désaccords en annexe; abonnement 900 $/mois (estimation) par défaut pour les 3 premiers clients; portail après 3 clients payants et un ÉFVP; bascule vers B si moins de 3 engagements à J30. Confiance 72.",
+        "reponse": "Le portail était prématuré; HubSpot et GA4 retirés; livraison manuelle réduit les risques de sécurité; contrat de pilote à faire réviser par un juriste."
+      },
+      {
+        "agent": "Atlas",
+        "concede": "Socle non démontré; séquence A-B-C fragile; pilote sans cas client manquait de crédibilité; anonymisation insuffisante; contrat préalable non négociable; C hors plan.",
+        "position": "Test de prévente unique de 21 jours : A en offre d'entrée étroite (290 $, estimation) et B « Vérifié » en repli décidé d'avance; exemple de rapport fictif étiqueté; contrat de pilote révisé par un avocat avant toute vente; arrêt : ≥3 engagements écrits à J30, bascule vers B si moins de 2 engagements A à J21; C écartée. Confiance 62.",
+        "reponse": "Le socle réutilisable était une hypothèse non démontrée; minimisation à la source plutôt qu'anonymisation; limiter la dépense juridique à la révision du contrat de pilote."
+      }
+    ],
+    "rounds": [
+      {
+        "accord": 0.908,
+        "n": 1,
+        "proposition": {
+          "compromis": [
+            "A pilote, B repli décidé d'avance (Plume et Volume cèdent sur l'ordre)",
+            "Abonnement proposé après la première décision livrée, non imposé par défaut",
+            "Seuil strict de 3 engagements à J30, zone grise à 2 tranchée par le patron",
+            "Relations existantes d'abord, pas de prospection à froid",
+            "Contrat révisé avant vente; aucun portail ni automatisation"
+          ],
+          "points_ouverts": [
+            "Coût et délai de la révision juridique",
+            "Aucune preuve de demande pour A ni B",
+            "Liste des PME à confirmer",
+            "Différenciation durable de B",
+            "Clause de responsabilité d'une décision IA",
+            "Prospection hors relation existante (LCAP, LNNTE/CRTC)",
+            "Plafond de validation du patron",
+            "Règle de la zone grise"
+          ],
+          "proposition": "Lancer un test unique de 21 jours : A « Le Conseil » en offre d'entrée étroite et sans portail (décision tranchée en 48 h, 290 $ (estimation), sans renseignements personnels), livraison manuelle, 3 à 5 PME de relation existante, contrat de pilote révisé par un avocat avant toute vente. Repli décidé d'avance : B « Studio Vérifié ». Arrêt à J30 : au moins 3 engagements écrits dont 2 d'intention d'abonnement à 900 $/mois (estimation); sinon bascule vers B; à 2 engagements, le patron décide (prolonger de 14 jours au maximum ou basculer). Portail seulement après 3 clients payants et un ÉFVP. C écartée 90 jours."
+        },
+        "votes": [
+          {
+            "agent": "Cap",
+            "condition": "Liste nominative d'au moins 8 PME confirmée; soumission juridique obtenue; horloge de 21 jours démarrée à la signature du contrat; zone grise et seuil d'intention consignés par écrit.",
+            "confiance": 68,
+            "raison": "Test borné et réversible, livraison manuelle, seuil d'arrêt chiffré; réserves : aucune preuve de demande, A seul n'atteint pas le ≥60 % récurrent, délai de la révision juridique.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Plume",
+            "condition": "Plafond de coût et de délai juridique fixé avant J1; liste des PME confirmée par écrit; demande B validée en parallèle sans coût; seuil et zone grise inscrits au contrat.",
+            "confiance": 68,
+            "raison": "Cède sur l'ordre A puis B; plan borné, contrat avant vente, repli B décidé d'avance; B reste préférée pour la récurrence et le français.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Volume",
+            "condition": "Gabarit de la fiche B prêt dès J1; contrat révisé avant vente; liste des PME confirmée; zone grise fixée; plafond de validation défini.",
+            "confiance": 68,
+            "raison": "Test réaliste sous 100 $/mois; cède sur l'ordre; les visuels de la fiche B peuvent être produits sans dépense.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Boussole",
+            "condition": "Définir « engagement écrit » (lettre signée avec prix, date, dépôt); 5 à 8 PME nommées; zone grise tranchée; plafond de validation du patron.",
+            "confiance": 68,
+            "raison": "Une offre à 290 $ (estimation) mesure la demande réelle; l'abonnement après la première décision est la séquence la plus crédible; risque de complaisance des relations existantes.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Ossature",
+            "condition": "Contrat révisé; avis de confidentialité et consigne de ne pas saisir de renseignements personnels; page en français (Loi 96); zone grise écrite; portail interdit avant 3 clients payants et ÉFVP.",
+            "confiance": 68,
+            "raison": "Page statique, formulaire sans renseignements personnels, aucun portail; budget respecté, exposition Loi 25 réduite.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Atlas",
+            "condition": "Contrat avec clause de responsabilité; formulaire sans renseignements personnels, hébergement au Canada; liste des PME confirmée; plafond de validation; seuil de J30 non renégociable.",
+            "confiance": 72,
+            "raison": "Dimensionnement adapté : livraison manuelle, très sous 100 $/mois (estimation), portail après preuve de demande.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Contre",
+            "condition": "Passer à « pour » si : liste confirmée avec 2 PME acceptant une conversation de prévente; devis juridique connu; zone grise fixée (prolongation unique de 14 jours); prévente légère de B en parallèle avec le même arrêt à J30.",
+            "confiance": 62,
+            "raison": "Aucune preuve de demande pour A ni B; les relations existantes mesurent la courtoisie; l'intention d'abonnement est testée tard sur un échantillon trop petit; clause de responsabilité non résolue; zone grise discrétionnaire.",
+            "vote": "contre"
+          },
+          {
+            "agent": "Miroir",
+            "condition": "Contrat avec clause claire; PME nommées; offre écrite en français avec garantie de remboursement simple; la recommandation indique son niveau de confiance et ses limites; zone grise et plafond fixés.",
+            "confiance": 62,
+            "raison": "Je n'achèterais que d'une personne connue et à faible risque : le plan y répond; le saut de 290 $ à 900 $/mois (estimation) est grand et le chiffre le plus fragile.",
+            "vote": "pour"
+          },
+          {
+            "agent": "Faille",
+            "condition": "Contrat avec limitation de responsabilité; consigne écrite et procédure d'effacement; trace du consentement LCAP; tout en français d'abord; vérifier l'hébergement des outils d'IA; fiche B sans mention « conforme » ou « certifié »; si l'avocat ne peut réviser avant J7, reporter.",
+            "confiance": 68,
+            "raison": "Option la plus prudente : sans renseignements personnels, sans prospection à froid, contrat avant vente; risques résiduels : responsabilité (gravité 4), fuite de renseignements personnels par le formulaire (4), fiche B perçue comme attestation de conformité (4), LCAP (3).",
+            "vote": "pour"
+          },
+          {
+            "agent": "Sceau",
+            "condition": "Tout en français d'abord; consentement LCAP documenté; clause de responsabilité avant vente; ne compter à J30 que des engagements signés et présenter l'abonnement comme une intention; zone grise et plafond avant lancement.",
+            "confiance": 72,
+            "raison": "Répond au sujet et aux cinq critères; chiffres marqués estimation; réserves : le ≥60 % récurrent n'est vérifié que par des intentions; aucune preuve de demande.",
+            "vote": "pour"
+          }
+        ]
+      }
+    ],
+    "startedAt": "2026-10-02T10:00:00Z",
+    "tasksCreated": 12
+  },
+  "startedAt": "2026-10-02T10:00:00Z",
+  "status": "consensus",
+  "teams": [
+    "conseil",
+    "contenu",
+    "studio",
+    "ventes",
+    "web",
+    "infra"
+  ],
+  "topic": "Quel concept de rupture Pandora doit lancer en premier, d'ici 90 jours, pour se démarquer au Québec et générer des revenus récurrents ? Options issues de la recherche : A) « Le Conseil » : comité de décision IA pour PME (290 à 490 $ par décision ou 900 $/mois, estimation) ; B) « Studio » : contenu de marque en français québécois en abonnement (490 à 990 $/mois, estimation) ; C) « Vitrine 3D » : visualisation produit 3D par IA avec Blender et Unreal (1 500 à 3 000 $ par produit, estimation)."
+}

@@ -10,7 +10,10 @@ function pick(row, col) {
   return keys.length && String(col).includes('->>') && v != null ? String(v) : v;
 }
 
-function createMockDb(seed = {}, rpcHandlers = {}) {
+// options.uuid: ids are random UUIDs (like gen_random_uuid()), for code
+// that validates them. options.defaults: { table: () => columns } applied on
+// insert, like the SQL column defaults (used by the local demo).
+function createMockDb(seed = {}, rpcHandlers = {}, options = {}) {
   const tables = {};
   for (const [k, v] of Object.entries(seed)) tables[k] = v.map((r) => ({ ...r }));
   let seq = 1000;
@@ -46,7 +49,9 @@ function createMockDb(seed = {}, rpcHandlers = {}) {
       const rows = this.rows();
       let data;
       if (this.op === 'insert') {
-        data = this.payload.map((r) => ({ id: r.id || (this.table === 'agent_activity' ? seq += 1 : `${this.table}-${seq += 1}`), created_at: new Date().toISOString(), ...r }));
+        const defaults = (options.defaults && options.defaults[this.table]) || (() => ({}));
+        const newId = () => (this.table === 'agent_activity' ? seq += 1 : options.uuid ? require('crypto').randomUUID() : `${this.table}-${seq += 1}`);
+        data = this.payload.map((r) => ({ id: r.id || newId(), created_at: new Date().toISOString(), ...defaults(), ...r }));
         rows.push(...data);
       } else if (this.op === 'upsert') {
         const key = this.conflict || (this.table === 'agent_workers' ? 'worker' : 'id');
