@@ -3,7 +3,6 @@
 // (utils/espace.requireAdmin) and a CSRF token.
 const express = require('express');
 const crypto = require('crypto');
-const path = require('path');
 const logger = require('./utils/logger');
 const upload = require('./utils/multerConfig');
 const cms = require('./utils/cms');
@@ -172,12 +171,15 @@ router.delete('/cms', async (req, res) => {
 // Upload an image (raster only, see multerConfig) and point a CMS key at it.
 router.post('/cms/image', imageUpload, async (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'Choisissez une image.' });
+  if (!upload.matchesImageSignature(req.file.buffer, req.file.mimetype)) {
+    return res.status(400).json({ error: "Le contenu du fichier ne correspond pas à une image JPEG, PNG, WebP, GIF ou AVIF." });
+  }
   const { key, lang = 'fr' } = req.body || {};
   const check = cms.validateEntry({ key, lang, type: 'image', value: 'assets/placeholder.png' });
   if (check.error) return res.status(400).json({ error: check.error });
 
   const admin = createSupabaseAdmin();
-  const name = `cms/${Date.now()}-${crypto.randomBytes(6).toString('hex')}${path.extname(req.file.originalname).toLowerCase()}`;
+  const name = `cms/${Date.now()}-${crypto.randomBytes(6).toString('hex')}${upload.extensionFor(req.file.mimetype)}`;
   const { error: uploadError } = await admin.storage
     .from(CMS_BUCKET)
     .upload(name, req.file.buffer, { contentType: req.file.mimetype, upsert: false });

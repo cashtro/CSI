@@ -255,9 +255,10 @@ describe('site CMS', () => {
       .set('X-CSRF-Token', CSRF)
       .field('key', 'home.hero.image')
       .field('lang', 'fr')
-      .attach('image', Buffer.from([0x89, 0x50, 0x4e, 0x47]), { filename: 'hero.png', contentType: 'image/png' });
+      .attach('image', Buffer.concat([Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]), Buffer.alloc(16)]), { filename: 'hero.PNG', contentType: 'image/png' });
     expect(res.status).toBe(201);
     expect(fake.state.uploads[0]).toMatchObject({ bucket: 'site-content', contentType: 'image/png' });
+    expect(fake.state.uploads[0].name).toMatch(/^cms\/\d+-[0-9a-f]{12}\.png$/);
     expect(fake.state.tables.site_content[0]).toMatchObject({ key: 'home.hero.image', type: 'image', value: res.body.url });
   });
 
@@ -269,6 +270,20 @@ describe('site CMS', () => {
       .field('key', 'home.hero.image')
       .attach('image', Buffer.from('<svg onload="alert(1)"/>'), { filename: 'x.svg', contentType: 'image/svg+xml' });
     expect(res.status).toBe(400);
+    expect(fake.state.uploads).toHaveLength(0);
+  });
+
+  it('refuses an HTML or SVG page disguised as a PNG (content checked, not just the name)', async () => {
+    for (const body of ['<html><script>alert(1)</script></html>', '<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"/>']) {
+      // eslint-disable-next-line no-await-in-loop
+      const res = await request(app)
+        .post('/api/admin/cms/image')
+        .set('Cookie', adminCookies())
+        .set('X-CSRF-Token', CSRF)
+        .field('key', 'home.hero.image')
+        .attach('image', Buffer.from(body), { filename: 'photo.png', contentType: 'image/png' });
+      expect(res.status).toBe(400);
+    }
     expect(fake.state.uploads).toHaveLength(0);
   });
 
