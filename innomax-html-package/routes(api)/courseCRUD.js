@@ -877,10 +877,11 @@ router.get('/student-progress/:student_id', authenticateUser, async (req, res) =
             
         if (error) throw error;
         
+        // Read the field we actually selected (`nom`). Previously this read
+        // `.title` (never selected) so course_title was always 'Unknown'.
         const enhancedProgress = data.map(progress => ({
             ...progress,
-            course_title: progress.cours?.title || 'Unknown',
-            course_category: progress.cours?.category || 'Uncategorized'
+            course_title: progress.cours?.nom || 'Unknown'
         }));
         
         res.json(enhancedProgress);
