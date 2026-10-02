@@ -84,9 +84,11 @@ Dans l'éditeur SQL de Supabase, un fichier à la fois :
 4. `db/004_protection_comptes.sql` (nouveau, **fortement recommandé**)
 5. `db/005_recherche_agents.sql` (recherche web des agents, onglet Agents de l'admin)
 6. `db/006_robots.sql` (robots clients et connexions, voir `ROBOTS.md`)
+7. `db/007_finances.sql` (onglet Finances, voir `FINANCES.md`)
+8. `db/008_croissance.sql` (onglet Croissance, voir `CROISSANCE.md`)
 
 Chaque fichier peut être relancé sans danger. Si 003 a été exécuté avant 002, relancez 003.
-Les cinq fichiers ont été essayés dans cet ordre, deux fois de suite, sur PostgreSQL 16 avec
+Les huit fichiers ont été essayés dans cet ordre, deux fois de suite, sur PostgreSQL 16 avec
 les rôles de Supabase.
 
 Ensuite, dans Supabase → Authentication → Policies, vérifiez que `anon` et `authenticated` ne

@@ -164,10 +164,14 @@ describe('console summary and emergency stop', () => {
 });
 
 describe('starting agents (db/seed_agents.json)', () => {
-  it('holds the 38 agents of the Centre de commande, in the ten teams', () => {
+  it('holds the 49 agents (38 of the Centre de commande + 11 reinforcements), in the ten teams', () => {
     const list = catalog.loadSeed();
-    expect(list).toHaveLength(38);
-    expect(new Set(list.map((a) => a.id)).size).toBe(38);
+    expect(list).toHaveLength(49);
+    expect(new Set(list.map((a) => a.id)).size).toBe(49);
+    for (const id of ['contra-chiffres', 'infra-devops', 'infra-veille', 'planif-capacite', 'planif-sprint', 'revue-faits', 'revue-juge', 'ventes-closing', 'ventes-prospection', 'ventes-succes', 'web-frontend']) {
+      expect(list.some((a) => a.id === id)).toBe(true);
+    }
+    expect(catalog.seedCount()).toBe(49);
     const teams = new Set(catalog.TEAMS.map((t) => t.key));
     expect(list.every((a) => teams.has(a.team))).toBe(true);
     expect(list.find((a) => a.id === catalog.DEFAULT_RESEARCH_AGENT)).toMatchObject({ name: 'Cap', team: 'conseil' });
@@ -178,22 +182,22 @@ describe('starting agents (db/seed_agents.json)', () => {
     mockDb.tables.agents[0].role = 'Rôle modifié par l’admin';
     const first = await request(app).post('/api/admin/agents/seed').set(admin);
     expect(first.status).toBe(200);
-    expect(first.body).toEqual({ inserted: 37, updated: 0, skipped: 1, total: 38 });
+    expect(first.body).toEqual({ inserted: 48, updated: 0, skipped: 1, total: 49 });
     const second = await request(app).post('/api/admin/agents/seed').set(admin);
-    expect(second.body).toEqual({ inserted: 0, updated: 0, skipped: 38, total: 38 });
-    expect(mockDb.tables.agents).toHaveLength(39); // 38 + "redac"
+    expect(second.body).toEqual({ inserted: 0, updated: 0, skipped: 49, total: 49 });
+    expect(mockDb.tables.agents).toHaveLength(50); // 49 + "redac"
     expect(mockDb.tables.agents.find((a) => a.id === 'conseil-strategie').role).toBe('Rôle modifié par l’admin');
   });
 
   it('the script seeds once, and --force rewrites the fields', async () => {
     const { run } = require('../scripts/seed-agents');
     const db = createMockDb({ agents: [] });
-    expect(await run({ db, args: [] })).toMatchObject({ inserted: 38, skipped: 0 });
+    expect(await run({ db, args: [] })).toMatchObject({ inserted: 49, skipped: 0 });
     db.tables.agents[0].name = 'Changé';
-    expect(await run({ db, args: [] })).toMatchObject({ inserted: 0, skipped: 38 });
-    expect(db.tables.agents).toHaveLength(38);
+    expect(await run({ db, args: [] })).toMatchObject({ inserted: 0, skipped: 49 });
+    expect(db.tables.agents).toHaveLength(49);
     expect(db.tables.agents[0].name).toBe('Changé');
-    expect(await run({ db, args: ['--force'] })).toMatchObject({ inserted: 0, updated: 38 });
+    expect(await run({ db, args: ['--force'] })).toMatchObject({ inserted: 0, updated: 49 });
     expect(db.tables.agents.some((a) => a.name === 'Changé')).toBe(false);
     expect(db.tables.agents.every((a) => a.status === 'idle')).toBe(true);
   });

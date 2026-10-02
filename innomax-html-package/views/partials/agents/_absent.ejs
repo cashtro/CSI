@@ -1,6 +1,6 @@
 <% if (agentsError) { %><p class="status is-error"><%= agentsError %></p><% } else if (!agents.length) { %>
 <section class="panel ag-empty">
   <h2>Aucun agent pour l’instant</h2>
-  <p>Importe les 38 agents de départ du Centre de commande dans <a href="/admin/console?vue=reglages-agents">⚙️ Réglages agents</a>, ou lance <span class="mono">node scripts/seed-agents.js</span>.</p>
+  <p>Importe les <%= seedCount %> agents de départ du Centre de commande dans <a href="/admin/console?vue=reglages-agents">⚙️ Réglages agents</a>, ou lance <span class="mono">node scripts/seed-agents.js</span>.</p>
 </section>
 <% } %>

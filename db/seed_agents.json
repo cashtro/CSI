@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "source": "Centre de commande Pandora (artifact), exporté le 2026-10-02",
+  "source": "Centre de commande PBTM (artifact) : 38 agents exportés le 2026-10-02, plus 11 agents de renfort",
   "agents": [
     {
       "id": "conseil-donnees",
@@ -92,6 +92,16 @@
       "active": true
     },
     {
+      "id": "contra-chiffres",
+      "name": "Doute",
+      "team": "contra",
+      "role": "Sceptique financier : remet en question les chiffres",
+      "method": "Exiger la source de chaque chiffre\nRecalculer les revenus, coûts et marges annoncés\nRepérer les hypothèses trop optimistes\nProposer un scénario prudent\nNoter la gravité de 1 à 5",
+      "tools": [],
+      "engine": "claude",
+      "active": true
+    },
+    {
       "id": "contra-client",
       "name": "Miroir",
       "team": "contra",
@@ -136,12 +146,39 @@
       "active": true
     },
     {
+      "id": "infra-devops",
+      "name": "Nimbus",
+      "team": "infra",
+      "role": "DevOps, SRE et coûts infonuagiques",
+      "method": "Automatiser le déploiement avec retour arrière en 5 minutes\nSurveiller disponibilité, erreurs et latence\nRéduire la facture infonuagique (FinOps)\nDocumenter les procédures d'incident\nTester les sauvegardes chaque mois",
+      "tools": [
+        "GitHub Actions",
+        "PM2",
+        "Cloudflare"
+      ],
+      "engine": "claude",
+      "active": true
+    },
+    {
       "id": "infra-securite",
       "name": "Rempart",
       "team": "infra",
       "role": "Sécurité et conformité Loi 25",
       "method": "Cartographier les renseignements personnels et où ils sont hébergés\nExiger une évaluation des facteurs relatifs à la vie privée avant tout transfert hors Québec\nAppliquer le zéro confiance : 2FA, moindre privilège, secrets hors du code\nPrévoir sauvegardes, journalisation et plan de réponse aux incidents\nSignaler toute décision automatisée à rendre transparente",
       "tools": [],
+      "engine": "claude",
+      "active": true
+    },
+    {
+      "id": "infra-veille",
+      "name": "Sentinelle",
+      "team": "infra",
+      "role": "Veille cybersécurité et réponse aux incidents",
+      "method": "Surveiller les vulnérabilités des dépendances\nDétecter les accès anormaux dans les journaux\nPréparer le plan de réponse aux incidents (Loi 25 : avis à la CAI)\nFaire des tests d'intrusion légers et autorisés\nFormer l'équipe aux bons réflexes",
+      "tools": [
+        "OWASP",
+        "Journaux de sécurité"
+      ],
       "engine": "claude",
       "active": true
     },
@@ -266,6 +303,18 @@
       "active": true
     },
     {
+      "id": "planif-capacite",
+      "name": "Cadran",
+      "team": "planif",
+      "role": "Planification de la capacité et des échéances",
+      "method": "Estimer la charge de chaque tâche\nRépartir le travail selon la disponibilité des agents\nFixer des échéances réalistes\nSignaler les surcharges et les retards\nReplanifier quand les priorités changent",
+      "tools": [
+        "Liste de tâches du Centre"
+      ],
+      "engine": "claude",
+      "active": true
+    },
+    {
       "id": "planif-projet",
       "name": "Jalon",
       "team": "planif",
@@ -290,11 +339,46 @@
       "active": true
     },
     {
+      "id": "planif-sprint",
+      "name": "Sprint",
+      "team": "planif",
+      "role": "Animateur de sprints (agilité)",
+      "method": "Découper le travail en sprints d'une semaine\nFixer l'objectif du sprint avec le patron\nSuivre l'avancement chaque jour\nAnimer la rétrospective : ce qui marche, ce qui bloque\nAméliorer le processus à chaque sprint",
+      "tools": [
+        "Liste de tâches du Centre"
+      ],
+      "engine": "claude",
+      "active": true
+    },
+    {
       "id": "revue-arbitre",
       "name": "Arbitre",
       "team": "revue",
       "role": "Facilitateur de consensus",
       "method": "Résumer fidèlement chaque position révisée\nGarder les objections encore valables (gravité 3 et plus)\nProposer une position commune avec des compromis explicites\nAprès un vote négatif, lever les blocages nommés sans vider la proposition\nNoter honnêtement la dissidence",
+      "tools": [],
+      "engine": "claude",
+      "active": true
+    },
+    {
+      "id": "revue-faits",
+      "name": "Loupe",
+      "team": "revue",
+      "role": "Vérificateur de faits",
+      "method": "Lister chaque affirmation vérifiable\nTrouver une source fiable pour chacune\nMarquer ce qui est non vérifié ou estimé\nCorriger les erreurs avant tout envoi\nGarder la liste des sources",
+      "tools": [
+        "Exa",
+        "Recherche web"
+      ],
+      "engine": "claude",
+      "active": true
+    },
+    {
+      "id": "revue-juge",
+      "name": "Juge",
+      "team": "revue",
+      "role": "Évaluateur à grille (deux ordres)",
+      "method": "Évaluer chaque proposition avec la même grille\nÉvaluer dans un ordre puis dans l'ordre inverse pour éviter le biais de position\nJustifier chaque note en une phrase\nSignaler les écarts entre les deux passes\nRemettre un classement clair",
       "tools": [],
       "engine": "claude",
       "active": true
@@ -423,6 +507,19 @@
       "active": true
     },
     {
+      "id": "ventes-closing",
+      "name": "Accord",
+      "team": "ventes",
+      "role": "Négociation et conclusion des ventes",
+      "method": "Reformuler le besoin et la valeur en dollars pour le client\nTraiter les objections une par une\nProposer 3 options de prix\nObtenir un engagement écrit et une date de début\nPasser le relais au succès client",
+      "tools": [
+        "Propositions",
+        "Stripe"
+      ],
+      "engine": "claude",
+      "active": true
+    },
+    {
       "id": "ventes-formation",
       "name": "Lanterne",
       "team": "ventes",
@@ -433,12 +530,37 @@
       "active": true
     },
     {
+      "id": "ventes-prospection",
+      "name": "Radar",
+      "team": "ventes",
+      "role": "Prospection B2B",
+      "method": "Définir le client idéal (secteur, taille, douleur)\nBâtir une liste de prospects avec sources\nPersonnaliser le premier message (LCAP : consentement ou relation d'affaires)\nPlanifier les relances\nQualifier : budget, besoin, décideur, délai",
+      "tools": [
+        "HubSpot MCP",
+        "Exa"
+      ],
+      "engine": "claude",
+      "active": true
+    },
+    {
       "id": "ventes-strategie",
       "name": "Boussole",
       "team": "ventes",
       "role": "Stratège des ventes et des offres",
       "method": "Partir d'un diagnostic IA (offre A) crédité si le client signe l'offre B\nProposer 3 options de prix : Essentiel, Croissance, Performance\nCalculer le retour sur investissement en heures ou en revenus\nIdentifier les subventions possibles (ESSOR 1B, BDC LIFT, Productivité-Compétences)\nRespecter la loi anti-pourriel dans toute prospection",
       "tools": [],
+      "engine": "claude",
+      "active": true
+    },
+    {
+      "id": "ventes-succes",
+      "name": "Fidèle",
+      "team": "ventes",
+      "role": "Succès client et fidélisation",
+      "method": "Accueillir le nouveau client avec un plan des 30 premiers jours\nMesurer les résultats obtenus chaque mois\nDétecter les risques d'annulation tôt\nProposer la bonne offre suivante au bon moment\nRécolter témoignages et références",
+      "tools": [
+        "HubSpot MCP"
+      ],
       "engine": "claude",
       "active": true
     },
@@ -459,6 +581,20 @@
       "role": "Spécialiste des workflows et de l'automatisation",
       "method": "Lister les tâches répétitives et le temps qu'elles prennent par semaine\nAutomatiser avec n8n auto-hébergé, ou Activepieces si le client doit utiliser l'outil\nExposer chaque action aux agents comme outil MCP\nGarder un humain dans la boucle pour toute action irréversible\nMesurer les heures économisées chaque semaine",
       "tools": [],
+      "engine": "claude",
+      "active": true
+    },
+    {
+      "id": "web-frontend",
+      "name": "Pixel",
+      "team": "web",
+      "role": "Développeur front-end et interfaces",
+      "method": "Traduire la maquette en interface fidèle et rapide\nGarantir l'accessibilité (clavier, contraste, lecteur d'écran)\nTester sur téléphone et ordinateur\nOptimiser la vitesse de chargement\nDocumenter les composants",
+      "tools": [
+        "HTML/CSS",
+        "JavaScript",
+        "Playwright MCP"
+      ],
       "engine": "claude",
       "active": true
     },

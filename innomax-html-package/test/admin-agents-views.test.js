@@ -98,9 +98,10 @@ describe('agent tabs of the admin console', () => {
     expect(council.text).toMatch(/<textarea id="ag-c-sujet"[^>]*data-dictee/);
   });
 
-  it('offers the 38 starting agents in the settings', async () => {
+  it('offers the starting agents in the settings, with the count read from the seed file', async () => {
     const res = await request(app).get('/admin/console?vue=reglages-agents').set('Cookie', adminCookie);
-    expect(res.text).toContain('Importer les 38 agents de départ');
+    expect(res.text).toContain(`Importer les ${require('../agents/catalog').seedCount()} agents de départ`);
+    expect(res.text).toContain('Importer les 49 agents de départ');
     expect(res.text).toContain('Arrêt d’urgence');
   });
 

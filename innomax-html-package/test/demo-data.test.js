@@ -1,4 +1,4 @@
-// Example data of the local demo: the 38 agents, a finished Council converted
+// Example data of the local demo: the 49 starting agents, a finished Council converted
 // from the artifact to the engine format, and the fake Anthropic API.
 require('./helpers/quiet');
 const { createMockDb } = require('./helpers/mock-supabase');
@@ -9,10 +9,10 @@ const { runResearch, SCHEMAS } = require('../agents/protocol');
 const { validate } = require('../agents/json');
 
 describe('demo data', () => {
-  it('seeds the 38 agents and a finished Council in the engine format', async () => {
+  it('seeds the 49 starting agents and a finished Council in the engine format', async () => {
     const db = createMockDb({}, {}, { uuid: true });
     const { debateId } = await seedDemo(db);
-    expect(db.tables.agents).toHaveLength(38);
+    expect(db.tables.agents).toHaveLength(49);
     const debate = db.tables.agent_jobs.find((j) => j.id === debateId);
     expect(debate).toMatchObject({ kind: 'debate', status: 'done', result: { phase: 'termine', consensus: true } });
     expect(debate.result.propositions[0]).toMatchObject({ agent: 'conseil-strategie', nom: 'Cap' });

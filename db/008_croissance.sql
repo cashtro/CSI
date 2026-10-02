@@ -1,9 +1,11 @@
 -- Onglet Croissance de la console admin : SEO, AEO, backlinks, campagnes,
 -- contenus, medias et communiques (voir CROISSANCE.md).
 --
+-- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, 002_espace_entreprises.sql,
 -- 003_moteur_agents.sql, 004_protection_comptes.sql, 005_recherche_agents.sql,
--- puis 006 et 007 (crees par d'autres equipes), puis ce fichier (008).
+-- 006_robots.sql, 007_finances.sql, puis ce fichier (008).
 -- Il reference public.agent_jobs (003) et auth.users.
 --
 -- Securite : RLS activee sur chaque table, AUCUNE politique. Seul le serveur

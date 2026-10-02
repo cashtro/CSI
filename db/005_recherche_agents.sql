@@ -1,8 +1,10 @@
 -- Recherche web des agents et onglet Agents de l'admin (voir MOTEUR-AGENTS.md).
 --
+-- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, 002_espace_entreprises.sql,
 -- 003_moteur_agents.sql, 004_protection_comptes.sql, puis ce fichier (005).
--- Il modifie la table public.agent_jobs creee par 003. Ensuite : 006_robots.sql.
+-- Il modifie la table public.agent_jobs creee par 003.
 --
 -- Safe to re-run: every statement is idempotent.
 

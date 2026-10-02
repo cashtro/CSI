@@ -407,9 +407,9 @@ describe('the Croissance tab', () => {
 describe('db/008_croissance.sql', () => {
   const raw = fs.readFileSync(path.join(__dirname, '..', '..', 'db', '008_croissance.sql'), 'utf8');
   const sql = raw.replace(/--.*$/gm, '');
-  it('states that it runs after 007 (006 and 007 by other teams)', () => {
+  it('states that it runs after 006 (robots) and 007 (finances)', () => {
     const head = raw.split('\n').slice(0, 10).join('\n');
-    expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE[\s\S]*005_recherche_agents\.sql[\s\S]*006 et 007[\s\S]*ce fichier \(008\)/);
+    expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE[\s\S]*005_recherche_agents\.sql[\s\S]*006_robots\.sql, 007_finances\.sql, puis ce fichier \(008\)/);
   });
   it('enables RLS on every table, with no policy and no grant to the browser (service only)', () => {
     const tables = [...sql.matchAll(/create table if not exists (public\.\w+)/g)].map((m) => m[1]);

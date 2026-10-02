@@ -19,7 +19,7 @@ toutes ses clés comme connues de tous.
       **limite de dépense** mensuelle sur le compte.
 - [ ] Notez les nouvelles clés dans un gestionnaire de mots de passe, **jamais** dans le dépôt.
 
-## 2. Base de données : les fichiers SQL 001 à 005
+## 2. Base de données : les fichiers SQL 001 à 008
 
 Supabase → SQL Editor. Collez un fichier, cliquez sur **Run**, passez au suivant. **L'ordre est
 obligatoire.** Chaque fichier peut être relancé sans danger.
@@ -30,6 +30,8 @@ obligatoire.** Chaque fichier peut être relancé sans danger.
 - [ ] `db/004_protection_comptes.sql` (un compte ne peut pas se donner le rôle admin)
 - [ ] `db/005_recherche_agents.sql` (recherche web des agents)
 - [ ] `db/006_robots.sql` (robots clients, connexions : voir ROBOTS.md)
+- [ ] `db/007_finances.sql` (dépenses et objectifs : voir FINANCES.md)
+- [ ] `db/008_croissance.sql` (SEO, campagnes, presse : voir CROISSANCE.md)
 - [ ] Supabase → Authentication → Policies : vérifiez que `anon` et `authenticated` ne peuvent
       **pas écrire** dans `Entry`, `cours_students`, `rendez_vous`, `disponibilites`, `bills`,
       `Lottery`, `Achat`.
@@ -74,10 +76,26 @@ Pour fabriquer une clé au hasard : `openssl rand -hex 32`.
 | `AGENTS_WEB_SEARCH_USD_PER_1000` | Facultatif. Prix compté par 1 000 recherches web (10 par défaut, **à vérifier** sur anthropic.com/pricing). |
 | `AGENTS_MODEL_QUICK`, `AGENTS_MODEL_DEFAULT`, `AGENTS_MODEL_COMPLEX` | Facultatif. Modèles par niveau (sinon ceux par défaut, aussi réglables dans l'admin). |
 
+**Connexions des robots aux outils des clients** (facultatives : sans elles, la connexion passe par une demande à l'équipe ; voir ROBOTS.md)
+
+| Variable | À quoi elle sert |
+| --- | --- |
+| `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET` | Connexion Gmail et Agenda Google. |
+| `MICROSOFT_OAUTH_CLIENT_ID`, `MICROSOFT_OAUTH_CLIENT_SECRET` | Connexion Outlook et Microsoft 365. |
+| `META_APP_ID`, `META_APP_SECRET` | Connexion Facebook et Instagram. |
+| `HUBSPOT_CLIENT_ID`, `HUBSPOT_CLIENT_SECRET` | Connexion HubSpot. |
+| `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET` | Connexion Shopify. |
+
+`TOTP_ENC_KEY` est aussi **obligatoire** pour connecter des outils : elle chiffre leurs jetons.
+
 **Facultatives**
 
 | Variable | À quoi elle sert |
 | --- | --- |
+| `SITE_URL` | Adresse publique utilisée par le plan du site et les pages SEO (sinon `APP_URL`). |
+| `FINANCES_USD_CAD` | Taux USD → CAD pour convertir les dépenses en dollars américains (Finances). |
+| `FINANCES_STRIPE` | `false` pour que l'onglet Finances ne lise pas Stripe. |
+| `AGENTS_STREAM_MAX_MS` | Durée maximale d'un flux en direct des agents (30 minutes par défaut). |
 | `FACEBOOK_PIXEL_ID` | Pixel Facebook des pages publiques. |
 | `SITE_LANG` | Langue par défaut du contenu du site : `fr` (défaut) ou `en`. |
 | `CMS_BUCKET` | Dossier Supabase des images du site (défaut `site-content`). |
@@ -87,6 +105,7 @@ Pour fabriquer une clé au hasard : `openssl rand -hex 32`.
 | `CSRF_ENFORCE` | `true` **après** l'étape 8 (premier test réussi). |
 
 **À ne jamais mettre en production** : `COOKIE_SECURE=false`, `ALLOW_DEGRADED_BOOT=true`, `DEMO_MODE=true`.
+Ne touchez pas à `NODE_ENV` (le site tourne tel que décrit dans le README).
 
 - [ ] Le `.env` contient toutes les variables obligatoires et recommandées.
 - [ ] Le `.env` n'est lisible que par le compte du serveur : `chmod 600 .env`.
@@ -116,11 +135,11 @@ pm2 save
 - [ ] Le site tourne en **un seul processus** (mode fork).
 - [ ] `pm2 logs pandorabrains.com` : aucune ligne « missing » au démarrage.
 
-## 6. Importer les 38 agents de départ
+## 6. Importer les 49 agents de départ
 
 Au choix :
 
-- [ ] dans l'admin : **⚙️ Réglages agents → 🌱 Importer les 38 agents de départ** (après l'étape 7) ;
+- [ ] dans l'admin : **⚙️ Réglages agents → 🌱 Importer les 49 agents de départ** (après l'étape 7) ;
 - ou sur le serveur : `cd innomax-html-package && node scripts/seed-agents.js`.
 
 Relancer l'import ne crée pas de doublon : il ajoute seulement les agents manquants.

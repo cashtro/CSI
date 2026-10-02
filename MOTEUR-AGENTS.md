@@ -49,7 +49,8 @@ Faites les étapes dans l'ordre.
 Ouvrez l'éditeur SQL de Supabase et exécutez les fichiers **dans cet ordre, obligatoirement** :
 `db/001_fulfillments.sql`, puis `db/002_espace_entreprises.sql`, puis `db/003_moteur_agents.sql`,
 puis `db/004_protection_comptes.sql` (protection des comptes, audit), puis
-`db/005_recherche_agents.sql` (recherche web des agents), puis `db/006_robots.sql` (robots clients, voir `ROBOTS.md`).
+`db/005_recherche_agents.sql` (recherche web des agents), puis `db/006_robots.sql` (robots clients, voir `ROBOTS.md`), `db/007_finances.sql` et
+`db/008_croissance.sql`.
 Chaque fichier peut être exécuté plusieurs fois sans danger.
 
 003 ajoute une règle qui permet à un membre (table `membres` de 002) de lire l'état des travaux de
@@ -158,10 +159,11 @@ donc il peut refuser un travail un peu avant d'atteindre exactement le plafond.
 
 ## 4. Importer les agents
 
-**Les 38 agents de départ** (ceux du « Centre de commande ») sont dans `db/seed_agents.json`.
+**Les 49 agents de départ** (les 38 du « Centre de commande » et 11 agents de renfort) sont dans
+`db/seed_agents.json`. Le bouton d'import affiche le nombre réel lu dans ce fichier.
 Trois façons de les importer, au choix :
 
-- dans l'admin : **⚙️ Réglages agents → 🌱 Importer les 38 agents de départ** ;
+- dans l'admin : **⚙️ Réglages agents → 🌱 Importer les 49 agents de départ** ;
 - en ligne de commande, depuis `innomax-html-package/` : `node scripts/seed-agents.js` ;
 - par l'API : `POST /api/admin/agents/seed`.
 
@@ -206,7 +208,7 @@ requise ». Les créations sont limitées à 10 par minute.
 | Agents et leur statut, équipes | `GET /api/admin/agents/agents` |
 | Chiffres de la console | `GET /api/admin/agents/summary` |
 | Activité après un numéro (repli du direct) | `GET /api/admin/agents/activity?after=` |
-| Importer les 38 agents de départ | `POST /api/admin/agents/seed` |
+| Importer les 49 agents de départ | `POST /api/admin/agents/seed` |
 | Arrêt d'urgence (tout couper) | `POST /api/admin/agents/emergency-stop` |
 | Voir un travail et son activité | `GET /api/admin/agents/jobs/:id` |
 | Annuler un travail | `POST /api/admin/agents/jobs/:id/cancel` |
@@ -293,7 +295,7 @@ administrateur qui a passé le code 2FA dans ce navigateur.
 | **🧠 Conseil** (`?vue=conseil`) | Soumettre un sujet : cochez les équipes qui proposent, choisissez un client si besoin, ajoutez du contexte. Les délibérations se suivent en direct : la frise des étapes, la jauge d'accord (seuil 70 %), les propositions, objections, révisions, votes, puis la décision et les tâches. |
 | **🗂️ Travail** (`?vue=travail`) | Tous les travaux, filtrés par statut, type, agent ou client. Cliquez un travail pour voir sa demande, son résultat, son coût et son journal, ou pour l'annuler. En bas : les tâches créées par le Conseil, à valider par un humain. |
 | **🔎 Recherche** (`?vue=recherche`) | Posez une question (écrite ou dictée). Un agent (Cap, le consultant stratégie, par défaut) cherche sur le web et rend une synthèse en français avec ses **sources cliquables**. L'historique des recherches est en dessous. |
-| **⚙️ Réglages agents** (`?vue=reglages-agents`) | Marche / arrêt du moteur et **arrêt d'urgence**, budget du mois et barre de dépense (recherches web à part), modèles, import des 38 agents de départ, export et import d'un fichier JSON. |
+| **⚙️ Réglages agents** (`?vue=reglages-agents`) | Marche / arrêt du moteur et **arrêt d'urgence**, budget du mois et barre de dépense (recherches web à part), modèles, import des 49 agents de départ, export et import d'un fichier JSON. |
 
 **Le direct.** La page s'abonne au flux `/api/admin/agents/stream`. Si le flux ne passe pas (proxy,
 coupure), elle bascule toute seule sur une relève toutes les 5 secondes ; le petit voyant en haut à
@@ -331,7 +333,7 @@ DEMO_MODE=true node scripts/demo-admin.js
 ```
 
 puis ouvrez `http://127.0.0.1:3999/demo/connexion`. Vous arrivez connecté comme administrateur
-(avec la 2FA déjà validée), avec les 38 agents, quelques travaux, une délibération terminée
+(avec la 2FA déjà validée), avec les 49 agents, quelques travaux, une délibération terminée
 (l'exemple « concept de rupture ») et de l'activité. Les vrais écrans et le vrai moteur tournent,
 mais sur une base en mémoire et une **fausse API Anthropic** : les réponses sont simulées (elles
 le disent), rien n'est envoyé ni payé, tout disparaît à l'arrêt (Ctrl + C). Réglages : `DEMO_PORT`

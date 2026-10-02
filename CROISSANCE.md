@@ -156,7 +156,7 @@ moteur d'agents habituel (budget mensuel, arrêt d'urgence, onglet Travail).
 ## 3. Mise en place
 
 1. Base de données : exécuter **`db/008_croissance.sql`** dans Supabase, **après 007**.
-   Ordre : 001, 002, 003, 004, 005, puis 006 et 007 (créés par d'autres équipes), puis 008.
+   Ordre : 001, 002, 003, 004, 005, 006 (robots), 007 (finances), puis 008.
    Le fichier peut être relancé sans risque. Les tables ont la RLS activée **sans aucune
    politique** : seul le serveur (clé service) y accède.
 2. `.env` : `SITE_URL=https://pandorabrains.com` (facultatif).

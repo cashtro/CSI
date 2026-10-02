@@ -141,6 +141,7 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
     croissance,
     fin, categories: finances.CATEGORIES, categorieLabel: finances.CATEGORIE_LABEL,
     agentVue, agents: agentData.agents, agentsError: agentData.agentsError, teams: catalog.TEAMS, defaultResearchAgent: catalog.DEFAULT_RESEARCH_AGENT,
+    seedCount: agentVue ? catalog.seedCount() : 0,
   });
 });
 

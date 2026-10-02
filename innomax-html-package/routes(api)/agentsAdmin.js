@@ -299,7 +299,7 @@ router.get('/activity', async (req, res) => {
   res.json(Number.isFinite(after) && after >= 0 ? rows : rows.reverse());
 });
 
-// The 38 starting agents (db/seed_agents.json). Missing ones are added;
+// The starting agents (db/seed_agents.json). Missing ones are added;
 // existing ones are left as the admin edited them.
 router.post('/seed', importLimiter, async (req, res) => {
   let result;

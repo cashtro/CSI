@@ -106,7 +106,7 @@ La dictée vocale du navigateur est surtout fiable dans Chrome, Edge et Safari.
 
 1. **Fusionner** la branche après relecture. `security-hardening` doit déjà être en ligne : cette branche en dépend.
 2. **Exécuter la migration** : ouvrez Supabase, puis SQL Editor, collez le contenu de `db/002_espace_entreprises.sql` et cliquez sur Run.
-   - Ordre complet des fichiers SQL, un à la fois : `001_fulfillments.sql`, `002_espace_entreprises.sql`, `003_moteur_agents.sql`, `004_protection_comptes.sql`, `005_recherche_agents.sql` (voir `MISE-EN-LIGNE.md`).
+   - Ordre complet des fichiers SQL, un à la fois : `001_fulfillments.sql`, `002_espace_entreprises.sql`, `003_moteur_agents.sql`, `004_protection_comptes.sql`, `005_recherche_agents.sql`, `006_robots.sql`, `007_finances.sql`, `008_croissance.sql` (voir `MISE-EN-LIGNE.md`).
    - Le script crée les tables `entreprises`, `membres`, `mandats`, `livrables` et `site_content`, avec leurs règles RLS.
    - Il crée aussi le bucket public `site-content`.
    - Vous pouvez le relancer sans risque.

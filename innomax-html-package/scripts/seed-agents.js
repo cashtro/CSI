@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Imports the 38 starting agents of the Centre de commande
+// Imports the starting agents of the Centre de commande (49)
 // (db/seed_agents.json) into public.agents, through the same validation as
 // POST /api/admin/agents/import.
 //

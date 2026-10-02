@@ -61,7 +61,7 @@ témoignages (avec la permission écrite des clients) dans `views/robots.ejs`, o
 
 ## 3. Mise en route
 
-1. **SQL** : dans l'éditeur SQL de Supabase, exécutez `db/006_robots.sql` **après** 001 à 005. Le
+1. **SQL** : dans l'éditeur SQL de Supabase, exécutez `db/006_robots.sql` **après** 001 à 005 (puis 007 et 008, voir `MISE-EN-LIGNE.md`). Le
    fichier peut être relancé sans danger. Il crée les tables, les règles RLS et les 6 robots de
    départ.
 2. **Stripe** : voir la section 5.

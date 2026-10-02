@@ -1,5 +1,6 @@
 // Agent catalogue: validation of agent rows (import route, seed script) and
-// the 38 starting agents of the "Centre de commande" (db/seed_agents.json).
+// the starting agents of the "Centre de commande" (db/seed_agents.json: 38
+// exported from the artifact plus 11 reinforcements, 49 in all).
 //
 // seedAgents() is idempotent by id: it inserts the agents that are missing and
 // leaves the existing ones alone (an admin may have edited them), unless
@@ -92,6 +93,16 @@ function loadSeed(file = SEED_FILE) {
   return list;
 }
 
+// Number of agents in the seed file (shown on the import button); 0 when the
+// file is missing or unreadable.
+function seedCount(file = SEED_FILE) {
+  try {
+    return loadSeed(file).length;
+  } catch (_) {
+    return 0;
+  }
+}
+
 // -> { inserted, updated, skipped, total }
 async function seedAgents(db, list, { force = false } = {}) {
   const { rows, errors } = normaliseList(list);
@@ -114,5 +125,5 @@ async function seedAgents(db, list, { force = false } = {}) {
 
 module.exports = {
   TEAMS, DEFAULT_RESEARCH_AGENT, SEED_FILE, AGENT_ID, MODEL, TIERS, ENGINES,
-  slug, normaliseAgent, normaliseList, loadSeed, seedAgents,
+  slug, normaliseAgent, normaliseList, loadSeed, seedCount, seedAgents,
 };

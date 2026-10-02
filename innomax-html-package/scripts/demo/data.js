@@ -1,4 +1,4 @@
-// Example data of the local demo: an admin, two companies, the 38 starting
+// Example data of the local demo: an admin, two companies, the 49 starting
 // agents, a few jobs (orders, a research, a finished Council taken from the
 // artifact's "concept de rupture" deliberation) and some activity.
 

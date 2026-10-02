@@ -11,7 +11,7 @@ Il est réservé à un **administrateur connecté avec la double authentificatio
 
 1. Dans Supabase, ouvrir l’éditeur SQL.
 2. Exécuter les migrations **dans l’ordre** : 001, 002, 003, 004, 005, puis
-   **006** (fichier préparé par une autre équipe), puis **`db/007_finances.sql`**.
+   **006** (`db/006_robots.sql`), puis **`db/007_finances.sql`**, puis 008 (`db/008_croissance.sql`).
    Le fichier 007 crée deux tables : `depenses` et `objectifs_financiers`.
    On peut le relancer sans danger.
 3. (Facultatif) Variables d’environnement :

@@ -1,8 +1,10 @@
 -- Module Finances de la console admin (voir FINANCES.md).
 --
+-- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, 002_espace_entreprises.sql,
 -- 003_moteur_agents.sql, 004_protection_comptes.sql, 005_recherche_agents.sql,
--- 006 (fichier cree par une autre equipe, a executer avant celui-ci),
+-- 006_robots.sql,
 -- puis ce fichier (007).
 -- Il ne modifie aucune table existante : il cree depenses et objectifs_financiers.
 --
