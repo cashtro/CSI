@@ -6,6 +6,7 @@ require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf'); // ✅ Protection CSRF
 const compression = require('compression');
+const helmet = require('helmet');
 
 //const swaggerUi = require('swagger-ui-express');
 //const swaggerConfig = require('./swagger/swagger-config.js');
@@ -37,6 +38,15 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 
 app.use(compression());
+
+// Security headers. Content-Security-Policy is disabled for now because the app
+// relies on inline scripts and ~20 external CDNs; a tailored CSP is a follow-up.
+// The remaining protections (HSTS, X-Content-Type-Options, frameguard,
+// Referrer-Policy, etc.) apply safely and remove X-Powered-By.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
 
 
 // Configurer le moteur de template EJS
