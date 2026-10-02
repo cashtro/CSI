@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "devcomment": "echo \"This is a comment to let you know that npm start was node server.js\" && exit 0",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "start": "nodemon server.js",
     "dev": "nodemon server.js"
   },
@@ -48,6 +48,8 @@
   },
   "devDependencies": {
     "@sonar/scan": "^4.3.0",
-    "nodemon": "^3.1.10"
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.10",
+    "supertest": "^7.2.2"
   }
 }
