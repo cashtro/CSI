@@ -69,4 +69,26 @@ async function secondFactorStep(admin, userId) {
   return (await isPrivileged(admin, userId)) ? 'setup' : 'none';
 }
 
-module.exports = { signSetup, setupMode, get2fa, isPrivileged, secondFactorStep };
+// Proof that THIS browser passed the second factor. A Supabase JWT alone does
+// not prove it: anyone with the public anon key can sign in to Supabase
+// directly and paste the token into a cookie. verify-2fa sets this cookie
+// (httpOnly, signed with the server key), and the admin console requires it.
+const MFA_COOKIE = 'mfa';
+
+function signMfaProof(userId, expiresAt) {
+  const mac = crypto.createHmac('sha256', setupKey()).update(`mfa:${userId}:${expiresAt}`).digest('hex');
+  return `${expiresAt}.${mac}`;
+}
+
+function verifyMfaProof(value, userId, now = Date.now()) {
+  if (typeof value !== 'string' || !userId) return false;
+  const match = /^(\d{1,15})\.([0-9a-f]{64})$/.exec(value);
+  if (!match || Number(match[1]) < now) return false;
+  const want = Buffer.from(signMfaProof(userId, match[1]).split('.')[1], 'hex');
+  return crypto.timingSafeEqual(want, Buffer.from(match[2], 'hex'));
+}
+
+module.exports = {
+  signSetup, setupMode, get2fa, isPrivileged, secondFactorStep,
+  MFA_COOKIE, signMfaProof, verifyMfaProof,
+};

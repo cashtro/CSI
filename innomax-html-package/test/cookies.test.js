@@ -36,12 +36,12 @@ describe('auth cookie options (M1)', () => {
     expect(res.calls.set.find((c) => c.name === 'accessToken').opts.secure).toBe(true);
   });
 
-  it('clearAuthCookies clears all three cookies with matching attributes', () => {
+  it('clearAuthCookies clears the auth, csrf and 2FA-proof cookies with matching attributes', () => {
     process.env.COOKIE_SECURE = 'false';
     const { clearAuthCookies } = require('../routes(api)/utils/auth-middleware');
     const res = mockRes();
     clearAuthCookies(res);
-    expect(res.calls.clear.map((c) => c.name).sort()).toEqual(['accessToken', 'csrf-token', 'refreshToken']);
+    expect(res.calls.clear.map((c) => c.name).sort()).toEqual(['accessToken', 'csrf-token', 'mfa', 'refreshToken']);
     res.calls.clear.forEach((c) => {
       expect(c.opts.path).toBe('/');
       expect(c.opts.httpOnly).toBe(true);

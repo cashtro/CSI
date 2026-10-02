@@ -3,7 +3,7 @@ const logger = require('./utils/logger');
 const router = express.Router();
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
-const { authenticateUser, setAuthCookies, clearAuthCookies, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
+const { authenticateUser, setAuthCookies, clearAuthCookies, setMfaProof, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
 const { loginValidation, registrationValidation, validatePassword } = require('./utils/validation-middleware');
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
 const { createSupabaseClient, createSupabaseAdmin } = require('./utils/supabaseUtil');
@@ -358,8 +358,9 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
             }
         }
 
-        // Set auth cookies
+        // Set auth cookies, plus the proof that this browser passed 2FA.
         await setAuthCookies(res, accessToken, refreshToken, rememberMe);
+        setMfaProof(res, user.userId, rememberMe);
 
         return res.status(200).json({
             success: true,

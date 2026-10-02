@@ -21,7 +21,7 @@ jest.mock('@supabase/supabase-js', () => ({
   }),
 }));
 jest.mock('../routes(api)/utils/auth-middleware', () => ({
-  authenticateUser: (q, s, n) => n(), setAuthCookies: jest.fn(), clearAuthCookies: jest.fn(),
+  authenticateUser: (q, s, n) => n(), setAuthCookies: jest.fn(), clearAuthCookies: jest.fn(), setMfaProof: jest.fn(),
   twoFaLimiter: (q, s, n) => n(), authLimiter: (q, s, n) => n(),
 }));
 jest.mock('../routes(api)/utils/supabaseSessionStore', () => ({ storeTempSession: jest.fn(), getAndValidateSession: jest.fn() }));

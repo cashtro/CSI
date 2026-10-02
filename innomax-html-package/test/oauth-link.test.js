@@ -19,6 +19,7 @@ jest.mock('@supabase/supabase-js', () => ({
 jest.mock('../routes(api)/utils/auth-middleware', () => ({
   authenticateUser: (req, res, next) => next(),
   setAuthCookies: jest.fn(),
+  setMfaProof: jest.fn(),
   twoFaLimiter: (req, res, next) => next(),
   authLimiter: (req, res, next) => next(),
 }));

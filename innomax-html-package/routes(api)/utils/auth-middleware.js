@@ -95,6 +95,14 @@ function clearAuthCookies(res) {
   res.clearCookie('accessToken', base);
   res.clearCookie('refreshToken', base);
   res.clearCookie('csrf-token', base);
+  res.clearCookie('mfa', base); // second-factor proof, see utils/twofa
+}
+
+// Mark this browser as having passed the second factor (admin console gate).
+function setMfaProof(res, userId, rememberMe) {
+  const { signMfaProof, MFA_COOKIE } = require('./twofa');
+  const maxAge = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+  res.cookie(MFA_COOKIE, signMfaProof(userId, Date.now() + maxAge), { ...cookieBaseOptions(), maxAge });
 }
 
 // Enhanced user validation
@@ -163,6 +171,7 @@ module.exports = {
   checkAdmin,
   setAuthCookies,
   clearAuthCookies,
+  setMfaProof,
   twoFaLimiter,
   authLimiter,
   getValidUser

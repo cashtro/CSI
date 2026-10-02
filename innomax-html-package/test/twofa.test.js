@@ -66,6 +66,7 @@ jest.mock('../routes(api)/utils/auth-middleware', () => ({
     next();
   },
   setAuthCookies: jest.fn(),
+  setMfaProof: jest.fn(),
   clearAuthCookies: jest.fn(),
   twoFaLimiter: (req, res, next) => next(),
   authLimiter: (req, res, next) => next(),
@@ -92,7 +93,7 @@ jest.mock('../routes(api)/utils/supabaseUtil', () => {
 
 jest.mock('../routes(api)/utils/emailService', () => ({ sendEmail: jest.fn() }));
 
-const { setAuthCookies } = require('../routes(api)/utils/auth-middleware');
+const { setAuthCookies, setMfaProof } = require('../routes(api)/utils/auth-middleware');
 const authRoutes = require('../routes(api)/authCRUD');
 
 const app = express();
@@ -111,6 +112,7 @@ const login = () => request(app).post('/api/auth/login').send({ email: 'a@b.com'
 beforeEach(() => {
   mockSessions.clear();
   setAuthCookies.mockClear();
+  setMfaProof.mockClear();
 });
 
 describe('password sign-in', () => {
@@ -168,6 +170,7 @@ describe('verify-2fa setup', () => {
     });
     expect(res.status).toBe(200);
     expect(mockDb.Users_2fa[0].enabled).toBe(true);
+    expect(setMfaProof).toHaveBeenCalledWith(expect.anything(), 'u1', undefined);
   });
 
   it('refuses a "new" setup over an enabled authenticator', async () => {
@@ -246,5 +249,21 @@ describe('OAuth sign-in', () => {
     const res = await request(app).post('/api/auth/check-2fa').send({ session });
     expect(res.body.requires2FA).toBe(false);
     expect(setAuthCookies).toHaveBeenCalled();
+  });
+});
+
+describe('second-factor proof cookie', () => {
+  const { signMfaProof, verifyMfaProof } = require('../routes(api)/utils/twofa');
+  const later = Date.now() + 60000;
+
+  it('accepts a proof signed for the same user', () => {
+    expect(verifyMfaProof(signMfaProof('u1', later), 'u1')).toBe(true);
+  });
+
+  it('refuses a proof for another user, an expired one or a forged one', () => {
+    expect(verifyMfaProof(signMfaProof('u1', later), 'u2')).toBe(false);
+    expect(verifyMfaProof(signMfaProof('u1', Date.now() - 1), 'u1')).toBe(false);
+    expect(verifyMfaProof(`${later}.${'0'.repeat(64)}`, 'u1')).toBe(false);
+    expect(verifyMfaProof(undefined, 'u1')).toBe(false);
   });
 });
