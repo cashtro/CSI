@@ -1,18 +1,13 @@
 // Signed Stripe webhook receiver behavior.
 let mockConstructEvent;
-let mockClaim;
-const mockBillInsert = jest.fn(() => Promise.resolve({ error: null }));
+let mockFulfill;
 
 jest.mock('stripe', () => jest.fn(() => ({
   webhooks: { constructEvent: (...args) => mockConstructEvent(...args) },
 })));
 
-jest.mock('../routes(api)/utils/supabaseUtil', () => ({
-  createSupabaseAdmin: () => ({ from: () => ({ insert: mockBillInsert }) }),
-}));
-
-jest.mock('../routes(api)/utils/fulfillment', () => ({
-  claimFulfillment: (...args) => mockClaim(...args),
+jest.mock('../routes(api)/utils/fulfill', () => ({
+  fulfillCheckoutSession: (...args) => mockFulfill(...args),
 }));
 
 const { stripeWebhookHandler } = require('../routes(api)/webhook');
@@ -30,8 +25,7 @@ function mockRes() {
 describe('stripeWebhookHandler', () => {
   beforeEach(() => {
     process.env.STRIPE_WEBHOOK_SECRET = 'whsec_test';
-    mockBillInsert.mockClear();
-    mockClaim = jest.fn(() => Promise.resolve({ claimed: true }));
+    mockFulfill = jest.fn(() => Promise.resolve({ kind: 'lottery_entry', status: 'granted' }));
   });
 
   it('returns 503 when the webhook secret is not configured', async () => {
@@ -48,28 +42,31 @@ describe('stripeWebhookHandler', () => {
     expect(res.statusCode).toBe(400);
   });
 
-  it('records a bill and returns 200 for a fresh checkout.session.completed', async () => {
-    mockConstructEvent = () => ({
-      type: 'checkout.session.completed',
-      data: { object: { id: 'cs_1', metadata: { type: 'lottery_entry', userId: 'u1', lotteryId: 'l1' } } },
-    });
+  it.each([['checkout.session.completed'], ['checkout.session.async_payment_succeeded']])(
+    'fulfils the session on %s',
+    async (type) => {
+      const session = { id: 'cs_1', metadata: { type: 'lottery_entry' } };
+      mockConstructEvent = () => ({ type, data: { object: session } });
+      const res = mockRes();
+      await stripeWebhookHandler({ headers: { 'stripe-signature': 'ok' }, body: Buffer.from('{}') }, res);
+      expect(res.statusCode).toBe(200);
+      expect(mockFulfill).toHaveBeenCalledWith(session);
+    },
+  );
+
+  it('ignores unrelated events', async () => {
+    mockConstructEvent = () => ({ type: 'invoice.paid', data: { object: {} } });
     const res = mockRes();
     await stripeWebhookHandler({ headers: { 'stripe-signature': 'ok' }, body: Buffer.from('{}') }, res);
     expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ received: true });
-    expect(mockBillInsert).toHaveBeenCalledTimes(1);
+    expect(mockFulfill).not.toHaveBeenCalled();
   });
 
-  it('is idempotent: a duplicate delivery is skipped without re-recording', async () => {
-    mockClaim = jest.fn(() => Promise.resolve({ alreadyProcessed: true }));
-    mockConstructEvent = () => ({
-      type: 'checkout.session.completed',
-      data: { object: { id: 'cs_1', metadata: { type: 'lottery_entry' } } },
-    });
+  it('answers 500 when fulfilment fails so Stripe retries', async () => {
+    mockFulfill = jest.fn(() => Promise.reject(new Error('ledger down')));
+    mockConstructEvent = () => ({ type: 'checkout.session.completed', data: { object: { id: 'cs_2', metadata: {} } } });
     const res = mockRes();
     await stripeWebhookHandler({ headers: { 'stripe-signature': 'ok' }, body: Buffer.from('{}') }, res);
-    expect(res.statusCode).toBe(200);
-    expect(res.body).toEqual({ received: true, duplicate: true });
-    expect(mockBillInsert).not.toHaveBeenCalled();
+    expect(res.statusCode).toBe(500);
   });
 });

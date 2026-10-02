@@ -70,4 +70,11 @@ async function wasFulfilled(key) {
   return !!data;
 }
 
-module.exports = { claimFulfillment, wasFulfilled };
+/** Undo a claim whose action failed, so a retry can claim it again. */
+async function releaseFulfillment(key) {
+  const admin = createSupabaseAdmin();
+  const { error } = await admin.from('fulfillments').delete().eq('key', key);
+  if (error) console.error(`[fulfillment] could not release ${key}:`, error.message);
+}
+
+module.exports = { claimFulfillment, releaseFulfillment, wasFulfilled };
