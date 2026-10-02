@@ -3,12 +3,49 @@ const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const { handleRDVPayment, createRendezvous } = require('./utils/stripe');
 const { authenticateUser, checkAdmin } = require('./utils/auth-middleware');
+const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 
 
 
 const supabaseUrl = process.env.SUPABASE_URL; 
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY; 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabaseAdmin = createSupabaseAdmin();
+
+async function isAdmin(userId) {
+  const { data } = await supabaseAdmin.from('Users').select('isAdmin').eq('userId', userId).single();
+  return Boolean(data && data.isAdmin);
+}
+
+// A rendez-vous may be changed by its student, the teacher who owns the slot,
+// or an admin. Resolves to the row when allowed, null when not, and throws a
+// 404 marker when it does not exist.
+async function rdvForManager(userId, rdvId) {
+  const { data: rdv } = await supabaseAdmin
+    .from('rendez_vous')
+    .select('id, id_eleve, disponibilite_id')
+    .eq('id', rdvId)
+    .single();
+  if (!rdv) return { notFound: true };
+  if (rdv.id_eleve === userId) return { rdv };
+  const { data: slot } = await supabaseAdmin
+    .from('disponibilites')
+    .select('id_prof')
+    .eq('id', rdv.disponibilite_id)
+    .single();
+  if (slot && slot.id_prof === userId) return { rdv };
+  return (await isAdmin(userId)) ? { rdv } : { forbidden: true };
+}
+
+// Listing someone else's rendez-vous is admin-only.
+async function listTarget(req, res) {
+  const target = req.query.userId || req.user.id;
+  if (target !== req.user.id && !(await isAdmin(req.user.id))) {
+    res.status(403).json({ message: 'Forbidden' });
+    return null;
+  }
+  return target;
+}
 
 
 //redv creation after sucess
@@ -32,7 +69,11 @@ router.put('/update/:id', authenticateUser, async (req, res) => {
   const { date, heure, duree } = req.body;
 
   try {
-    const { data, error } = await supabase
+    const access = await rdvForManager(req.user.id, id);
+    if (access.notFound) return res.status(404).json({ message: 'Rendez-vous not found' });
+    if (access.forbidden) return res.status(403).json({ message: 'Forbidden' });
+
+    const { data, error } = await supabaseAdmin
       .from('rendez_vous')
       .update({ date, heure, duree })
       .eq('id', id);
@@ -52,7 +93,11 @@ router.delete('/cancel/:id', authenticateUser, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data : rdv , error } = await supabase
+    const access = await rdvForManager(req.user.id, id);
+    if (access.notFound) return res.status(404).json({ message: 'Rendez-vous not found' });
+    if (access.forbidden) return res.status(403).json({ message: 'Forbidden' });
+
+    const { data : rdv , error } = await supabaseAdmin
       .from('rendez_vous')
       .delete()
       .eq('id', id)
@@ -70,10 +115,10 @@ router.delete('/cancel/:id', authenticateUser, async (req, res) => {
 });
 
 //get all rendez-vous for a user (buyer or seller)
-router.get('/all', async (req, res) => {
-  const { userId } = req.query; //Can be buyer or seller ID
-
+router.get('/all', authenticateUser, async (req, res) => {
   try {
+    const userId = await listTarget(req, res); // student or teacher id
+    if (!userId) return;
     const { data, error } = await supabase.rpc('get_all_rendez_vous', { user_id: userId });
     // await supabase
       //.from('rendez_vous')
@@ -93,10 +138,10 @@ router.get('/all', async (req, res) => {
 
 
 // test
-router.get('/allRdv', async (req, res) => {
-  const { userId } = req.query; // Peut être l'élève ou le prof
-
+router.get('/allRdv', authenticateUser, async (req, res) => {
   try {
+    const userId = await listTarget(req, res); // élève ou prof
+    if (!userId) return;
     const { data, error } = await supabase.rpc('get_all_rendez_vous', { user_id: userId });
 
     if (error) {
