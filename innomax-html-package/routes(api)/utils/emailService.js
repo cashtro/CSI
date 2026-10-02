@@ -1,8 +1,14 @@
 const nodemailer = require('nodemailer');
+const logger = require('./logger');
 const sendgridMail = require('@sendgrid/mail');
 
-// Set your SendGrid API Key (from your SendGrid dashboard)
-sendgridMail.setApiKey(process.env.SENDGRID_API_KEY); // Ensure your API key is stored in an environment variable
+// Set your SendGrid API Key (from your SendGrid dashboard).
+// Guarded so a missing key doesn't throw at import time (boot-safety).
+if (process.env.SENDGRID_API_KEY) {
+    sendgridMail.setApiKey(process.env.SENDGRID_API_KEY);
+} else {
+    logger.warn('[emailService] SENDGRID_API_KEY not set — email sending is disabled.');
+}
 // Create a transporter using environment variables
 
 
@@ -18,7 +24,7 @@ const sendEmail = async (recipientEmail, subject, content) => {
     try {
         await sendgridMail.send(msg);
     } catch (error) {
-        console.error('Error sending email:', error);
+        logger.error('Error sending email:', error);
         // Handle error, maybe send a fallback or log to monitor issues
     }
 };
@@ -48,7 +54,7 @@ async function sendLotteryWinnerEmail(winnerEmail, lotteryDetails) {
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        console.error('Error sending winner notification email:', error);
+        logger.error('Error sending winner notification email:', error);
         throw error;
     }
 }
@@ -74,7 +80,7 @@ async function sendLotteryOwnerEmail(ownerEmail, details) {
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        console.error('Error sending owner notification email:', error);
+        logger.error('Error sending owner notification email:', error);
         throw error;
     }
 }
@@ -118,7 +124,7 @@ async function sendFullPriceProductOwnerEmail(ownerEmail, productDetails) {
     try {
         await transporter.sendMail(mailOptions);
     } catch (error) {
-        console.error('Error sending product purchase email:', error);
+        logger.error('Error sending product purchase email:', error);
         throw error;
     }
 }

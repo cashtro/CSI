@@ -47,26 +47,26 @@ function getTimeRemaining(endTime) {
             <div class="parent">
                 <div class="card">
                     <div class="content-box">
-                        <img src="${lottery.imageProduit}" alt="${lottery.nomProduit}" class="product-image" />
-                        <span class="card-title">${lottery.nomProduit}</span>
-                        <a href="#" class="buy-entries-btn" id="buy-entries-${lottery.lotteryId}" data-lottery-id="${lottery.lotteryId}">Buy entries</a>
+                        <img src="${window.safeUrl(lottery.imageProduit)}" alt="${window.escapeHtml(lottery.nomProduit)}" class="product-image" />
+                        <span class="card-title">${window.escapeHtml(lottery.nomProduit)}</span>
+                        <a href="#" class="buy-entries-btn" id="buy-entries-${window.escapeHtml(lottery.lotteryId)}" data-lottery-id="${window.escapeHtml(lottery.lotteryId)}">Buy entries</a>
                     </div>
    
-                    <div class="date-box" id="timer-container-${lottery.lotteryId}">
+                    <div class="date-box" id="timer-container-${window.escapeHtml(lottery.lotteryId)}">
                         <div class="time-unit">
-                            <span class="time-value" id="days-${lottery.lotteryId}">00</span>
+                            <span class="time-value" id="days-${window.escapeHtml(lottery.lotteryId)}">00</span>
                             <span class="time-label">jours</span>
                         </div>
                         <div class="time-unit">
-                            <span class="time-value" id="hours-${lottery.lotteryId}">00</span>
+                            <span class="time-value" id="hours-${window.escapeHtml(lottery.lotteryId)}">00</span>
                             <span class="time-label">heures</span>
                         </div>
                         <div class="time-unit">
-                            <span class="time-value" id="minutes-${lottery.lotteryId}">00</span>
+                            <span class="time-value" id="minutes-${window.escapeHtml(lottery.lotteryId)}">00</span>
                             <span class="time-label">min</span>
                         </div>
                         <div class="time-unit">
-                            <span class="time-value" id="seconds-${lottery.lotteryId}">00</span>
+                            <span class="time-value" id="seconds-${window.escapeHtml(lottery.lotteryId)}">00</span>
                             <span class="time-label">sec</span>
                         </div>
                     </div>

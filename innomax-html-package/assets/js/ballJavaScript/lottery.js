@@ -22,7 +22,7 @@
             item.index = index;
             var key = getKey(item);
             var color = choosed[key] ? 'yellow' : 'white';
-            html.push('<li><a href="#" style="color: ' + color + ';">' + item.name + '</a></li>');
+            html.push('<li><a href="#" style="color: ' + color + ';">' + window.escapeHtml(item.name) + '</a></li>');
         });
         html.push('</ul>');
         return html.join('');
@@ -49,7 +49,7 @@
             .map(function (m) {
                 choosed[getKey(m)] = 1;
                 list[m.index].style.color = color;
-                return m.name + '<br/>' + m.phone;
+                return window.escapeHtml(m.name) + '<br/>' + window.escapeHtml(m.phone);
             });
         localStorage.setItem('choosed', JSON.stringify(choosed));
         return ret;

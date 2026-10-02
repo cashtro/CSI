@@ -1,4 +1,5 @@
 // Password strength validation with detailed feedback
+const logger = require('./logger');
 const validatePassword = (password) => {
     // Precompile regex patterns for better performance
     const UPPER_CASE_REGEX = /[A-Z]/;
@@ -13,6 +14,7 @@ const validatePassword = (password) => {
     if (typeof cleanPassword !== 'string' || cleanPassword.length < 8 || cleanPassword.length > 64) {
         return {
             isValid: false,
+            missingRequirements: ['between 8 and 64 characters'],
             message: 'Password must be at least 8 characters and maximum 64 characters'
         };
     }
@@ -31,10 +33,12 @@ const validatePassword = (password) => {
     if (!requirements.hasLowerCase) messages.push('at least one lowercase letter (a-z)');
     if (!requirements.hasNumbers) messages.push('at least one number (0-9)');
     if (!requirements.hasSpecialChar) messages.push('at least one special character (!@#$...)');
-    if (!requirements.notCommon) messages.push('not be a commonly used password');
 
     return {
         isValid: Object.values(requirements).every(req => req),
+        // `missingRequirements` is consumed by registrationValidation; without it
+        // a weak password crashed with `undefined.join(...)` (500 instead of 400).
+        missingRequirements: messages,
         message: messages.length > 0 
             ? `Password needs: ${messages.join(', ')}`
             : 'Password is valid'
@@ -144,7 +148,7 @@ const validatePassword = (password) => {
           
           next();
       } catch (error) {
-          console.error('Sanitization error:', error);
+          logger.error('Sanitization error:', error);
           res.status(400).json({ error: 'Invalid input data' });
       }
   };

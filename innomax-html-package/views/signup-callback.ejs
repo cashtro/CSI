@@ -139,12 +139,13 @@
     <p id="resendStatus">Email resent successfully!</p>
   </div>
 
+  <script src="assets/js/escape-html.js"></script>
   <script>
     window.addEventListener('DOMContentLoaded', () => {
       const email = sessionStorage.getItem('signupInfo');
       if (email) {
         const desc = document.getElementById('confirmationDesc');
-        desc.innerHTML = `A confirmation email has been sent to your email address | <strong>${email}</strong> |. Please check your inbox and follow the instructions to complete your registration.`;
+        desc.innerHTML = `A confirmation email has been sent to your email address | <strong>${window.escapeHtml(email)}</strong> |. Please check your inbox and follow the instructions to complete your registration.`;
         
         // Start checking for confirmation
         startConfirmationCheck(email);
@@ -170,7 +171,7 @@
           if (data.confirmed) {
             // Show success message
             const desc = document.getElementById('confirmationDesc');
-            desc.innerHTML = `Thank you! Your email <strong>${email}</strong> has been confirmed successfully.`;
+            desc.innerHTML = `Thank you! Your email <strong>${window.escapeHtml(email)}</strong> has been confirmed successfully.`;
             
             setTimeout(() => {
                 // goes to login page

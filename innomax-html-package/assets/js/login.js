@@ -123,7 +123,7 @@ async function handleLoginSubmit(e) {
         const data = await result.json();
 
         if (data.requires2FASetup) {
-            showQRCodeModal(data.secret, data.qrCode, data.tempSessionId);
+            showQRCodeModal(data.secret, data.qrCode, data.tempSessionId, data.setupToken);
         } else if (data.requires2FA) {
             show2FAModal(data.tempSessionId);
         } else {
@@ -202,7 +202,7 @@ function handleFormError(message) {
     }
 }
 
-function showQRCodeModal(secret, qrCode, tempSessionId) {
+function showQRCodeModal(secret, qrCode, tempSessionId, setupToken) {
 
     if (!secret || !tempSessionId) {
         console.error("Invalid 2FA setup parameters");
@@ -222,7 +222,7 @@ function showQRCodeModal(secret, qrCode, tempSessionId) {
     if (qrCode.startsWith('<svg')) {
         qrContainer.innerHTML = qrCode;
     } else if (qrCode.startsWith('data:image')) {
-        qrContainer.innerHTML = `<img src="${qrCode}" alt="QR Code">`;
+        qrContainer.innerHTML = `<img src="${window.escapeHtml(qrCode)}" alt="QR Code">`;
     }
 
     // Affichage du code secret
@@ -243,7 +243,7 @@ function showQRCodeModal(secret, qrCode, tempSessionId) {
         }
         
         try {
-            const result = await verify2FACode(code, tempSessionId, true, secret);
+            const result = await verify2FACode(code, tempSessionId, true, secret, setupToken);
             modal.style.display = 'none';
             
             window.location.href = '/';
@@ -295,20 +295,24 @@ function show2FAModal(tempSessionId) {
     if (regenerateBtn) {
         regenerateBtn.onclick = async () => {
             try {
+                // Replacing an active authenticator needs its current code.
+                const code = Array.from(codeInputs).map(i => i.value).join('');
                 const response = await secureFetch('/api/auth/regenerate-2fa', {
                     method: 'POST',
-                    body: JSON.stringify({ tempSessionId })
+                    body: JSON.stringify({ tempSessionId, code })
                 });
 
                 if (!response.ok) {
-                    throw new Error('Failed to regenerate 2FA');
+                    const data = await response.json().catch(() => ({}));
+                    alert(data.message || 'Failed to regenerate 2FA. Please try again.');
+                    return;
                 }
 
                 const result = await response.json();
                 
                 // Hide the code modal and show the QR code modal
                 modal.style.display = 'none';
-                showQRCodeModal(result.secret, result.qrCode, result.tempSessionId);
+                showQRCodeModal(result.secret, result.qrCode, result.tempSessionId, result.setupToken);
                 
             } catch (error) {
                 console.error('Error regenerating 2FA:', error);
@@ -324,7 +328,7 @@ function show2FAModal(tempSessionId) {
 
 
 
-async function verify2FACode(code, tempSessionId, isSetup = false, secret = null) {
+async function verify2FACode(code, tempSessionId, isSetup = false, secret = null, setupToken = null) {
     if (!/^\d{6}$/.test(code)) {
         throw new Error("Code must be 6 digits");
     }
@@ -335,7 +339,7 @@ async function verify2FACode(code, tempSessionId, isSetup = false, secret = null
             body: JSON.stringify({
                 code,
                 tempSessionId,
-                ...(isSetup && { isSetup: true, secret })
+                ...(isSetup && { isSetup: true, secret, setupToken })
             })
         });
 

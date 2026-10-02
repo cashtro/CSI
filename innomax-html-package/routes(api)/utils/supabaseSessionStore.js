@@ -1,4 +1,5 @@
 const { createClient } = require('@supabase/supabase-js');
+const logger = require('./logger');
 
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -22,7 +23,7 @@ module.exports = {
       });
   
     if (error) {
-      console.error('Session storage error:', error);
+      logger.error('Session storage error:', error);
       throw new Error('Session storage failed');
     }
   },
@@ -38,7 +39,7 @@ module.exports = {
         });
   
       if (error || !data) {
-        console.warn('Invalid session attempt:', {
+        logger.warn('Invalid session attempt:', {
           sessionId,
           ip: req.ip,
           userAgent: req.headers['user-agent'],
@@ -56,7 +57,7 @@ module.exports = {
         userAgent: data.user_agent
       };
     } catch (err) {
-      console.error('Session validation error:', err);
+      logger.error('Session validation error:', err);
       return null;
     }
   },
@@ -69,9 +70,9 @@ module.exports = {
         .delete()
         .lt('expires_at', new Date().toISOString());
       
-      if (error) console.error('Cleanup error:', error);
+      if (error) logger.error('Cleanup error:', error);
     } catch (err) {
-      console.error('Cleanup failed:', err);
+      logger.error('Cleanup failed:', err);
     }
   }
 };

@@ -1,7 +1,11 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
+const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
-const upload = require('./utils/multerConfig'); 
+const upload = require('./utils/multerConfig');
+const { checkAdmin } = require('./utils/auth-middleware');
+const { parseQuantity } = require('./utils/quantity');
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -16,9 +20,9 @@ function sanitizeFileName(filename) {
         .replace(/[^a-zA-Z0-9.\-_]/g, '');
 }
 
-router.post('/', upload.single('imageProduit'), async (req, res) => {
-    console.log('BODY:', req.body);
-    console.log('FILE:', req.file);
+router.post('/', checkAdmin, upload.single('imageProduit'), async (req, res) => {
+    // Never log raw bodies or files: they carry personal data.
+    logger.debug('Create product request', logger.redact(req.body), { file: req.file?.originalname || null });
 
     const { nomProduit, price, shortDescription } = req.body;
     const imageFile = req.file;
@@ -42,7 +46,7 @@ router.post('/', upload.single('imageProduit'), async (req, res) => {
                 upsert: false
             });
         if (uploadError) {
-            console.error("Supabase upload error:", uploadError); // log for debug
+            logger.error("Supabase upload error:", uploadError); // log for debug
             return res.status(500).json({ error: 'Image upload failed.' });
         }
         const { data: { publicUrl } } = supabase
@@ -74,16 +78,18 @@ router.post('/', upload.single('imageProduit'), async (req, res) => {
 // Add this GET route for fetching all shop items
 router.get('/', async (req, res) => {
     try {
+        const { from, to } = getRange(req.query, { defaultLimit: 100, maxLimit: 200 });
         const { data, error } = await supabase
             .from('Achat')
-            .select('*');
+            .select('*')
+            .range(from, to);
 
         if (error) {
-            console.error('Supabase error:', error);
+            logger.error('Supabase error:', error);
             throw error;
         }
         
-        console.log('Raw achats data:', data); // Debug log
+        logger.debug('achats rows:', Array.isArray(data) ? data.length : 0); // Debug log
         
         res.json(
             (data || []).map(item => ({
@@ -96,13 +102,13 @@ router.get('/', async (req, res) => {
             }))
         );
     } catch (err) {
-        console.error('Route error:', err);
+        logger.error('Route error:', err);
         res.status(500).json({ error: err.message });
     }
 });
 
 // DELETE an item by id_item
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const { error } = await supabase
@@ -110,7 +116,7 @@ router.delete('/:id', async (req, res) => {
             .delete()
             .eq('id_item', id);
         if (error) {
-            console.error('Supabase delete error:', error);
+            logger.error('Supabase delete error:', error);
             return res.status(500).json({ error: error.message });
         }
         res.json({ success: true });
@@ -120,7 +126,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // UPDATE an item by id_item
-router.put('/:id', upload.single('imageProduit'), async (req, res) => {
+router.put('/:id', checkAdmin, upload.single('imageProduit'), async (req, res) => {
     const { id } = req.params;
     const { nomProduit, price, shortDescription } = req.body;
     let updateFields = {
@@ -142,7 +148,7 @@ router.put('/:id', upload.single('imageProduit'), async (req, res) => {
                 upsert: false
             });
         if (uploadError) {
-            console.error("Supabase upload error:", uploadError);
+            logger.error("Supabase upload error:", uploadError);
             return res.status(500).json({ error: 'Image upload failed.' });
         }
         const { data: { publicUrl } } = supabase
@@ -160,7 +166,7 @@ router.put('/:id', upload.single('imageProduit'), async (req, res) => {
             .select()
             .single();
         if (error) {
-            console.error('Supabase update error:', error);
+            logger.error('Supabase update error:', error);
             return res.status(500).json({ error: error.message });
         }
         res.json(data);
@@ -176,6 +182,12 @@ router.post('/purchase', async (req, res) => {
         
         if (!productId || !quantity) {
             return res.status(400).json({ error: 'Missing required fields' });
+        }
+
+        // Bound the client-supplied quantity (was passed straight to Stripe).
+        const qty = parseQuantity(quantity, { max: 20 });
+        if (qty === null) {
+            return res.status(400).json({ error: 'Invalid quantity (must be between 1 and 20)' });
         }
 
         // Get product data from Achat table
@@ -204,14 +216,14 @@ router.post('/purchase', async (req, res) => {
                     },
                     unit_amount: Math.round(productData.price_item * 100),
                 },
-                quantity: parseInt(quantity),
+                quantity: qty,
             }],
             mode: 'payment',
             metadata: {
                 type: 'achat',
                 productId: String(productId),
                 productName: productData.title_item,
-                quantity: String(quantity),
+                quantity: String(qty),
                 size: size || 'N/A',
             },
             shipping_address_collection: {
@@ -227,7 +239,7 @@ router.post('/purchase', async (req, res) => {
         res.json({ id: session.id });
 
     } catch (error) {
-        console.error('Error in achats purchase:', error);
+        logger.error('Error in achats purchase:', error);
         res.status(400).json({ error: error.message });
     }
 });
@@ -307,7 +319,7 @@ router.get('/verify-purchase', async (req, res) => {
         res.redirect(`${process.env.APP_URL}/achats?success=purchase_completed`);
         
     } catch (error) {
-        console.error('Error in verify achats purchase:', error);
+        logger.error('Error in verify achats purchase:', error);
         res.redirect(`${process.env.APP_URL}/achats?error=verification_failed`);
     }
 });

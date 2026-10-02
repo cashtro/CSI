@@ -1,20 +1,49 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
-const { createClient } = require('@supabase/supabase-js');
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
-const { authenticateUser, setAuthCookies, twoFaLimiter } = require('./utils/auth-middleware');
+const { authenticateUser, setAuthCookies, clearAuthCookies, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
 const { loginValidation, registrationValidation, validatePassword } = require('./utils/validation-middleware');
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
-const { createSupabaseAdmin } = require('./utils/supabaseUtil');
+const { createSupabaseClient, createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { sendEmail } = require('./utils/emailService');
+const { encryptSecret, decryptSecret } = require('./utils/crypto2fa');
+const { signSetup, setupMode, get2fa, isPrivileged, secondFactorStep } = require('./utils/twofa');
 const crypto = require('crypto');
 
-// Initialize Supabase client
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// C4: access/refresh tokens are always set as httpOnly cookies. They are ALSO
+// echoed in the JSON body for the current token-reading frontend. Setting
+// OMIT_BODY_TOKENS=true stops echoing them (reduces XSS token-theft surface);
+// enable it once the frontend authenticates via the cookies instead. Flag-gated
+// and default-off so it's a zero-risk change until the frontend is migrated.
+function tokenResponseFields(accessToken, refreshToken) {
+  if (process.env.OMIT_BODY_TOKENS === 'true') return {};
+  return { accessToken, refreshToken };
+}
+
+// Initialize stateless Supabase clients (see utils/supabaseUtil).
+const supabase = createSupabaseClient();
 const supabaseAdmin = createSupabaseAdmin();
+
+// A fresh authenticator secret, its QR code and the token that lets verify-2fa
+// accept it for this temp session only.
+async function setupPayload(tempSessionId, email, mode) {
+    const secret = authenticator.generateSecret();
+    const qrCode = await qrcode.toDataURL(authenticator.keyuri(email, 'Pandora', secret));
+    return { secret, qrCode, tempSessionId, setupToken: signSetup(tempSessionId, secret, mode) };
+}
+
+// The second-factor response for an authenticated user, or null when the
+// policy in utils/twofa lets them in without one. Cookies are never set here.
+async function secondFactorResponse(req, { userId, email, session, rememberMe }) {
+    const step = await secondFactorStep(supabaseAdmin, userId);
+    if (step === 'none') return null;
+    const tempSessionId = crypto.randomBytes(32).toString('hex');
+    await storeTempSession(tempSessionId, userId, req, rememberMe, session.access_token, session.refresh_token);
+    if (step === 'challenge') return { requires2FA: true, tempSessionId, userId };
+    return { requires2FASetup: true, ...(await setupPayload(tempSessionId, email, 'new')), userId };
+}
 
 router.get('/validateToken', async (req, res) => {
     try {
@@ -35,8 +64,7 @@ router.get('/validateToken', async (req, res) => {
 
             if (refreshError || !refreshed?.session) {
                 // Clear invalid cookies and force re-login
-                res.clearCookie('accessToken');
-                res.clearCookie('refreshToken');
+                clearAuthCookies(res);
                 return res.status(401).json({ 
                     success: false, 
                     error: 'Session expired. Please log in again.' 
@@ -70,7 +98,7 @@ router.get('/validateToken', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('Token validation error:', err);
+        logger.error('Token validation error:', err);
         // Send JSON error (don't mix res.json() and res.redirect())
         res.status(401).json({ 
             success: false, 
@@ -81,7 +109,7 @@ router.get('/validateToken', async (req, res) => {
  
 //TODO add validation (regex or express validator)
 // Registration route - modified to log out after registration
-router.post('/register', registrationValidation, async (req, res) => {
+router.post('/register', authLimiter, registrationValidation, async (req, res) => {
     const { username, email, age, password, confirmPassword } = req.body;
     const trimmedPassword = password ? password.trim() : '';
 
@@ -161,8 +189,9 @@ router.post('/register', registrationValidation, async (req, res) => {
             }]);
 
         if (insertError) {
-            console.error('Database Insert Error:', insertError);
-            await supabase.auth.admin.deleteUser(data.user.id);
+            logger.error('Database Insert Error:', insertError);
+            // Needs the service client; the anon client can never delete users.
+            await supabaseAdmin.auth.admin.deleteUser(data.user.id);
             throw insertError;
         }
 
@@ -171,7 +200,7 @@ router.post('/register', registrationValidation, async (req, res) => {
         });
 
     } catch (error) {
-        console.error('Registration Error:', error);
+        logger.error('Registration Error:', error);
         res.status(500).json({
             message: "Server error during registration",
             details: error.message
@@ -182,31 +211,23 @@ router.post('/register', registrationValidation, async (req, res) => {
 // Déconnexion
 router.post('/logout', authenticateUser, async (req, res) => {
     try {
-        // Log out from Supabase
-        const { error: logoutError } = await supabase.auth.signOut();
-        if (logoutError) throw logoutError;
+        // Revoke this session's refresh token. The stateless anon client holds
+        // no session, so its signOut() was a no-op that left the token valid.
+        const { error: logoutError } = await supabaseAdmin.auth.admin.signOut(req.accessToken, 'local');
+        if (logoutError) logger.warn('Logout revoke failed:', logoutError.message);
 
-        // Clear cookies
-        res.clearCookie('accessToken', { 
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production',  // Only set secure flag in production
-            sameSite: 'Strict' 
-        });
-        res.clearCookie('refreshToken', { 
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict' 
-        });
+        // Clear cookies with the same attributes they were set with.
+        clearAuthCookies(res);
 
         return res.status(200).json({ message: "Déconnexion réussie !" });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         return res.status(500).json({ message: "Erreur lors de la déconnexion" });
     }
 });
 
 // Route pour la connexion
-router.post('/login', loginValidation, async (req, res) => {
+router.post('/login', authLimiter, loginValidation, async (req, res) => {
     const { email, password, rememberMe } = req.body;
 
     try {
@@ -221,71 +242,19 @@ router.post('/login', loginValidation, async (req, res) => {
             throw authError;
         }
 
-        // 2. Vérifier le statut 2FA
-        const { data: user2fa, error: user2faError } = await supabase
-            .from('Users_2fa')
-            .select('enabled, secret')
-            .eq('userId', user.id)
-            .single();
-
-
-
-        // REQUIRED2FA-----------------------------------------------------------------
-        if (user2fa && !user2fa.enabled) {
-            // Create temporary session reference
-            const tempSessionId = crypto.randomBytes(32).toString('hex');
-            await storeTempSession(
-                tempSessionId, 
-                user.id, 
-                req, 
-                req.body.rememberMe, // Store with session
-                session.access_token, 
-                session.refresh_token,
-              );                    
-            return res.status(200).json({
-                requires2FA: true,
-                tempSessionId,
-                userId: user.id
-            });
-        }
-        // REQUIRED2FASETUP-----------------------------------------------------------------
-        if (!user2fa) {
-
-            // 2FA jamais configuré → proposer le setup sans encore l'enregistrer
-            const secret = authenticator.generateSecret();
-            const otpauth = authenticator.keyuri(email, 'Pandora', secret);
-            const qrCode = await qrcode.toDataURL(otpauth);
-
-            const tempSessionId = crypto.randomBytes(32).toString('hex');
-            await storeTempSession(
-                tempSessionId, 
-                user.id, 
-                req, 
-                req.body.rememberMe, // Store with session
-                session.access_token, 
-                session.refresh_token,
-              );          
-
-            return res.status(200).json({
-                requires2FASetup: true,
-                secret,
-                qrCode,
-                tempSessionId,
-                userId: user.id
-            });
-        }
-
+        // 2. Second factor (policy in utils/twofa).
+        const secondFactor = await secondFactorResponse(req, { userId: user.id, email, session, rememberMe });
+        if (secondFactor) return res.status(200).json(secondFactor);
 
         // EVERYTHING IS GOOD, CONNEXION
         await setAuthCookies(res, session.access_token, session.refresh_token, rememberMe);
         return res.status(200).json({
             message: "Connexion réussie !",
-            accessToken: session.access_token,
-            refreshToken: session.refresh_token
+            ...tokenResponseFields(session.access_token, session.refresh_token)
         });
 
     } catch (error) {
-        console.error('Login error:', error);
+        logger.error('Login error:', error);
         return res.status(401).json({
             message: "Échec de l'authentification",
             error: error.message
@@ -294,7 +263,7 @@ router.post('/login', loginValidation, async (req, res) => {
 });
 
 router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
-    const { code, tempSessionId, isSetup, secret } = req.body;
+    const { code, tempSessionId, isSetup, secret, setupToken } = req.body;
     
     try {
         // Input validation
@@ -309,7 +278,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
 
         const session = await getAndValidateSession(tempSessionId, req);
         if (!session) {
-            console.error('Invalid session in verify-2fa');
+            logger.error('Invalid session in verify-2fa');
             return res.status(401).json({ error: 'Invalid or expired session' });
         }
 
@@ -326,9 +295,9 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         });
 
         // 1. Vérification de la session
-        const { data: user, error: userError } = await supabase
+        const { data: user, error: userError } = await supabaseAdmin
             .from('Users')
-            .select('*')
+            .select('userId, email')
             .eq('userId', session.userId)
             .single();
 
@@ -336,21 +305,24 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         
         // 2. Récupération du secret
         let verificationSecret;
+        const current = await get2fa(supabaseAdmin, user.userId);
 
         if (isSetup) {
-            // Nouveau setup : on utilise le secret fourni temporairement
+            // Only a secret this server minted for this temp session is accepted,
+            // and a "new" setup may never overwrite an enabled authenticator.
+            const mode = setupMode(tempSessionId, String(secret || '').trim(), setupToken);
+            if (!mode) {
+                return res.status(400).json({ error: 'Invalid 2FA setup' });
+            }
+            if (mode === 'new' && current && current.enabled) {
+                return res.status(409).json({ error: '2FA is already enabled for this account' });
+            }
             verificationSecret = secret;
         } else {
-            // Cas classique : récupérer le secret enregistré
-            const { data: user2fa, error: fetchError } = await supabase
-                .from('Users_2fa')
-                .select('secret')
-                .eq('userId', user.userId)
-                .single();
-            if (fetchError || !user2fa) {
+            if (!current || !current.enabled || !current.secret) {
                 throw new Error("2FA not configured");
             }
-            verificationSecret = user2fa.secret;
+            verificationSecret = decryptSecret(current.secret);
         }
 
         const cleanCode = String(code).trim();
@@ -364,24 +336,24 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         });
 
         if (!isValid) {
-            console.warn(`Invalid 2FA code attempt for user ${user.email}`);
+            logger.warn(`Invalid 2FA code attempt for user ${user.userId}`);
             return res.status(401).json({ error: 'Invalid 2FA code' });
         }
 
         // If setup, enable 2FA
         if (isSetup) {
-            const { error: updateError } = await supabase
+            const { error: updateError } = await supabaseAdmin
                 .from('Users_2fa')
                 .upsert({
                     userId: user.userId,
                     email: user.email,
-                    secret: cleanSecret,
+                    secret: encryptSecret(cleanSecret),
                     enabled: true,
                     updated_at: new Date()
                 });
 
             if (updateError) {
-                console.error("2FA setup error:", updateError);
+                logger.error("2FA setup error:", updateError);
                 throw updateError;
             }
         }
@@ -392,42 +364,45 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "2FA verification successful",
-            accessToken: accessToken,
-            refreshToken: refreshToken
+            ...tokenResponseFields(accessToken, refreshToken)
         });
 
     } catch (error) {
-        console.error("2FA Verification Error:", error);
+        logger.error("2FA Verification Error:", error);
         return res.status(500).json({
             error: error.message || "Server error during 2FA verification"
         });
     }
 });
 
-router.post('/toggle-2fa', async (req, res) => {
-    const { userId, enable, code } = req.body;
+router.post('/toggle-2fa', authenticateUser, async (req, res) => {
+    const { enable, code } = req.body;
+    // Authorization comes from the authenticated session, never the request body.
+    const userId = req.user.id;
 
     try {
-        // Vérifier l'accès
-        const { data: { user }, error: authError } = 
-            await supabase.auth.getUser(req.headers['authorization']?.split(' ')[1]);
-        if (authError || user.id !== userId) throw new Error("Non autorisé");
-
-        // Vérifier le code si désactivation
-        if (enable === false) {
-            const { data: user2fa } = await supabase
-                .from('Users_2fa')
-                .select('secret')
-                .eq('userId', userId)
-                .single();
-
-            if (!authenticator.verify({ token: code, secret: user2fa.secret })) {
-                return res.status(401).json({ message: "Code 2FA invalide" });
-            }
+        if (!enable && await isPrivileged(supabaseAdmin, userId)) {
+            return res.status(403).json({ message: "La 2FA est obligatoire pour les comptes administrateur et enseignant." });
         }
 
-        // Mettre à jour le statut
-        const { error } = await supabase
+        // Require a valid TOTP code for BOTH enabling and disabling 2FA (proves
+        // possession of the authenticator). Enabling without proof was possible
+        // before, and a stolen bearer token could flip 2FA with no code.
+        const { data: user2fa } = await supabaseAdmin
+            .from('Users_2fa')
+            .select('secret')
+            .eq('userId', userId)
+            .single();
+
+        if (!user2fa || !user2fa.secret) {
+            return res.status(400).json({ message: "2FA n'est pas configuré. Utilisez d'abord la configuration." });
+        }
+
+        if (!code || !authenticator.verify({ token: String(code).trim(), secret: decryptSecret(user2fa.secret) })) {
+            return res.status(401).json({ message: "Code 2FA invalide" });
+        }
+
+        const { error } = await supabaseAdmin
             .from('Users_2fa')
             .upsert({
                 userId,
@@ -442,27 +417,27 @@ router.post('/toggle-2fa', async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Toggle 2FA Error:", error);
-        return res.status(500).json({ 
-            message: "Erreur lors de la modification du 2FA",
-            error: error.message 
-        });
+        logger.error("Toggle 2FA Error:", error.message);
+        return res.status(500).json({ message: "Erreur lors de la modification du 2FA" });
     }
 });
 
 // In routes(api)/authCRUD.js
 router.post('/UserProvider', async (req, res) => {
     const { session } = req.body;
-    const provider = session.user.app_metadata.provider;
-
-
 
     try {
-        // Use access_token to get user info securely
+        if (!session || !session.access_token) {
+            return res.status(400).json({ message: 'Missing OAuth session' });
+        }
+
+        // Verify the token server-side and derive identity/provider from the
+        // VERIFIED user — never trust fields on the client-supplied session.
         const { data: { user }, error } = await supabase.auth.getUser(session.access_token);
         if (error || !user) {
             return res.status(401).json({ message: 'Invalid token or user not found' });
         }
+        const provider = user.app_metadata?.provider || null;
 
 
         // Check if user already exists
@@ -478,10 +453,8 @@ router.post('/UserProvider', async (req, res) => {
         }
 
         if (existingUser) {
-            // User exists, just set auth cookies and return success
-            const rememberMe = true;
-            setAuthCookies(res, session.access_token, null, rememberMe);
-            return res.status(200).json({ message: 'User logged in successfully' });
+            // Cookies come from check-2fa, after the second factor.
+            return res.status(200).json({ message: 'User found', requires2FACheck: true });
         }
 
         // Insert new user
@@ -489,7 +462,7 @@ router.post('/UserProvider', async (req, res) => {
             .from('Users')
             .insert({
                 userId: user.id,
-                username: user.user_metadata.name,
+                username: user.user_metadata?.name,
                 email: user.email,
                 age: null,
                 useProvider: true,
@@ -500,14 +473,11 @@ router.post('/UserProvider', async (req, res) => {
         
         if (insertError) throw insertError;
 
-        // Set cookies for new user
-        const rememberMe = true;
-        setAuthCookies(res, session.access_token, null, rememberMe);
-
-        res.status(201).json({ message: 'User created and logged in successfully' });
+        // Cookies come from check-2fa, after the second factor.
+        res.status(201).json({ message: 'User created', requires2FACheck: true });
 
     } catch (err) {
-        console.error('Insert User Error:', err);
+        logger.error('Insert User Error:', err);
         res.status(500).json({ message: 'Error processing user', error: err.message });
     }
 });
@@ -517,58 +487,71 @@ router.get('/user/:userId', authenticateUser, async (req, res) => {
     try {
         const { userId } = req.params;
 
+        // Authorization: a user may read only their own record, unless they are
+        // an admin. Prevents IDOR (any logged-in user reading anyone's full row).
+        if (req.user.id !== userId) {
+            const { data: requester } = await supabase
+                .from('Users')
+                .select('isAdmin')
+                .eq('userId', req.user.id)
+                .single();
+            if (!requester || !requester.isAdmin) {
+                return res.status(403).json({ error: 'Forbidden' });
+            }
+        }
+
+        // Return a minimal field set (never select('*') for user records).
         const { data, error } = await supabase
             .from('Users')
-            .select('*')
+            .select('userId, username, email, age, isAdmin, isTeacher')
             .eq('userId', userId)
             .single();
 
         if (error) throw error;
         res.json(data);
     } catch (error) {
-        console.error('Error fetching user:', error);
-        res.status(500).json({ error: error.message });
+        logger.error('Error fetching user:', error.message);
+        res.status(500).json({ error: 'Unable to fetch user' });
     }
 });
 
-router.post('/regenerate-2fa', async (req, res) => {
-    const { tempSessionId } = req.body;
-    
+router.post('/regenerate-2fa', twoFaLimiter, async (req, res) => {
+    const { tempSessionId, code } = req.body;
+
     try {
-        // Get the session
         const session = await getAndValidateSession(tempSessionId, req);
         if (!session) return res.status(401).json({ error: 'Invalid session' });
 
-        // Generate new secret
-        const secret = authenticator.generateSecret();
-        const otpauth = authenticator.keyuri(session.email, 'Pandora', secret);
-        const qrCode = await qrcode.toDataURL(otpauth);
+        // Nothing is written here: the new secret only replaces the old one once
+        // verify-2fa sees a valid code for it. Replacing an enabled authenticator
+        // requires its current code; a lost device goes through support. (This
+        // endpoint used to reset enabled=false, which skipped 2FA on next login.)
+        const current = await get2fa(supabaseAdmin, session.userId);
+        let mode = 'new';
+        if (current && current.enabled) {
+            if (!code || !authenticator.verify({ token: String(code).trim(), secret: decryptSecret(current.secret) })) {
+                return res.status(401).json({
+                    error: 'Current 2FA code required',
+                    message: "Entrez le code actuel de votre application pour générer un nouveau code QR. Si vous avez perdu l'accès, contactez le support."
+                });
+            }
+            mode = 'rotate';
+        }
 
-        // Update the secret in the database
-        const { error: updateError } = await supabase
-            .from('Users_2fa')
-            .update({
-                secret: secret,
-                enabled: false,
-                updated_at: new Date()
-            })
-            .eq('userId', session.userId);
-
-        if (updateError) throw updateError;
+        const { data: profile } = await supabaseAdmin
+            .from('Users')
+            .select('email')
+            .eq('userId', session.userId)
+            .single();
 
         return res.status(200).json({
             requires2FASetup: true,
-            secret,
-            qrCode,
-            tempSessionId
+            ...(await setupPayload(tempSessionId, profile?.email || 'Pandora', mode))
         });
 
     } catch (error) {
-        console.error('Regenerate 2FA error:', error);
-        return res.status(500).json({
-            message: "Erreur lors de la régénération du 2FA",
-            error: error.message
-        });
+        logger.error('Regenerate 2FA error:', error);
+        return res.status(500).json({ message: "Erreur lors de la régénération du 2FA" });
     }
 });
 
@@ -589,47 +572,56 @@ router.post('/check-email', async (req, res) => {
         
         res.json({ exists: !!data });
     } catch (error) {
-        console.error('Error checking email:', error);
+        logger.error('Error checking email:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
 // Link OAuth account with existing password account
 router.post('/link-account', async (req, res) => {
-    const { email, password, provider, session } = req.body;
-    
+    const { email, password, session } = req.body;
+
     try {
-        // 1. Verify the password is correct
-        const { data: { user }, error: authError } = await supabase.auth.signInWithPassword({
-            email,
-            password
-        });
-        
+        // 1. Verify the password identity.
+        const { error: authError } = await supabase.auth.signInWithPassword({ email, password });
         if (authError) {
             return res.status(401).json({ error: 'Invalid password' });
         }
-        
-        // 2. Update the user's record to include the OAuth provider
+
+        // 2. Verify the OAuth session SERVER-SIDE and bind it to the same email.
+        // Previously the OAuth providerId came straight from req.body.session,
+        // so a user who knew a password could attach an arbitrary OAuth identity.
+        if (!session || !session.access_token) {
+            return res.status(400).json({ error: 'Missing OAuth session' });
+        }
+        const { data: { user: oauthUser }, error: oauthError } = await supabase.auth.getUser(session.access_token);
+        if (oauthError || !oauthUser) {
+            return res.status(401).json({ error: 'Invalid OAuth session' });
+        }
+        if ((oauthUser.email || '').toLowerCase() !== (email || '').toLowerCase()) {
+            return res.status(403).json({ error: 'OAuth account email does not match this account' });
+        }
+        const provider = oauthUser.app_metadata?.provider || null;
+
+        // 3. Link using the VERIFIED OAuth identity.
         const { error: updateError } = await supabase
             .from('Users')
             .update({
                 useProvider: true,
                 provider: provider,
-                providerId: session.user.id
+                providerId: oauthUser.id
             })
             .eq('email', email);
-            
+
         if (updateError) {
             throw updateError;
         }
-        
-        // 3. Set auth cookies with the OAuth session
-        setAuthCookies(res, session.access_token, session.refresh_token, true);
-        
-        res.json({ success: true, message: 'Accounts linked successfully' });
+
+        // No cookies here: the client signs in again through check-2fa.
+        res.json({ success: true, message: 'Accounts linked successfully', requires2FACheck: true });
     } catch (error) {
-        console.error('Error linking accounts:', error);
-        res.status(500).json({ error: error.message });
+        logger.error('Error linking accounts:', error.message);
+        res.status(500).json({ error: 'Unable to link accounts' });
     }
 });
 
@@ -653,134 +645,79 @@ router.post('/check-linked', async (req, res) => {
         
         res.json({ isLinked });
     } catch (error) {
-        console.error('Error checking linked account:', error);
+        logger.error('Error checking linked account:', error);
         res.status(500).json({ error: error.message });
     }
 });
 
 // Check if 2FA is required for a user
 router.post('/check-2fa', async (req, res) => {
-    const { userId, session } = req.body;
+    const { session } = req.body;
 
     try {
-        // First verify the session and get the user
+        if (!session || !session.access_token) {
+            return res.status(400).json({ message: 'Missing OAuth session' });
+        }
         const { data: { user }, error: authError } = await supabase.auth.getUser(session.access_token);
         if (authError || !user) {
-            throw new Error('Invalid session');
+            return res.status(401).json({ message: 'Invalid session' });
         }
 
-        // Then check if 2FA is enabled for the user
-        const { data: user2fa, error: user2faError } = await supabase
-            .from('Users_2fa')
-            .select('enabled, secret')
-            .eq('userId', user.id)
-            .single();
-
-        if (user2faError && user2faError.code !== 'PGRST116') {
-            throw user2faError;
-        }
-
-        // REQUIRED2FA-----------------------------------------------------------------
-        if (user2fa && !user2fa.enabled) {
-            // Create temporary session reference
-            const tempSessionId = crypto.randomBytes(32).toString('hex');
-            await storeTempSession(
-                tempSessionId, 
-                user.id, 
-                req, 
-                true, // Store with session
-                session.access_token, 
-                session.refresh_token,
-            );                    
-            return res.status(200).json({
-                requires2FA: true,
-                tempSessionId,
-                userId: user.id
-            });
-        }
-
-        // REQUIRED2FASETUP-----------------------------------------------------------------
-        if (!user2fa) {
-            // 2FA never configured → propose setup without saving yet
-            const secret = authenticator.generateSecret();
-            const otpauth = authenticator.keyuri(user.email, 'Pandora', secret);
-            const qrCode = await qrcode.toDataURL(otpauth);
-
-            const tempSessionId = crypto.randomBytes(32).toString('hex');
-            await storeTempSession(
-                tempSessionId, 
-                user.id, 
-                req, 
-                true, // Store with session
-                session.access_token, 
-                session.refresh_token,
-            );          
-
-            return res.status(200).json({
-                requires2FASetup: true,
-                secret,
-                qrCode,
-                tempSessionId,
-                userId: user.id
-            });
-        }
-
-        // If 2FA is already enabled, return success
-        return res.status(200).json({
-            requires2FA: false
+        const secondFactor = await secondFactorResponse(req, {
+            userId: user.id, email: user.email, session, rememberMe: true
         });
+        if (secondFactor) return res.status(200).json(secondFactor);
+
+        // No second factor needed: the only place an OAuth sign-in gets cookies.
+        setAuthCookies(res, session.access_token, session.refresh_token, true);
+        return res.status(200).json({ requires2FA: false });
 
     } catch (error) {
-        console.error('Check 2FA Error:', error);
-        return res.status(500).json({
-            message: 'Error checking 2FA status',
-            error: error.message
-        });
+        logger.error('Check 2FA Error:', error);
+        return res.status(500).json({ message: 'Error checking 2FA status' });
     }
 });
 
 // EMAIL VERIFICATION
-router.post('/check-confirmation', async (req, res) => {
+router.post('/check-confirmation', authLimiter, async (req, res) => {
     const { email } = req.body;
     
     try {
-        // Get user by email (admin API)
-        const { data: { users }, error } = await supabaseAdmin.auth.admin.listUsers();
-        
-        if (error) throw error;
+        // listUsers() only returns the first page (50 users), so past 50 sign-ups
+        // most accounts were reported as missing. Resolve the id from Users
+        // (written at registration), then read that one auth user.
+        const { data: profile, error: profileError } = await supabaseAdmin
+            .from('Users')
+            .select('userId')
+            .eq('email', String(email || '').trim())
+            .maybeSingle();
+        if (profileError) throw profileError;
 
-        // Find our specific user
-        const user = users.find(u => u.email === email);
+        let user = null;
+        if (profile) {
+            const { data, error } = await supabaseAdmin.auth.admin.getUserById(profile.userId);
+            if (error) throw error;
+            user = data.user;
+        }
 
-        
+        // Never leak the raw admin user object (PII / auth metadata).
         if (!user) {
-            return res.json({ 
-                confirmed: false, 
-                exists: false,
-                rawData: null // For debugging
-            });
+            return res.json({ confirmed: false, exists: false });
         }
 
         // Proper confirmation check
-        const isConfirmed = user.user_metadata.email_verified === true;
-        
-        res.json({
-            confirmed: isConfirmed,
-            exists: true,
-            rawData: user // For frontend debugging
-        });
+        const isConfirmed = Boolean(user.email_confirmed_at) || user.user_metadata?.email_verified === true;
+
+        res.json({ confirmed: isConfirmed, exists: true });
 
     } catch (error) {
-        console.error('Error checking confirmation:', error);
-        res.status(500).json({ 
-            error: error.message,
-            debug: { email }
-        });
+        logger.error('Error checking confirmation:', error?.message);
+        res.status(500).json({ error: 'Unable to check confirmation status' });
     }
 });
 
 // RESEND CONFIRMATION EMAIL
-router.post('/resend-confirmation', async (req, res) => {
+router.post('/resend-confirmation', authLimiter, async (req, res) => {
     const { email } = req.body;
 
     try {
@@ -803,8 +740,10 @@ router.post('/resend-confirmation', async (req, res) => {
 
         res.json({ success: true, message: 'Confirmation email sent' });
     } catch (error) {
-        console.error('Error resending confirmation:', error, error.body.errors);
-        res.status(500).json({ error: error.message });
+        // NOTE: previously logged `error.body.errors`, which threw a TypeError when
+        // `error.body` was undefined, masking the real failure.
+        logger.error('Error resending confirmation:', error?.message);
+        res.status(500).json({ error: 'Unable to resend confirmation email' });
     }
 });
 

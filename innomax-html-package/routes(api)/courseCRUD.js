@@ -1,5 +1,7 @@
 const express = require('express');
+const logger = require('./utils/logger');
 const router = express.Router();
+const { getRange } = require('./utils/pagination');
 const { createClient } = require('@supabase/supabase-js');
 const { handleCoursePayment, enrollStudent, handleSubscriptionPayment, confirmSubscription } = require('./utils/stripe');
 
@@ -12,10 +14,20 @@ const multer = require('multer');
 const { authenticateUser, checkAdmin } = require('./utils/auth-middleware');
 
 const storage = multer.memoryStorage();
+// Lesson files (video, audio, PDF, images). Anything a browser would run as
+// a page when served from the public bucket (HTML, SVG, XML, JS) is refused.
+const ACTIVE_CONTENT = /(html|svg|xml|javascript|ecmascript)/i;
+const ACTIVE_EXT = /\.(html?|xhtml|svgz?|xml|js|mjs)$/i;
 const upload = multer({
     storage,
     limits: {
         fileSize: 50 * 1024 * 1024 //50MB
+    },
+    fileFilter: (req, file, cb) => {
+        if (ACTIVE_CONTENT.test(file.mimetype || '') || ACTIVE_EXT.test(file.originalname || '')) {
+            return cb(new Error('Type de fichier non autorisé'), false);
+        }
+        cb(null, true);
     }
 });
 
@@ -213,13 +225,14 @@ router.post('/add-course', authenticateUser, upload.fields([
 //get all course (Admin like)
 router.get('/all-courses', async (req, res) => {
     try {
+        const { from, to } = getRange(req.query, { defaultLimit: 100, maxLimit: 200 });
         const { data, error } = await supabase
             .from('cours')
             .select(`
                 *,
                 Users: id_prof (username),
                 cours_students (student_id)
-            `).order('created_at', { ascending: false });;
+            `).order('created_at', { ascending: false }).range(from, to);
 
         if (error) throw error;
 
@@ -393,7 +406,7 @@ router.put('/update/:id',authenticateUser, upload.array('files'), async (req, re
 
                 imageUrl = publicUrl;
             } catch (imageError) {
-                console.error("Erreur lors de l'upload de l'image:", imageError);
+                logger.error("Erreur lors de l'upload de l'image:", imageError);
                 // Continuer même en cas d'erreur d'upload d'image
             }
         }
@@ -413,7 +426,7 @@ router.put('/update/:id',authenticateUser, upload.array('files'), async (req, re
                 });
             }
         } else {
-            // console.log('Aucun fichier de leçon téléchargé pour cette mise à jour');
+            // logger.info('Aucun fichier de leçon téléchargé pour cette mise à jour');
         }
 
         // Mettre à jour le cours avec les nouvelles données
@@ -437,7 +450,7 @@ router.put('/update/:id',authenticateUser, upload.array('files'), async (req, re
         
         res.json(data);
     } catch (error) {
-        console.error('Erreur de mise à jour:', error);
+        logger.error('Erreur de mise à jour:', error);
         res.status(500).json({ error: error.message });
     }
 });
@@ -540,7 +553,7 @@ router.get('/total-courses', authenticateUser, async (req, res) => {
             .select('*', { count: 'exact' , head:true});
 
         if (error) {
-            console.error("ERREUR Supabase détaillée:", {
+            logger.error("ERREUR Supabase détaillée:", {
                 message: error.message,
                 code: error.code,
                 details: error.details
@@ -551,7 +564,7 @@ router.get('/total-courses', authenticateUser, async (req, res) => {
         res.json({ total: count });
 
     } catch (error) {
-        console.error("ERREUR COMPLETE:", {
+        logger.error("ERREUR COMPLETE:", {
             name: error.name,
             message: error.message,
             stack: error.stack
@@ -584,7 +597,7 @@ router.get('/my-courses', authenticateUser, async (req, res) => {
         res.json({ total: count });
 
     } catch (error) {
-        console.error('Erreur détaillée:', error);
+        logger.error('Erreur détaillée:', error);
         res.status(500).json({ error: 'Impossible de récupérer les cours' });
     }
 });
@@ -877,15 +890,16 @@ router.get('/student-progress/:student_id', authenticateUser, async (req, res) =
             
         if (error) throw error;
         
+        // Read the field we actually selected (`nom`). Previously this read
+        // `.title` (never selected) so course_title was always 'Unknown'.
         const enhancedProgress = data.map(progress => ({
             ...progress,
-            course_title: progress.cours?.title || 'Unknown',
-            course_category: progress.cours?.category || 'Uncategorized'
+            course_title: progress.cours?.nom || 'Unknown'
         }));
         
         res.json(enhancedProgress);
     } catch (error) {
-        console.error('Error fetching student progress:', error);
+        logger.error('Error fetching student progress:', error);
         res.status(500).json({
             error: error.message,
             ...(process.env.NODE_ENV === 'development' && { stack: error.stack })

@@ -1,0 +1,11 @@
+-- Idempotency ledger for Stripe fulfilment (routes(api)/utils/fulfill.js).
+-- Run once in the Supabase SQL editor BEFORE deploying: without this table
+-- paid sessions are refused (the webhook answers 500 and Stripe retries).
+create table if not exists public.fulfillments (
+  key        text primary key,          -- 'fulfill:<checkout session id>'
+  type       text,                      -- rendez_vous | course | subscription | lottery_entry | product
+  created_at timestamptz not null default now()
+);
+
+-- Only the server (service role) reads or writes the ledger.
+alter table public.fulfillments enable row level security;

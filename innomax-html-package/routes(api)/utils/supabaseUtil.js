@@ -1,11 +1,23 @@
 // Import necessary libraries
 const { createClient } = require('@supabase/supabase-js');
 
+// Server-side clients must be stateless: never persist or auto-refresh an
+// auth session on the shared module-level client. Otherwise sign-in/sign-out on
+// one request can mutate the session used by concurrent requests (identity bleed
+// across users). Every request supplies its own JWT explicitly.
+const STATELESS_AUTH = {
+  auth: {
+    persistSession: false,
+    autoRefreshToken: false,
+    detectSessionInUrl: false,
+  },
+};
+
 // Create a Supabase client with the anonymous key for public operations
 const createSupabaseClient = () => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  const supabase = createClient(supabaseUrl, supabaseAnonKey, STATELESS_AUTH);
   return supabase;
 };
 
@@ -13,7 +25,7 @@ const createSupabaseClient = () => {
 const createSupabaseAdmin = () => {
   const supabaseUrl = process.env.SUPABASE_URL;
   const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_KEY;
-  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey);
+  const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, STATELESS_AUTH);
   return supabaseAdmin;
 };
 
@@ -22,6 +34,7 @@ const createSupabaseClientWithAuth = (headerToken) => {
     process.env.SUPABASE_URL,
     process.env.SUPABASE_ANON_KEY,
     {
+      ...STATELESS_AUTH,
       global: {
         headers: {
           Authorization: headerToken,

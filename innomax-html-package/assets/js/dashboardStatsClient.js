@@ -54,7 +54,7 @@ async function fetchStudentCoursesCount(studentId) {
         const linkElement = document.getElementById('coursesLink');
         linkElement.innerHTML = `
             <a href="/all-courses" style="color: inherit; text-decoration: none;">
-                ${Math.round(percentage)}% of ${totalCount} courses
+                ${Math.round(percentage)}% of ${window.escapeHtml(totalCount)} courses
             </a>
         `;
 

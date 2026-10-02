@@ -1,11 +1,19 @@
 const express = require('express');
+const logger = require('./routes(api)/utils/logger');
+// Route handlers are async; without this a rejected promise skips Express's
+// error handling and an unhandled rejection takes the whole process down.
+require('express-async-errors');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { createClient } = require('@supabase/supabase-js');
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+// Boot-safety: validate env and install non-throwing sentinels BEFORE any route
+// (and its SDK clients) is required, so a missing credential can't crash startup.
+require('./routes(api)/utils/config');
 const cookieParser = require('cookie-parser');
 const csrf = require('csurf'); // ✅ Protection CSRF
 const compression = require('compression');
+const helmet = require('helmet');
 
 //const swaggerUi = require('swagger-ui-express');
 //const swaggerConfig = require('./swagger/swagger-config.js');
@@ -14,6 +22,10 @@ const compression = require('compression');
 const app = express();
 app.disable("x-powered-by");
 const PORT = process.env.PORT || 3000; //le env à revoir pour le deploiement
+// Pages that render API data call this server over loopback. The Host header
+// is client-controlled, so building the URL from it allowed SSRF and let a
+// forged Host crash the process.
+const SELF_URL = `http://127.0.0.1:${PORT}`;
 
 //const authroutes = require('./routes(api)/exempl'); //EXEMPLE
 const authRoutes = require('./routes(api)/authCRUD.js'); // Adjust the path if necessary
@@ -29,7 +41,8 @@ const achatRoutes = require('./routes(api)/achatsCRUD.js');
 const teacherRoutes = require('./routes(api)/demandCRUD.js')
 
 
-const { authenticateUser } = require('./routes(api)/utils/auth-middleware.js');
+const { authenticateUser, setAuthCookies } = require('./routes(api)/utils/auth-middleware.js');
+const { cookieSecure } = require('./routes(api)/utils/cookies');
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
@@ -38,15 +51,31 @@ const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 app.use(compression());
 
+// Security headers. Content-Security-Policy is disabled for now because the app
+// relies on inline scripts and ~20 external CDNs; a tailored CSP is a follow-up.
+// The remaining protections (HSTS, X-Content-Type-Options, frameguard,
+// Referrer-Policy, etc.) apply safely and remove X-Powered-By.
+app.use(helmet({
+  contentSecurityPolicy: false,
+  crossOriginEmbedderPolicy: false,
+}));
+
 
 // Configurer le moteur de template EJS
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware pour les fichiers statiques
+// Code (JS/CSS) is revalidated on every load via ETag so a deploy reaches
+// browsers at once; media is cached for a year. Previously everything was
+// cached a year with no ETag, so JS/CSS fixes never reached returning visitors.
+const REVALIDATE = /\.(js|mjs|css|map|json|html)$/i;
 app.use('/assets', express.static(path.join(__dirname, 'assets'), {
+  etag: true,
   maxAge: '1y',
-  etag: false,
+  setHeaders(res, filePath) {
+    if (REVALIDATE.test(filePath)) res.setHeader('Cache-Control', 'no-cache');
+  },
 }));
 
 
@@ -60,6 +89,21 @@ app.use((req, res, next) => {
 //ON MET SUREMENT LES ROUTES ICI
 //app.use('/auth',authroutes); //DONC NORMALEMENT LES ROUTES DEVIENNET /auth/login PAR EXEMPLE, à voir comment faire un global pour /api
 app.use(cookieParser());
+
+// Stripe webhook must receive the RAW body for signature verification, so it is
+// registered BEFORE the JSON body parser (which would otherwise consume it).
+const { stripeWebhookHandler } = require('./routes(api)/webhook');
+app.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhookHandler);
+// Content-Security-Policy in report-only mode (never blocks; collects violation
+// reports to build an enforcing policy later). Report sink accepts + drops.
+const { cspReportOnly } = require('./routes(api)/utils/csp');
+app.use(cspReportOnly);
+app.post('/api/csp-report', express.json({ type: ['application/json', 'application/csp-report', 'application/reports+json'] }), (req, res) => res.sendStatus(204));
+// Unified double-submit CSRF. issueCsrfCookie always sets a readable XSRF-TOKEN;
+// csrfGuard only ENFORCES when CSRF_ENFORCE=true (safe dark rollout).
+const { issueCsrfCookie, csrfGuard } = require('./routes(api)/utils/csrf');
+app.use(issueCsrfCookie);
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -68,7 +112,7 @@ const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     sameSite: 'Strict',
-    secure: process.env.NODE_ENV === 'production',
+    secure: cookieSecure(),
   }
 });
 
@@ -98,6 +142,8 @@ app.get('/api/csrf-token', csrfProtection, (req, res) => {
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 //ROUTE AUTHENTIFICATION authCRUD
+// CSRF guard for all /api routes (no-op unless CSRF_ENFORCE=true).
+app.use('/api', csrfGuard);
 app.use('/api/auth', authRoutes);
 app.use('/api/course', courseRoutes);
 app.use('/api/lottery', lotteryRoutes);
@@ -134,7 +180,7 @@ app.get('/', async (req, res) => {
       lotteries: lotteries || []
     });
   } catch (error) {
-    console.error('Error fetching data:', error);
+    logger.error('Error fetching data:', error);
     res.render('home4', {
       currentPage: '/',
       courses: [],
@@ -164,7 +210,7 @@ app.get('/nft', (req, res) => {
 
 app.get('/education', async (req, res) => {
   try {
-    const apiUrl = `${req.protocol}://${req.get('host')}/api/course/all-courses`;
+    const apiUrl = `${SELF_URL}/api/course/all-courses`;
     
     const response = await fetch(apiUrl);
     if (!response.ok) {
@@ -179,7 +225,7 @@ app.get('/education', async (req, res) => {
       stripePublicKey: process.env.STRIPE_PUBLIC_KEY
     });
   } catch (error) {
-    console.error('Error fetching courses:', error);
+    logger.error('Error fetching courses:', error);
     res.render('education', { 
       currentPage: '/education',
       courses: [],
@@ -212,7 +258,7 @@ app.get('/signup', (req, res) => {
 
 app.get('/portfolio', async (req, res) => {
 
-  const apiUrl = `${req.protocol}://${req.get('host')}/api/portfolio/portfolio`;
+  const apiUrl = `${SELF_URL}/api/portfolio/portfolio`;
 
 
   const response = await fetch(apiUrl);
@@ -238,7 +284,7 @@ app.get('/oauth-callback', (req, res) => {
 // Route dynamique pour afficher un cours spécifique
 app.get('/course-details/:courseId', async (req, res) => {
   const courseId = req.params.courseId;
-  const apiUrl = `${req.protocol}://${req.get('host')}/api/course/course-details/${courseId}`
+  const apiUrl = `${SELF_URL}/api/course/course-details/${courseId}`
 
   const response = await fetch(apiUrl);
   const course = await response.json();
@@ -252,7 +298,7 @@ app.get('/course-details/:courseId', async (req, res) => {
 
 // Route pour afficher tous les cours
 app.get('/all-courses', async (req, res) => {
-  const apiUrl = `${req.protocol}://${req.get('host')}/api/course/all-courses`;
+  const apiUrl = `${SELF_URL}/api/course/all-courses`;
 
 
   const response = await fetch(apiUrl);
@@ -271,7 +317,7 @@ app.get('/all-courses', async (req, res) => {
 app.get('/luckydraw', async (req, res) => {
   try {
     // Create absolute URL using request's protocol and host
-    const apiUrl = `${req.protocol}://${req.get('host')}/api/lottery/lotteryDataluckydraw`;
+    const apiUrl = `${SELF_URL}/api/lottery/lotteryDataluckydraw`;
 
     // Fetch data using absolute URL
     const response = await fetch(apiUrl);
@@ -286,7 +332,7 @@ app.get('/luckydraw', async (req, res) => {
     });
 
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.render('lottery', { lotteries: [], currentPage: '/luckydraw' });
   }
 });
@@ -332,20 +378,8 @@ app.get('/Purchase-Lottery-Tickets', async (req, res) => {
         user = refreshed.session.user;
         token = refreshed.session.access_token;
         
-        // Set new cookies
-        res.cookie('accessToken', refreshed.session.access_token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Lax',
-          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
-        
-        res.cookie('refreshToken', refreshed.session.refresh_token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Lax',
-          maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-        });
+        // Same attributes as every other auth cookie, so logout can clear them.
+        setAuthCookies(res, refreshed.session.access_token, refreshed.session.refresh_token, true);
       }
     }
 
@@ -415,7 +449,7 @@ app.get('/Purchase-Lottery-Tickets', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Erreur:', error.message);
+    logger.error('Erreur:', error.message);
     return res.status(500).json({
       success: false,
       error: 'Internal server error'
@@ -443,7 +477,7 @@ app.get('/subscription', (req, res) => {
  //Route pour afficher les achats dans achats.ejs
   app.get('/achats', async (req, res) => {
   try {
-    const apiUrl = `${req.protocol}://${req.get('host')}/api/achats`;
+    const apiUrl = `${SELF_URL}/api/achats`;
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error('Erreur lors de la récupération des produits');
       const productsData = await response.json();
@@ -545,21 +579,21 @@ app.use('/api',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 //     switch (event.type) {
 //       case 'payment_intent.succeeded':
 //         const paymentIntent = event.data.object;
-//         console.log('PaymentIntent réussi:', paymentIntent.id);
+//         logger.info('PaymentIntent réussi:', paymentIntent.id);
 //         // Logique pour traiter un paiement réussi
 //         break;
 //       case 'payment_intent.payment_failed':
 //         const failedPaymentIntent = event.data.object;
-//         console.log('Échec de PaymentIntent:', failedPaymentIntent.id);
+//         logger.info('Échec de PaymentIntent:', failedPaymentIntent.id);
 //         // Logique pour traiter un échec de paiement
 //         break;
 //       default:
-//         console.log(`Type d'événement non géré: ${event.type}`);
+//         logger.info(`Type d'événement non géré: ${event.type}`);
 //     }
 
 //     res.status(200).json({ received: true });
 //   } catch (error) {
-//     console.error('Erreur lors du traitement du webhook:', error);
+//     logger.error('Erreur lors du traitement du webhook:', error);
 //     res.status(400).send(`Webhook Error: ${error.message}`);
 //   }
 // });
@@ -569,9 +603,24 @@ app.get('*', (req, res) => {
   res.status(404).render('404', { currentPage: req.originalUrl });
 });
 
+// Last-resort error handler: log server-side, never send stack traces.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  logger.error(`[error] ${req.method} ${req.originalUrl}:`, err);
+  if (res.headersSent) return;
+  const status = err.status || err.statusCode || 500;
+  if (req.originalUrl.startsWith('/api/')) return res.status(status).json({ error: status >= 500 ? 'Internal server error' : err.message });
+  res.status(status).send(status >= 500 ? 'Une erreur est survenue. Veuillez réessayer.' : err.message);
+});
+
+// Background work (lottery draws, timers) must not kill the web process either.
+process.on('unhandledRejection', (reason) => {
+  logger.error('[unhandledRejection]', reason);
+});
+
 // Démarrer le serveur sec change to ,'0.0.0.0'
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur http://localhost:${PORT}`);
+  logger.info(`Serveur démarré sur http://localhost:${PORT}`);
 });
 
 //----------------------------------------------------------------------------
@@ -586,7 +635,7 @@ setInterval(async () => {
   try {
     await performLotteryDraw();
   } catch (err) {
-    console.error("Draw error:", err.message);
+    logger.error("Draw error:", err.message);
   } finally {
     isDrawing = false;
   }

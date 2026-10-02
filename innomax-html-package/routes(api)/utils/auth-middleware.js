@@ -1,8 +1,12 @@
-const { createClient } = require('@supabase/supabase-js');
 const crypto = require('crypto');
+const logger = require('./logger');
 const rateLimit = require('express-rate-limit');
+const { createSupabaseClient } = require('./supabaseUtil');
+const { cookieSecure } = require('./cookies');
 
-const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+// Stateless server-side client (no persisted/auto-refreshed session) to avoid
+// cross-request auth identity bleed. Requests pass their JWT explicitly.
+const supabase = createSupabaseClient();
 
 // Rate limiting for different endpoints
 const twoFaLimiter = rateLimit({
@@ -21,27 +25,14 @@ const authLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-// CSRF Protection
-const csrfProtection = (req, res, next) => {
-  const csrfToken = req.headers['x-csrf-token'];
-  const sessionToken = req.cookies['csrf-token'];
-
-  if (!csrfToken || !sessionToken || csrfToken !== sessionToken) {
-    return res.status(403).json({ error: 'Invalid CSRF token' });
-  }
-  next();
-};
-
-// Session timeout middleware
-const sessionTimeout = (req, res, next) => {
-  const sessionAge = Date.now() - (req.session?.timestamp || 0);
-  const maxAge = 24 * 60 * 60 * 1000; // 24 hours
-
-  if (sessionAge > maxAge) {
-    return res.status(401).json({ error: 'Session expired' });
-  }
-  next();
-};
+// NOTE: a custom `csrfProtection` and a `sessionTimeout` middleware previously
+// lived here. Both were exported but never used anywhere:
+//   - `csrfProtection` was a second, dead CSRF implementation (the app uses the
+//     `csurf` instance in server.js) that gave a false sense of protection.
+//   - `sessionTimeout` read `req.session`, but express-session is not configured,
+//     so it was inert.
+// Removed to avoid misleading, dead security code. A single, real CSRF strategy
+// applied across state-changing routes is tracked separately (audit H1).
 
 // Enhanced authentication middleware
 const authenticateUser = async (req, res, next) => {
@@ -66,31 +57,44 @@ const authenticateUser = async (req, res, next) => {
     req.accessToken = token;
     next();
   } catch (err) {
-    console.error("Authentication error:", err);
+    logger.error("Authentication error:", err);
     res.status(401).json({ error: 'Authentication failed' });
   }
 };
 
-// Enhanced cookie settings
-function setAuthCookies(res, accessToken, refreshToken, rememberMe) {
-  const cookieOptions = {
+// Shared cookie attributes. `secure` is env-driven (was hardcoded true, which
+// broke cookies over http in dev). Clears MUST reuse the same
+// path/domain/secure/sameSite or the browser won't remove them — that mismatch
+// was the bug (logout/validate cleared with different options).
+function cookieBaseOptions() {
+  return {
     httpOnly: true,
     sameSite: 'Lax',
-    secure: true,
+    secure: cookieSecure(),
     path: '/',
     domain: process.env.COOKIE_DOMAIN || undefined,
-    maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000
   };
+}
 
-  res.cookie('accessToken', accessToken, cookieOptions);
-  res.cookie('refreshToken', refreshToken, cookieOptions);
-  
+// Enhanced cookie settings
+function setAuthCookies(res, accessToken, refreshToken, rememberMe) {
+  const base = cookieBaseOptions();
+  const maxAge = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+
+  res.cookie('accessToken', accessToken, { ...base, maxAge });
+  res.cookie('refreshToken', refreshToken, { ...base, maxAge });
+
   // Set CSRF token
   const csrfToken = crypto.randomBytes(32).toString('hex');
-  res.cookie('csrf-token', csrfToken, {
-    ...cookieOptions,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  });
+  res.cookie('csrf-token', csrfToken, { ...base, maxAge: 24 * 60 * 60 * 1000 });
+}
+
+// Clear all auth cookies using the SAME attributes they were set with.
+function clearAuthCookies(res) {
+  const base = cookieBaseOptions();
+  res.clearCookie('accessToken', base);
+  res.clearCookie('refreshToken', base);
+  res.clearCookie('csrf-token', base);
 }
 
 // Enhanced user validation
@@ -110,8 +114,7 @@ async function getValidUser(req, res) {
  
       if (refreshError || !refreshed?.session) {
         // Clear invalid tokens
-        res.clearCookie('accessToken');
-        res.clearCookie('refreshToken');
+        clearAuthCookies(res);
         return { user: null, token: null };
       }
 
@@ -124,7 +127,7 @@ async function getValidUser(req, res) {
 
     return { user, token };
   } catch (error) {
-    console.error('User validation error:', error);
+    logger.error('User validation error:', error);
     return { user: null, token: null };
   }
 }
@@ -150,7 +153,7 @@ const checkAdmin = async (req, res, next) => {
     req.user = user;
     next();
   } catch (err) {
-    console.error("Erreur checkAdmin:", err);
+    logger.error("Erreur checkAdmin:", err);
     res.status(500).json({ error: "Erreur serveur lors de la vérification de l'administrateur" });
   }
 };
@@ -159,9 +162,8 @@ module.exports = {
   authenticateUser,
   checkAdmin,
   setAuthCookies,
+  clearAuthCookies,
   twoFaLimiter,
   authLimiter,
-  csrfProtection,
-  sessionTimeout,
   getValidUser
 };

@@ -67,7 +67,7 @@ async function displayLotteries() {
             drawsList.appendChild(lotteryCard);
         });
     } catch (error) {
-        drawsList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        drawsList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -87,12 +87,12 @@ function createLotteryCard(lottery) {
     });
 
     lotteryCard.innerHTML = `
-<div class="content-card-title">${lottery.nomProduit}</div>
+<div class="content-card-title">${escapeHtml(lottery.nomProduit)}</div>
 <div class="content-card-value">${formattedDate}</div>
 <div class="content-card-desc">
-<div>Participants: ${lottery.participants || 0}</div>
-<div>Coût du ticket: ${lottery.entrieCost}$</div>
-<div>Entrées minimum requises: <span style="color: #ffc107; font-weight: bold;">${lottery.minimumEntryNeeded || 'Non spécifié'}</span></div>
+<div>Participants: ${escapeHtml(lottery.participants || 0)}</div>
+<div>Coût du ticket: ${escapeHtml(lottery.entrieCost)}$</div>
+<div>Entrées minimum requises: <span style="color: #ffc107; font-weight: bold;">${escapeHtml(lottery.minimumEntryNeeded || 'Non spécifié')}</span></div>
 </div>
 <div class="content-card-actions">
 <button class="edit-btn">Modifier</button>
@@ -267,11 +267,11 @@ if (createLotteryForm) {
         lotteryCard.className = 'content-card';
         lotteryCard.dataset.lotteryId = lottery.lotteryId;
         lotteryCard.innerHTML = `
-            <div class="content-card-title">${lottery.nomProduit}</div>
+            <div class="content-card-title">${escapeHtml(lottery.nomProduit)}</div>
             <div class="content-card-value">${formattedDate}</div>
             <div class="content-card-desc">
-                <div>Participants: ${lottery.participants || 0}</div>
-                <div>Coût du ticket: ${lottery.entrieCost}$</div>
+                <div>Participants: ${escapeHtml(lottery.participants || 0)}</div>
+                <div>Coût du ticket: ${escapeHtml(lottery.entrieCost)}$</div>
             </div>
             <div class="content-card-actions">
                 <button class="edit-btn">Modifier</button>
@@ -454,7 +454,7 @@ function openEditLotteryModal(lottery) {
             ">Modifier le tirage</h3>
             
             <form id="edit-lottery-form" enctype="multipart/form-data">
-                <input type="hidden" id="edit-lottery-id" name="lotteryId" value="${lottery.lotteryId}">
+                <input type="hidden" id="edit-lottery-id" name="lotteryId" value="${escapeHtml(lottery.lotteryId)}">
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label for="edit-lottery-name" style="
@@ -463,7 +463,7 @@ function openEditLotteryModal(lottery) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Nom du tirage</label>
-                    <input type="text" id="edit-lottery-name" name="nomProduit" value="${lottery.nomProduit || ''}" required style="
+                    <input type="text" id="edit-lottery-name" name="nomProduit" value="${escapeHtml(lottery.nomProduit || '')}" required style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -499,7 +499,7 @@ function openEditLotteryModal(lottery) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Prix du ticket</label>
-                    <input type="number" id="edit-ticket-price" name="entrieCost" min="1" value="${lottery.entrieCost || ''}" required style="
+                    <input type="number" id="edit-ticket-price" name="entrieCost" min="1" value="${escapeHtml(lottery.entrieCost || '')}" required style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -518,7 +518,7 @@ function openEditLotteryModal(lottery) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Nombre minimum de participations</label>
-                    <input type="number" id="edit-minimum-entry-needed" name="minimumEntryNeeded" min="1" value="${lottery.minimumEntryNeeded || '10'}" style="
+                    <input type="number" id="edit-minimum-entry-needed" name="minimumEntryNeeded" min="1" value="${escapeHtml(lottery.minimumEntryNeeded || '10')}" style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -543,7 +543,7 @@ function openEditLotteryModal(lottery) {
         font-weight: 500;
         color: #f3f4f6;
     ">Prix réel du produit ($)</label>
-    <input type="number" id="edit-product-price" name="price" min="0" step="0.01" value="${lottery.price || ''}" style="
+    <input type="number" id="edit-product-price" name="price" min="0" step="0.01" value="${escapeHtml(lottery.price || '')}" style="
         width: 100%;
         padding: 0.75rem;
         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -694,7 +694,7 @@ function openEditLotteryModal(lottery) {
                     background-color: rgba(0, 0, 0, 0.1);
                 ">
                     <p style="margin-top: 0;">Image actuelle:</p>
-                    <img id="current-lottery-image" src="${lottery.imageProduit || ''}" alt="Image du tirage" style="max-width: 200px; max-height: 200px;">
+                    <img id="current-lottery-image" src="${safeUrl(lottery.imageProduit || '')}" alt="Image du tirage" style="max-width: 200px; max-height: 200px;">
                 </div>
                 
                 <div class="form-actions" style="
@@ -1167,12 +1167,12 @@ function addLotteryToUI(lottery) {
     lotteryCard.className = 'content-card';
     lotteryCard.dataset.lotteryId = lottery.lotteryId;
     lotteryCard.innerHTML = `
-        <div class="content-card-title">${lottery.nomProduit}</div>
+        <div class="content-card-title">${escapeHtml(lottery.nomProduit)}</div>
         <div class="content-card-value">${formattedDate}</div>
         <div class="content-card-desc">
-            <div>Participants: ${lottery.participants || 0}</div>
-            <div>Coût du ticket: ${lottery.entrieCost}$</div>
-            <div>Entrées minimum requises: <span style="color: #ffc107; font-weight: bold;">${lottery.minimumEntryNeeded || 'Non spécifié'}</span></div>
+            <div>Participants: ${escapeHtml(lottery.participants || 0)}</div>
+            <div>Coût du ticket: ${escapeHtml(lottery.entrieCost)}$</div>
+            <div>Entrées minimum requises: <span style="color: #ffc107; font-weight: bold;">${escapeHtml(lottery.minimumEntryNeeded || 'Non spécifié')}</span></div>
         </div>
         <div class="content-card-actions">
             <button class="edit-btn">Modifier</button>
@@ -1272,14 +1272,14 @@ async function displayCourses() {
             
             // Vérifier si le cours a une image et l'afficher
             const courseImage = course.image_url 
-                ? `<div class="card-image"><img src="${course.image_url}" alt="${course.nom}"></div>` 
+                ? `<div class="card-image"><img src="${safeUrl(course.image_url)}" alt="${escapeHtml(course.nom)}"></div>` 
                 : `<div class="card-image"><div class="default-image">📚</div></div>`;
             
             courseCard.innerHTML = `
                 ${courseImage}
-                <div class="content-card-title">${course.nom}</div>
-                <div class="content-card-value">${course.students || 0} étudiants</div>
-                <div class="content-card-desc">${course.description || ''}</div>
+                <div class="content-card-title">${escapeHtml(course.nom)}</div>
+                <div class="content-card-value">${escapeHtml(course.students || 0)} étudiants</div>
+                <div class="content-card-desc">${escapeHtml(course.description || '')}</div>
                 <div class="content-card-actions">
                     <button class="edit-course-btn" style="
                         background-color: #3490dc; 
@@ -1316,7 +1316,7 @@ async function displayCourses() {
         });
 
     } catch (error) {
-        coursesList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        coursesList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 
@@ -1402,7 +1402,7 @@ function openCourseEditModal(course) {
             ">Modifier le cours</h3>
             
             <form id="edit-course-form" enctype="multipart/form-data">
-                <input type="hidden" id="edit-course-id" name="id" value="${course.id}">
+                <input type="hidden" id="edit-course-id" name="id" value="${escapeHtml(course.id)}">
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
                     <label for="edit-course-title" style="
@@ -1411,7 +1411,7 @@ function openCourseEditModal(course) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Titre du cours</label>
-                    <input type="text" id="edit-course-title" name="nom" value="${course.nom || ''}" required style="
+                    <input type="text" id="edit-course-title" name="nom" value="${escapeHtml(course.nom || '')}" required style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1439,7 +1439,7 @@ function openCourseEditModal(course) {
                         resize: vertical;
                         background-color: rgba(0, 0, 0, 0.2);
                         color: #f3f4f6;
-                    ">${course.description || ''}</textarea>
+                    ">${escapeHtml(course.description || '')}</textarea>
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 1.5rem;">
@@ -1471,7 +1471,7 @@ function openCourseEditModal(course) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Nombre d'heures</label>
-                    <input type="number" id="edit-course-heures" name="nombre_heures" min="1" max="500" value="${course.nombre_heures || ''}" required style="
+                    <input type="number" id="edit-course-heures" name="nombre_heures" min="1" max="500" value="${escapeHtml(course.nombre_heures || '')}" required style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1489,7 +1489,7 @@ function openCourseEditModal(course) {
                         font-weight: 500;
                         color: #f3f4f6;
                     ">Prix ($)</label>
-                    <input type="number" id="edit-course-prix" name="prix" step="0.01" min="0" value="${course.prix || 0}" style="
+                    <input type="number" id="edit-course-prix" name="prix" step="0.01" min="0" value="${escapeHtml(course.prix || 0)}" style="
                         width: 100%;
                         padding: 0.75rem;
                         border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1517,7 +1517,7 @@ function openCourseEditModal(course) {
         background-color: rgba(0, 0, 0, 0.1);
     ">
         <p style="margin: 0 0 5px 0; font-size: 0.9rem;">Image actuelle:</p>
-        <img src="${course.image_url}" alt="${course.nom}" style="max-width: 100%; max-height: 150px; display: block; margin: 0 auto;">
+        <img src="${safeUrl(course.image_url)}" alt="${escapeHtml(course.nom)}" style="max-width: 100%; max-height: 150px; display: block; margin: 0 auto;">
     </div>
     ` : ''}
     
@@ -1743,13 +1743,13 @@ function displayExistingLessons(lessons) {
                 <div style="display: flex; align-items: center; overflow: hidden;">
                     <span style="font-size: 1.5rem; margin-right: 10px; flex-shrink: 0;">${icon}</span>
                     <div style="overflow: hidden; text-overflow: ellipsis;">
-                        <span style="display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${fileName}</span>
-                        <small style="color: rgba(255, 255, 255, 0.5);">${lesson.type}</small>
+                        <span style="display: block; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(fileName)}</span>
+                        <small style="color: rgba(255, 255, 255, 0.5);">${escapeHtml(lesson.type)}</small>
                     </div>
                 </div>
                 ${lesson.url ? `
                 <div style="display: flex; gap: 5px;">
-                    <a href="${lesson.url}" target="_blank" style="
+                    <a href="${safeUrl(lesson.url)}" target="_blank" style="
                         background-color: rgba(79, 70, 229, 0.8);
                         color: white;
                         border: none;
@@ -1829,14 +1829,14 @@ async function displayCourses() {
             
             // Préparer l'élément d'image du cours
             const courseImageHtml = course.image_url 
-                ? `<div class="card-image"><img src="${course.image_url}" alt="${course.nom}"></div>` 
+                ? `<div class="card-image"><img src="${safeUrl(course.image_url)}" alt="${escapeHtml(course.nom)}"></div>` 
                 : `<div class="card-image default-image">📚</div>`;
             
             courseCard.innerHTML = `
-                <div class="content-card-title">${course.nom}</div>
-                <div class="content-card-value">${course.students || 0} étudiants</div>
+                <div class="content-card-title">${escapeHtml(course.nom)}</div>
+                <div class="content-card-value">${escapeHtml(course.students || 0)} étudiants</div>
                 ${courseImageHtml}
-                <div class="content-card-desc">${course.description || ''}</div>
+                <div class="content-card-desc">${escapeHtml(course.description || '')}</div>
                 <div class="content-card-actions">
                     <button class="edit-course-btn" style="
                         background-color: #3490dc; 
@@ -1873,7 +1873,7 @@ async function displayCourses() {
             });
         });
     } catch (error) {
-        coursesList.innerHTML = `<div class="error-loading">Erreur: ${error.message}</div>`;
+        coursesList.innerHTML = `<div class="error-loading">Erreur: ${escapeHtml(error.message)}</div>`;
     }
 }
 async function deleteCourse(courseId) {
@@ -2742,9 +2742,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 newCourseCard.classList.add('content-card');
                 newCourseCard.dataset.courseId = newCourse.id;
                 newCourseCard.innerHTML = `
-                    <div class="content-card-title">${newCourse.title}</div>
-                    <div class="content-card-value">${newCourse.students || 0} étudiants</div>
-                    <div class="content-card-desc">Prof: ${newCourse.prof_id}</div>
+                    <div class="content-card-title">${escapeHtml(newCourse.title)}</div>
+                    <div class="content-card-value">${escapeHtml(newCourse.students || 0)} étudiants</div>
+                    <div class="content-card-desc">Prof: ${escapeHtml(newCourse.prof_id)}</div>
                     <div class="content-card-actions">
                         <button class="edit-btn">Modifier</button>
                         <button class="delete-btn">Supprimer</button>
@@ -2799,13 +2799,13 @@ function openEnrollmentModal(courseId, courseTitle, coursePrice) {
     enrollmentModal.classList.add('course-enrollment-modal');
     enrollmentModal.innerHTML = `
 <div class="modal-content">
-<h3>Inscription au cours : ${courseTitle}</h3>
+<h3>Inscription au cours : ${escapeHtml(courseTitle)}</h3>
 <div class="course-details">
-<p>Prix: ${coursePrice}$</p>
+<p>Prix: ${escapeHtml(coursePrice)}$</p>
 </div>
 
 <form id="enrollment-form" class="enrollment-form">
-<input type="hidden" name="courseId" value="${courseId}">
+<input type="hidden" name="courseId" value="${escapeHtml(courseId)}">
 <div class="form-group">
 <label for="name">Nom Complet</label>
 <input type="text" id="name" name="name" required>
@@ -2835,7 +2835,7 @@ function openEnrollmentModal(courseId, courseTitle, coursePrice) {
 </div>
 
 <button type="submit" class="btn-enroll">
-Rejoindre pour ${coursePrice}$
+Rejoindre pour ${escapeHtml(coursePrice)}$
 </button>
 </form>
 </div>
@@ -3117,9 +3117,9 @@ async function showParticipants(lotteryId, productName) {
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-<td>${participant.name}</td>
-<td>${participant.email}</td>
-<td>${participant.ticketNumber}</td>
+<td>${escapeHtml(participant.name)}</td>
+<td>${escapeHtml(participant.email)}</td>
+<td>${escapeHtml(participant.ticketNumber)}</td>
 <td>${formattedDate}</td>
 `;
                 participantsList.appendChild(row);
@@ -3206,9 +3206,9 @@ participantsModal.querySelector('.draw-winner-btn').addEventListener('click', fu
         const winnerCard = document.createElement('div');
         winnerCard.className = 'winner-card winner-animation';
         winnerCard.innerHTML = `
-<div class="winner-name">${index + 1}. ${winner.name}</div>
-<div class="winner-email">Email: ${winner.email}</div>
-<div class="winner-ticket">Ticket: ${winner.ticketNumber}</div>
+<div class="winner-name">${index + 1}. ${escapeHtml(winner.name)}</div>
+<div class="winner-email">Email: ${escapeHtml(winner.email)}</div>
+<div class="winner-ticket">Ticket: ${escapeHtml(winner.ticketNumber)}</div>
 `;
         winnersContainer.appendChild(winnerCard);
     });

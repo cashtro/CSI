@@ -16,6 +16,12 @@ function updateLastActivity() {
     lastActivity = Date.now();
 }
 
+// Read a cookie value by name (used for the double-submit CSRF token).
+function readCookie(name) {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+}
+
 // Check session timeout every minute
 setInterval(() => {
     if (Date.now() - lastActivity > SESSION_TIMEOUT) {
@@ -78,7 +84,9 @@ export async function secureFetch(url, options = {}) {
 
     const headers = {
       'Content-Type': 'application/json',
-      'X-CSRF-Token': csrfToken,
+      // Double-submit: echo the XSRF-TOKEN cookie (matches the unified csrfGuard);
+      // fall back to the csurf token for backward compatibility.
+      'X-CSRF-Token': readCookie('XSRF-TOKEN') || csrfToken,
       'X-Requested-With': 'XMLHttpRequest',
       'Cache-Control': 'no-cache, no-store, must-revalidate',
       'Pragma': 'no-cache',
@@ -103,7 +111,7 @@ export async function secureFetch(url, options = {}) {
         cache: 'no-store',
         headers: {
           ...headers,
-          'X-CSRF-Token': csrfToken
+          'X-CSRF-Token': readCookie('XSRF-TOKEN') || csrfToken
         }
       });
     }
