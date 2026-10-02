@@ -273,12 +273,13 @@ const handleSubscriptionPayment = async (req, res, next) => {
 
     const { data: course, error } = await supabaseAuthed
       .from('cours')
-      .select('prix, id_prof') //was title whihc wrong cause nom so now nothing
+      .select('nom, prix, id_prof') // `nom` is the course-name column (title was wrong)
       .eq('id', course_id)
       .single();
 
     if (error) throw new Error('Course not found');
 
+    const courseName = course.nom || 'Course';
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
@@ -286,8 +287,8 @@ const handleSubscriptionPayment = async (req, res, next) => {
         price_data: {
           currency: 'cad',
           product_data: {
-            name: `${course.title} Subscription`,
-            description: `Monthly subscription for ${course.title}`
+            name: `${courseName} Subscription`,
+            description: `Monthly subscription for ${courseName}`
           },
           unit_amount: Math.round(course.prix * 100 / 5),
           recurring: {
