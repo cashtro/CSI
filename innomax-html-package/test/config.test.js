@@ -43,4 +43,15 @@ describe('utils/config — boot-safety', () => {
     require('../routes(api)/utils/config'); // installs sentinels first
     expect(() => require('../routes(api)/utils/stripe')).not.toThrow();
   });
+
+  it('lists recommended vars that are missing and risky settings, without stopping', () => {
+    delete process.env.STRIPE_WEBHOOK_SECRET;
+    delete process.env.TOTP_ENC_KEY;
+    process.env.COOKIE_SECURE = 'false';
+    process.env.APP_URL = 'http://pandorabrains.com';
+    const cfg = require('../routes(api)/utils/config');
+    expect(cfg.missingRecommended).toEqual(expect.arrayContaining(['STRIPE_WEBHOOK_SECRET', 'TOTP_ENC_KEY']));
+    expect(cfg.warnings.join(' ')).toMatch(/COOKIE_SECURE=false/);
+    expect(cfg.warnings.join(' ')).toMatch(/APP_URL is not https/);
+  });
 });

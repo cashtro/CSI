@@ -23,6 +23,24 @@ const REQUIRED = [
 
 const missingEnv = REQUIRED.filter((key) => !process.env[key]);
 
+// Not fatal, but the site is unsafe or partly broken without them, so the
+// boot log says so on every start:
+//   STRIPE_WEBHOOK_SECRET  without it /webhook answers 503 and a payment whose
+//                          buyer closes the tab is never fulfilled;
+//   TOTP_ENC_KEY           2FA secrets stored in clear, and the 2FA proof
+//                          (mfa cookie) changes at every restart;
+//   SENDGRID_API_KEY / SENDGRID_EMAIL / OWNER_EMAIL  order e-mails are lost.
+const RECOMMENDED = ['STRIPE_WEBHOOK_SECRET', 'TOTP_ENC_KEY', 'SENDGRID_API_KEY', 'SENDGRID_EMAIL', 'OWNER_EMAIL'];
+const missingRecommended = RECOMMENDED.filter((key) => !process.env[key]);
+
+// Settings that weaken security when set this way in production.
+const warnings = [];
+if (process.env.COOKIE_SECURE === 'false') warnings.push('COOKIE_SECURE=false: auth cookies are sent over plain http.');
+if (process.env.APP_URL && !/^https:\/\//.test(process.env.APP_URL) && !/^http:\/\/(localhost|127\.0\.0\.1)/.test(process.env.APP_URL)) {
+  warnings.push('APP_URL is not https: Stripe and e-mail links will use plain http.');
+}
+if (process.env.CSRF_ENFORCE !== 'true') warnings.push('CSRF_ENFORCE is not "true": the CSRF check on legacy /api routes is off.');
+
 // Non-throwing sentinels for the vars consumed by SDK constructors at import
 // time. They are deliberately invalid so a real network call fails clearly.
 const SENTINELS = {
@@ -58,8 +76,16 @@ if (missingEnv.length > 0) {
   );
 }
 
+if (missingRecommended.length > 0 && process.env.NODE_ENV !== 'test') {
+  logger.warn(`[config] Recommended env vars not set: ${missingRecommended.join(', ')} (see AUDIT-PLATEFORME.md).`);
+}
+if (process.env.NODE_ENV !== 'test') for (const w of warnings) logger.warn(`[config] ${w}`);
+
 module.exports = {
   REQUIRED,
+  RECOMMENDED,
   missingEnv,
+  missingRecommended,
+  warnings,
   isDegraded: missingEnv.length > 0,
 };
