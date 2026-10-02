@@ -45,7 +45,12 @@ function makeApp() {
 let app;
 beforeEach(() => { mockReset(); app = makeApp(); });
 
-const as = (token) => ({ Authorization: `Bearer ${token}` });
+const { signMfaProof } = require('../routes(api)/utils/twofa');
+// The second-factor proof verify-2fa sets in the browser (signed 'mfa' cookie).
+const mfaFor = (userId, ttl = 3600e3) => `mfa=${signMfaProof(userId, Date.now() + ttl)}`;
+const as = (token) => (token === 'admin2fa'
+  ? { Authorization: `Bearer ${token}`, Cookie: mfaFor('u-admin') }
+  : { Authorization: `Bearer ${token}` });
 const rejected = (s) => [401, 403].includes(s);
 
 describe('agent admin routes refuse without the admin role', () => {
@@ -79,14 +84,31 @@ describe('agent admin routes refuse without the admin role', () => {
     expect(res.body.error).toMatch(/Double authentification/);
   });
 
+  it('403 for an admin with 2FA enabled but no mfa proof cookie in this browser', async () => {
+    const bearer = { Authorization: 'Bearer admin2fa' };
+    const none = await request(app).get('/api/admin/agents/jobs').set(bearer);
+    expect(none.status).toBe(403);
+    expect(none.body.error).toMatch(/Double authentification/);
+    // A proof signed for another user, an expired one or a forged one is refused too.
+    for (const cookie of [mfaFor('u-admin2'), mfaFor('u-admin', -1000), `mfa=9999999999999.${'0'.repeat(64)}`]) {
+      // eslint-disable-next-line no-await-in-loop
+      const res = await request(app).get('/api/admin/agents/jobs').set({ ...bearer, Cookie: cookie });
+      expect(res.status).toBe(403);
+    }
+    const order = await request(app).post('/api/admin/agents/jobs/order').set(bearer).send({ agent_id: 'redac', instruction: 'x' });
+    expect(order.status).toBe(403);
+    expect(mockDb.tables.agent_jobs).toHaveLength(0);
+    expect((await request(app).get('/api/admin/agents/jobs').set(as('admin2fa'))).status).toBe(200);
+  });
+
   it('enforces CSRF on cookie-authenticated mutations, even without CSRF_ENFORCE', async () => {
     delete process.env.CSRF_ENFORCE;
     const body = { agent_id: 'redac', instruction: 'x' };
-    const bad = await request(app).post('/api/admin/agents/jobs/order').set('Cookie', 'accessToken=admin2fa').send(body);
+    const bad = await request(app).post('/api/admin/agents/jobs/order').set('Cookie', `accessToken=admin2fa; ${mfaFor('u-admin')}`).send(body);
     expect(bad.status).toBe(403);
     expect(bad.body.error).toMatch(/CSRF/);
     const ok = await request(app).post('/api/admin/agents/jobs/order')
-      .set('Cookie', 'accessToken=admin2fa; XSRF-TOKEN=tok').set('X-CSRF-Token', 'tok').send(body);
+      .set('Cookie', `accessToken=admin2fa; ${mfaFor('u-admin')}; XSRF-TOKEN=tok`).set('X-CSRF-Token', 'tok').send(body);
     expect(ok.status).toBe(201);
   });
 });

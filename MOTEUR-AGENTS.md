@@ -173,8 +173,10 @@ Les outils listés dans une fiche sont seulement descriptifs : le moteur n'exéc
 
 ## 5. Utiliser le moteur
 
-Toutes les routes exigent un compte administrateur avec la double authentification. Les créations
-sont limitées à 10 par minute.
+Toutes les routes exigent un compte administrateur qui a **passé le code 2FA dans ce navigateur**
+(cookie signé `mfa`, la même garde que la console `/admin/console`). Avoir la 2FA activée sur le
+compte ne suffit pas : reconnectez-vous avec votre code si la réponse est « Double authentification
+requise ». Les créations sont limitées à 10 par minute.
 
 | Action | Route |
 | --- | --- |

@@ -1,15 +1,18 @@
 // Admin API for the agent engine, mounted at /api/admin/agents.
 //
-// Every route: admin role (checkAdmin) + 2FA enabled on the account
-// (require2fa). Mutations: always-on CSRF double-submit (requireCsrf), and
-// rate limits on job creation and import. See MOTEUR-AGENTS.md.
+// Every route: the same guard as the admin console (requireAdmin in
+// utils/espace): Users.isAdmin read with the service key AND the signed "mfa"
+// cookie that verify-2fa sets once THIS browser passed the code. Having 2FA
+// enabled on the account is not enough: a Supabase token minted directly with
+// the anon key never went through the code. Mutations: always-on CSRF
+// double-submit (requireCsrf), and rate limits on job creation and import.
+// See MOTEUR-AGENTS.md.
 
 const express = require('express');
 const rateLimit = require('express-rate-limit');
 const logger = require('./utils/logger');
-const { checkAdmin } = require('./utils/auth-middleware');
 const { requireCsrf } = require('./utils/csrf');
-const { get2fa } = require('./utils/twofa');
+const { requireAdmin, noStore } = require('./utils/espace');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { getRange } = require('./utils/pagination');
 const store = require('../agents/store');
@@ -24,17 +27,15 @@ const db = () => {
   return adminDb;
 };
 
-// Admins must have an enabled authenticator. Login already forces 2FA on
-// privileged accounts (utils/twofa); this refuses an admin whose 2FA row is
-// missing or disabled, e.g. a session minted before the policy existed.
-async function require2fa(req, res, next) {
+// Admin role + second-factor proof for this browser (see the header). A
+// lookup failure answers 500 instead of escaping the middleware.
+const adminGuard = requireAdmin();
+async function requireAdminMfa(req, res, next) {
   try {
-    const row = await get2fa(db(), req.user.id);
-    if (!row || !row.enabled) return res.status(403).json({ error: 'Double authentification requise' });
-    next();
+    await adminGuard(req, res, next);
   } catch (err) {
-    logger.error('[agents] 2FA check failed:', err.message);
-    res.status(500).json({ error: 'Erreur serveur' });
+    logger.error('[agents] admin check failed:', err.message);
+    if (!res.headersSent) res.status(500).json({ error: 'Erreur serveur' });
   }
 }
 
@@ -53,7 +54,7 @@ const importLimiter = rateLimit({
   legacyHeaders: false,
 });
 
-router.use(checkAdmin, require2fa, requireCsrf);
+router.use(noStore, requireAdminMfa, requireCsrf);
 
 // ------------------------------------------------------------ validation
 
@@ -377,5 +378,5 @@ router.post('/import', importLimiter, async (req, res) => {
 });
 
 module.exports = router;
-module.exports.require2fa = require2fa;
+module.exports.requireAdminMfa = requireAdminMfa;
 module.exports.normaliseAgent = normaliseAgent;
