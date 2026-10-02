@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+  <%- include('partials/robots/head', {
+    title: 'Robots IA pour PME',
+    description: 'Des robots IA qui travaillent pour votre entreprise : réceptionniste, rédacteur, SEO, prospection, comité de décision et vidéo courte. Validation humaine, Loi 25, annulable en tout temps.',
+    index: true
+  }) %>
+</head>
+<%
+  const premier = offres[0];
+  const deFrom = offres.length ? Math.min.apply(null, offres.map(function (o) { return o.prix_mensuel; })) : null;
+%>
+<body class="pl rb-public">
+<%- include('partials/robots/top') %>
+
+<main id="contenu" class="main-robots">
+  <section class="rb-hero" aria-labelledby="hero-titre">
+    <span class="rb-kicker"><span aria-hidden="true">⚡</span> Robots IA de <%= include('partials/pilotage/marque') %></span>
+    <h1 id="hero-titre">Un robot qui travaille pour vous, pendant que vous dirigez.</h1>
+    <p class="rb-lead">Choisissez un robot, connectez vos outils, donnez-lui des tâches. Il prépare le travail, notre équipe le vérifie, et vous approuvez avant que quoi que ce soit parte.</p>
+    <div class="actions">
+      <a class="btn btn--accent rb-cta" href="#robots">⚡ Activer un robot</a>
+      <a class="btn btn--ghost rb-cta" href="#comment">Comment ça marche</a>
+    </div>
+    <ul class="rb-hero-points">
+      <li>Validation humaine de chaque livrable</li>
+      <li>Conforme à la Loi 25</li>
+      <li>Annulable en tout temps</li>
+      <% if (deFrom !== null) { %><li>Dès <%= fmt.prix(deFrom) %> par mois</li><% } %>
+    </ul>
+  </section>
+
+  <div class="wrap">
+    <% if (annule) { %>
+    <p class="rb-alert" role="status">Paiement annulé : rien n’a été facturé. Vous pouvez reprendre quand vous voulez.</p>
+    <% } %>
+
+    <section class="rb-section" id="robots" aria-labelledby="robots-titre">
+      <header>
+        <h2 id="robots-titre">Choisissez votre robot</h2>
+        <p>Chaque robot est une petite équipe d’agents IA spécialisés. Prix mensuels en dollars canadiens, taxes en sus.</p>
+      </header>
+      <% if (!offres.length) { %>
+        <p class="empty">Les robots arrivent bientôt. <a href="/contact">Écrivez-nous</a> pour être le premier averti.</p>
+      <% } else { %>
+      <div class="rb-grid">
+        <% offres.forEach(function (o) { %>
+        <article class="rb-card<%= annule === o.slug ? ' is-focus' : '' %>" id="robot-<%= o.slug %>" aria-labelledby="t-<%= o.slug %>">
+          <div class="rb-card-head">
+            <span class="rb-emoji" aria-hidden="true"><%= o.emoji %></span>
+            <h3 id="t-<%= o.slug %>"><%= o.nom %></h3>
+          </div>
+          <p class="rb-pitch"><%= o.pitch %></p>
+          <% if (o.fait.length) { %>
+          <ul class="rb-fait" aria-label="Ce qu’il fait">
+            <% o.fait.forEach(function (f) { %><li><%= f %></li><% }) %>
+          </ul>
+          <% } %>
+          <% if (o.pour_qui) { %><p class="rb-qui"><strong>Pour qui :</strong> <%= o.pour_qui %></p><% } %>
+          <div class="rb-prix">
+            <span class="rb-montant"><%= fmt.prix(o.prix_mensuel) %> <small>/ mois</small></span>
+            <span class="rb-detail">
+              <%= o.prix_mise_en_place > 0 ? 'Mise en place ' + fmt.prix(o.prix_mise_en_place) + ', une seule fois' : 'Aucuns frais de mise en place' %>
+              · <%= o.quota_taches_mois %> <%= o.mode === 'conseil' ? 'décisions' : 'tâches' %> par mois
+            </span>
+          </div>
+          <a class="btn btn--accent" href="/robots/<%= o.slug %>/activer">⚡ Activer ce robot</a>
+        </article>
+        <% }) %>
+      </div>
+      <p class="rb-note">Les prix affichés sont ceux du lancement et peuvent changer pour les nouveaux abonnements ; votre prix ne change pas sans avis.</p>
+      <% } %>
+    </section>
+
+    <section class="rb-section" id="comment" aria-labelledby="comment-titre">
+      <header>
+        <h2 id="comment-titre">Comment ça marche</h2>
+        <p>Trois étapes, et votre robot se met au travail.</p>
+      </header>
+      <ol class="rb-etapes">
+        <li>
+          <h3>🎯 Choisissez</h3>
+          <p>Prenez le robot qui règle votre problème du moment. Paiement mensuel sécurisé par Stripe.</p>
+        </li>
+        <li>
+          <h3>🔌 Connectez</h3>
+          <p>Reliez vos outils (Google, Microsoft 365, Facebook, HubSpot, Shopify, votre site) en quelques clics. Vous voyez chaque permission avant d’accepter.</p>
+        </li>
+        <li>
+          <h3>🚀 Laissez travailler</h3>
+          <p>Donnez des tâches, à l’écrit ou au micro. Le robot prépare, notre équipe vérifie, vous approuvez dans votre espace.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="rb-section" aria-labelledby="garanties-titre">
+      <header>
+        <h2 id="garanties-titre">Nos garanties</h2>
+        <p>Un robot ne remplace pas votre jugement : il vous fait gagner du temps, sous contrôle.</p>
+      </header>
+      <div class="rb-garanties">
+        <div class="rb-garantie">
+          <span class="rb-g-emoji" aria-hidden="true">🧑‍⚖️</span>
+          <h3>Validation humaine</h3>
+          <p>Rien ne part sans validation : notre équipe relit chaque livrable, puis vous l’approuvez.</p>
+        </div>
+        <div class="rb-garantie">
+          <span class="rb-g-emoji" aria-hidden="true">🔐</span>
+          <h3>Loi 25</h3>
+          <p>Consentement explicite pour chaque outil connecté, révocable en un clic. Les accès sont chiffrés.</p>
+        </div>
+        <div class="rb-garantie">
+          <span class="rb-g-emoji" aria-hidden="true">↩️</span>
+          <h3>Annulable en tout temps</h3>
+          <p>Pas de contrat à long terme. Mettez en pause ou annulez depuis votre espace.</p>
+        </div>
+        <div class="rb-garantie">
+          <span class="rb-g-emoji" aria-hidden="true">⚜️</span>
+          <h3>En français d’abord</h3>
+          <p>Vos textes sont écrits en français du Québec (Loi 96), et en anglais au besoin.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="rb-section" aria-labelledby="preuve-titre">
+      <header>
+        <h2 id="preuve-titre">Ils en parlent</h2>
+        <p>Emplacements réservés aux témoignages de nos premiers clients.</p>
+      </header>
+      <div class="rb-preuves">
+        <figure class="rb-preuve">
+          <span class="rb-exemple">Exemple</span>
+          <blockquote>« Notre réceptionniste IA prépare les réponses du soir. Le matin, je n’ai qu’à approuver. »</blockquote>
+          <figcaption>Témoignage d’exemple · Clinique (à remplacer)</figcaption>
+        </figure>
+        <figure class="rb-preuve">
+          <span class="rb-exemple">Exemple</span>
+          <blockquote>« Quatre articles par mois, dans notre ton, sans y passer nos soirées. »</blockquote>
+          <figcaption>Témoignage d’exemple · Commerce de détail (à remplacer)</figcaption>
+        </figure>
+        <figure class="rb-preuve">
+          <span class="rb-exemple">Exemple</span>
+          <blockquote>« Le Conseil nous a évité une mauvaise décision d’embauche. »</blockquote>
+          <figcaption>Témoignage d’exemple · Firme de services (à remplacer)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="rb-section" id="faq" aria-labelledby="faq-titre">
+      <header><h2 id="faq-titre">Questions fréquentes</h2></header>
+      <div class="rb-faq">
+        <details>
+          <summary>Est-ce que le robot envoie des choses à ma place ?</summary>
+          <p>Non. Le robot prépare des brouillons et des livrables. Notre équipe les relit, puis vous les approuvez dans votre espace. Rien n’est envoyé, publié ou payé sans validation humaine.</p>
+        </details>
+        <details>
+          <summary>Que deviennent mes données ?</summary>
+          <p>Elles servent seulement au travail de votre robot. Les accès à vos outils sont chiffrés, et vous pouvez retirer une autorisation en tout temps : les accès enregistrés sont alors effacés (Loi 25).</p>
+        </details>
+        <details>
+          <summary>Comment j’annule ?</summary>
+          <p>Depuis « Mes robots » dans votre espace : « Mettre en pause » ou « Annuler ». L’annulation passe par le portail sécurisé de Stripe et prend effet à la fin de la période payée.</p>
+        </details>
+        <details>
+          <summary>C’est quoi, une « tâche » ?</summary>
+          <p>Une demande que vous donnez au robot : un article, une réponse à un avis, une liste de prospects, une décision à étudier… Chaque robot a un nombre de tâches par mois, qui repart à zéro le 1er du mois.</p>
+        </details>
+        <details>
+          <summary>Je n’ai pas de compte. Comment je commence ?</summary>
+          <p>Cliquez « Activer ce robot » : vous créez votre compte (ou vous vous connectez), vous indiquez le nom de votre entreprise, puis vous payez sur la page sécurisée de Stripe. Votre robot apparaît aussitôt dans votre espace.</p>
+        </details>
+        <details>
+          <summary>Mes outils ne sont pas dans la liste.</summary>
+          <p>Écrivez-nous : notre équipe peut connecter d’autres outils à la main, ou vous proposer un mandat sur mesure.</p>
+        </details>
+      </div>
+    </section>
+
+    <% if (premier) { %>
+    <section class="rb-hero rb-final" aria-labelledby="final-titre">
+      <h2 id="final-titre">Prêt à déléguer ?</h2>
+      <p>Activez un robot aujourd’hui, donnez-lui sa première tâche ce soir.</p>
+      <a class="btn btn--accent rb-cta" href="#robots">⚡ Activer un robot</a>
+    </section>
+    <% } %>
+  </div>
+</main>
+
+<div class="rb-sticky">
+  <a class="btn btn--accent" href="#robots">⚡ Activer un robot<% if (deFrom !== null) { %> · dès <%= fmt.prix(deFrom) %>/mois<% } %></a>
+</div>
+<%- include('partials/pilotage/footer') %>
+</body>
+</html>

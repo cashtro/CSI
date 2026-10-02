@@ -12,6 +12,7 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const logger = require('./utils/logger');
 const { fulfillCheckoutSession } = require('./utils/fulfill');
+const { syncRobotSubscription } = require('./utils/robotsStripe');
 
 async function stripeWebhookHandler(req, res) {
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -39,6 +40,11 @@ async function stripeWebhookHandler(req, res) {
       const session = event.data.object;
       const result = await fulfillCheckoutSession(session);
       logger.info(`[webhook] ${event.type} ${session.id}: ${result.kind} ${result.status}`);
+    }
+    // Robot subscriptions (ROBOTS.md): paused, resumed, cancelled.
+    if (event.type === 'customer.subscription.updated' || event.type === 'customer.subscription.deleted') {
+      const result = await syncRobotSubscription(event);
+      logger.info(`[webhook] ${event.type} ${event.data.object && event.data.object.id}: ${result.status}`);
     }
     return res.status(200).json({ received: true });
   } catch (err) {

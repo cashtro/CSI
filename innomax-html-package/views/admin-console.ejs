@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <%- include('partials/pilotage/head', { title: 'Console admin' }) %>
+  <% if (vue === 'robots') { %><link rel="stylesheet" href="/assets/css/robots.css"><% } %>
   <% if (typeof agentVue !== 'undefined' && agentVue) { %>
   <link rel="stylesheet" href="/assets/css/agents-console.css">
   <script src="/assets/js/agents-console.js" defer></script>
@@ -9,6 +10,7 @@
 </head>
 <%
   const enAttente = data.livrables.filter(function (l) { return l.statut === 'en_attente'; }).length;
+  const aValiderRobots = data.livrables.filter(function (l) { return l.statut === 'a_valider'; }).length;
   const actifs = data.mandats.filter(function (m) { return m.statut === 'actif'; }).length;
   const revenus = data.paiements.reduce(function (s, p) { return s + (p.statut === 'Payé' && p.montant ? p.montant : 0); }, 0);
   const nav = [
@@ -18,6 +20,7 @@
     { id: 'paiements', emoji: '💳', label: 'Paiements' },
     { id: 'mandats', emoji: '🗂️', label: 'Mandats', count: actifs },
     { id: 'livrables', emoji: '📦', label: 'Livrables', count: enAttente },
+    { id: 'robots', emoji: '⚡', label: 'Robots', count: aValiderRobots },
     { id: 'cms', emoji: '✏️', label: 'Contenu du site' },
     { id: 'agents', emoji: '🤖', label: 'Agents' },
     { id: 'conseil', emoji: '🧠', label: 'Conseil' },
@@ -31,6 +34,7 @@
     travail: 'Tous les travaux des agents, leurs résultats et les tâches à valider.',
     recherche: 'Pose une question : un agent cherche sur le web et cite ses sources.',
     'reglages-agents': 'Marche, arrêt, budget, modèles et agents.',
+    robots: 'Le catalogue des robots, les abonnements, le revenu récurrent et les livrables à valider.',
   };
   const ici = nav.find(function (n) { return n.id === vue; });
   const titreMandat = {};
@@ -55,6 +59,8 @@
     <% if (typeof agentVue !== 'undefined' && agentVue) { %>
       <%- include('partials/agents/' + vue) %>
     <% } %>
+
+    <% if (vue === 'robots') { %><%- include('partials/robots/admin-robots') %><% } %>
 
     <% if (vue === 'apercu') { %>
     <div class="pl-stack">

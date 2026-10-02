@@ -1,0 +1,313 @@
+/* ==========================================================================
+   Robots clients : vitrine /robots, activation, « Mes robots » et
+   « Connecter mes outils » de /espace, onglet Robots de /admin/console.
+
+   Se charge APRÈS pilotage.css et n'utilise que ses jetons (BLOC MARQUE et
+   jetons dérivés) : aucune couleur écrite ici. Cadre noir et blanc,
+   intérieur néon, coins arrondis. Aucun style en ligne (CSP).
+
+   1. Vitrine : en-tête, héros, sections
+   2. Cartes de robots
+   3. Comment ça marche, garanties, preuve sociale, FAQ
+   4. Bouton collant (mobile)
+   5. Activation
+   6. Mes robots (espace client)
+   7. Connexions
+   8. Admin
+   9. Petits écrans
+  10. Mouvement réduit
+   ========================================================================== */
+
+
+/* 1. Vitrine --------------------------------------------------------------- */
+
+body.pl > .main-robots { flex: 1 0 auto; padding-bottom: var(--s-8); }
+
+.rb-top { background: var(--frame); color: var(--frame-ink); border-bottom: 1px solid var(--frame-line); }
+.rb-top a { color: var(--frame-ink); }
+.rb-top-row { display: flex; align-items: center; justify-content: space-between; gap: var(--s-4); padding-top: var(--s-4); padding-bottom: var(--s-4); }
+.rb-top-nav { display: flex; align-items: center; gap: var(--s-2); flex-wrap: wrap; justify-content: flex-end; }
+
+.rb-hero {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  margin: var(--s-5) auto 0;
+  width: calc(100% - 2 * var(--s-5));
+  max-width: calc(var(--wrap) - 2 * var(--s-5));
+  padding: var(--s-8) var(--s-7);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--neon-edge);
+  background: var(--neon-panel);
+  box-shadow: var(--neon-glow);
+  color: var(--on-neon);
+}
+.rb-hero::before, .rb-hero::after {
+  content: '';
+  position: absolute;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;
+  background: var(--neon-halos);
+  background-repeat: no-repeat;
+}
+.rb-hero::before { right: -140px; top: -220px; background-size: 100% 100%, 0 0; animation: pl-drift 12s ease-in-out infinite; }
+.rb-hero::after { left: -160px; bottom: -260px; background-size: 0 0, 100% 100%; animation: pl-drift 14s ease-in-out -5s infinite reverse; }
+.pl .rb-hero h1 { color: var(--on-neon); font-size: clamp(2rem, 4.6vw, 3.4rem); line-height: 1.08; max-width: 18ch; margin: var(--s-3) 0 var(--s-4); }
+.rb-hero .rb-lead { color: var(--on-neon-muted); font-size: var(--fs-md); max-width: 58ch; margin: 0 0 var(--s-6); }
+.rb-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  padding: var(--s-1) var(--s-4);
+  border-radius: var(--r-pill);
+  border: 1px solid color-mix(in srgb, var(--on-neon) 30%, transparent);
+  background: color-mix(in srgb, var(--on-neon) 10%, transparent);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+}
+.rb-hero-points { list-style: none; margin: var(--s-6) 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-3) var(--s-5); color: var(--on-neon-muted); font-weight: 700; font-size: var(--fs-sm); }
+.rb-hero-points li::before { content: '✓ '; color: var(--cyan-neon); }
+.pl .rb-hero .btn--ghost { color: var(--on-neon); border-color: color-mix(in srgb, var(--on-neon) 60%, transparent); }
+.pl .rb-hero .btn--ghost:hover { background: color-mix(in srgb, var(--on-neon) 10%, transparent); }
+.rb-cta { min-height: 52px; padding-left: var(--s-6); padding-right: var(--s-6); font-size: var(--fs-md); }
+
+.rb-section { padding-top: var(--s-8); }
+.rb-section > header { max-width: 62ch; margin-bottom: var(--s-6); }
+.rb-section > header p { color: var(--muted); font-size: var(--fs-md); margin: var(--s-2) 0 0; }
+.pl .rb-section h2 { font-size: var(--fs-xl); }
+.rb-note { font-size: var(--fs-sm); color: var(--muted); margin-top: var(--s-4); }
+.rb-alert { margin: var(--s-5) 0 0; padding: var(--s-4) var(--s-5); border-radius: var(--r-md); border: 1px solid var(--line-strong); background: var(--surface-2); }
+.rb-alert--ok { border-color: var(--neon-edge); background: var(--accent-soft); }
+.rb-alert--error { border-color: var(--bad); background: var(--bad-soft); }
+
+
+/* 2. Cartes de robots ------------------------------------------------------ */
+
+.rb-grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr)); }
+.rb-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-4);
+  padding: var(--s-6) var(--s-5) var(--s-5);
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg);
+  scroll-margin-top: var(--s-6);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.rb-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-2); }
+.rb-card:target, .rb-card.is-focus { box-shadow: var(--neon-glow); border-color: var(--neon-edge); }
+.rb-card-head { display: flex; align-items: center; gap: var(--s-3); }
+.rb-emoji {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  font-size: 1.7rem;
+  background: var(--neon-kpi);
+  box-shadow: var(--neon-glow);
+}
+.pl .rb-card h3 { font-family: var(--font-title); font-size: var(--fs-lg); margin: 0; }
+.rb-pitch { margin: 0; font-size: var(--fs-md); }
+.rb-fait { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); }
+.rb-fait li { position: relative; padding-left: 1.6em; }
+.rb-fait li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  top: 0.05em;
+  display: grid;
+  place-items: center;
+  width: 1.2em;
+  height: 1.2em;
+  border-radius: 50%;
+  background: var(--ok);
+  color: var(--on-ok);
+  font-size: 0.8em;
+  font-weight: 800;
+}
+.rb-qui { margin: 0; font-size: var(--fs-sm); color: var(--muted); }
+.rb-qui strong { color: var(--ink); }
+.rb-prix { margin-top: auto; padding-top: var(--s-4); border-top: 1px dashed var(--line-input); display: grid; gap: var(--s-1); }
+.rb-prix .rb-montant { font-family: var(--font-title); font-size: var(--fs-xl); font-weight: 700; color: var(--ink); font-variant-numeric: tabular-nums; }
+.rb-prix .rb-montant small { font-family: var(--font-text); font-size: var(--fs-sm); font-weight: 700; color: var(--muted); }
+.rb-prix .rb-detail { font-size: var(--fs-sm); color: var(--muted); }
+.rb-card .btn { width: 100%; }
+.rb-etiquette { position: absolute; top: var(--s-4); right: var(--s-4); }
+
+
+/* 3. Comment ça marche, garanties, preuve sociale, FAQ --------------------- */
+
+.rb-etapes { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); counter-reset: etape; }
+.rb-etapes li { position: relative; padding: var(--s-6) var(--s-5) var(--s-5); border: 1px solid var(--line-strong); border-radius: var(--r-lg); background: var(--surface); counter-increment: etape; }
+.rb-etapes li::before {
+  content: counter(etape);
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-bottom: var(--s-4);
+  border-radius: 50%;
+  background: var(--neon-btn);
+  background-size: 300% 100%;
+  color: var(--on-accent);
+  font-family: var(--font-title);
+  font-weight: 800;
+  box-shadow: var(--shadow-neon);
+  animation: pl-flow var(--neon-speed) linear infinite;
+}
+.pl .rb-etapes h3 { margin: 0 0 var(--s-2); }
+.rb-etapes p { margin: 0; color: var(--muted); }
+
+.rb-garanties { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr)); }
+.rb-garantie { padding: var(--s-5); border-radius: var(--r-lg); background: var(--neon-kpi); border: 1px solid var(--neon-edge); color: var(--on-neon); box-shadow: var(--neon-glow); }
+.pl .rb-garantie h3 { color: var(--on-neon); margin: var(--s-2) 0; }
+.rb-garantie p { margin: 0; color: var(--on-neon-muted); }
+.rb-garantie .rb-g-emoji { font-size: 1.8rem; }
+
+.rb-preuves { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); }
+.rb-preuve { position: relative; margin: 0; padding: var(--s-6) var(--s-5) var(--s-5); border: 1px dashed var(--line-input); border-radius: var(--r-lg); background: var(--surface-2); }
+.rb-preuve blockquote { margin: 0 0 var(--s-4); font-size: var(--fs-md); }
+.rb-preuve figcaption { font-size: var(--fs-sm); color: var(--muted); }
+.rb-exemple { position: absolute; top: var(--s-3); right: var(--s-3); padding: 2px var(--s-3); border-radius: var(--r-pill); border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink); font-size: var(--fs-xs); font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; }
+
+.rb-faq { display: grid; gap: var(--s-3); max-width: 860px; }
+.rb-faq details { border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--surface); }
+.rb-faq summary { cursor: pointer; padding: var(--s-4) var(--s-5); font-weight: 800; list-style: none; display: flex; justify-content: space-between; gap: var(--s-3); }
+.rb-faq summary::-webkit-details-marker { display: none; }
+.rb-faq summary::after { content: '+'; font-family: var(--font-title); color: var(--accent-ink); }
+.rb-faq details[open] summary::after { content: '–'; }
+.rb-faq details p { margin: 0; padding: 0 var(--s-5) var(--s-5); color: var(--muted); }
+
+.pl .rb-final { width: 100%; max-width: none; padding: var(--s-7) var(--s-5); }
+.rb-final { margin-top: var(--s-8); text-align: center; display: grid; justify-items: center; gap: var(--s-4); }
+.pl .rb-final h2 { color: var(--on-neon); margin: 0; }
+.rb-final p { color: var(--on-neon-muted); margin: 0; max-width: 52ch; }
+
+
+/* 4. Bouton collant (mobile) ----------------------------------------------- */
+
+.rb-sticky { display: none; }
+
+
+/* 5. Activation ------------------------------------------------------------ */
+
+.rb-recap { display: grid; gap: var(--s-5); grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); align-items: start; }
+.rb-total { display: grid; gap: var(--s-2); }
+.rb-ligne { display: flex; justify-content: space-between; gap: var(--s-4); padding: var(--s-2) 0; border-bottom: 1px solid var(--line); }
+.rb-ligne:last-child { border-bottom: 0; font-weight: 800; }
+.rb-check { display: flex; gap: var(--s-3); align-items: flex-start; font-size: var(--fs-sm); }
+.rb-check input { width: 22px; height: 22px; margin: 2px 0 0; flex: none; accent-color: var(--accent); }
+
+
+/* 6. Mes robots ------------------------------------------------------------ */
+
+.rb-mes { display: grid; gap: var(--s-5); }
+.rb-robot { display: grid; gap: var(--s-4); }
+.rb-robot-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); }
+.rb-robot-head .rb-card-head h2 { margin: 0; }
+.rb-chiffres { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, 150px), 1fr)); }
+.rb-chiffre { padding: var(--s-3) var(--s-4); border-radius: var(--r-md); border: 1px solid var(--line); background: var(--surface-2); }
+.rb-chiffre .label { display: block; font-size: var(--fs-xs); font-weight: 700; color: var(--muted); }
+.rb-chiffre .value { font-family: var(--font-title); font-size: var(--fs-lg); font-weight: 700; font-variant-numeric: tabular-nums; }
+.rb-quota { display: grid; gap: var(--s-1); }
+.rb-quota progress { width: 100%; height: 12px; border: 0; border-radius: var(--r-pill); background: var(--surface-2); overflow: hidden; appearance: none; -webkit-appearance: none; }
+.rb-quota progress::-webkit-progress-bar { background: var(--surface-2); border-radius: var(--r-pill); box-shadow: inset 0 0 0 1px var(--line); }
+.rb-quota progress::-webkit-progress-value { background: var(--neon-bar); background-size: 300% 100%; border-radius: var(--r-pill); }
+.rb-quota progress::-moz-progress-bar { background: var(--neon-bar); background-size: 300% 100%; border-radius: var(--r-pill); }
+.rb-quota .dim { font-size: var(--fs-sm); }
+.rb-recents { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--fs-sm); }
+.rb-recents li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--s-2); padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); background: var(--surface-2); }
+.badge--en_cours { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.badge--verification { background: var(--accent-soft); color: var(--accent-ink); }
+.badge--livre, .badge--actif, .badge--connectee { background: var(--ok); color: var(--on-ok); box-shadow: none; }
+.badge--demandee { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.badge--aucune { background: var(--surface-2); color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
+.badge--erreur, .badge--arrete { background: var(--surface); color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
+.rb-tache textarea { min-height: 120px; }
+.rb-humain { display: flex; gap: var(--s-3); align-items: flex-start; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--accent-soft); border: 1px solid var(--accent-line); font-size: var(--fs-sm); }
+.rb-humain p { margin: 0; }
+.rb-offres-mini { display: grid; gap: var(--s-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); }
+.rb-offre-mini { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-3) var(--s-4); border: 1px solid var(--line-strong); border-radius: var(--r-md); background: var(--surface); }
+.rb-offre-mini span { font-weight: 800; }
+.livrable-texte {
+  margin: var(--s-3) 0 0;
+  padding: var(--s-4);
+  max-height: 420px;
+  overflow: auto;
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  font-size: var(--fs-sm);
+}
+
+
+/* 7. Connexions ------------------------------------------------------------ */
+
+.cx-grid { display: grid; gap: var(--s-5); grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr)); }
+.cx-card { display: grid; gap: var(--s-4); align-content: start; }
+.cx-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; }
+.cx-head .rb-card-head h2 { margin: 0; font-size: var(--fs-md); }
+.cx-head .rb-emoji { width: 46px; height: 46px; font-size: 1.35rem; }
+.cx-usage { margin: 0; }
+.cx-perms { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--surface-2); border: 1px solid var(--line); }
+.cx-perms h3 { font-size: var(--fs-sm); margin: 0 0 var(--s-2); }
+.cx-perms ul { margin: 0; padding-left: 1.2em; font-size: var(--fs-sm); }
+.cx-meta { font-size: var(--fs-sm); color: var(--muted); margin: 0; }
+.pl .cx-card input[type='password'] { width: 100%; padding: var(--s-3) var(--s-4); border: 1px solid var(--line-input); border-radius: var(--r-pill); background: var(--surface); color: var(--ink); font: inherit; }
+
+
+/* 8. Admin ----------------------------------------------------------------- */
+
+.rb-admin-offre summary { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); flex-wrap: wrap; cursor: pointer; list-style: none; }
+.rb-admin-offre summary::-webkit-details-marker { display: none; }
+.rb-admin-offre summary .rb-card-head h3 { margin: 0; font-size: var(--fs-md); }
+.rb-admin-offre[open] summary { margin-bottom: var(--s-4); }
+.rb-admin-offre .rb-emoji { width: 42px; height: 42px; font-size: 1.2rem; }
+
+
+/* 9. Petits écrans --------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .rb-top-nav .topbar-link--site { display: none; }
+  .rb-hero { width: calc(100% - 2 * var(--s-4)); padding: var(--s-7) var(--s-4) var(--s-6); margin-top: var(--s-4); }
+  .rb-hero .actions .btn { width: 100%; }
+  .rb-hero .rb-lead { font-size: var(--fs-base); }
+  .rb-section { padding-top: var(--s-7); }
+  .pl .rb-section h2 { font-size: var(--fs-lg); }
+  .rb-card { padding: var(--s-5) var(--s-4) var(--s-4); }
+  .rb-recap { grid-template-columns: 1fr; }
+  .rb-chiffres { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* CTA collant : toujours à portée du pouce. */
+  body.rb-public { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .rb-sticky {
+    display: block;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 40;
+    padding: var(--s-3) var(--s-4) calc(var(--s-3) + env(safe-area-inset-bottom));
+    background: var(--frame);
+    border-top: 1px solid var(--frame-line);
+    box-shadow: var(--shadow-2);
+  }
+  .rb-sticky .btn { width: 100%; }
+}
+
+
+/* 10. Mouvement réduit ----------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .rb-hero::before, .rb-hero::after, .rb-etapes li::before { animation: none; }
+  .rb-card, .rb-card:hover { transition: none; transform: none; }
+}

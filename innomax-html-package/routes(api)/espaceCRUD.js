@@ -5,7 +5,7 @@ const express = require('express');
 const logger = require('./utils/logger');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { requireCsrf } = require('./utils/csrf');
-const { requireMember, noStore, isUuid, text, parseMandat, DECISIONS } = require('./utils/espace');
+const { requireMember, noStore, isUuid, text, parseMandat, DECISIONS, LIVRABLES_INTERNES } = require('./utils/espace');
 
 const router = express.Router();
 router.use(noStore, requireCsrf, requireMember());
@@ -46,8 +46,9 @@ router.post('/livrables/:id/decision', async (req, res) => {
     .eq('entreprise_id', entrepriseId)
     .maybeSingle();
   if (error) throw new Error(error.message);
-  // Another company's deliverable looks exactly like a missing one.
-  if (!livrable) return res.status(404).json({ error: 'Livrable introuvable.' });
+  // Another company's deliverable, or one PBTM has not validated yet, looks
+  // exactly like a missing one.
+  if (!livrable || LIVRABLES_INTERNES.includes(livrable.statut)) return res.status(404).json({ error: 'Livrable introuvable.' });
   if (livrable.statut !== 'en_attente') return res.status(409).json({ error: 'Ce livrable a déjà reçu une décision.' });
 
   // Conditional on the status still being "en_attente": of two decisions

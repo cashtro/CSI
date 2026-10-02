@@ -14,6 +14,9 @@ const logger = require('./logger');
 const ETAPES = ['Reçu', 'Diagnostic', 'En production', 'Révision', 'Livré'];
 const STATUTS_MANDAT = ['actif', 'en_pause', 'termine', 'annule'];
 const DECISIONS = ['approuve', 'modification_demandee'];
+// Deliverable statuses the client never sees: a robot's result waiting for
+// PBTM's validation, or refused by PBTM.
+const LIVRABLES_INTERNES = ['a_valider', 'refuse'];
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const isUuid = (v) => typeof v === 'string' && UUID_RE.test(v);
@@ -108,7 +111,9 @@ async function loadEspace(admin, entrepriseId) {
   const [entreprise] = await rows(admin.from('entreprises').select('id, nom, courriel, created_at').eq('id', entrepriseId));
   const membres = await rows(admin.from('membres').select('user_id, role').eq('entreprise_id', entrepriseId));
   const mandats = await rows(admin.from('mandats').select('*').eq('entreprise_id', entrepriseId));
-  const livrables = await rows(admin.from('livrables').select('*').eq('entreprise_id', entrepriseId));
+  // A robot's deliverable stays hidden until PBTM validated it (ROBOTS.md).
+  const livrables = (await rows(admin.from('livrables').select('*').eq('entreprise_id', entrepriseId)))
+    .filter((l) => !LIVRABLES_INTERNES.includes(l.statut));
   const ids = membres.map((m) => m.user_id);
   const bills = ids.length ? await rows(admin.from('bills').select('*').in('user_id', ids).limit(500)) : [];
   const achats = bills.map(summarizeBill).sort(byDateDesc);
@@ -186,6 +191,12 @@ const fmt = {
       return `${n.toFixed(2)} ${devise}`;
     }
   },
+  // Catalogue price: no cents when the amount is round (349 $, 12,50 $).
+  prix(n) {
+    if (typeof n !== 'number' || !Number.isFinite(n)) return '—';
+    const round = Number.isInteger(n);
+    return new Intl.NumberFormat('fr-CA', { style: 'currency', currency: 'CAD', minimumFractionDigits: round ? 0 : 2, maximumFractionDigits: round ? 0 : 2 }).format(n);
+  },
   jour(d) {
     const t = d ? new Date(d) : null;
     if (!t || Number.isNaN(t.getTime())) return '—';
@@ -195,7 +206,7 @@ const fmt = {
   },
   statut: {
     actif: '🚀 Actif', en_pause: '⏸️ En pause', termine: '✅ Terminé', annule: '✖️ Annulé',
-    en_attente: '👀 À approuver', approuve: '🎉 Approuvé', modification_demandee: '✏️ Modification demandée',
+    en_attente: '👀 À approuver', a_valider: '🕵️ À valider (PBTM)', refuse: '🚫 Refusé (PBTM)', approuve: '🎉 Approuvé', modification_demandee: '✏️ Modification demandée',
   },
   etapeEmoji: ['📝', '🔍', '🛠️', '🔁', '✅'],
   // Greeting by the hour in Québec: morning, afternoon, evening.
@@ -210,7 +221,7 @@ const fmt = {
 
 module.exports = {
   fmt,
-  ETAPES, STATUTS_MANDAT, DECISIONS,
+  ETAPES, STATUTS_MANDAT, DECISIONS, LIVRABLES_INTERNES,
   isUuid, isHttpsUrl, text, noStore,
   getMembership, requireMember, requireAdmin,
   summarizeBill, loadEspace, loadAdmin, parseMandat,

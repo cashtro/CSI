@@ -44,19 +44,24 @@ function canReadJob(job, entrepriseIds) {
   return Boolean(job && job.entreprise_id && entrepriseIds.includes(job.entreprise_id));
 }
 
+// A robot's result (job.robot set) is never served here: it becomes a
+// deliverable that PBTM validates first, then shows in /espace (ROBOTS.md).
 function clientView(job) {
   const r = job.result || {};
+  const robot = Boolean(job.robot || (job.payload && job.payload.robot));
   return {
     id: job.id,
     kind: job.kind,
     status: job.status,
     created_at: job.created_at,
     finished_at: job.finished_at,
-    livrable: job.status === 'done' ? (r.texte || (r.decision && r.decision.decision) || null) : null,
+    livrable: job.status === 'done' && !robot ? (r.texte || (r.decision && r.decision.decision) || null) : null,
   };
 }
 
-const COLUMNS = 'id, kind, status, entreprise_id, result, created_at, finished_at';
+// '*' rather than a column list: the robot column (db/006) may not exist yet;
+// only clientView's fields ever leave the server.
+const COLUMNS = '*';
 
 router.get('/jobs', authenticateUser, async (req, res) => {
   const ids = await entreprisesOr500(req, res);

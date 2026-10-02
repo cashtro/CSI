@@ -7,7 +7,7 @@ const DIR = path.join(__dirname, '..', '..', 'db');
 const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8');
 // SQL without "--" comments, to check what actually runs.
 const code = (f) => read(f).replace(/--.*$/gm, '');
-const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql', '005_recherche_agents.sql'];
+const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql', '005_recherche_agents.sql', '006_robots.sql'];
 
 describe('SQL migrations', () => {
   it('002 and 003 state the mandatory order 001, 002, 003', () => {
@@ -76,5 +76,18 @@ describe('SQL migrations', () => {
     const sql = code('005_recherche_agents.sql');
     expect(sql).toMatch(/drop constraint if exists agent_jobs_kind_check/);
     expect(sql).toMatch(/check \(kind in \('order', 'debate', 'research'\)\)/);
+  });
+
+  it('006 runs after 005, hides the tokens and the unvalidated deliverables from members', () => {
+    const head = read('006_robots.sql').split('\n').slice(0, 12).join('\n');
+    expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE[\s\S]*005_recherche_agents\.sql, *\n?[\s\S]*ce fichier \(006\)/);
+    const sql = code('006_robots.sql');
+    const grant = /grant select \(([^)]*)\) on public\.connexions to authenticated/.exec(sql);
+    expect(grant).not.toBeNull();
+    expect(grant[1]).not.toMatch(/jetons/);
+    expect(sql).toMatch(/jetons is null or jetons like 'enc:v1:%'/);
+    expect(sql).not.toMatch(/grant [^;]* on public\.connexions_etats/);
+    expect(sql).toMatch(/statut not in \('a_valider', 'refuse'\)/);
+    expect(sql).toMatch(/revoke all on public\.robots_offres, public\.robots_actifs, public\.connexions, public\.connexions_etats\s+from anon, authenticated/);
   });
 });

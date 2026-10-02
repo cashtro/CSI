@@ -179,8 +179,14 @@ app.use('/api/agents', agentsClientRoutes);
 // Espace entreprises (client space) and the admin console. Each router checks
 // membership / admin + 2FA on the server and requires the CSRF header.
 app.use('/api/espace', require('./routes(api)/espaceCRUD.js'));
+// Robots clients (ROBOTS.md): catalogue admin, client API, public pages and
+// the connections to the clients' tools. Mounted before /api/admin.
+app.use('/api/admin/robots', require('./routes(api)/adminRobots.js'));
+app.use('/api/robots', require('./routes(api)/robotsCRUD.js'));
 app.use('/api/admin', require('./routes(api)/adminCRUD.js'));
 app.use(require('./routes(api)/espacePages.js'));
+app.use(require('./routes(api)/robotsPages.js'));
+app.use(require('./routes(api)/connexionsRoutes.js'));
 //swagger starts here to wait for all routes to start
 
 //swaggerConfig(app);

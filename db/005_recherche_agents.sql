@@ -2,7 +2,7 @@
 --
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, 002_espace_entreprises.sql,
 -- 003_moteur_agents.sql, 004_protection_comptes.sql, puis ce fichier (005).
--- Il modifie la table public.agent_jobs creee par 003.
+-- Il modifie la table public.agent_jobs creee par 003. Ensuite : 006_robots.sql.
 --
 -- Safe to re-run: every statement is idempotent.
 

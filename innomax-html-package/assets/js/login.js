@@ -130,9 +130,9 @@ async function handleLoginSubmit(e) {
             if (data.accessToken) sessionStorage.setItem('accessToken', data.accessToken);
             updateHeaderButtons();
             // Change this line:
-            // window.location.href = '/';
+            // window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
             // To this:
-            window.location.assign('/');
+            window.location.assign(window.pbtmRetour ? window.pbtmRetour() : '/');
         }
 
     } catch (error) {
@@ -246,7 +246,7 @@ function showQRCodeModal(secret, qrCode, tempSessionId, setupToken) {
             const result = await verify2FACode(code, tempSessionId, true, secret, setupToken);
             modal.style.display = 'none';
             
-            window.location.href = '/';
+            window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
         } catch (error) {
             alert("Code 2FA invalide");
             codeInputs.forEach(input => input.value = '');
@@ -282,7 +282,7 @@ function show2FAModal(tempSessionId) {
         try {
             const result = await verify2FACode(code, tempSessionId, false, null);
             modal.style.display = 'none';
-            window.location.href = '/'; 
+            window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
         } catch (error) {
             alert("Code 2FA invalide");
             codeInputs.forEach(input => input.value = '');
@@ -352,9 +352,9 @@ async function verify2FACode(code, tempSessionId, isSetup = false, secret = null
         if (result.accessToken) sessionStorage.setItem('accessToken', result.accessToken);
         updateHeaderButtons();
         // Change this line:
-        // window.location.href = '/';
+        // window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
         // To this:
-        window.location.assign('/');
+        window.location.assign(window.pbtmRetour ? window.pbtmRetour() : '/');
     } catch (error) {
         console.error("2FA Error:", error.message);
         throw new Error("2FA verification failed. Please try again.");

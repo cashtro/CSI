@@ -577,7 +577,7 @@
                   }
 
                   // If verification successful, redirect to home
-                  window.location.href = '/';
+                  window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
                 } catch (error) {
                   errorMessage.textContent = error.message;
                   errorMessage.style.display = 'block';
@@ -639,7 +639,7 @@
                   }
 
                   // If verification successful, redirect to home
-                  window.location.href = '/';
+                  window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
                 } catch (error) {
                   errorMessage.textContent = error.message;
                   errorMessage.style.display = 'block';
@@ -700,7 +700,7 @@
                         const failure = await verifyResponse.json().catch(() => ({}));
                         throw new Error(failure.error || 'Verification failed');
                       }
-                      window.location.href = '/';
+                      window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
                     } catch (error) {
                       setupError.textContent = error.message;
                       setupError.style.display = 'block';
@@ -718,7 +718,7 @@
             }
 
             // If 2FA not required, redirect to home
-            window.location.href = '/';
+            window.location.href = window.pbtmRetour ? window.pbtmRetour() : '/';
             return;
           }
 
@@ -816,6 +816,7 @@
       }
     });
   </script>
+  <script src="/assets/js/retour.js"></script>
 </head>
 <body>
   <p class="loading-text">Logging you in...</p>

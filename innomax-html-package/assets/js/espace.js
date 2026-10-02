@@ -4,6 +4,9 @@
 // has data-multipart), with the CSRF token from the XSRF-TOKEN cookie in the
 // X-CSRF-Token header. Messages are written with textContent only. On success
 // the page reloads so the server re-renders the fresh data.
+// With data-redirect, a response { url } is followed instead (Stripe Checkout,
+// the billing portal, a provider's OAuth page): only https:// addresses or
+// paths of this site. A response { message } replaces data-ok.
 (function () {
   'use strict';
 
@@ -30,13 +33,24 @@
     }).then(function (res) {
       return res.json().catch(function () { return {}; }).then(function (data) {
         if (res.status === 401) {
-          window.location.href = '/login';
+          window.location.href = '/login?next=' + encodeURIComponent(window.location.pathname + window.location.search);
           throw new Error('Session expirée.');
         }
         if (!res.ok) throw new Error(data.error || 'Erreur ' + res.status);
         return data;
       });
     });
+  }
+
+  // Where a response may send the browser: https, or a path of this site.
+  function safeUrl(url) {
+    if (typeof url !== 'string' || url.length > 4000) return null;
+    if (/^\/(?![\/\\])/.test(url)) return url;
+    try {
+      return new URL(url).protocol === 'https:' ? url : null;
+    } catch (e) {
+      return null;
+    }
   }
 
   var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -87,14 +101,19 @@
     say(form, 'Envoi…');
 
     send(form.getAttribute('data-api'), form.getAttribute('data-method') || 'POST', body, multipart)
-      .then(function () {
-        say(form, form.getAttribute('data-ok') || 'Enregistré.', 'ok');
+      .then(function (data) {
+        var go = form.hasAttribute('data-redirect') && data && safeUrl(data.url);
+        say(form, (data && data.message) || (go ? 'Redirection…' : form.getAttribute('data-ok') || 'Enregistré.'), 'ok');
+        if (go) {
+          window.location.href = go;
+          return;
+        }
         if (willCelebrate) celebrate('🎉 Livrable approuvé, merci !');
         var next = form.getAttribute('data-next');
         window.setTimeout(function () {
           if (next) window.location.href = next;
           else window.location.reload();
-        }, willCelebrate ? (calm ? 1200 : 2200) : 400);
+        }, willCelebrate ? (calm ? 1200 : 2200) : (data && data.message ? 1800 : 400));
       })
       .catch(function (err) {
         say(form, err.message, 'error');

@@ -4,12 +4,13 @@
 //   jest.mock('../routes(api)/utils/supabaseUtil', () => require('./helpers/fakeSupabase').module);
 const crypto = require('crypto');
 
-const state = { tables: {}, tokens: {}, uploads: [], unique: { membres: ['user_id'] } };
+const state = { tables: {}, tokens: {}, uploads: [], unique: { membres: ['user_id'], robots_offres: ['slug'], connexions_etats: ['state'] }, fail: {} };
 
 function reset({ tables = {}, tokens = {} } = {}) {
   state.tables = JSON.parse(JSON.stringify(tables));
   state.tokens = tokens;
   state.uploads = [];
+  state.fail = {};
 }
 
 class Query {
@@ -28,6 +29,8 @@ class Query {
   delete() { this.op = 'delete'; return this; }
   eq(col, val) { this.filters.push((r) => r[col] === val); return this; }
   in(col, vals) { this.filters.push((r) => vals.includes(r[col])); return this; }
+  neq(col, val) { this.filters.push((r) => r[col] !== val); return this; }
+  gte(col, val) { this.filters.push((r) => r[col] >= val); return this; }
   order() { return this; }
   limit(n) { this.max = n; return this; }
   single() { this.mode = 'single'; return this; }
@@ -38,6 +41,9 @@ class Query {
   }
 
   exec() {
+    // state.fail.<table> = 'message': every query on that table fails (a
+    // missing table, an outage).
+    if (state.fail[this.table]) return { data: null, error: { code: '42P01', message: state.fail[this.table] } };
     if (!state.tables[this.table]) state.tables[this.table] = [];
     const rows = state.tables[this.table];
     const match = (r) => this.filters.every((f) => f(r));

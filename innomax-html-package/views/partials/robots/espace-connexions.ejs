@@ -1,0 +1,74 @@
+<%# Onglet « 🔌 Connecter mes outils » de /espace. locals : connexions, robotsError, flash, proprietaire, fmt.
+    Les jetons ne sont jamais envoyés à la page : seulement l'état et les permissions. %>
+<%
+  const STATUT = { demandee: '📨 Demande envoyée', connectee: '✅ Connecté', erreur: '⚠️ Erreur' };
+%>
+<div class="pl-stack">
+  <% if (flash) { %><p class="rb-alert rb-alert--<%= flash.kind %>" role="status"><%= flash.text %></p><% } %>
+
+  <section class="panel panel--accent" aria-labelledby="cx-intro">
+    <div class="panel-head"><h2 id="cx-intro">Vos outils, vos règles</h2><span class="tag">Loi 25</span></div>
+    <p>Pour travailler avec vos vraies données, vos robots ont besoin d’accéder à certains outils. Pour chacun, vous voyez <strong>exactement</strong> les permissions demandées avant d’accepter. Les accès sont <strong>chiffrés</strong>, ne sont jamais affichés, et vous pouvez <strong>retirer votre autorisation en tout temps</strong> : ils sont alors effacés.</p>
+    <% if (!proprietaire) { %><p class="dim">Seul le propriétaire du compte de votre entreprise peut connecter ou retirer un outil.</p><% } %>
+  </section>
+
+  <% if (robotsError) { %>
+    <p class="empty"><%= robotsError %></p>
+  <% } else { %>
+  <div class="cx-grid">
+    <% connexions.forEach(function (f) { const c = f.connexion; %>
+    <section class="panel cx-card" aria-labelledby="cx-<%= f.id %>">
+      <div class="cx-head">
+        <div class="rb-card-head">
+          <span class="rb-emoji" aria-hidden="true"><%= f.emoji %></span>
+          <h2 id="cx-<%= f.id %>"><%= f.nom %></h2>
+        </div>
+        <span class="badge badge--<%= c ? c.statut : 'aucune' %>"><%= c ? STATUT[c.statut] : 'Non connecté' %></span>
+      </div>
+      <p class="cx-usage"><%= f.usage %></p>
+      <div class="cx-perms">
+        <h3>Permissions demandées</h3>
+        <ul><% f.permissions.forEach(function (p) { %><li><%= p %></li><% }) %></ul>
+      </div>
+      <% if (c) { %>
+        <p class="cx-meta">
+          <% if (c.compte) { %><%= c.compte %> · <% } %>
+          <% if (c.consenti_at) { %>Consentement donné le <span class="num"><%= fmt.jour(c.consenti_at) %></span><% } %>
+          <% if (c.expire_at && c.statut === 'connectee') { %> · accès renouvelé automatiquement<% } %>
+        </p>
+        <% if (c.statut === 'demandee') { %><p class="cx-meta">L’équipe <%= include('../pilotage/marque') %> s’occupe de finaliser la connexion et vous écrit.</p><% } %>
+        <% if (c.statut === 'erreur' && c.erreur) { %><p class="cx-meta"><%= c.erreur %></p><% } %>
+      <% } %>
+
+      <% if (proprietaire) { %>
+        <% if (!c || c.statut === 'erreur') { %>
+        <form class="form" data-api="/connexions/<%= f.id %>/debut" data-redirect>
+          <% if (f.cle) { %>
+          <div class="field"><label for="s-<%= f.id %>">Adresse du site</label><input id="s-<%= f.id %>" name="site" type="url" pattern="https://.*" required placeholder="https://www.monsite.ca" autocomplete="url"></div>
+          <div class="field"><label for="k-<%= f.id %>">Clé d’accès (ex. mot de passe d’application)</label><input id="k-<%= f.id %>" name="cle" type="password" minlength="8" maxlength="500" required autocomplete="off"><span class="hint">Chiffrée dès réception, jamais réaffichée.</span></div>
+          <% } else if (f.compte) { %>
+          <div class="field"><label for="a-<%= f.id %>"><%= f.compte.label %></label><input id="a-<%= f.id %>" name="compte" type="text" required pattern="<%= f.compte.motif %>" placeholder="<%= f.compte.placeholder %>" autocomplete="off"></div>
+          <% } %>
+          <label class="rb-check">
+            <input type="checkbox" name="consentement" required>
+            <span>J’autorise <%= include('../pilotage/marque') %> à utiliser ces permissions pour le travail de mes robots. Je peux retirer cette autorisation en tout temps.</span>
+          </label>
+          <div class="actions">
+            <button class="btn btn--accent btn--sm" type="submit"><%= f.cle ? '🔐 Enregistrer la connexion' : (f.configure ? '🔌 Connecter' : '📨 Demander la connexion') %></button>
+          </div>
+          <% if (!f.cle && !f.configure) { %><p class="hint">La connexion automatique arrive bientôt : votre demande est transmise à notre équipe.</p><% } %>
+          <p class="status" data-status role="status"></p>
+        </form>
+        <% } %>
+        <% if (c) { %>
+        <form data-api="/api/connexions/<%= f.id %>" data-method="DELETE" data-confirm="Retirer cette autorisation ? Les accès enregistrés seront effacés.">
+          <button class="btn btn--danger btn--sm" type="submit"><%= c.statut === 'demandee' ? 'Annuler la demande' : 'Retirer l’autorisation' %></button>
+          <span class="status" data-status role="status"></span>
+        </form>
+        <% } %>
+      <% } %>
+    </section>
+    <% }) %>
+  </div>
+  <% } %>
+</div>

@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
   <%- include('partials/pilotage/head', { title: 'Espace entreprise' }) %>
+  <link rel="stylesheet" href="/assets/css/robots.css">
 </head>
 <%
   const t = data ? data.totaux : null;
@@ -9,6 +10,8 @@
     { id: 'apercu', emoji: '🏠', label: 'Aperçu' },
     { id: 'mandats', emoji: '🗂️', label: 'Mandats' },
     { id: 'livrables', emoji: '📦', label: 'Livrables', count: t.enAttente },
+    { id: 'robots', emoji: '🤖', label: 'Mes robots', count: robotsData ? robotsData.vivants.length : 0 },
+    { id: 'connexions', emoji: '🔌', label: 'Connecter mes outils' },
     { id: 'achats', emoji: '🧾', label: 'Achats et factures' },
     { id: 'nouveau', emoji: '✨', label: 'Nouveau mandat' },
   ] : [];
@@ -86,6 +89,9 @@
     </div>
     <% } %>
 
+    <% if (vue === 'robots') { %><%- include('partials/robots/espace-robots') %><% } %>
+    <% if (vue === 'connexions') { %><%- include('partials/robots/espace-connexions') %><% } %>
+
     <% if (vue === 'mandats') { %>
     <section class="panel" aria-labelledby="mandats-titre">
       <div class="panel-head"><h2 id="mandats-titre">Mandats et projets</h2><span class="tag"><%= data.mandats.length %> au total</span></div>
@@ -126,6 +132,7 @@
               · <span class="num"><%= fmt.jour(l.created_at) %></span>
             </div>
             <% if (l.description) { %><p><%= l.description %></p><% } %>
+            <% if (l.contenu) { %><div class="livrable-texte" tabindex="0" aria-label="Contenu du livrable"><%= l.contenu %></div><% } %>
             <% if (l.commentaire_client) { %><p class="dim">Votre commentaire : <%= l.commentaire_client %></p><% } %>
             <div class="actions">
               <% if (l.url && /^https:\/\//.test(l.url)) { %>
