@@ -1,6 +1,12 @@
 -- Espace entreprises + CMS du site (routes(api)/espaceCRUD.js, adminCRUD.js,
--- utils/cms.js). Run once in the Supabase SQL editor, after 001_fulfillments.sql.
--- Safe to re-run: every statement is idempotent.
+-- utils/cms.js).
+--
+-- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, puis ce fichier (002),
+-- puis 003_moteur_agents.sql. 003 lit public.membres et public.mon_entreprise()
+-- crees ici ; si 003 a deja ete execute avant ce fichier, relancez 003.
+--
+-- Run once in the Supabase SQL editor. Safe to re-run: every statement is
+-- idempotent.
 --
 -- Access model:
 --   - The server reads and writes these tables with the service role key, after
@@ -99,7 +105,7 @@ set search_path = public
 as $$
   select entreprise_id from public.membres where user_id = auth.uid()
 $$;
-revoke all on function public.mon_entreprise() from public;
+revoke all on function public.mon_entreprise() from public, anon;
 grant execute on function public.mon_entreprise() to authenticated;
 
 drop policy if exists entreprises_membre_lecture on public.entreprises;

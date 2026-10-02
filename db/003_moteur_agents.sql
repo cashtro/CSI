@@ -1,4 +1,11 @@
 -- Moteur des agents IA (innomax-html-package/agents/, voir MOTEUR-AGENTS.md).
+--
+-- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, puis
+-- 002_espace_entreprises.sql, puis ce fichier (003). La regle de lecture des
+-- membres ci-dessous a besoin de public.membres et de public.mon_entreprise(),
+-- crees par 002. Execute avant 002, ce fichier saute cette regle : il faut
+-- alors le relancer apres 002.
+--
 -- Run once in the Supabase SQL editor BEFORE starting the worker. Safe to
 -- re-run: every statement is idempotent.
 --
@@ -210,29 +217,34 @@ alter table public.agent_usage     enable row level security;
 alter table public.agent_settings  enable row level security;
 alter table public.agent_workers   enable row level security;
 
--- Optional: members of an entreprise may READ that entreprise's jobs and
--- tasks. Created only when a membership table exists with the expected shape
--- public.entreprise_membres(entreprise_id uuid, user_id uuid). If the
--- espace-entreprises branch names it differently, adapt the two names below
--- and re-run this file. Writes always stay service-role only.
+-- Supabase grants every new public table to anon and authenticated by
+-- default. RLS already hides the rows; the grants are removed as well so a
+-- forgotten policy can never open a table to the browser.
+revoke all on public.agents, public.agent_jobs, public.agent_activity, public.agent_tasks,
+              public.agent_usage, public.agent_settings, public.agent_workers
+  from anon, authenticated;
+revoke all on sequence public.agent_activity_id_seq from anon, authenticated;
+
+-- Members of an entreprise may READ that entreprise's jobs directly (anon key
+-- + their own JWT), limited to harmless columns: never the payload (client
+-- data, instructions), the result (internal debate), the cost or the error.
+-- The deliverable itself is served by GET /api/agents/jobs/:id.
+-- Membership is public.membres (db/002), through public.mon_entreprise().
+-- Created only when 002 has run (see the order at the top of this file).
+-- Tasks stay service-role only. Writes always stay service-role only.
+drop policy if exists agent_tasks_member_read on public.agent_tasks;
 do $$
 begin
-  if to_regclass('public.entreprise_membres') is not null
-     and exists (select 1 from information_schema.columns
-                  where table_schema = 'public' and table_name = 'entreprise_membres' and column_name = 'entreprise_id')
-     and exists (select 1 from information_schema.columns
-                  where table_schema = 'public' and table_name = 'entreprise_membres' and column_name = 'user_id') then
+  if to_regclass('public.membres') is not null
+     and to_regprocedure('public.mon_entreprise()') is not null then
     execute 'drop policy if exists agent_jobs_member_read on public.agent_jobs';
     execute 'create policy agent_jobs_member_read on public.agent_jobs for select to authenticated using (
-               entreprise_id is not null and entreprise_id in (
-                 select m.entreprise_id from public.entreprise_membres m where m.user_id = auth.uid()))';
-    execute 'drop policy if exists agent_tasks_member_read on public.agent_tasks';
-    execute 'create policy agent_tasks_member_read on public.agent_tasks for select to authenticated using (
-               entreprise_id is not null and entreprise_id in (
-                 select m.entreprise_id from public.entreprise_membres m where m.user_id = auth.uid()))';
-    raise notice 'agents: member read policies created (entreprise_membres found).';
+               entreprise_id is not null and entreprise_id = public.mon_entreprise())';
+    execute 'grant select (id, kind, status, entreprise_id, created_at, finished_at) on public.agent_jobs to authenticated';
+    raise notice 'agents: member read policy created (public.membres found).';
   else
-    raise notice 'agents: no entreprise_membres table, member read policies skipped (service role only).';
+    execute 'drop policy if exists agent_jobs_member_read on public.agent_jobs';
+    raise notice 'agents: public.membres missing (run 002 first, then re-run 003). Member read policy skipped.';
   end if;
 end;
 $$;

@@ -1,3 +1,5 @@
+-- ORDRE D'EXECUTION OBLIGATOIRE : ce fichier (001), puis
+-- 002_espace_entreprises.sql, puis 003_moteur_agents.sql.
 -- Idempotency ledger for Stripe fulfilment (routes(api)/utils/fulfill.js).
 -- Run once in the Supabase SQL editor BEFORE deploying: without this table
 -- paid sessions are refused (the webhook answers 500 and Stripe retries).

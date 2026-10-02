@@ -1,0 +1,62 @@
+// Static checks on the SQL migrations in ../db: execution order notes, the
+// real membership table, RLS on every table, pinned search_path.
+const fs = require('fs');
+const path = require('path');
+
+const DIR = path.join(__dirname, '..', '..', 'db');
+const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8');
+// SQL without "--" comments, to check what actually runs.
+const code = (f) => read(f).replace(/--.*$/gm, '');
+const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql'];
+
+describe('SQL migrations', () => {
+  it('002 and 003 state the mandatory order 001, 002, 003', () => {
+    for (const f of ['002_espace_entreprises.sql', '003_moteur_agents.sql']) {
+      const head = read(f).split('\n').slice(0, 15).join('\n');
+      expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE/);
+      expect(head).toMatch(/001_fulfillments\.sql[\s\S]*002_espace_entreprises\.sql|001_fulfillments\.sql[\s\S]*ce fichier \(002\)/);
+      expect(head).toMatch(/003/);
+    }
+  });
+
+  it('003 reads the real membership table (public.membres), never entreprise_membres', () => {
+    const sql = code('003_moteur_agents.sql');
+    expect(sql).not.toMatch(/entreprise_membres/);
+    expect(sql).toMatch(/to_regclass\('public\.membres'\)/);
+    expect(sql).toMatch(/public\.mon_entreprise\(\)/);
+    expect(code('002_espace_entreprises.sql')).toMatch(/create table if not exists public\.membres/);
+  });
+
+  it('agent jobs are readable by members only through harmless columns', () => {
+    const sql = code('003_moteur_agents.sql');
+    const grant = /grant select \(([^)]*)\) on public\.agent_jobs to authenticated/.exec(sql);
+    expect(grant).not.toBeNull();
+    for (const col of ['payload', 'result', 'cost_usd', 'error', 'created_by']) expect(grant[1]).not.toMatch(new RegExp(`\\b${col}\\b`));
+    expect(sql).not.toMatch(/create policy agent_tasks_member_read/);
+  });
+
+  it('every table has RLS enabled', () => {
+    for (const f of FILES) {
+      const sql = code(f);
+      const tables = [...sql.matchAll(/create table if not exists (public\.\w+)/g)].map((m) => m[1]);
+      for (const t of tables) {
+        expect({ file: f, table: t, rls: new RegExp(`alter table ${t.replace('.', '\\.')}\\s+enable row level security`).test(sql) })
+          .toEqual({ file: f, table: t, rls: true });
+      }
+    }
+  });
+
+  it('every security definer function pins its search_path', () => {
+    for (const f of FILES) {
+      const sql = code(f);
+      const fns = sql.split(/create or replace function/).slice(1);
+      for (const body of fns) {
+        if (/security definer/.test(body.split('$$')[0])) expect(body.split('$$')[0]).toMatch(/set search_path = public/);
+      }
+    }
+  });
+
+  it('no policy writes on behalf of the browser', () => {
+    for (const f of FILES) expect(code(f)).not.toMatch(/for (insert|update|delete|all) to (anon|authenticated|public)/);
+  });
+});

@@ -43,12 +43,13 @@ Faites les étapes dans l'ordre.
 
 ### a) Créer les tables dans Supabase
 
-Ouvrez l'éditeur SQL de Supabase et exécutez `db/003_moteur_agents.sql`. Le fichier peut être
-exécuté plusieurs fois sans danger.
+Ouvrez l'éditeur SQL de Supabase et exécutez les fichiers **dans cet ordre, obligatoirement** :
+`db/001_fulfillments.sql`, puis `db/002_espace_entreprises.sql`, puis `db/003_moteur_agents.sql`.
+Chaque fichier peut être exécuté plusieurs fois sans danger.
 
-Si l'espace entreprises est installé avec une table `entreprise_membres(entreprise_id, user_id)`,
-le fichier ajoute aussi une règle qui permet à un membre de lire les travaux de son entreprise.
-Si cette table porte un autre nom, adaptez les deux noms à la fin du fichier, puis exécutez-le à nouveau.
+003 ajoute une règle qui permet à un membre (table `membres` de 002) de lire l'état des travaux de
+son entreprise, sans le contenu, le coût ni le débat interne. Si 003 a été exécuté avant 002, la
+règle est sautée : relancez 003.
 
 ### b) Compléter le `.env` du serveur
 
@@ -218,9 +219,9 @@ Si le serveur redémarre pendant un travail, celui-ci revient en file après 15 
 depuis le début (au plus 3 tentatives). Une erreur temporaire d'Anthropic (surcharge, réseau) est
 réessayée automatiquement.
 
-**Espace client.** Les routes `/api/agents/jobs` (lecture seule) sont prêtes, mais elles ne montrent
-encore rien : le lien entre un compte et son entreprise arrive avec la branche `espace-entreprises`
-(TODO documenté dans `routes(api)/agentsClient.js`).
+**Espace client.** Les routes `/api/agents/jobs` (lecture seule) montrent à un membre les travaux
+de son entreprise (table `membres`), avec le livrable une fois terminé. Jamais le coût, la demande
+ni le débat interne. Un travail sans entreprise (travail interne) n'est visible par aucun client.
 
 ## 6. Arrêt d'urgence
 
