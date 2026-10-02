@@ -11,3 +11,7 @@ sonar-project.properties
 !.env.example
 __MACOSX/
 .DS_Store
+
+# macOS / archive cruft
+**/.DS_Store
+**/__MACOSX/
