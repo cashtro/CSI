@@ -13,10 +13,20 @@ const multer = require('multer');
 const { authenticateUser, checkAdmin } = require('./utils/auth-middleware');
 
 const storage = multer.memoryStorage();
+// Lesson files (video, audio, PDF, images). Anything a browser would run as
+// a page when served from the public bucket (HTML, SVG, XML, JS) is refused.
+const ACTIVE_CONTENT = /(html|svg|xml|javascript|ecmascript)/i;
+const ACTIVE_EXT = /\.(html?|xhtml|svgz?|xml|js|mjs)$/i;
 const upload = multer({
     storage,
     limits: {
         fileSize: 50 * 1024 * 1024 //50MB
+    },
+    fileFilter: (req, file, cb) => {
+        if (ACTIVE_CONTENT.test(file.mimetype || '') || ACTIVE_EXT.test(file.originalname || '')) {
+            return cb(new Error('Type de fichier non autorisé'), false);
+        }
+        cb(null, true);
     }
 });
 
