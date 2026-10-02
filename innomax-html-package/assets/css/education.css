@@ -1,0 +1,874 @@
+/* bg responsive */
+
+@media (max-width: 767px) {
+    .world .container {
+        background: none !important;
+    }
+}
+
+/* bg responsive */
+
+@media (max-width: 767px) {
+    .subscription-section .container {
+        background: none !important;
+    }
+}
+
+/* bg responsive */
+
+@media (max-width: 767px) {
+    .features-section .container {
+        background: none !important;
+    }
+}
+
+/* Styles de base */
+body,
+html {
+    background: #000000;
+    color: #e4e4e4;
+    margin: 0;
+    padding: 0;
+}
+
+/* FIX: Suppression de l'espace entre le header et la vidéo */
+.body_wrap {
+    margin: 0;
+    padding: 0;
+}
+
+
+
+/* Gardez la section hero inchangée, mais coller au header */
+.hero-section {
+    position: relative;
+    height: 80vh !important;
+    min-height: 600px;
+    overflow: hidden;
+    color: white;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000000;
+    margin-top: 0;
+    /* Assurer qu'il n'y a pas de marge en haut */
+    padding-top: 0;
+    /* Assurer qu'il n'y a pas de padding en haut */
+}
+
+.hero-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(10, 11, 26, 0.9));
+    z-index: 1;
+}
+
+.hero-cta {
+    position: relative;
+    z-index: 10;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    padding-bottom: 3rem;
+}
+
+/* PLUS DE RÉDUCTION: Sections après hero */
+.features-section,
+.subscription-section,
+.cta-custom,
+#courses {
+    padding: 40px 0;
+    /* Encore plus réduit de 70px à 40px */
+    background: #000000;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-title {
+    font-size: 28px;
+    /* Encore réduit de 32px à 28px */
+    font-weight: 700;
+    margin-bottom: 10px;
+    /* Encore réduit de 12px à 10px */
+    color: #855e1b;
+    text-align: center;
+}
+
+.section-subtitle {
+    font-size: 16px;
+    /* Encore réduit de 17px à 16px */
+    color: #ffffff;
+    margin-bottom: 20px;
+    /* Encore réduit de 30px à 20px */
+    text-align: center;
+}
+
+/* PLUS DE RÉDUCTION: Feature boxes */
+.feature-box {
+    text-align: center;
+    padding: 25px 20px;
+    /* Encore réduit de 35px 25px à 25px 20px */
+    border-radius: 10px;
+    /* Réduit de 12px à 10px */
+    background: rgba(10, 11, 26, 0.7);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    height: 100%;
+    transition: all 0.3s ease;
+    border: 1px solid rgba(133, 94, 27, 0.3);
+}
+
+.feature-icon {
+    font-size: 38px;
+    /* Encore réduit de 45px à 38px */
+    color: #855e1b;
+    margin-bottom: 15px;
+    /* Encore réduit de 20px à 15px */
+    transition: all 0.3s ease;
+}
+
+.feature-title {
+    font-size: 18px;
+    /* Encore réduit de 20px à 18px */
+    font-weight: 600;
+    margin-bottom: 10px;
+    /* Encore réduit de 12px à 10px */
+    color: #fff;
+}
+
+/* PLUS DE RÉDUCTION: Cards de cours */
+.course-card {
+    border-radius: 10px;
+    /* Réduit de 12px à 10px */
+    overflow: hidden;
+    transition: all 0.3s ease;
+    margin-bottom: 18px;
+    /* Encore réduit de 22px à 18px */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    background: #0a0b1a;
+
+
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+}
+
+/* Effet de survol simple */
+.course-card:hover {
+    transform: translateY(-5px);
+    border-color: rgba(133, 94, 27, 0.6);
+    box-shadow: 0 10px 20px rgba(133, 94, 27, 0.2);
+}
+
+.course-image {
+    height: 160px;
+    /* Encore réduit de 180px à 160px */
+    width: 100%;
+    object-fit: cover;
+}
+
+.course-info {
+    padding: 15px;
+    /* Encore réduit de 20px à 15px */
+}
+
+.course-title {
+    font-size: 18px;
+    /* Encore réduit de 20px à 18px */
+    font-weight: 700;
+    margin-bottom: 8px;
+    /* Encore réduit de 12px à 8px */
+    color: #fff;
+}
+
+.course-meta {
+    font-size: 12px;
+    /* Encore réduit de 13px à 12px */
+    color: #b8b8b8;
+    margin-bottom: 5px;
+    /* Encore réduit de 7px à 5px */
+}
+
+.course-meta p {
+    margin-bottom: 3px;
+    /* Réduit de 5px à 3px */
+}
+
+/* PLUS DE RÉDUCTION: Plans d'abonnement */
+.plan-card {
+    background: rgba(10, 11, 26, 0.7);
+    border-radius: 12px;
+    /* Réduit de 14px à 12px */
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    margin-bottom: 20px;
+    /* Encore réduit de 25px à 20px */
+    height: 100%;
+    position: relative;
+    border: 1px solid rgba(133, 94, 27, 0.3);
+}
+
+.plan-header {
+    padding: 20px 15px;
+    /* Encore réduit de 25px 20px à 20px 15px */
+    background: #0a0b1a;
+    border-bottom: 2px solid rgba(133, 94, 27, 0.5);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.plan-title {
+    font-size: 24px;
+    /* Encore réduit de 26px à 24px */
+    font-weight: 700;
+    margin-bottom: 0;
+    position: relative;
+    z-index: 2;
+}
+
+.plan-price {
+    font-size: 48px;
+    /* Encore réduit de 55px à 48px */
+    font-weight: 800;
+    margin: 15px 0;
+    /* Encore réduit de 18px à 15px */
+    position: relative;
+    z-index: 2;
+}
+
+.plan-features {
+    padding: 25px 20px;
+    /* Encore réduit de 35px 25px à 25px 20px */
+    list-style-type: none;
+    margin: 0;
+    padding-left: 15px;
+}
+
+.plan-features li {
+    margin-bottom: 12px;
+    /* Encore réduit de 16px à 12px */
+    padding-left: 25px;
+    /* Réduit de 28px à 25px */
+    position: relative;
+    font-size: 14px;
+    /* Encore réduit de 15px à 14px */
+    color: #e4e4e4;
+}
+
+.plan-footer {
+    padding: 15px 20px;
+    /* Encore simplifié et réduit */
+    text-align: center;
+}
+
+/* Boutons et autres éléments */
+.btn-view,
+.btn-subscribe {
+    background: #0a0b1a;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    /* Encore réduit de 10px 22px à 8px 18px */
+    border-radius: 6px;
+    /* Réduit de 8px à 6px */
+    font-weight: 500;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    font-size: 14px;
+    /* Ajout pour réduire la taille du texte */
+}
+
+.price-tag {
+    display: inline-block;
+    background: #0a0b1a;
+    color: white;
+    padding: 6px 14px;
+    /* Encore réduit de 7px 16px à 6px 14px */
+    border-radius: 25px;
+    /* Réduit de 28px à 25px */
+    font-weight: 600;
+    margin: 10px 0;
+    /* Encore réduit de 12px à 10px */
+    border: 1px solid rgba(133, 94, 27, 0.5);
+    font-size: 13px;
+    /* Ajout pour réduire la taille du texte */
+}
+
+/* World section */
+.world {
+    padding: 30px 0;
+    /* Encore réduit de 40px à 30px */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.world-map {
+    max-width: 100%;
+    height: auto;
+    text-align: center;
+}
+
+.world-map img {
+    max-width: 80%;
+    /* Réduit de 90% à 80% */
+    height: auto;
+}
+
+/* Ajustements Bootstrap - encore plus réduits */
+.mb-5 {
+    margin-bottom: 2rem !important;
+    /* Encore réduit */
+}
+
+.mb-4 {
+    margin-bottom: 1.2rem !important;
+    /* Encore réduit */
+}
+
+.mb-3 {
+    margin-bottom: 0.8rem !important;
+    /* Réduit */
+}
+
+.py-5 {
+    padding-top: 2rem !important;
+    /* Encore réduit */
+    padding-bottom: 2rem !important;
+    /* Encore réduit */
+}
+
+.py-4 {
+    padding-top: 1.5rem !important;
+    /* Réduit */
+    padding-bottom: 1.5rem !important;
+    /* Réduit */
+}
+
+.py-3 {
+    padding-top: 1rem !important;
+    /* Réduit */
+    padding-bottom: 1rem !important;
+    /* Réduit */
+}
+
+.feature-box {
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+}
+
+.feature-box:hover {
+    transform: translateY(-10px) scale(1.05);
+    box-shadow: 0 15px 35px rgba(133, 94, 27, 0.2);
+    border-color: rgba(133, 94, 27, 0.5);
+}
+
+.feature-box:hover .feature-icon {
+    color: #855e1b;
+    transform: scale(1.2);
+}
+
+.feature-box:hover .feature-title {
+    color: #855e1b;
+}
+
+
+/* From Uiverse.io by vinodjangid07 */
+.Btn {
+    width: 140px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right, #77530a, #ffd277, #77530a, #77530a, #ffd277, #77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+
+.Btn::before {
+    position: absolute;
+    content: "View Course";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.Btn:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn:active {
+    transform: scale(0.95);
+}
+
+/* Modified button for hero section */
+.hero-cta .Btnall::before {
+    content: "Learn More ";
+    font-size: 20px;
+}
+
+/* Center the button */
+.hero-cta {
+    display: flex;
+    justify-content: center;
+}
+
+
+
+
+/* From Uiverse.io by vinodjangid07 */
+.Btnall {
+    width: 140px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right, #77530a, #ffd277, #77530a, #77530a, #ffd277, #77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+
+.Btnall::before {
+    position: absolute;
+    content: "View All Courses";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.Btnall:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btnall:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btnall:active {
+    transform: scale(0.95);
+}
+
+@media only screen and (max-width: 768px) {
+    .Btnall {
+        margin-left: 30% !important;
+    }
+}
+
+/* Style pour le bouton Buy Now dans les cartes de cours */
+.course-info .Btn:nth-of-type(2)::before {
+    content: "Buy Now";
+}
+
+/* Style pour le bouton Sign Up Now */
+.signup-btn::before {
+    content: "Sign Up Now";
+}
+
+/* Style pour le bouton Contact Us */
+.contact-btn::before {
+    content: "Contact Us";
+}
+
+/* Style pour le bouton Subscribe Now */
+.subscribe-btn::before {
+    content: "Subscribe Now" !important;
+}
+
+
+
+
+
+.card {
+    --primary: #E6C373;
+    /* Couleur dorée personnalisée */
+    --primary-hover: #f0d08f;
+    --secondary: #0a0b1a;
+    --secondary-hover: #1a1c33;
+    --accent: #f5dea0;
+    --text-header: #ffffff;
+    --text-body: #ffffff;
+    /* Texte en blanc à l'intérieur */
+    --bg: #000000;
+    /* Fond noir au lieu de blanc */
+    --bg-header: #E6C373;
+    --shadow-color: rgba(0, 0, 0, 0.5);
+    --pattern-color: rgba(230, 195, 115, 0.2);
+
+    position: relative;
+    width: 20em;
+    max-width: 100%;
+    background: var(--bg);
+    border: 0.28em solid var(--text-header);
+    border-radius: 0.6em;
+    box-shadow: 0.6em 0.6em 0 var(--shadow-color);
+    overflow: hidden;
+    font-family: ui-sans-serif, system-ui, sans-serif;
+    margin: 0.7em auto;
+}
+
+.card:hover {
+    transform: translate(-0.3em, -0.3em);
+    box-shadow: 0.9em 0.9em 0 var(--shadow-color);
+}
+
+.card-title-area {
+    position: relative;
+    padding: 1em;
+    background: var(--bg-header);
+    color: var(--text-header);
+    font-weight: 800;
+    font-size: 1.3em;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 0.28em solid var(--text-header);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.card-tag {
+    background: var(--bg);
+    color: var(--text-body);
+    font-size: 0.6em;
+    font-weight: 800;
+    padding: 0.35em 0.7em;
+    border: 0.15em solid var(--primary);
+    border-radius: 0.3em;
+    box-shadow: 0.18em 0.18em 0 var(--shadow-color);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    transform: rotate(3deg);
+}
+
+.card:hover .card-tag {
+    transform: rotate(-2deg) scale(1.1);
+}
+
+.card-pattern-grid {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(to right,
+            rgba(255, 255, 255, 0.05) 1px,
+            transparent 1px),
+        linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 0.8em 0.8em;
+    pointer-events: none;
+    opacity: 0.5;
+    z-index: 1;
+}
+
+.card-body {
+    position: relative;
+    padding: 1em;
+    background: var(--bg);
+    z-index: 2;
+}
+
+.card-description {
+    margin-bottom: 1em;
+    color: var(--text-body);
+    font-size: 0.85em;
+    line-height: 1.35;
+    font-weight: 500;
+}
+
+.feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6em;
+    margin-bottom: 1em;
+}
+
+.feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+    transition: transform 0.2s ease;
+}
+
+.feature-item:hover {
+    transform: translateX(0.3em);
+}
+
+.feature-icon {
+    width: 1.3em;
+    height: 1.3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--primary);
+    border: 0.12em solid var(--text-header);
+    border-radius: 0.3em;
+    box-shadow: 0.12em 0.12em 0 rgba(0, 0, 0, 0.2);
+}
+
+.feature-icon svg {
+    width: 0.85em;
+    height: 0.85em;
+    fill: var(--text-header);
+}
+
+.feature-text {
+    font-size: 0.8em;
+    font-weight: 600;
+    color: var(--text-body);
+}
+
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1em;
+    padding-top: 1em;
+    border-top: 0.12em dashed rgba(255, 255, 255, 0.15);
+    position: relative;
+}
+
+.card-price {
+    position: relative;
+    font-size: 1.6em;
+    font-weight: 800;
+    color: var(--text-body);
+}
+
+.card-price::before {
+    content: "";
+    position: absolute;
+    bottom: 0.15em;
+    left: 0;
+    width: 100%;
+    height: 0.15em;
+    background: var(--accent);
+    z-index: -1;
+    opacity: 0.5;
+}
+
+.price-currency {
+    font-size: 0.6em;
+    font-weight: 700;
+    vertical-align: top;
+    margin-right: 0.1em;
+}
+
+.price-period {
+    display: block;
+    font-size: 0.35em;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.1em;
+}
+
+/* Style de bouton similaire aux autres boutons du site */
+.custom-btn {
+    width: 140px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right, #E6C373, #f8e6b9, #E6C373, #E6C373, #f8e6b9, #E6C373);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+    font-size: 0.75em;
+    font-weight: 700;
+    text-transform: uppercase;
+    text-decoration: none;
+}
+
+.custom-btn::before {
+    position: absolute;
+    content: "Subscribe Now";
+    color: #f5dea0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+    letter-spacing: 0.05em;
+}
+
+.custom-btn:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.custom-btn:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.custom-btn:active {
+    transform: scale(0.95);
+}
+
+.card::after {
+    content: "★";
+    position: absolute;
+    top: 0.3em;
+    right: 0.3em;
+    color: var(--text-header);
+    font-size: 1.1em;
+    font-weight: bold;
+    z-index: 2;
+}
+
+.corner-slice {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 1.3em;
+    height: 1.3em;
+    background: var(--bg);
+    border-right: 0.22em solid var(--text-header);
+    border-top: 0.22em solid var(--text-header);
+    border-radius: 0 0.4em 0 0;
+}
+
+
+/* Version mobile (moins de 768px) */
+@media (max-width: 767px) {
+  .hero-section {
+    /* Conteneur principal */
+    height: 70vh !important;
+    min-height: 500px !important;
+    overflow: hidden; /* Cache les parties débordantes */
+  }
+
+  .hero-video {
+    /* Vidéo - Dézoom + centrage */
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover;
+    transform: scale(1.3); /* Ajustez cette valeur (1.3 = zoom, 0.8 = dézoom) */
+    transform-origin: center;
+  }
+
+  .hero-cta {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: flex-end !important;
+    height: 100px !important; /* Hauteur dédiée */
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+}
+
+/* Très petits écrans (< 400px) */
+@media (max-width: 399px) {
+    .hero-section {
+        height: 60vh !important;
+        min-height: 400px !important;
+    }
+}
+
+
+.BtnEdu {
+    width: 150px;
+    height: 40px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right, #77530a, #ffd277, #77530a, #77530a, #ffd277, #77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+    margin-top: 200% !important;
+}
+
+.BtnEdu::before {
+    position: absolute;
+    content: "View All Courses";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.BtnEdu:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.BtnEdu:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.BtnEdu:active {
+    transform: scale(0.95);
+}

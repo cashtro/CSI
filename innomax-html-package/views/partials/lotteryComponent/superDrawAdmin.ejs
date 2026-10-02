@@ -1,0 +1,77 @@
+
+    <!-- css include -->
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="assets/css/swiper.min.css">
+    <link rel="stylesheet" href="assets/css/slick.css">
+    <link rel="stylesheet" href="assets/css/odometer.css">
+    <link rel="stylesheet" href="assets/css/nice-select.css">
+    <link rel="stylesheet" href="assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/cursor.css">
+    <link rel="stylesheet" href="assets/css/custom-font.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+<!-- LOTTERY CSS -->
+    <link rel="stylesheet" href="assets/css/lottery.css">
+
+
+    <!--Form pour ajouter de nouvelle lottery>
+
+<div>
+
+    <!-- Cards pour tirage START Non acheter -->
+    <section id="cards-section" style="position: relative; overflow: hidden;">
+      
+   
+    </section>
+    <!-- Cards pour tirage END -->
+</div>
+
+<!-- Formulaire pour ajouter une nouvelle loterie -->
+<div>
+    <h2>Ajouter une nouvelle loterie</h2>
+    <form action="/ajouter-loterie" method="POST" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="image">Choisir une photo :</label>
+            <input type="file" id="image" name="image" accept="image/*" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="nomProduit">Nom du produit :</label>
+            <input type="text" id="nomProduit" name="nomProduit" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="description">Description du produit :</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+        </div>
+        
+        <div class="form-group">
+            <label for="dateLotto">Date de la loterie :</label>
+            <input type="date" id="dateLotto" name="dateLotto" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Ajouter la loterie</button>
+    </form>
+</div>
+
+<!-- jquery include -->
+<script src="assets/js/jquery-3.7.1.min.js"  defer></script>
+<script src="assets/js/bootstrap.bundle.min.js"  defer></script>
+<script src="assets/js/swiper.min.js"  defer></script>
+<script src="assets/js/slick.min.js"  defer></script>
+<script src="assets/js/gsap.js"  defer></script>
+<script src="assets/js/wow.min.js"  defer></script>
+<script src="assets/js/appear.js"  defer></script>
+<script src="assets/js/parallaxie.js"  defer></script>
+<script src="assets/js/parallax-scroll.js"  defer></script>
+<script src="assets/js/odometer.min.js"  defer></script>
+<script src="assets/js/imagesloaded.pkgd.min.js"  defer></script>
+<script src="assets/js/isotope.pkgd.min.js"  defer></script>
+<script src="assets/js/cursor-bundle.js"  defer></script>
+<script src="assets/js/easing.min.js"  defer></script>
+<script src="assets/js/scrollspy.js"  defer></script>
+<script src="assets/js/jquery.nice-select.min.js"  defer></script>
+<script src="assets/js/jquery.marquee.min.js"  defer></script>
+<script src="assets/js/jquery.magnific-popup.min.js" defer></script>
+<script src="assets/js/main.js" defer></script>

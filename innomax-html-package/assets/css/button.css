@@ -1,0 +1,549 @@
+/* From Uiverse.io by XMMR12 */ 
+/* === removing default button style ===*/
+.buttonpma {
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    animation: r1 3s ease-in-out infinite;
+   /*linear*/
+    border: 7px #056bfa21 solid;
+    border-radius: 14px;
+  }
+  
+  /* button styling */
+  .buttonpma {
+    --border-right: 6px;
+    --text-stroke-color: #E6C373;
+    --animation-color: #D4AF37;
+    --fs-size: 2em;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: "Arial";
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+  }
+  /* this is the text, when you hover on button */
+  .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 1.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+    animation: r2 2s ease-in-out infinite;
+  }
+  /* hover */
+  .buttonpma:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 70px var(--animation-color))
+  }
+  
+  @keyframes r1 {
+    50% {
+      transform: rotate(-1deg) rotateZ(-10deg);
+    }
+  }
+  
+  @keyframes r2 {
+    50% {
+      transform: rotateX(-65deg);
+    }
+  }/* From Uiverse.io by XMMR12 */ 
+  /* === removing default button style ===*/
+  .buttonpma {
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    animation: r1 3s ease-in-out infinite;
+   /*linear*/
+    border: 7px #056bfa21 solid;
+    border-radius: 14px;
+  }
+  
+  /* button styling */
+  .buttonpma {
+    --border-right: 6px;
+    --text-stroke-color: #fdfdfd;
+    --animation-color: #E6C373;
+    --fs-size: 2em;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: "Arial";
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+  }
+  /* this is the text, when you hover on button */
+  .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 1.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+    animation: r2 2s ease-in-out infinite;
+  }
+  /* hover */
+  .buttonpma:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 70px var(--animation-color))
+  }
+  
+  @keyframes r1 {
+    50% {
+      transform: rotate(-1deg) rotateZ(-10deg);
+    }
+  }
+  
+  @keyframes r2 {
+    50% {
+      transform: rotateX(-65deg);
+    }
+  }
+  
+  
+  /* From Uiverse.io by JesusRafaelNavaCruz */ 
+  .content22 {
+    position: relative;
+  }
+  
+  .content22 .text {
+    color: #fff;
+    font-size: 3rem;
+    position: absolute;
+    transform: translate(-50%, -50%);
+  }
+  
+  .content22 .text:nth-child(1) {
+    color: transparent;
+    -webkit-text-stroke: 2px #E6C373;
+  }
+  
+  .content22 .text:nth-child(2) {
+    color: #f9f8fc;
+    animation: animate 4s ease-in-out infinite;
+  }
+  
+  @keyframes animate {
+    0%,
+      100% {
+      clip-path: polygon(
+              0% 45%,
+              16% 44%,
+              33% 50%,
+              54% 60%,
+              70% 61%,
+              84% 59%,
+              100% 52%,
+              100% 100%,
+              0% 100%
+          );
+    }
+  
+    50% {
+      clip-path: polygon(
+              0% 60%,
+              15% 65%,
+              34% 66%,
+              51% 62%,
+              67% 50%,
+              84% 45%,
+              100% 46%,
+              100% 100%,
+              0% 100%
+          );
+    }
+  }
+  
+  
+  /* From Uiverse.io by JaydipPrajapati1910 */ 
+  .ui-btn {
+    --btn-default-bg: rgb(255, 131, 93);
+    --btn-padding: 15px 20px;
+    --btn-hover-bg: rgb(51, 51, 51);
+    --btn-transition: .3s;
+    --btn-letter-spacing: .1rem;
+    --btn-animation-duration: 1.2s;
+    --btn-shadow-color: rgba(0, 0, 0, 0.137);
+    --btn-shadow: 0 2px 10px 0 var(--btn-shadow-color);
+    --hover-btn-color: rgb(255, 131, 93);
+    --default-btn-color: rgb(41, 41, 41);
+    --font-size: 16px;
+    /* 👆 this field should not be empty */
+    --font-weight: 600;
+    --font-family: Menlo,Roboto Mono,monospace;
+    /* 👆 this field should not be empty */
+  }
+  
+  /* button settings 👆 */
+  
+  .ui-btn {
+    box-sizing: border-box;
+    border-radius: 10px;
+    padding: var(--btn-padding);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--default-btn-color);
+    font: var(--font-weight) var(--font-size) var(--font-family);
+    background: var(--btn-default-bg);
+    border: none;
+    cursor: pointer;
+    transition: var(--btn-transition);
+    overflow: hidden;
+    box-shadow: var(--btn-shadow);
+  }
+  
+  .ui-btn span {
+    letter-spacing: var(--btn-letter-spacing);
+    transition: var(--btn-transition);
+    box-sizing: border-box;
+    position: relative;
+    background: inherit;
+  }
+  
+  .ui-btn span::before {
+    box-sizing: border-box;
+    position: absolute;
+    content: "";
+    background: inherit;
+  }
+  
+  .ui-btn:hover, .ui-btn:focus {
+    background: var(--btn-hover-bg);
+  }
+  
+  .ui-btn:hover span, .ui-btn:focus span {
+    color: var(--hover-btn-color);
+  }
+  
+  .ui-btn:hover span::before, .ui-btn:focus span::before {
+    animation: chitchat linear both var(--btn-animation-duration);
+  }
+  
+  @keyframes chitchat {
+    0% {
+      content: "#";
+    }
+  
+    5% {
+      content: ".";
+    }
+  
+    10% {
+      content: "^{";
+    }
+  
+    15% {
+      content: "-!";
+    }
+  
+    20% {
+      content: "#$_";
+    }
+  
+    25% {
+      content: "№:0";
+    }
+  
+    30% {
+      content: "#{+.";
+    }
+  
+    35% {
+      content: "@}-?";
+    }
+  
+    40% {
+      content: "?{4@%";
+    }
+  
+    45% {
+      content: "=.,^!";
+    }
+  
+    50% {
+      content: "?2@%";
+    }
+  
+    55% {
+      content: "\;1}]";
+    }
+  
+    60% {
+      content: "?{%:%";
+      right: 0;
+    }
+  
+    65% {
+      content: "|{f[4";
+      right: 0;
+    }
+  
+    70% {
+      content: "{4%0%";
+      right: 0;
+    }
+  
+    75% {
+      content: "'1_0<";
+      right: 0;
+    }
+  
+    80% {
+      content: "{0%";
+      right: 0;
+    }
+  
+    85% {
+      content: "]>'";
+      right: 0;
+    }
+  
+    90% {
+      content: "4";
+      right: 0;
+    }
+  
+    95% {
+      content: "2";
+      right: 0;
+    }
+  
+    100% {
+      content: "";
+      right: 0;
+    }
+  }
+  
+  /* From Uiverse.io by rraushan1205 */ 
+  /* === removing default button style ===*/
+  .buttonss {
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+  }
+  
+  /* button styling */
+  .buttonss {
+    --border-right: 6px;
+    --text-stroke-color: rgba(255,255,255,0.6);
+    --animation-color: #999999;
+    --fs-size: 2em;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: "Arial";
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+  }
+  /* this is the text, when you hover on button */
+  .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 0.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+  }
+  /* hover */
+  .buttonss:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 5px 23px var(--animation-color))
+  }
+  
+  
+  /* From Uiverse.io by UpdatedAi */ 
+  .btn-53,
+  .btn-53 *,
+  .btn-53 :after,
+  .btn-53 :before,
+  .btn-53:after,
+  .btn-53:before {
+    border: 0 solid;
+    box-sizing: border-box;
+  }
+  
+  .btn-53 {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-appearance: button;
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+    padding: 1.2rem 3rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    display: inline-block; /* Changed from block to inline-block for better alignment */
+    border-radius: 999px;
+    position: relative;
+    overflow: hidden;
+    font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+      Segoe UI, Roboto, Helvetica Neue, Arial, Noto Sans, sans-serif,
+      Apple Color Emoji, Segoe UI Emoji, Segoe UI Symbol, Noto Color Emoji;
+    font-size: 100%;
+    line-height: 1.5;
+    margin: 0;
+    border: 1px solid;
+  }
+  
+  .btn-53:disabled {
+    cursor: default;
+  }
+  
+  .btn-53:-moz-focusring {
+    outline: auto;
+  }
+  
+  .btn-53 svg {
+    display: block;
+    vertical-align: middle;
+  }
+  
+  .btn-53 [hidden] {
+    display: none;
+  }
+  
+  .btn-53 .original {
+    background: #fff;
+    color: #000;
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-content: center;
+    transition: transform 0.2s cubic-bezier(0.87, 0, 0.13, 1);
+  }
+  
+  .btn-53:hover .original {
+    transform: translateY(100%);
+  }
+  
+  .btn-53 .letters {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+  }
+  
+  .btn-53 span {
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s cubic-bezier(0.87, 0, 0.13, 1);
+    transition-delay: 0.1s;
+  }
+  
+  .btn-53:hover span {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  /* Adjusted nth-child delays for sequential appearance */
+  .btn-53:hover span:nth-child(1) {
+    transition-delay: 0.1s;
+  }
+  .btn-53:hover span:nth-child(2) {
+    transition-delay: 0.2s;
+  }
+  .btn-53:hover span:nth-child(3) {
+    transition-delay: 0.3s;
+  }
+  .btn-53:hover span:nth-child(4) {
+    transition-delay: 0.4s;
+  }
+  .btn-53:hover span:nth-child(5) {
+    transition-delay: 0.5s;
+  }
+  .btn-53:hover span:nth-child(6) {
+    transition-delay: 0.6s;
+  }
+
+
+  /* From Uiverse.io by kennyotsu-monochromia */ 
+.button333 {
+    --black: #000000;
+    --ch-black: #141414;
+    --eer-black: #1b1b1b;
+    --night-rider: #2e2e2e;
+    --white: #ffffff;
+    --af-white: #f3f3f3;
+    --ch-white: #e1e1e1;
+    border-radius: 8px;
+    width: 140px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 0px 15px;
+    border: none;
+    color: white;
+    position: relative;
+    cursor: pointer;
+    font-weight: 700;
+    transition-duration: .2s;
+    background-color: var(--ch-black);
+    margin-left: 60px;
+  }
+  
+  .button333:before, .button333:after {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: -2px;
+    border-radius: 10px;
+    background: linear-gradient(45deg, 
+    var(--ch-black), var(--eer-black),
+    var(--night-rider), var(--ch-white), var(--night-rider), 
+      var(--eer-black), var(--ch-black),var(--ch-black));
+    background-size: 400%;
+    width: calc(100% + 4px);
+    height: calc(100% + 4px);
+    z-index: -1;
+    animation: steam 20s linear infinite;
+  }
+  
+  @keyframes steam {
+    0% {
+      background-position: 0 0;
+    }
+  
+    50% {
+      background-position: 400% 0;
+    }
+  
+    100% {
+      background-position: 0 0;
+    }
+  }
+  
+  .button333:after {
+    filter: blur(50px);
+  }
+
+  
+  
+  
+  
+  

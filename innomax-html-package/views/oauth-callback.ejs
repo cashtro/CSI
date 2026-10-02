@@ -1,0 +1,792 @@
+<!-- oauth-callback.ejs -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Loging you in...</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <style>
+    :root {
+      --dark-gold: #855e1b;
+      --light-gold: #E6C373;
+      --accent-gold: #D4AF37;
+      --input-border: rgba(133, 94, 27, 0.3);
+      --bg-gradient: linear-gradient(135deg, #000000, #000000);
+      --card-bg: rgba(14, 14, 14, 0.98);
+      --text-color: #333333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      font-family: 'Poppins', sans-serif;
+      position: relative;
+      overflow-x: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 30% 50%, rgba(212, 175, 55, 0.06), transparent 60%),
+                  radial-gradient(circle at 70% 20%, rgba(212, 175, 55, 0.06), transparent 60%);
+      z-index: 0;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      z-index: 1000;
+    }
+
+    .modal-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      padding: 50px 40px;
+      border-radius: 24px;
+      width: 90%;
+      max-width: 520px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 
+                  0 0 60px rgba(230, 195, 115, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-content::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 10px;
+      height: 100%;
+      background: linear-gradient(to bottom, var(--dark-gold), var(--light-gold));
+      border-top-left-radius: 24px;
+      border-bottom-left-radius: 24px;
+    }
+
+    .modal-content h3 {
+      font-family: 'Cinzel', serif;
+      color: var(--dark-gold);
+      margin: 0 0 40px;
+      text-align: center;
+      position: relative;
+      font-size: 32px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .modal-content h3::after {
+      content: '';
+      position: absolute;
+      bottom: -12px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: linear-gradient(to right, var(--dark-gold), var(--light-gold));
+      border-radius: 3px;
+    }
+
+    .modal-content p {
+      margin: 0 0 1.75rem 0;
+      color: var(--dark-gold);
+      line-height: 1.6;
+      font-size: 1rem;
+    }
+
+    .modal-buttons {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+      justify-content: flex-end;
+    }
+
+    .modal-buttons button {
+      padding: 0.875rem 1.5rem;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 0.9375rem;
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .link-btn {
+      background: linear-gradient(45deg, var(--dark-gold), var(--light-gold));
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(133, 94, 27, 0.3);
+    }
+
+    .link-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(133, 94, 27, 0.4);
+    }
+
+    .cancel-btn {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--dark-gold);
+      border: 1px solid var(--input-border);
+    }
+
+    .cancel-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      transform: translateY(-3px);
+    }
+
+    #passwordInput {
+      width: 100%;
+      height: 54px;
+      border: 2px solid var(--input-border);
+      border-radius: 12px;
+      padding: 0 20px;
+      font-size: 16px;
+      font-family: 'Poppins', sans-serif;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-color);
+      outline: none;
+      margin-top: 0.75rem;
+    }
+
+    #passwordInput:focus {
+      border-color: var(--light-gold);
+      box-shadow: 0 0 15px rgba(230, 195, 115, 0.25);
+    }
+
+    .error-message {
+      color: #ff4d4f;
+      margin-top: 0.75rem;
+      font-size: 0.875rem;
+      display: none;
+    }
+
+    .loading-text {
+      color: var(--dark-gold);
+      font-size: 1.25rem;
+      text-align: center;
+      font-weight: 500;
+      font-family: 'Cinzel', serif;
+    }
+
+    @media (max-width: 768px) {
+      .modal-content {
+        padding: 40px 30px;
+        width: 95%;
+      }
+      
+      .modal-content h3 {
+        font-size: 28px;
+      }
+      
+      .modal-buttons {
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+      
+      .modal-buttons button {
+        width: 100%;
+      }
+    }
+
+    .verification-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+    }
+
+    .verification-content {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--card-bg);
+      padding: 30px;
+      border-radius: 24px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-family: 'Cinzel', serif;
+      color: var(--dark-gold);
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .close-modal {
+      color: var(--dark-gold);
+      font-size: 28px;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      margin-bottom: 20px;
+    }
+
+    .modal-body p {
+      color: var(--dark-gold);
+      margin-bottom: 15px;
+    }
+
+    .qr-code-container {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .qr-code-container img {
+      max-width: 200px;
+      margin: 0 auto;
+    }
+
+    .manual-instructions {
+      margin: 15px 0;
+    }
+
+    .manual-code {
+      margin: 15px 0;
+    }
+
+    .secret-code {
+      font-family: monospace;
+      font-size: 1.2em;
+      color: var(--dark-gold);
+      background: rgba(255, 255, 255, 0.1);
+      padding: 10px;
+      border-radius: 5px;
+      text-align: center;
+    }
+
+    .code-container {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .code-input {
+      width: 40px;
+      height: 40px;
+      text-align: center;
+      font-size: 1.2em;
+      border: 2px solid var(--input-border);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.9);
+      color: var(--text-color);
+    }
+
+    .code-input:focus {
+      border-color: var(--light-gold);
+      box-shadow: 0 0 15px rgba(230, 195, 115, 0.25);
+      outline: none;
+    }
+
+    .btn-qr-verify,
+    .btn-verify {
+      width: 100%;
+      padding: 12px;
+      background: linear-gradient(45deg, var(--dark-gold), var(--light-gold));
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      margin-top: 20px;
+    }
+
+    .btn-regenerate {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--dark-gold);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 10px 0;
+    }
+
+    .regenerate-qr {
+      margin: 15px 0;
+    }
+
+    @media (max-width: 768px) {
+      .verification-content {
+        padding: 20px;
+        width: 95%;
+      }
+
+      .code-input {
+        width: 35px;
+        height: 35px;
+      }
+    }
+  </style>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm';
+    
+    // Get Supabase credentials from server-side environment variables
+    const supabaseUrl = '<%= process.env.SUPABASE_URL %>';
+    const supabaseAnonKey = '<%= process.env.SUPABASE_ANON_KEY %>';
+    
+    if (!supabaseUrl || !supabaseAnonKey) {
+      console.error('Supabase credentials not configured');
+      window.location.href = '/login?error=configuration_error';
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true,
+        storageKey: 'pandora-auth',
+        storage: {
+          getItem: (key) => {
+            const item = localStorage.getItem(key);
+            return item ? JSON.parse(item) : null;
+          },
+          setItem: (key, value) => {
+            localStorage.setItem(key, JSON.stringify(value));
+          },
+          removeItem: (key) => {
+            localStorage.removeItem(key);
+          }
+        }
+      }
+    });
+
+    // Add security headers
+    document.addEventListener('DOMContentLoaded', () => {
+      const meta = document.createElement('meta');
+      meta.httpEquiv = 'Content-Security-Policy';
+      meta.content = "default-src 'self' https://cdn.jsdelivr.net https://jjolrpvuvxoctirfmwlm.supabase.co; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://jjolrpvuvxoctirfmwlm.supabase.co;";
+      document.head.appendChild(meta);
+    });
+
+    // Create modal HTML
+    const modalHTML = `
+      <div id="linkModal" class="modal">
+        <div class="modal-content">
+          <h3>Link Your Account</h3>
+          <p>It looks like you already have an account with this email. Would you like to link your Google account to it?</p>
+          <div>
+            <input type="password" id="passwordInput" placeholder="Enter your password" style="width: 100%; padding: 8px; margin-top: 10px;">
+            <div id="errorMessage" class="error-message"></div>
+          </div>
+          <div class="modal-buttons">
+            <button id="cancelBtn" class="cancel-btn">Cancel</button>
+            <button id="linkBtn" class="link-btn">Link Account</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="qrCodeModal" class="verification-modal">
+        <div class="verification-content">
+          <div class="modal-header">
+            <h2>Two-Factor Authentication</h2>
+            <span class="close-modal">&times;</span>
+          </div>
+          <div class="modal-body">
+            <p>Scan this QR code with your authenticator app:</p>
+            
+            <div class="qr-code-container">
+              <img id="qrCodeImage" alt="QR Code Authentication" />
+            </div>
+            
+            <div class="manual-instructions">
+              <p>Use Google Authenticator, Authy or a similar app</p>
+            </div>
+            
+            <div class="manual-code">
+              <p>Or enter this code manually:</p>
+              <div id="manualCode" class="secret-code"></div>
+            </div>
+          </div>
+          <div class="code-container">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+          </div>
+          <button class="btn-qr-verify">I've scanned the QR code</button>
+        </div>
+      </div>
+      
+      <div id="codeModal" class="verification-modal">
+        <div class="verification-content">
+          <div class="modal-header">
+            <h2>Two-Factor Authentication</h2>
+            <span class="close-modal">&times;</span>
+          </div>
+         
+          <div class="code-container">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+            <input type="text" class="code-input" maxlength="1">
+          </div>
+          <div class="regenerate-qr">
+            <button class="btn-regenerate">I lost my authenticator</button>
+          </div>
+          <button class="btn-verify">Confirm</button>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session) {
+        try {
+          // First check if this account is already linked
+          const checkLinkedResponse = await fetch('/api/auth/check-linked', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ 
+              email: session.user.email,
+              providerId: session.user.id 
+            })
+          });
+
+          const checkLinkedData = await checkLinkedResponse.json();
+
+          // If account is already linked, just log them in
+          if (checkLinkedData.isLinked) {
+            const createResponse = await fetch('/api/auth/UserProvider', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                session: session
+              })
+            });
+
+            if (!createResponse.ok) {
+              throw new Error('Failed to process login');
+            }
+
+            // Check if 2FA is required
+            const check2FAResponse = await fetch('/api/auth/check-2fa', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                session: session
+              })
+            });
+
+            const check2FAData = await check2FAResponse.json();
+
+            if (check2FAData.requires2FASetup) {
+              // Show 2FA setup modal
+              const modal = document.getElementById('qrCodeModal');
+              const qrCodeImg = modal.querySelector('#qrCodeImage');
+              const manualCode = modal.querySelector('#manualCode');
+              const codeInputs = modal.querySelectorAll('.code-input');
+              const verifyBtn = modal.querySelector('.btn-qr-verify');
+              const errorMessage = modal.querySelector('.error-message');
+
+              // Set QR code and manual code
+              qrCodeImg.src = check2FAData.qrCode;
+              manualCode.textContent = check2FAData.secret;
+
+              modal.style.display = 'block';
+
+              // Handle code input
+              codeInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                  if (e.target.value.length === 1 && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                  }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                  if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                  }
+                });
+              });
+
+              // Handle verify button
+              verifyBtn.onclick = async () => {
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                if (code.length !== 6) {
+                  errorMessage.textContent = 'Please enter a 6-digit code';
+                  errorMessage.style.display = 'block';
+                  return;
+                }
+
+                try {
+                  const verifyResponse = await fetch('/api/auth/verify-2fa', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      code,
+                      tempSessionId: check2FAData.tempSessionId,
+                      isSetup: true,
+                      secret: check2FAData.secret
+                    })
+                  });
+
+                  if (!verifyResponse.ok) {
+                    const error = await verifyResponse.json();
+                    throw new Error(error.message || 'Verification failed');
+                  }
+
+                  // If verification successful, redirect to home
+                  window.location.href = '/';
+                } catch (error) {
+                  errorMessage.textContent = error.message;
+                  errorMessage.style.display = 'block';
+                }
+              };
+
+              return;
+            }
+
+            if (check2FAData.requires2FA) {
+              // Show 2FA verification modal
+              const modal = document.getElementById('codeModal');
+              const codeInputs = modal.querySelectorAll('.code-input');
+              const verifyBtn = modal.querySelector('.btn-verify');
+              const regenerateBtn = modal.querySelector('.btn-regenerate');
+              const errorMessage = modal.querySelector('.error-message');
+
+              modal.style.display = 'block';
+
+              // Handle code input
+              codeInputs.forEach((input, index) => {
+                input.addEventListener('input', (e) => {
+                  if (e.target.value.length === 1 && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                  }
+                });
+
+                input.addEventListener('keydown', (e) => {
+                  if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    codeInputs[index - 1].focus();
+                  }
+                });
+              });
+
+              // Handle verify button
+              verifyBtn.onclick = async () => {
+                const code = Array.from(codeInputs).map(input => input.value).join('');
+                if (code.length !== 6) {
+                  errorMessage.textContent = 'Please enter a 6-digit code';
+                  errorMessage.style.display = 'block';
+                  return;
+                }
+
+                try {
+                  const verifyResponse = await fetch('/api/auth/verify-2fa', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      code,
+                      tempSessionId: check2FAData.tempSessionId
+                    })
+                  });
+
+                  if (!verifyResponse.ok) {
+                    const error = await verifyResponse.json();
+                    throw new Error(error.message || 'Verification failed');
+                  }
+
+                  // If verification successful, redirect to home
+                  window.location.href = '/';
+                } catch (error) {
+                  errorMessage.textContent = error.message;
+                  errorMessage.style.display = 'block';
+                }
+              };
+
+              // Handle regenerate QR code
+              regenerateBtn.onclick = async () => {
+                try {
+                  const regenerateResponse = await fetch('/api/auth/regenerate-2fa', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                      tempSessionId: check2FAData.tempSessionId
+                    })
+                  });
+
+                  if (!regenerateResponse.ok) {
+                    throw new Error('Failed to regenerate QR code');
+                  }
+
+                  const { qrCode, secret } = await regenerateResponse.json();
+                  
+                  // Hide verification modal and show setup modal with new QR code
+                  modal.style.display = 'none';
+                  const setupModal = document.getElementById('qrCodeModal');
+                  const qrCodeImg = setupModal.querySelector('#qrCodeImage');
+                  const manualCode = setupModal.querySelector('#manualCode');
+                  const setupCodeInputs = setupModal.querySelectorAll('.code-input');
+                  
+                  qrCodeImg.src = qrCode;
+                  manualCode.textContent = secret;
+                  setupCodeInputs.forEach(input => input.value = '');
+                  setupCodeInputs[0].focus();
+                  
+                  setupModal.style.display = 'block';
+                } catch (error) {
+                  errorMessage.textContent = error.message;
+                  errorMessage.style.display = 'block';
+                }
+              };
+
+              return;
+            }
+
+            // If 2FA not required, redirect to home
+            window.location.href = '/';
+            return;
+          }
+
+          // If not linked, check if email exists
+          const checkEmailResponse = await fetch('/api/auth/check-email', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: session.user.email })
+          });
+
+          const checkEmailData = await checkEmailResponse.json();
+
+          if (checkEmailData.exists) {
+            // Show the linking modal
+            const modal = document.getElementById('linkModal');
+            const errorMessage = document.getElementById('errorMessage');
+            const passwordInput = document.getElementById('passwordInput');
+            const linkBtn = document.getElementById('linkBtn');
+            const cancelBtn = document.getElementById('cancelBtn');
+
+            modal.style.display = 'block';
+
+            // Handle link button click
+            linkBtn.onclick = async () => {
+              const password = passwordInput.value;
+              if (!password) {
+                errorMessage.textContent = 'Please enter your password';
+                errorMessage.style.display = 'block';
+                return;
+              }
+
+              try {
+                const linkResponse = await fetch('/api/auth/link-account', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    email: session.user.email,
+                    password: password,
+                    provider: 'google',
+                    session: session
+                  })
+                });
+
+                if (!linkResponse.ok) {
+                  const error = await linkResponse.json();
+                  throw new Error(error.message || 'Failed to link accounts');
+                }
+
+                // If successful, redirect to home
+                window.location.href = '/';
+              } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+              }
+            };
+
+            // Handle cancel button click
+            cancelBtn.onclick = () => {
+              supabase.auth.signOut().then(() => {
+                window.location.href = '/login?error=link_cancelled';
+              });
+            };
+
+            return;
+          }
+
+          // If email doesn't exist, proceed with user creation
+          const createResponse = await fetch('/api/auth/UserProvider', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            session: session
+            })
+          });
+
+          if (!createResponse.ok) {
+            throw new Error('Failed to insert user data');
+          }
+
+          const createData = await createResponse.json();
+          // window.location.href = '/';
+        } catch (error) {
+          console.error('Error:', error);
+          await supabase.auth.signOut();
+          window.location.href = '/login?error=insert_failed';
+        }
+      } else {
+        window.location.href = '/login?error=no_session';
+      }
+    });
+  </script>
+</head>
+<body>
+  <p class="loading-text">Logging you in...</p>
+</body>
+</html>

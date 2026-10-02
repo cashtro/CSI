@@ -1,0 +1,176 @@
+.sec-title {
+    .title {
+        font-size: 48px;
+        letter-spacing: -0.02em;
+        color: var(--color-heading);
+        @include respond(md) {
+            font-size: 40px;
+            margin-bottom: 15px;
+        }
+        @include respond(xs) {
+            font-size: 32px;
+        }
+    }
+    .content {
+        max-width: 429px;
+        display: inline-block;
+    }
+    &--two {
+        .sub-title {
+            font-family: var(--font-family);
+            font-weight: 500;
+            font-size: 14px;
+            background: #fff;
+            padding:  2px 10px;
+            margin-bottom: 22px;
+            display: inline-flex;
+            align-items: center;
+            @include border-radius(14px);
+            color: var(--color-heading-two);
+            box-shadow: 0 2px 4px 0 rgba(44, 64, 94, 0.08), 0 1px 1px 0 rgba(44, 64, 94, 0.04), 0 0 0 1px rgba(44, 64, 94, 0.06);
+            img {
+                margin-right: 6px;
+            }
+            &--strock {
+                color: var(--color-white);
+                background: #0f55dc;
+                box-shadow: 0 2px 4px 0 rgba(255, 255, 255, 0.1), 0 1px 1px 0 rgba(255, 255, 255, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.1);
+            }
+        }
+        .title {
+            font-weight: 700;
+            font-size: 48px;
+            line-height: 58px;
+            color: var(--color-heading-two);
+            @include respond(lg) {
+                font-size: 38px;
+                line-height: 46px;
+            }
+            @include respond(xs) {
+                font-size: 32px;
+                line-height: 40px;
+            }
+        }
+        .content {
+            font-size: 20px;
+            line-height: 32px;
+            margin-top: 10px;
+            display: inline-block;
+            letter-spacing: -0.02em;
+        }
+    }
+    &--three {
+        .sub-title {
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 100%);
+            box-shadow: 0 2px 4px 0 rgba(44, 64, 94, 0.08), 0 1px 1px 0 rgba(44, 64, 94, 0.04), 0 0 0 1px rgba(44, 64, 94, 0.06);
+            img {
+                margin-right: 6px;
+            }
+            span {
+                background: linear-gradient(0deg, rgba(255, 255, 255, 0.6) 0%, rgba(255, 255, 255, 0.9) 100%);
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+        }
+        .title {
+            color: var(--color-white);
+        }
+        .content {
+            font-size: 16px;
+            line-height: 26px;
+            margin-top: 15px;
+            letter-spacing: 0;
+        }
+    }
+    &--four {
+        .sub-title {
+            margin-bottom: 27px;
+            background: #f6f0e6;
+        }
+        .title {
+            font-size: 64px;
+            color: var(--color-heading-three);
+            @include respond(lg) {
+                font-size: 44px;
+                line-height: 52px;
+            }
+            @include respond(xs) {
+                font-size: 38px;
+                line-height: 46px;
+            }
+        }
+    }
+    &--five {
+        .title {
+            font-size: 45px;
+            line-height: 65px;
+            margin-bottom: 10px;
+            letter-spacing: -0.02em;
+            text-transform: uppercase;
+            color: var(--color-heading-four);
+            @include respond(xs) {
+                font-size: 28px;
+                line-height: 45px;
+            }
+        }
+        .content {
+            font-size: 22px;
+            line-height: 38px;
+            text-align: center;
+            color: #212877;
+            max-width: 885px;
+            display: inline-block;
+            text-transform: capitalize;
+        }
+    }
+}
+.white-sec-title {
+    .title {
+        color: var(--color-white);
+    }
+    .content {
+        color: #c2c4e4;
+    }
+}
+.da-sec-titlte {
+    .sub_title {
+        font-family: var(--font-heading-five);
+        font-weight: 700;
+        font-size: 11px;
+        margin-bottom: 20px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: #1337bb;
+        display: inline-flex;
+        align-items: center;
+        border-bottom: 1px solid rgba(19, 55, 187, 0.25);
+        span {
+            margin-right: 8px;
+        }
+    }
+    .title {
+        font-size: 44px;
+        font-weight: 800;
+        line-height: 56px;
+        letter-spacing: -0.02em;
+        color: var(--color-heading-four);
+        @include respond(md) {
+            font-size: 36px;
+            line-height: 49px;
+        }
+        @include respond(xs) {
+            font-size: 26px;
+            line-height: 39px;
+        }
+    }
+    .content {
+        font-weight: 600;
+        font-size: 24px;
+        line-height: 40px;
+        margin-top: 12px;
+        max-width: 685px;
+        display: inline-block;
+    }
+}

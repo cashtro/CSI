@@ -1,0 +1,70 @@
+openapi: 3.0.3
+info:
+  title: Education Platform API
+  description: API for managing courses, appointments and authentication
+  version: 1.0.0
+servers:
+  - url: http://localhost:3000/api
+    description: Local development server
+
+paths:
+  /api/auth/register:
+    $ref: './paths/auth.yaml#/register'
+  /auth/login:
+    $ref: './paths/auth.yaml#/login'
+  /course:
+    $ref: './paths/courses.yaml#/createCourse'
+  /rdv/create:
+    $ref: './paths/rdv.yaml#/createRdv'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    User:
+      type: object
+      properties:
+        userid:
+          type: string
+          format: uuid
+        username:
+          type: string
+        email:
+          type: string
+          format: email
+        age:
+          type: number
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        prix:
+          type: number
+        niveau:
+          type: string
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+  responses:
+    Unauthorized:
+      description: Missing or invalid authentication
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'

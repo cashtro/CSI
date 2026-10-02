@@ -1,0 +1,1499 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <base href="/" />
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Détails du cours sur D. School">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Pandora Business Technology & Marketing</title>
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+
+    <!-- css include -->
+    <link rel="stylesheet" href="assets/css/normalize.css">
+
+    <link rel="preload" href="assets/css/style.bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/style.bundle.min.css"></noscript>
+    <link rel="stylesheet" href="assets/css/coursedetails.css">
+
+    <script src="https://js.stripe.com/v3/" async></script>
+
+    <!--
+    <script>
+        // Pass to the module
+        window.stripeKey = "<%= stripePublicKey%>";
+    </script>-->
+
+    <!-- Style pour le modal de rendez-vous -->
+    <style>
+        /* Style du modal */
+        .appointment-modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            position: relative;
+            background: linear-gradient(145deg, #0a0b1a, #121430);
+            margin: 5% auto;
+            padding: 30px;
+            border: 1px solid #855e1b;
+            border-radius: 10px;
+            width: 80%;
+            max-width: 800px; /* Augmenté pour plus d'espace */
+            box-shadow: 0 0 20px rgba(133, 94, 27, 0.5);
+            animation: modalFadeIn 0.4s;
+            color: #ffffff;
+        }
+
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            right: 15px;
+            top: 10px;
+            font-size: 28px;
+            color: #855e1b;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .close-modal:hover {
+            color: #e6c373;
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            border-bottom: 1px solid rgba(133, 94, 27, 0.3);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            color: #e6c373;
+            font-size: 24px;
+        }
+
+        .modal-body {
+            margin-bottom: 20px;
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(133, 94, 27, 0.3);
+            padding-top: 15px;
+            text-align: right;
+        }
+
+        .modal-section {
+            margin-bottom: 25px;
+        }
+
+        .modal-section h3 {
+            color: #e6c373;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        /* Style pour les étapes du processus */
+        .appointment-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .appointment-steps::before {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: rgba(133, 94, 27, 0.5);
+            z-index: 1;
+        }
+
+        .step {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: #0a0b1a;
+            border: 2px solid #855e1b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .step.active {
+            background: #855e1b;
+            border-color: #e6c373;
+            box-shadow: 0 0 10px rgba(230, 195, 115, 0.7);
+        }
+
+        .step-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .step-content.active {
+            display: block;
+            opacity: 1;
+        }
+
+        /* Style pour le calendrier */
+        .calendar-container {
+            background: rgba(10, 11, 26, 0.7);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(133, 94, 27, 0.5);
+        }
+
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .time-slot {
+            background: rgba(18, 20, 48, 0.8);
+            border: 1px solid rgba(133, 94, 27, 0.3);
+            border-radius: 5px;
+            padding: 8px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .time-slot:hover {
+            background: rgba(133, 94, 27, 0.2);
+            border-color: #855e1b;
+        }
+
+        .time-slot.selected {
+            background: #855e1b;
+            border-color: #e6c373;
+            color: #ffffff;
+        }
+
+        .time-slot.unavailable {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            cursor: not-allowed;
+        }
+
+        .time-slots-container {
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            background: rgba(10, 11, 26, 0.7);
+            border-radius: 8px;
+            border: 1px solid rgba(133, 94, 27, 0.5);
+        }
+
+        /* Style pour les boutons */
+.modal-btn, .btn-enroll {
+    background: linear-gradient(145deg, #855e1b, #e6c373);
+    color: #000000;
+    border: none;
+    padding: 15px 30px; /* Augmenté pour rendre le bouton plus grand */
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-left: 10px;
+    font-weight: 600;
+    font-size: 18px; /* Taille de police augmentée */
+    min-width: 200px; /* Largeur minimale définie */
+    text-align: center; /* Centrer le texte */
+}
+
+.modal-btn:hover, .btn-enroll:hover {
+    background: linear-gradient(145deg, #e6c373, #855e1b);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    color: #ffffff;
+    padding: 16px 32px; /* Légèrement plus grand au survol */
+}
+
+.modal-btn-secondary {
+    background: transparent;
+    border: 1px solid #855e1b;
+    color: #e6c373;
+}
+
+.modal-btn-secondary:hover {
+    background: rgba(133, 94, 27, 0.2);
+    border-color: #e6c373;
+}
+
+        /* Style pour la section de confirmation */
+        .confirmation-message {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .confirmation-message i {
+            font-size: 48px;
+            color: #e6c373;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        /* Label pour l'utilisateur non connecté */
+        .login-required {
+            background: rgba(255, 0, 0, 0.1);
+            border: 1px solid rgba(255, 0, 0, 0.3);
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .login-required i {
+            color: #ff6b6b;
+            margin-right: 10px;
+        }
+
+        .login-btn {
+            display: inline-block;
+            background: #855e1b;
+            color: #ffffff;
+            padding: 8px 20px;
+            border-radius: 5px;
+            margin-top: 10px;
+            transition: all 0.3s;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: #e6c373;
+            color: #000000;
+            transform: translateY(-2px);
+        }
+
+        /* Effet de chargement */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, .3);
+            border-radius: 50%;
+            border-top-color: #e6c373;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Style pour les cartes de professeurs dans le modal */
+        .teacher-time-slots {
+            display: grid;
+            gap: 20px;
+        }
+
+        .teacher-slot {
+            background: rgba(18, 20, 48, 0.8);
+            border-radius: 8px;
+            padding: 15px;
+            border: 1px solid rgba(133, 94, 27, 0.3);
+        }
+
+        .teacher-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .teacher-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #855e1b;
+            margin-right: 10px;
+        }
+
+        .teacher-name {
+            color: #e6c373;
+            font-weight: bold;
+        }
+
+        .teacher-times {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 8px;
+        }
+
+        .teacher-time {
+            background: rgba(10, 11, 26, 0.7);
+            border: 1px solid rgba(133, 94, 27, 0.3);
+            border-radius: 4px;
+            padding: 6px 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .teacher-time:hover {
+            background: rgba(133, 94, 27, 0.3);
+        }
+
+        .teacher-time.selected {
+            background: #855e1b;
+            border-color: #e6c373;
+            color: #fff;
+        }
+
+        .teacher-time.unavailable {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: rgba(255, 0, 0, 0.3);
+            color: #ff6b6b;
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+    </style>
+</head>
+
+<body class="sco_agency">
+
+    <!-- Particules en arrière-plan -->
+    <div class="particles-container"></div>
+
+    <!-- backtotop - start -->
+    <div class="xb-backtotop style-3">
+        <a href="#" class="scroll">
+            <i class="far fa-arrow-up"></i>
+        </a>
+    </div>
+    <!-- backtotop - end -->
+
+     <!-- Preloader - Start 
+  <div id="xb-loadding" class="xb-loader style-3">
+    <div class="xb-dual-ring"></div>
+</div>
+    Preloader - End -->
+
+    <!-- L'en-tête existant est préservé -->
+    <%- include('partials/header') %>
+
+    <style>
+        .course-details-section {
+            position: relative;
+            width: 100%;
+            min-height: 100vh; /* Ajustez selon vos besoins */
+            overflow: hidden;
+        }
+        
+        .video-bg-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .video-bg-container video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .section-content {
+            position: relative;
+            z-index: 1;
+            color: white; /* Adaptez la couleur du texte */
+            padding: 2rem;
+        }
+        </style>
+
+
+        <div class="body_wrap">
+
+            <!-- main area start  -->
+            <main>
+                <!-- Course Details Section Start -->
+                <section class="course-details-section reveal">
+                    <!-- Conteneur vidéo -->
+                    <div class="video-bg-container">
+                        <video autoplay muted loop playsinline>
+                            <source src="assets/mp4/loteryBackground.mp4" type="video/mp4">
+                            Votre navigateur ne supporte pas les vidéos HTML5.
+                        </video>
+                    </div>
+                    <div class="container" id="section-content">
+                        <!-- Header with title more to the left and both elements lowered -->
+                        <div class="course-details-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px; margin-top: 20px; padding-left: 15px;">
+                            <div style="flex: 3; text-align: left;">
+                                <h1 style="font-size: 50px; font-weight: 700; margin-bottom: 10px; color: #e6c373; padding-top: 15px;">
+                                    <%= data.nom %>
+                                </h1>
+                            </div>
+                            <div style="flex: 1; text-align: right; padding-top: 15px; padding-right: 15px;">
+                                <form id="regular-enroll-form">
+                                    <button type="submit" class="btn-enroll" style="font-size: 18px; padding: 12px 24px; min-width: 180px; box-shadow: 0 0 15px rgba(230, 195, 115, 0.5);">Buy <%= data.prix %>$</button>
+                                </form>
+                            </div>
+                        </div>
+        
+        <!-- Course description - centered -->
+        <div style="text-align: center; margin: 0 auto 30px; max-width: 700px;">
+            <p style="font-size: 28px; color: #ffffff; line-height: 1.5;">
+                <%= data.description || `A course about ${data.nom}`%>
+            </p>
+        </div>
+  <!-- Main content area - two columns layout with larger text only -->
+<div class="course-details-content" style="max-width: 1100px; margin: 0 auto;">
+    <!-- About This Course & What You'll Learn - side by side -->
+    <div class="row" style="display: flex; flex-wrap: wrap; margin-bottom: 10px; justify-content: space-between;">
+        <!-- Left column - with reduced width -->
+        <div class="col-md-5" style="flex: 0 0 42%; min-width: 280px; padding-right: 10px;">
+            <div class="course-section" style="margin-bottom: 5px;">
+                <h2 style="font-size: 22px; color: #e6c373; margin-bottom: 5px; margin-top: 0;">About This Course</h2>
+                <p style="font-size: 18px; line-height: 1.3; color: #ffffff; margin-top: 0; margin-bottom: 0;">
+                    <%= data.about || "This is an interesting course where you'll learn about " + data.nom %>
+                </p>
+            </div>
+        </div>
+
+        <!-- Right column - positioned furthest to the right -->
+<div class="col-md-5" style="flex: 0 0 42%; min-width: 280px; padding-left: 10px; margin-left: auto; position: relative; left: 18%;">
+    <div class="course-section" style="margin-bottom: 5px;">
+        <h2 style="font-size: 22px; color: #e6c373; margin-bottom: 5px; margin-top: 0;">What You'll Learn</h2>
+        <ul style="font-size: 18px; line-height: 1.3; color: #ffffff; padding-left: 18px; margin-top: 0; margin-bottom: 0;">
+            <% data.learning_points?.forEach(point => { %>
+                <li style="margin-bottom: 3px; padding-bottom: 0;">
+                    <%= point %>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+</div>
+        
+    <!-- Prerequisites & Course Curriculum - side by side -->
+    <div class="row" style="display: flex; flex-wrap: wrap; margin-top: 5px; margin-bottom: 10px; justify-content: space-between;">
+        <!-- Left column - with reduced width -->
+        <div class="col-md-5" style="flex: 0 0 42%; min-width: 280px; padding-right: 10px;">
+            <div class="course-section" style="margin-bottom: 5px;">
+                <h2 style="font-size: 22px; color: #e6c373; margin-bottom: 5px; margin-top: 0;">Prerequisites</h2>
+                <p style="font-size: 18px; line-height: 1.3; color: #ffffff; margin-top: 0; margin-bottom: 0;">
+                    <%= data.prerequisites || "No prerequisites specified - join us!" %>
+                </p>
+            </div>
+        </div>
+        
+       <!-- Right column - positioned furthest to the right -->
+<div class="col-md-5" style="flex: 0 0 42%; min-width: 280px; padding-left: 10px; margin-left: auto; position: relative; left: 20%;">
+    <div class="course-section" style="margin-bottom: 5px;">
+        <h2 style="font-size: 22px; color: #e6c373; margin-bottom: 5px; margin-top: 0;">Course Curriculum</h2>
+        <ul style="font-size: 18px; line-height: 1.3; color: #ffffff; padding-left: 18px; margin-top: 0; margin-bottom: 0;">
+            <% data.program?.forEach(topic => { %>
+                <li style="margin-bottom: 3px; padding-bottom: 0;">
+                    <%= topic %>
+                </li>
+            <% }); %>
+        </ul>
+    </div>
+</div>
+    <!-- Course meta information - more compact style -->
+    <div class="course-meta" style="display: flex; justify-content: space-between; flex-wrap: wrap; margin: 10px 0 5px;">
+        <p style="font-size: 18px; margin: 0;"><i class="fas fa-user" style="color: #e6c373; margin-right: 5px;"></i> Presented by <%= data.Users?.username || "Expert Instructor" %></p>
+        <p style="font-size: 18px; margin: 0;"><i class="fas fa-clock" style="color: #e6c373; margin-right: 5px;"></i> <%= data.nombre_heures %> Hours</p>
+        <p style="font-size: 18px; margin: 0;"><i class="fas fa-signal" style="color: #e6c373; margin-right: 5px;"></i> Level: <%= data.niveau %></p>
+    </div>
+</div>
+                           <!-- Enrollment section - centered with gold buttons -->
+                           <div id="enrollment-options" class="course-section" style="text-align: center; margin: 40px 0; padding: 30px; background: rgba(10, 11, 26, 0.7); border-radius: 10px; border: 1px solid rgba(133, 94, 27, 0.5);">
+                            <h2>Enrollment Options</h2>
+                <p style="font-size: 18px; line-height: 1.6; margin-bottom: 25px; font-weight: 500; color: #ffffff;">Choose the payment option that works best for you:</p>
+                
+                <div style="display: flex; justify-content: center; gap: 20px; margin-top: 30px; flex-wrap: wrap;">
+                    <!-- One-time payment button with gold style -->
+                    <form id="regular-enroll-form">
+                        <button type="submit" class="btn-enroll" style="font-size: 22px; padding: 18px 36px; min-width: 250px; box-shadow: 0 0 15px rgba(230, 195, 115, 0.5); background: linear-gradient(145deg, #855e1b, #e6c373); color: #000000; border: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;">
+                            Buy  <%= data.prix %>$
+                        </button>
+                    </form>
+                    
+                    <!-- Subscription button with gold style -->
+                    <form id="subscription-enroll-form">
+                        <input type="hidden" name="course_id" value="<%=data.id%>">
+                        <button type="submit" class="btn-enroll" style="font-size: 22px; padding: 18px 36px; min-width: 250px; box-shadow: 0 0 15px rgba(230, 195, 115, 0.5); background: linear-gradient(145deg, #855e1b, #e6c373); color: #000000; border: none; border-radius: 5px; font-weight: 600; transition: all 0.3s;">
+                            Subscribe for <%= data.prix/5 %>$/month
+                        </button>
+                    </form>
+                </div>
+                
+                <p class="course-meta" style="margin-top: 20px; font-size: 18px; color: #ffffff;"><i class="fas fa-lock" style="margin-right: 8px;"></i> Secure payment via Stripe</p>
+            </div>
+
+                            <script>
+                                const stripe = Stripe("<%= stripePublicKey%>");
+                            
+                                document.addEventListener('DOMContentLoaded', function() {
+    // Attacher l'événement à TOUS les formulaires avec l'ID "regular-enroll-form"
+    document.querySelectorAll('#regular-enroll-form').forEach(form => {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            try {
+                const response = await fetch(`/api/course/<%=data.id%>/enroll`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+                    }
+                });
+                
+                if (!response.ok) {
+                    console.error(response);
+                    throw new Error('Failed to create enrollment session');
+                }
+                
+                const data = await response.json();
+                if (data && data.id) {
+                    const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+                    if (error) {
+                        console.error("Stripe Checkout error:", error);
+                        throw error;
+                    }
+                }
+            } catch (error) {
+                console.error("Error during enrollment:", error);
+                alert("Payment error: " + error.message);
+            }
+        });
+    });
+});
+                            
+                                document.getElementById('subscription-enroll-form').addEventListener('submit', async function (e) {
+                                    e.preventDefault();
+                                    try {
+                                        const response = await fetch('/api/course/<%=data.id%>/subscribe', {
+                                            method: 'POST',
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+                                            }
+                                        });
+                            
+                                        if (!response.ok) {
+                                            throw new Error(await response.text());
+                                        }
+                            
+                                        const { id: sessionId } = await response.json();
+                                        const { error } = await stripe.redirectToCheckout({ sessionId });
+                                        if (error) {
+                                            console.error("Stripe Subscription error:", error);
+                                        }
+                                        return response.json();
+                                    } catch (error) {
+                                        alert("Subscription error: " + error.message);
+                                    }
+                                });
+                            </script>
+
+                          <!-- Schedule appointment section - centered with larger text -->
+<div class="course-section" style="text-align: center; margin: 40px 0;">
+    <h2 style="font-size: 25px; color: #e6c373; margin-bottom: 20px;">Schedule a Meeting with the Instructor</h2>
+    <p style="font-size: 18px;">Would you like to discuss with the instructor before enrolling? Schedule an online appointment:</p>
+    <button id="openAppointmentModal" class="btn-enroll btn-shimmer" style="margin-top: 20px; font-size: 20px; padding: 18px 38px;">Schedule Appointment</button>
+    <p class="course-meta" style="font-size: 18px; margin-top: 20px;"><i class="fas fa-calendar-alt" style="color: #e6c373; margin-right: 8px;"></i> Online meeting with the instructor</p>
+</div>
+
+                            <!-- Contact form - centered with reduced size -->
+<div class="course-section">
+    <div class="cs-contact-wrap cs-contact-form" style="max-width: 10%; margin: 0 auto;">
+        <div class="sec-title--two sec-title--three" style="text-align: center; margin-bottom: 15px;">
+            <span class="sub-title" style="font-size: 14px;"><img src="assets/img/icon/bill.svg" alt="" style="width: 16px; height: 16px;"><span>Let's connect!</span></span>
+            <h2 class="title" style="font-size: 20px; margin-bottom: 10px;">Send us a message</h2>
+        </div>
+        <form action="#!" class="contact-form">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="input-field" style="margin-bottom: 10px;">
+                        <label for="text1" style="font-size: 13px; margin-bottom: 3px;">Your name</label>
+                        <div class="input-box">
+                            <input type="text" name="text" id="text1" style="padding: 8px; height: 36px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="input-field" style="margin-bottom: 10px;">
+                        <label for="text2" style="font-size: 13px; margin-bottom: 3px;">Email</label>
+                        <div class="input-box">
+                            <input type="email" name="gmail" id="text2" style="padding: 8px; height: 36px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="input-field" style="margin-bottom: 10px;">
+                        <label for="text3" style="font-size: 13px; margin-bottom: 3px;">Phone</label>
+                        <div class="input-box">
+                            <input type="tel" name="number" id="text3" style="padding: 8px; height: 36px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="input-field" style="margin-bottom: 10px;">
+                        <label for="text4" style="font-size: 13px; margin-bottom: 3px;">Company name</label>
+                        <div class="input-box">
+                            <input type="text" name="text" id="text4" style="padding: 8px; height: 36px;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-12">
+                    <div class="input-field text-field" style="margin-bottom: 12px;">
+                        <label for="text5" style="font-size: 13px; margin-bottom: 3px;">How can we help you today?</label>
+                        <div class="input-box">
+                            <textarea name="massage" id="text5" style="height: 70px; padding: 8px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-btn" style="text-align: center; margin-top: 12px;">
+                <button type="submit" class="blc-btn" style="transform: scale(0.8);">
+                    <span style="font-size: 14px;">Submit now <i class="far fa-angle-right"></i></span>
+                    <span class="btn-shape">
+                        <svg width="300" height="65" viewBox="0 0 362 78" fill="none"
+                            preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.5 22.7183L25.5093 1.39453H337.972L361.5 22.7092V56.5515L337.98 76.6051H25.5093L0.5 55.2813V22.7183Z"
+                                fill="url(#paint0_linear_1600_9966932)" stroke="#23263C" />
+                            <defs>
+                                <linearGradient id="paint0_linear_1600_9966932" x1="1.29285"
+                                    y1="38.9973" x2="362" y2="33.9973"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" stop-color="#855e1b" />
+                                    <stop offset="1" stop-color="#e6c373" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                    <span class="btn-shape2">
+                        <svg width="225" height="50" viewBox="0 0 271 60" fill="none"
+                            preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                            <path
+                                d="M0.5 17.2308L20.1225 0.5H252.042L270.5 17.2217V43.7692L252.05 59.5H20.1225L0.5 42.7692V17.2308Z"
+                                fill="#010315" stroke="url(#paint0_linear_1742_661333)" />
+                            <defs>
+                                <linearGradient id="paint0_linear_1742_661333" x1="271"
+                                    y1="61.5556" x2="232.791" y2="-3.08978"
+                                    gradientUnits="userSpaceOnUse">
+                                    <stop offset="0" stop-color="#6780D2" />
+                                    <stop offset="1" stop-color="#2F3B8D" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                    </span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+</section>
+                <!-- Course Details Section End -->
+            </main>
+            <!-- main area end  -->
+
+            <!-- Le pied de page est préservé mais adapté au style sombre -->
+            <%-include('partials/footer')%>
+        </div>
+
+        <!-- Modal pour la prise de rendez-vous -->
+        <div id="appointmentModal" class="appointment-modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <div class="modal-header">
+                    <h2>Schedule a Meeting with the Instructor</h2>
+                </div>
+
+                <div class="appointment-steps">
+                    <div class="step step-1 active" data-step="1">1</div>
+                    <div class="step step-2" data-step="2">2</div>
+                    <div class="step step-3" data-step="3">3</div>
+                </div>
+                
+
+                <div class="modal-body">
+                    <!-- Étape 1: Vérification de connexion -->
+                    <div class="step-content step-1-content active">
+                        <div id="loginStatus">
+                            <!-- Contenu dynamique -->
+                        </div>
+                    </div>
+
+                    <!-- Étape 2: Sélection de date et heure -->
+                    <div class="step-content step-2-content">
+                        <div id="calendarSection" class="modal-section">
+                            <h3>Select a Date and Time</h3>
+                            <div id="teacherTimeSlots" class="teacher-time-slots">
+                                <!-- Les créneaux des professeurs seront chargés ici -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Étape 3: Confirmation du rendez-vous -->
+                    <div class="step-content step-3-content">
+                        <div class="modal-section">
+                            <h3>Meeting Details</h3>
+                            <p>You selected: <span id="selectedDateTime">Not selected</span></p>
+                            <p>Instructor: <span id="selectedTeacherName">Not selected</span></p>
+                            <p>Duration: 30 minutes</p>
+                            <p>Meeting Type: Video Conference</p>
+                            <p>Consultation Fee: $<span id="consultationFee">
+                                    <%= data.prix / 2 %>
+                                </span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button id="prevBtn" class="modal-btn modal-btn-secondary" style="display: none;">Previous</button>
+                    <button id="nextBtn" class="modal-btn">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- jquery include -->
+        <script src="assets/js/jquery-3.7.1.min.js"></script>
+        <script src="assets/js/bootstrap.bundle.min.js"></script>
+        <script src="assets/js/swiper.min.js"></script>
+        <script src="assets/js/slick.min.js"></script>
+        <script src="assets/js/gsap.js"></script>
+        <script src="assets/js/wow.min.js"></script>
+        <script src="assets/js/appear.js"></script>
+        <script src="assets/js/parallaxie.js"></script>
+        <script src="assets/js/parallax-scroll.js"></script>
+        <script src="assets/js/odometer.min.js"></script>
+        <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+        <script src="assets/js/isotope.pkgd.min.js"></script>
+        <script src="assets/js/cursor-bundle.js"></script>
+        <script src="assets/js/easing.min.js"></script>
+        <script src="assets/js/scrollspy.js"></script>
+        <script src="assets/js/jquery.nice-select.min.js"></script>
+        <script src="assets/js/jquery.marquee.min.js"></script>
+        <script src="assets/js/jquery.magnific-popup.min.js"></script>
+        <script src="assets/js/main.js"></script>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function async () {
+                // Animation des éléments au défilement
+                function revealElements() {
+                    const reveals = document.querySelectorAll('.reveal');
+
+                    for (let i = 0; i < reveals.length; i++) {
+                        const windowHeight = window.innerHeight;
+                        const elementTop = reveals[i].getBoundingClientRect().top;
+                        const elementVisible = 150;
+
+                        if (elementTop < windowHeight - elementVisible) {
+                            reveals[i].classList.add('active');
+                        }
+                    }
+                }
+
+                window.addEventListener('scroll', revealElements);
+                revealElements();
+
+                // Créer des particules d'arrière-plan
+                function createParticles() {
+                    const particleCount = 50;
+                    const particlesContainer = document.querySelector('.particles-container');
+
+                    for (let i = 0; i < particleCount; i++) {
+                        const particle = document.createElement('div');
+                        particle.classList.add('particle');
+
+                        const size = Math.random() * 5 + 1;
+                        particle.style.width = `${size}px`;
+                        particle.style.height = `${size}px`;
+
+                        const posX = Math.random() * window.innerWidth;
+                        const posY = Math.random() * window.innerHeight;
+                        particle.style.left = `${posX}px`;
+                        particle.style.top = `${posY}px`;
+
+                        particle.style.opacity = Math.random() * 0.5 + 0.1;
+
+                        const animDuration = Math.random() * 20 + 10;
+                        particle.style.animation = `float ${animDuration}s linear infinite`;
+                        particle.style.animationDelay = `${Math.random() * 5}s`;
+
+                        particlesContainer.appendChild(particle);
+                    }
+                }
+
+                createParticles();
+
+                // Script pour le modal de rendez-vous
+                const modal = document.getElementById('appointmentModal');
+                const openModalBtn = document.getElementById('openAppointmentModal');
+                const closeModalBtn = document.querySelector('.close-modal');
+                const nextBtn = document.getElementById('nextBtn');
+                const prevBtn = document.getElementById('prevBtn');
+                const steps = document.querySelectorAll('.step');
+                const stepContents = document.querySelectorAll('.step-content');
+
+                let currentStep = 1;
+                let selectedTimeSlot = null;
+                let selectedDate = null;
+                let selectedDisponibiliteId = null;
+                let selectedTeacher = null;
+
+                // Fonction pour vérifier si l'utilisateur est connecté
+                function checkLoginStatus() {
+                    const loginStatusDiv = document.getElementById('loginStatus');
+
+                    fetch('/api/auth/validateToken', {
+                        method: 'GET',
+                        credentials: 'include',
+                        headers: {
+                            'Authorization': `Bearer ${localStorage.getItem('accessToken') || ''}`
+                        }
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Not authenticated');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                loginStatusDiv.innerHTML = `
+                                    <div class="alert alert-success">
+                                        <i class="fas fa-check-circle"></i> You are logged in. Click "Next" to select an available time slot.
+                                    </div>
+                                `;
+                                nextBtn.disabled = false;
+                                nextBtn.classList.remove('disabled');
+                            } else {
+                                throw new Error('Not logged in');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error checking auth status:', error);
+                            loginStatusDiv.innerHTML = `
+                                <div class="login-required">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <h3>Login Required</h3>
+                                    <p>You need to be logged in to schedule an appointment with the instructor.</p>
+                                    <a href="/login?redirect=${encodeURIComponent(window.location.pathname)}" class="login-btn">
+                                        <i class="fas fa-sign-in-alt"></i> Login to Continue
+                                    </a>
+                                </div>
+                            `;
+                            nextBtn.disabled = true;
+                            nextBtn.classList.add('disabled');
+                        });
+                }
+
+                function loadTeachersAvailability() {
+    const container = document.getElementById('teacherTimeSlots');
+    container.innerHTML = '<div class="text-center w-100"><div class="loading"></div> Loading available time slots...</div>';
+
+    fetch(`/api/auth/validateToken`, {
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`,
+        }
+    }).then(response => {
+        if (!response.ok) {
+            throw new Error('Token invalide ou expiré');
+        }
+        return response.json();
+    }).then(authData => {
+        if (!authData.success || !authData.userid) {
+            throw new Error(authData.error || 'Échec de l\'authentification');
+        }
+        return authData.userid;
+    })
+    .then(userId => { //fuck up sale, nrmlm c id prof pas id user bruh
+        return fetch(`/api/dispo/disponibilite?user_id=<%=data.id_prof%>`)
+        .then(response => {
+            if (!response.ok) throw new Error(`Erreur HTTP: ${response.status}`);
+            return response.json();
+        });
+    }).then(allAvailability => {
+        
+        if (!allAvailability || !Array.isArray(allAvailability)) {
+            container.innerHTML = `
+            <div class="alert alert-warning w-100 text-center">
+                <i class="fas fa-exclamation-triangle"></i> Format de données incorrect.
+                <p>Détails: ${JSON.stringify(allAvailability)}</p>
+            </div>`;
+            return;
+        }
+        
+        if (allAvailability.length === 0) {
+            container.innerHTML = `
+            <div class="alert alert-info w-100 text-center">
+                <i class="fas fa-info-circle"></i> Aucune disponibilité trouvée dans le système.
+            </div>`;
+            return;
+        }
+        
+        const now = new Date(); // Date actuelle en UTC
+
+        const validAvailability = allAvailability.filter(slot => {
+    const startTimeUTC = new Date(slot.start_time);
+    
+    // Conversion de 'now' en timestamp UTC
+    const nowUTC = now.getTime();
+    
+    // Vérification du type de 'taken' (doit être booléen)
+    const isTaken = slot.taken === true; // ou vérifier si c'est une chaîne "true"
+    
+    // Comparaison en UTC
+    const isValid = !isTaken && startTimeUTC.getTime() > nowUTC;
+   
+
+    return isValid;
+});
+        
+        if (validAvailability.length === 0) {
+            container.innerHTML = `
+            <div class="alert alert-info w-100 text-center">
+                <i class="fas fa-info-circle"></i> Toutes les disponibilités sont prises ou expirées.
+            </div>`;
+            return;
+        
+            const nowUTC = new Date().getTime(); // Timestamp UTC actuel
+
+            const validAvailability = allAvailability.filter(slot => {
+            const startTimeUTC = new Date(slot.start_time).getTime();
+            const isTaken = slot.taken === true; // Assurez-vous que 'taken' est un booléen
+            return !isTaken && startTimeUTC > nowUTC;
+});
+
+        if (validAvailability.length === 0){
+            container.innerHTML = `
+            <div class="alert alert-info w-100 text-center">
+                <i class="fas fa-info-circle"></i> Toutes les disponibilités sont prises ou expirées.
+            </div>
+            `;
+            return;
+        }
+    }
+        const teachersMap = validAvailability.reduce((map, slot) => {
+            const professorId = slot.id_prof
+            if(!map.has(professorId)){
+                map.set(professorId, {
+                    id: professorId,
+                    username: slot.Users?.username || `Professeur ${professorId}`,
+                    avatar: slot.Users?.avatar || 'assets/img/logo/pp.webp',
+                    availability: []
+                });
+            }
+            map.get(professorId).availability.push(slot);
+            return map;
+        }, new Map());
+        
+        container.innerHTML = ''; // Vider le conteneur 
+        teachersMap.forEach(teacher => {
+            createTeacherAvailabilityCard(teacher, container);
+        });
+    })
+    .catch(error => {
+        console.error('Error loading availability:', error);
+        container.innerHTML = `
+            <div class="alert alert-danger w-100 text-center">
+                <i class="fas fa-exclamation-circle"></i> Error loading availability.
+                <p class="small">${error.message}</p>
+            </div>`;
+    });
+}
+
+
+
+function createTeacherAvailabilityCard(teacher, container) {
+    const teacherSlot = document.createElement('div');
+    teacherSlot.className = 'teacher-slot';
+
+    const teacherHeader = document.createElement('div');
+    teacherHeader.className = 'teacher-header';
+
+    const avatar = document.createElement('img');
+    avatar.className = 'teacher-avatar';
+    avatar.src = teacher.avatar;
+    avatar.alt = teacher.username;
+
+    const name = document.createElement('span');
+    name.className = 'teacher-name';
+    name.textContent = teacher.username;
+
+    teacherHeader.appendChild(avatar);
+    teacherHeader.appendChild(name);
+    teacherSlot.appendChild(teacherHeader);
+
+    const timesContainer = document.createElement('div');
+    timesContainer.className = 'teacher-times';
+
+    teacher.availability.forEach(slot => {
+        const startTime = new Date(slot.start_time);
+        const endTime = new Date(slot.end_time);
+        
+        const timeString = `${startTime.toLocaleDateString()} ${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')} - ${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
+        
+        const timeElement = document.createElement('div');
+        timeElement.className = 'teacher-time';
+        timeElement.textContent = timeString;
+        timeElement.dataset.start = slot.start_time;
+        timeElement.dataset.end = slot.end_time;
+        timeElement.dataset.disponibilite_id = slot.id;
+        timeElement.dataset.teacher_id = teacher.id;
+        timeElement.dataset.teacher_name = teacher.username;
+
+        // Vérifier si le créneau est déjà passé
+        const now = new Date();
+        if (startTime < now) {
+            timeElement.classList.add('unavailable');
+            timeElement.title = 'This time slot has already passed';
+        }
+
+        timeElement.addEventListener('click', function() {
+            if (this.classList.contains('unavailable')) return;
+            
+            document.querySelectorAll('.teacher-time').forEach(t => {
+                t.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            
+            selectedTimeSlot = timeString;
+            selectedDisponibiliteId = this.dataset.disponibilite_id;
+            selectedTeacher = this.dataset.teacher_name;
+            selectedTeacherId = this.dataset.teacher_id;
+            selectedDate = new Date(slot.start_time).toISOString().split('T')[0];
+            
+            document.getElementById('selectedDateTime').textContent = 
+                `${selectedDate} at ${timeString}`;
+            document.getElementById('selectedTeacherName').textContent = 
+                teacher.username;
+            
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('disabled');
+        });
+
+        timesContainer.appendChild(timeElement);
+    });
+
+    teacherSlot.appendChild(timesContainer);
+    container.appendChild(teacherSlot);
+}
+/*
+function createTeacherAvailabilityCard(teacher, container) {
+    const teacherSlot = document.createElement('div');
+    teacherSlot.className = 'teacher-slot';
+
+    teacherSlot.innerHTML = `
+        <div class="teacher-header">
+            <img class="teacher-avatar" src="${teacher.avatar}" alt="${teacher.username}">
+            <span class="teacher-name">${teacher.username}</span>
+        </div>
+        <div class="teacher-times"></div>
+    `;
+
+    const timesContainer = teacherSlot.querySelector('.teacher-times');
+    const now = new Date();
+
+    teacher.availability.forEach(slot => {
+        const startTime = new Date(slot.start_time);
+        const endTime = new Date(slot.end_time);
+        
+        const timeElement = document.createElement('div');
+        timeElement.className = 'teacher-time';
+        timeElement.dataset.disponibiliteId = slot.id;
+        timeElement.innerHTML = `
+            <div class="time-slot">
+                ${startTime.toLocaleDateString('fr-FR')} 
+                ${startTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })} - 
+                ${endTime.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}
+            </div>
+            ${slot.taken ? '<div class="badge taken">Réservé</div>' : ''}
+        `;
+
+        // Désactiver les créneaux pris ou expirés
+        if (slot.taken || startTime < now) {
+            timeElement.classList.add('unavailable');
+            timeElement.querySelector('.time-slot').style.opacity = '0.5';
+        }
+
+        if (!slot.taken && startTime > now) {
+            timeElement.addEventListener('click', function() {
+                // Gestion de la sélection...
+            });
+        }
+
+        timesContainer.appendChild(timeElement);
+    });
+
+    container.appendChild(teacherSlot);
+}
+*/
+/*
+function createTeacherAvailabilityCard(teacher, container) {
+    const teacherSlot = document.createElement('div');
+    teacherSlot.className = 'teacher-slot';
+
+    const teacherHeader = document.createElement('div');
+    teacherHeader.className = 'teacher-header';
+
+    const avatar = document.createElement('img');
+    avatar.className = 'teacher-avatar';
+    avatar.src = teacher.avatar;
+    avatar.alt = teacher.username;
+
+    const name = document.createElement('span');
+    name.className = 'teacher-name';
+    name.textContent = teacher.username;
+
+    teacherHeader.appendChild(avatar);
+    teacherHeader.appendChild(name);
+    teacherSlot.appendChild(teacherHeader);
+
+    const timesContainer = document.createElement('div');
+    timesContainer.className = 'teacher-times';
+
+    teacher.availability.forEach(slot => {
+        const startTime = new Date(slot.start_time);
+        const endTime = new Date(slot.end_time);
+        
+        const timeString = `${startTime.toLocaleDateString()} ${startTime.getHours().toString().padStart(2, '0')}:${startTime.getMinutes().toString().padStart(2, '0')} - ${endTime.getHours().toString().padStart(2, '0')}:${endTime.getMinutes().toString().padStart(2, '0')}`;
+        
+        const timeElement = document.createElement('div');
+        timeElement.className = 'teacher-time';
+        timeElement.textContent = timeString;
+        timeElement.dataset.start = slot.start_time;
+        timeElement.dataset.end = slot.end_time;
+        timeElement.dataset.disponibilite_id = slot.id;
+        timeElement.dataset.teacher_id = teacher.id;
+        timeElement.dataset.teacher_name = teacher.username;
+
+        // Vérifier si le créneau est déjà passé
+        const now = new Date();
+        if (startTime < now) {
+            timeElement.classList.add('unavailable');
+            timeElement.title = 'This time slot has already passed';
+        }
+
+        timeElement.addEventListener('click', function() {
+            if (this.classList.contains('unavailable')) return;
+            
+            document.querySelectorAll('.teacher-time').forEach(t => {
+                t.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            
+            selectedTimeSlot = timeString;
+            selectedDisponibiliteId = this.dataset.disponibilite_id;
+            selectedTeacher = this.dataset.teacher_name;
+            selectedTeacherId = this.dataset.teacher_id;
+            selectedDate = new Date(slot.start_time).toISOString().split('T')[0];
+            
+            document.getElementById('selectedDateTime').textContent = 
+                `${selectedDate} at ${timeString}`;
+            document.getElementById('selectedTeacherName').textContent = 
+                teacher.username;
+            
+            nextBtn.disabled = false;
+            nextBtn.classList.remove('disabled');
+        });
+
+        timesContainer.appendChild(timeElement);
+    });
+
+    teacherSlot.appendChild(timesContainer);
+    container.appendChild(teacherSlot);
+}*/
+                // Mettre à jour l'interface des étapes
+                function updateStepUI() {
+                    steps.forEach(step => {
+                        const stepNum = parseInt(step.dataset.step);
+                        step.classList.toggle('active', stepNum <= currentStep);
+                    });
+                    
+                    stepContents.forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.querySelector(`.step-${currentStep}-content`).classList.add('active');
+                    
+                    if (currentStep === 1) {
+                        prevBtn.style.display = 'none';
+                        nextBtn.textContent = 'Next';
+                        nextBtn.disabled = !isUserLoggedIn();
+                    } else if (currentStep === 2) {
+                        prevBtn.style.display = 'inline-block';
+                        nextBtn.textContent = 'Next';
+                        nextBtn.disabled = !selectedTimeSlot;
+                    } else if (currentStep === 3) {
+                        prevBtn.style.display = 'inline-block';
+                        nextBtn.textContent = 'Confirm';
+                    }
+                }
+
+                // Vérifier si l'utilisateur est connecté
+                function isUserLoggedIn() {
+                    return document.querySelector('.alert.alert-success') !== null;
+                }
+
+                // Navigation des étapes
+                nextBtn.addEventListener('click',async ()=>  {
+                    if (currentStep === 1) {
+                        // Passer à l'étape 2 et charger les disponibilités
+                        currentStep++;
+                        updateStepUI();
+                        loadTeachersAvailability();
+                    } 
+                    else if (currentStep === 2) {
+                        // Vérifier qu'un créneau a été sélectionné
+                        if (!selectedTimeSlot || !selectedDisponibiliteId) {
+                            alert('Please select an available time slot before continuing.');
+                            return;
+                        }
+                        currentStep++;
+                        updateStepUI();
+                    }
+                    else if (currentStep === 3) {
+                        // Confirmer le rendez-vous
+                        createAppointment();
+                    }
+                });
+
+                prevBtn.addEventListener('click', function() {
+                    if (currentStep > 1) {
+                        currentStep--;
+                        updateStepUI();
+                    }
+                });
+
+                // Créer le rendez-vous
+                const createAppointment = async () =>{
+    nextBtn.innerHTML = '<div class="loading"></div> Processing...';
+    nextBtn.disabled = true;
+
+    // Modifier cette ligne - changer '/api/rendezvous' en '/api/rdv/create'
+    const response = await fetch('/api/rdv/create', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem('accessToken')|| sessionStorage.getItem('accessToken')}`
+        },
+        body: JSON.stringify({
+            disponibilite_id: selectedDisponibiliteId // Uniquement le champ nécessaire
+        })
+    })
+    
+    if (!response.ok) {
+        const text = await response.text();
+        throw new Error(text || 'Failed to create appointment');
+    }
+    
+    const stripe = Stripe("<%= stripePublicKey%>");
+                            
+    const data = await response.json();
+    if(data && data.id) {
+      const stripe = Stripe("<%= stripePublicKey%>");
+      const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+      if (error) {
+        console.error('Erreur Stripe:', error);
+        nextBtn.textContent = 'Next';
+        nextBtn.disabled = false;
+      }
+    }
+    
+        if (data.success) {
+            // Afficher le message de confirmation
+            const confirmationMessage = `
+                <div class="confirmation-message">
+                    <i class="fas fa-check-circle pulse"></i>
+                    <h3>Appointment Confirmed!</h3>
+                    <p>Your meeting with ${selectedTeacher} has been scheduled for:</p>
+                    <p id="confirmedDateTime" class="text-primary">${document.getElementById('selectedDateTime').textContent}</p>
+                    <p>Meeting link will be sent to your email.</p>
+                </div>
+            `;
+            
+            document.querySelector('.step-3-content').innerHTML = confirmationMessage;
+            nextBtn.textContent = 'Close';
+            nextBtn.disabled = false;
+            nextBtn.onclick = function() {
+                modal.style.display = 'none';
+                location.reload();
+            };
+        } else {
+            throw new Error(data.message || 'Failed to create appointment');
+        }
+    }
+
+                // Ouvrir le modal
+                openModalBtn.addEventListener('click', function() {
+                    modal.style.display = 'block';
+                    currentStep = 1;
+                    selectedTimeSlot = null;
+                    selectedDisponibiliteId = null;
+                    selectedTeacher = null;
+                    updateStepUI();
+                    checkLoginStatus();
+                });
+
+                // Fermer le modal
+                closeModalBtn.addEventListener('click', function() {
+                    modal.style.display = 'none';
+                });
+
+                // Fermer le modal si on clique en dehors
+                window.addEventListener('click', function(event) {
+                    if (event.target == modal) {
+                        modal.style.display = 'none';
+                    }
+                });
+
+                // Gérer le formulaire de contact existant
+                document.querySelector('.contact-form').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    const submitBtn = this.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.innerHTML;
+
+                    submitBtn.disabled = true;
+                    submitBtn.querySelector('span:first-child').innerHTML = '<div class="loading"></div> Sending...';
+
+                    setTimeout(() => {
+                        alert('Your message has been sent successfully! We will contact you shortly.');
+                        this.reset();
+                        submitBtn.disabled = false;
+                        submitBtn.querySelector('span:first-child').innerHTML = originalBtnText;
+                    }, 1500);
+                });
+            });
+        </script>
+
+        <style>
+            /* Animation flottante pour les particules */
+            @keyframes float {
+                0% {
+                    transform: translateY(0px) translateX(0px);
+                }
+
+                25% {
+                    transform: translateY(-15px) translateX(10px);
+                }
+
+                50% {
+                    transform: translateY(0px) translateX(20px);
+                }
+
+                75% {
+                    transform: translateY(15px) translateX(10px);
+                }
+
+                100% {
+                    transform: translateY(0px) translateX(0px);
+                }
+            }
+
+            /* Style pour les particules */
+            .particles-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: -1;
+                overflow: hidden;
+            }
+
+            .particle {
+                position: absolute;
+                background: linear-gradient(145deg, #855e1b, #e6c373);
+                border-radius: 50%;
+                box-shadow: 0 0 10px rgba(230, 195, 115, 0.3);
+                pointer-events: none;
+            }
+
+            /* Animation de révélation */
+            .reveal {
+                position: relative;
+                opacity: 0;
+                transform: translateY(30px);
+                transition: all 1s ease;
+            }
+
+            .reveal.active {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Effet de lueur */
+            .glow-effect {
+                box-shadow: 0 0 20px rgba(133, 94, 27, 0.2);
+                transition: box-shadow 0.3s;
+            }
+
+            .glow-effect:hover {
+                box-shadow: 0 0 30px rgba(230, 195, 115, 0.3);
+            }
+
+            /* Animation pour les boutons */
+            .btn-shimmer {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .btn-shimmer::after {
+                content: '';
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: linear-gradient(to right,
+                        rgba(255, 255, 255, 0) 0%,
+                        rgba(255, 255, 255, 0.3) 50%,
+                        rgba(255, 255, 255, 0) 100%);
+                transform: rotate(30deg);
+                transition: all 0.6s;
+                opacity: 0;
+            }
+
+            .btn-shimmer:hover::after {
+                opacity: 1;
+                transform: rotate(30deg) translate(100%, -100%);
+            }
+
+            /* Bouton désactivé */
+            .modal-btn.disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+        </style>
+</body>
+
+</html>

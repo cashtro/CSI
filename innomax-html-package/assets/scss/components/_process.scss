@@ -1,0 +1,202 @@
+.process-left {
+	position: sticky;
+	top: 100px;
+    z-index: 2;
+    margin-bottom: 100px;
+    .xb-btn {
+        @include respond(md) {
+            margin-top: 40px;
+        }
+    }
+    .thm-btn--fill_icon:hover .xb-item--holder {
+        transform: translateX(-77%);
+    }
+}
+.process-right {
+    @include respond(xs) {
+        float: none;
+    }
+    .process-item {
+        top: 140px;
+        z-index: 2;
+        position: sticky;
+        max-width: 470px;
+        padding: 0 40px 40px;
+        margin-bottom: 100px;
+        background: #eaeef0;
+        @include border-radius(16px);
+        box-shadow: 4px 4px 14px 0 #d5dbde;
+        @include respond(md) {
+            position: unset;
+            margin-bottom: 40px;
+        }
+        @include respond(xs) {
+            margin-bottom: 50px;
+            padding: 0 20px 40px;
+        }
+        .xb-item {
+            &--number {
+                font-weight: 500;
+                font-size: 30px;
+                text-align: center;
+                width: 54px;
+                height: 57px;
+                padding-top: 12px;
+                border-top: none;
+                display: inline-block;
+                color: var(--color-heading);
+                border-radius: 0 0 27px 27px;
+                font-family: var(--font-heading);
+                border: 1px solid rgba(17, 17, 18, 0.1);
+            }
+            &--title {
+                font-size: 24px;
+                letter-spacing: 0em;
+                margin-bottom: 10px;
+            }
+            &--img {
+                margin: 14px 0 25px;
+            }
+        }
+    }
+}
+.peocess-shape {
+    .shape {
+        position: absolute;
+        z-index: 1;
+        &--one {
+            left: 0;
+            top: 0;
+        }
+        &--two {
+            top: 0;
+            right: 0;
+        }
+    }
+}
+.sa-process_left {
+    .process-item {
+        max-width: 450px;
+        min-height: 236px;
+        background: #fff;
+        padding: 40px 30px;
+        position: sticky;
+        top: 150px;
+        border: 1px solid #0f55dc;
+        @include border-radius(20px);
+        margin-bottom: 80px;
+        @include respond(md) {
+            position: relative;
+            margin-bottom: 0;
+            top: 0;
+            margin: 0 auto 30px;
+        }
+        &:last-child {
+            @include respond(md) {
+                margin-bottom: 0;
+            }
+        }
+        .xb-item {
+            &--icon {
+                height: 41px;
+                width: 41px;
+            }
+            &--title {
+                font-size: 28px;
+                margin: 20px 0 20px;
+            }
+            &--number {
+                position: absolute;
+                top: 30px;
+                right: 30px;
+                height: 48px;
+                width: 48px;
+                font-size: 24px;
+                @include center;
+                color: var(--color-heading-two);
+                background-color: rgba(15, 83, 220, 0.1);
+                @include border-radius(100%);
+                font-family: var(--font-heading);
+                font-weight: 500;
+            }
+        }
+        &--two {
+           top: 235px;
+           @include respond(md) {
+            top: 0;
+           }
+        }
+        &--three {
+            top: 320px;
+            @include respond(md) {
+                top: 0;
+            }
+        }
+        &--four {
+            top: 500px;
+            @include respond(md) {
+                top: 0;
+            }
+        }
+    }
+}
+.sa-process_right{
+    display: flex;
+    justify-content: end;
+    position: sticky;
+    top: 200px;
+    @include respond(md) {
+        max-width: 400px;
+        margin: 0 auto;
+    }
+    .updown {
+        animation: updown 3s linear infinite;
+    }
+}
+.sa-process_shape {
+    .shape {
+        position: absolute;
+        z-index: -1;
+        &--one {
+            top: 0;
+            left: 0;
+        }
+        &--two {
+            top: 0;
+            right: 0;
+        }
+        &--three {
+            top: 60px;
+            left: 43px;
+        }
+    }
+}
+.process-bg {
+    background: linear-gradient(360deg, #f6f6f8 0%, #fff 100%);
+}
+.cp-process-right {
+    .xb-img {
+        float: right;
+        margin-right: -145px;
+        @include respond(laptop) {
+            float: none;
+            margin-right: 0;
+        }
+        @include respond(md) {
+            float: none;
+            margin-right: 0;
+        }
+    }
+}
+.sa-process_left {
+	z-index: 2;
+	position: relative;
+}
+.process_shape {
+    position: absolute;
+    top: -268px;
+    left: -920px;
+    width: 973px;
+    height: 920px;
+    z-index: -1;
+}

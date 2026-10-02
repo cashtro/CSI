@@ -1,0 +1,86 @@
+
+
+
+<% lottery.forEach((game, index) => { %>
+    <div class="lottery-card">
+      <% if(index % 2 === 0) { %>
+
+        <!-- Structure image à droite -->
+        <div class="card-content">
+        <h2 class="card-title1">Freedom Fighter Jacket</h2>
+        <p class="card-description">A Premium Jacket of the Freedom Fighters</p>
+        
+        <div class="card-details">
+            <div class="detail-item">
+                <span class="detail-label">TIME REMAINING</span>
+                <span class="detail-value">30 hours</span>
+            </div>
+            <div class="detail-item">
+                <span class="detail-label">YOUR ENTRIES</span>
+                <span class="detail-value">5</span>
+            </div>
+        </div>
+        
+        <div class="entry-progress">
+            <div class="progress-bar" style="width: 30%;"></div>
+        </div>
+        <div class="entry-text">
+            <span>Your entries: 5</span>
+            <span>Total entries: 50,000</span>
+        </div>
+        
+        <div class="item-description-container">
+            <button class="item-description-toggle">
+                <span class="arrow-icon"></span>
+                See product details
+            </button>
+            <div class="item-detailed-description">
+                The Freedom Fighter Jacket is a premium limited-edition item crafted from high-quality materials. This exclusive jacket features authentic military-inspired design elements with modern comfort. Each jacket is individually numbered and comes with a certificate of authenticity.
+            </div>
+        </div>
+        
+        <a href="/lotteryPaiement" class="card-button">Buy entries</a>
+    </div>
+    <div class="card-image" style="background-image: url('assets/img/lotto/freedom.png.png');"></div>
+      <% } else { %>
+
+        <!-- Structure image à gauche -->
+        <div class="card-image" style="background-image: url('assets/img/shape/shield logo.png');"></div>
+        <div class="card-content">
+            <h2 class="card-title1">Free website made by Pandora</h2>
+            <p class="card-description">An opportunity to win a unique logo from Pandora</p>
+            
+            <div class="card-details">
+                <div class="detail-item">
+                    <span class="detail-label">TIME REMAINING</span>
+                    <span class="detail-value">1 seconds</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">YOUR ENTRIES</span>
+                    <span class="detail-value">5</span>
+                </div>
+            </div>
+            
+            <div class="entry-progress">
+                <div class="progress-bar" style="width: 10%;"></div>
+            </div>
+            <div class="entry-text">
+                <span>Your entries: 5</span>
+                <span>Total entries: 50</span>
+            </div>
+            
+            <div class="item-description-container">
+                <button class="item-description-toggle">
+                    <span class="arrow-icon"></span>
+                    See service details
+                </button>
+                <div class="item-detailed-description">
+                    Win a custom website created by Pandora's expert design team. This premium prize includes a full custom website development package with a unique logo design, responsive layout, and modern user interface.
+                </div>
+            </div>
+            
+            <a href="/lotteryPaiement" class="card-button">Buy entries</a>
+        </div>
+      <% } %>
+    </div>
+  <% }); %>

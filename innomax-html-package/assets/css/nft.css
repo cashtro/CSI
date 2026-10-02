@@ -1,0 +1,297 @@
+/* CSS existant */
+/* Compact Video Styles */
+.video-container {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important; /* Limit video height */
+    overflow: hidden !important;
+    z-index: -1 !important;
+}
+
+.video-container video {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 100%!important; /* Match container max-height */
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+
+.world {
+    background-size: cover;
+    background-position: center;  
+    background-repeat: no-repeat; 
+} 
+
+.Btn1 {
+    width: 200px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: -3px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right,#77530a,#ffd277,#77530a,#77530a,#ffd277,#77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+
+.Btn1::before {
+    position: absolute;
+    content: "LIVE CONSULTATION";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 92%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.Btn1:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn1:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn1:active {
+    transform: scale(0.95);
+}
+
+.Btn {
+    width: 140px;
+    height: 40px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right,#77530a,#ffd277,#77530a,#77530a,#ffd277,#77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+
+.Btn::before {
+    position: absolute;
+    content: "BUY NFT NOW !";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.Btn:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn:active {
+    transform: scale(0.95);
+}
+
+.BtnToken {
+    width: 140px;
+    height: 40px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right,#77530a,#ffd277,#77530a,#77530a,#ffd277,#77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+
+.BtnToken::before {
+    position: absolute;
+    content: "BUY TOKEN  !";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.BtnToken:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.BtnToken:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.BtnToken:active {
+    transform: scale(0.95);
+}
+
+.video-background-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.video-bg {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    z-index: -1 !important;
+    overflow: hidden !important;
+}
+
+.video-bg video {
+    width: max-content !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+}
+
+/* Conteneur YouTube responsive sans modifier la disposition originale sur desktop */
+.yt-embed-container {
+    position: relative;
+    padding-bottom: 56.25%; /* Ratio 16:9 */
+    height: 0;
+    overflow: hidden;
+}
+
+.yt-embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Ajustements responsifs UNIQUEMENT pour les appareils mobiles et tablettes */
+@media (max-width: 768px) {
+    /* Correction des marges négatives uniquement sur mobile/tablette */
+    .legend-grid {
+        margin-bottom: 100px !important; /* Plus d'espace sur mobile pour éviter le chevauchement */
+    }
+    
+    .legend-grid[style*="margin-top: -93px"] {
+        margin-top: 100px !important; /* Remplace la marge négative par une marge positive sur mobile */
+    }
+    
+    .legend-grid[style*="margin-top: -175px"] {
+        margin-top: 100px !important; /* Remplace la marge négative par une marge positive sur mobile */
+    }
+    
+    /* Ajustement pour la section sponsor sur mobile */
+    .sponsor-title-section[style*="margin-top: -360px"] {
+        margin-top: 40px !important; /* Remplace la marge négative par une marge positive sur mobile */
+    }
+    
+    /* Ajout d'espace pour les documentaires sur mobile */
+    .documentary-section {
+        margin-bottom: 50px; /* Espace en bas des documentaires sur mobile */
+    }
+    
+    /* Limitation de la hauteur des vidéos sur mobile */
+    .yt-embed-container {
+        max-height: 300px;
+        margin-bottom: 30px;
+    }
+
+    /* Modification des pseudo-éléments pour tous les boutons */
+.Btn::before, 
+.Btn1::before, 
+.BtnToken::before {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: calc(100% - 4px);
+    height: calc(100% - 4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 1s ease;
+    z-index: 1;
+}
+
+/* Ajustements spécifiques pour chaque type de bouton */
+.Btn1::before {
+    content: "LIVE CONSULTATION";
+    background-color: rgba(0, 0, 0, 0.842);
+}
+
+.Btn::before {
+    content: "BUY NFT NOW !";
+    background-color: rgba(0, 0, 0, 0.842);
+}
+
+.BtnToken::before {
+    content: "BUY TOKEN  !";
+    background-color: rgba(0, 0, 0, 0.842);
+}
+
+/* Version mobile */
+@media (max-width: 768px) {
+    .Btn::before, 
+    .Btn1::before, 
+    .BtnToken::before {
+        width: calc(100% - 2px);
+        height: calc(100% - 2px);
+    }
+    
+    /* Conserver le centrage des boutons */
+    .legend-media .Btn,
+    .legend-media .BtnToken,
+    .legend-media .Btn1 {
+        margin: 15px auto !important;
+    }
+}
+}
+
+
+
+

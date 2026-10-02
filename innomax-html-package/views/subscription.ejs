@@ -1,0 +1,820 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Abonnements - D. School">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Abonnements - D. School</title>
+
+    <link rel="shortcut icon" href="assets/img/favicon.webp" type="images/x-icon"/>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/normalize.css">
+
+    <!-- ✅ Bundle global -->
+<link rel="preload" href="assets/css/style.bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="assets/css/style.bundle.min.css"></noscript>
+
+
+    <style>
+        /* Couleur de fond uniforme */
+        body {
+            background: #000000;
+            color: #e4e4e4;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            background: #000000;
+        }
+
+        /* Section des abonnements */
+        .subscription-section {
+            padding: 120px 0;
+            background: #000000;
+            position: relative;
+            z-index: 1;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            color: #fff;
+            text-align: center;
+            animation: fadeInDown 1s ease-in-out;
+            background: linear-gradient(90deg, #0a0b1a, #855e1b); /* Dégradé bleu/doré */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 2rem;
+            color: #855e1b;
+            margin-bottom: 60px;
+            text-align: center;
+            animation: fadeInUp 1s ease-in-out;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Cartes de plans */
+        .plan-card {
+            background: rgba(10, 11, 26, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+            height: 100%;
+            position: relative;
+            border: 1px solid rgba(133, 94, 27, 0.3); /* Bordure dorée (#855e1b) */
+            animation: fadeIn 1s ease-in-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plan-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(10, 11, 26, 0.2);
+            border-color: rgba(133, 94, 27, 0.7); /* Bordure dorée plus visible au survol */
+        }
+
+        .plan-header {
+            padding: 30px 20px;
+            background: #0a0b1a; /* En-tête bleu nuit */
+            color: white;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            border-bottom: 2px solid rgba(133, 94, 27, 0.5); /* Bordure dorée en bas */
+        }
+
+        .plan-header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            z-index: 1;
+            transition: all 0.5s ease;
+        }
+
+        .plan-card:hover .plan-header::before {
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .plan-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 2;
+        }
+
+        .plan-price {
+            font-size: 60px;
+            font-weight: 800;
+            margin: 20px 0;
+            position: relative;
+            z-index: 2;
+            animation: pulse 2s infinite;
+        }
+
+        .plan-duration {
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+
+        .plan-features {
+            padding: 40px 30px;
+            list-style-type: none;
+            flex-grow: 1;
+            margin: 0;
+        }
+
+        .plan-features li {
+            margin-bottom: 20px;
+            padding-left: 30px;
+            position: relative;
+            font-size: 16px;
+            color: #e4e4e4;
+            transition: all 0.3s ease;
+        }
+
+        .plan-features li:hover {
+            transform: translateX(10px);
+        }
+
+        .plan-features li:before {
+            content: "✓";
+            color: #855e1b; /* Icônes check dorées */
+            position: absolute;
+            left: 0;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .plan-footer {
+            padding: 20px 30px 30px;
+            text-align: center;
+            border-top: 1px solid rgba(133, 94, 27, 0.2); /* Bordure dorée en haut */
+        }
+
+        .btn-subscribe {
+            background: #0a0b1a; /* Bouton bleu nuit comme les cartes */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(133, 94, 27, 0.3); /* Bordure légèrement dorée */
+        }
+
+        .btn-subscribe:hover {
+            background: #141731; /* Bleu un peu plus clair au survol */
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(20, 23, 49, 0.4);
+            color: white;
+            border-color: rgba(133, 94, 27, 0.6);
+        }
+
+        /* Section des moyens de paiement */
+        .payment-methods {
+            padding: 40px 0;
+            position: relative;
+            overflow: hidden;
+            margin-top: 60px;
+        }
+
+        .payment-methods h3 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #fff;
+            font-size: 24px;
+        }
+
+        .payment-carousel-wrapper {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .payment-carousel {
+            mask-image: linear-gradient(
+                to right,
+                transparent 0%,
+                black 10%,
+                black 90%,
+                transparent 100%
+            );
+            overflow: hidden;
+        }
+
+        .payment-track {
+            display: flex;
+            width: 200%;
+            animation: scroll 40s linear infinite;
+            padding: 25px 0;
+        }
+
+        .payment-track:hover {
+            animation-play-state: paused;
+        }
+
+        .payment-icons {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            width: 100%;
+            gap: 40px;
+            padding: 0 50px;
+        }
+
+        .payment-icon {
+            height: 60px; /* Augmenté pour plus de visibilité */
+            filter: none;
+            opacity: 0.9; /* Augmenté pour plus de visibilité */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            flex-shrink: 0;
+            transform: scale(0.9);
+        }
+
+        .payment-icon:hover {
+            filter: grayscale(0);
+            opacity: 1;
+            transform: scale(1.15) translateY(-5px);
+            cursor: pointer;
+            filter: drop-shadow(0 5px 15px rgba(133, 94, 27, 0.5)); /* Ombre dorée au survol */
+        }
+
+        .carousel-gradient {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .carousel-gradient.left {
+            left: 0;
+            background: linear-gradient(90deg, #000000 30%, transparent);
+        }
+
+        .carousel-gradient.right {
+            right: 0;
+            background: linear-gradient(270deg, #000000 30%, transparent);
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @media (max-width: 768px) {
+            .payment-icon {
+                height: 45px;
+            }
+
+            .payment-icons {
+                gap: 25px;
+                padding: 0 20px;
+            }
+
+            .carousel-gradient {
+                width: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .payment-track {
+                animation-duration: 30s;
+            }
+            
+            .payment-icon {
+                height: 40px;
+            }
+        }
+
+        /* Badge populaire */
+        .popular-badge {
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: #855e1b; /* Badge populaire doré */
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 3;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Style pour les boutons Stripe custom */
+        .custom-stripe-button {
+            background: #0a0b1a; /* Bouton bleu nuit comme les cartes */
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            width: 100%;
+            font-size: 1.1rem;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border: 1px solid rgba(133, 94, 27, 0.3); /* Bordure légèrement dorée */
+        }
+
+        .custom-stripe-button:hover {
+            background: #141731; /* Bleu un peu plus clair au survol */
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(20, 23, 49, 0.4);
+            border-color: rgba(133, 94, 27, 0.6);
+        }
+
+        /* Cacher le bouton Stripe par défaut */
+        .stripe-button-el {
+            display: none !important;
+        }
+
+        /* Garantie de remboursement */
+        .money-back {
+            text-align: center;
+            margin-top: 30px;
+            color: #b8b8b8;
+            font-size: 1.1rem;
+            padding: 15px;
+            background: rgba(10, 11, 26, 0.3);
+            border-radius: 10px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid rgba(133, 94, 27, 0.2); /* Bordure légèrement dorée */
+        }
+
+        .money-back i {
+            color: #855e1b; /* Icône dorée */
+            margin-right: 5px;
+            font-size: 1.2rem;
+        }
+
+        /* Styles pour les liens de paiement */
+        .payment-link {
+            transition: transform 0.3s ease, filter 0.3s ease;
+            display: inline-block;
+        }
+
+        .payment-link:hover {
+            transform: translateY(-3px);
+            filter: drop-shadow(0 5px 15px rgba(133, 94, 27, 0.5)); /* Ombre dorée au survol */
+        }
+
+        .payment-active .payment-icon {
+            animation: paymentPulse 0.5s ease;
+            filter: grayscale(0) !important;
+        }
+
+        /* Section de paiement améliorée */
+        .payment-methods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 20px;
+            margin: 40px auto;
+            max-width: 900px;
+        }
+
+        .payment-method-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 15px;
+            background: rgba(10, 11, 26, 0.4);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid rgba(133, 94, 27, 0.2); /* Bordure légèrement dorée */
+        }
+
+        .payment-method-item:hover {
+            transform: translateY(-5px);
+            background: rgba(10, 11, 26, 0.7);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            border-color: rgba(133, 94, 27, 0.5); /* Bordure dorée plus visible au survol */
+        }
+
+        .payment-method-item img {
+            height: 50px;
+            margin-bottom: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .payment-method-item:hover img {
+            transform: scale(1.1);
+        }
+
+        .payment-method-item p {
+            font-size: 14px;
+            margin: 0;
+            color: #e4e4e4;
+        }
+
+        .payment-section-title {
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 30px;
+            margin-top: 60px;
+            color: #fff;
+        }
+
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+
+        /* Style du plan populaire */
+        .plan-card.popular {
+            border: 2px solid rgba(133, 94, 27, 0.8); /* Bordure dorée plus visible pour le plan populaire */
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3), 0 0 20px rgba(133, 94, 27, 0.2);
+        }
+
+        /* Effet de brillance pour les éléments dorés */
+        @keyframes goldShimmer {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .btn-glow {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .btn-glow::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        rgba(255, 255, 255, 0.2), 
+                        transparent);
+            z-index: -1;
+            animation: goldShimmer 1.5s infinite;
+            transform: skewX(-15deg);
+        }
+
+        @keyframes paymentPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+
+<body class="sco_agency" style="background: #000000;">
+
+    <%-include('partials/header')%>
+
+    <!-- Particules en arrière-plan -->
+    <div id="particles-js"></div>
+
+    <!-- backtotop - start -->
+    <div class="xb-backtotop">
+        <a href="#" class="scroll">
+            <i class="far fa-arrow-up"></i>
+        </a>
+    </div>
+    <!-- backtotop - end -->
+
+    <!-- Preloader - Start 
+    <div id="xb-loadding" class="xb-loader"><div class="xb-dual-ring"></div></div>
+    Preloader - End -->
+    
+    <div class="body_wrap">
+        <!-- main area start  -->
+        <main>
+            <!-- Subscription Section Start -->
+            <section class="subscription-section">
+                <div class="container">
+                    <div class="section-subtitle">
+                        Choose Your Subscription Plan
+                    </div>
+                    <div class="row justify-content-center">
+            
+                        <!-- Basic Plan -->
+                        <div class="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch">
+                            <div class="plan-card w-100">
+                                <div class="plan-header">
+                                    <h3 class="plan-title">Basic</h3>
+                                    <div class="plan-price">€19</div>
+                                    <div class="plan-duration">/ month</div>
+                                </div>
+                                <ul class="plan-features">
+                                    <li>Access to 10 courses</li>
+                                    <li>Email support</li>
+                                    <li>Certificate of participation</li>
+                                    <li>Limited resource access</li>
+                                </ul>
+                                <div class="plan-footer">
+                                    <form class="stripe-form" action="/create-checkout-session" method="POST">
+                                        <input type="hidden" name="plan" value="basic">
+                                        <input type="hidden" name="payment_method" id="payment_method">
+                                        <button type="submit" class="custom-stripe-button">Subscribe Now</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Standard Plan -->
+                        <div class="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch">
+                            <div class="plan-card w-100 popular">
+                                <div class="popular-badge">Popular</div>
+                                <div class="plan-header">
+                                    <h3 class="plan-title">Standard</h3>
+                                    <div class="plan-price">€49</div>
+                                    <div class="plan-duration">/ month</div>
+                                </div>
+                                <ul class="plan-features">
+                                    <li>Access to 30 courses</li>
+                                    <li>Priority support</li>
+                                    <li>Certificate of completion</li>
+                                    <li>Full access to resources</li>
+                                    <li>1 coaching session/month</li>
+                                </ul>
+                                <div class="plan-footer">
+                                    <form class="stripe-form" action="/create-checkout-session" method="POST">
+                                        <input type="hidden" name="plan" value="standard">
+                                        <input type="hidden" name="payment_method" id="payment_method">
+                                        <button type="submit" class="custom-stripe-button btn-glow">Subscribe Now</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+            
+                        <!-- Premium Plan -->
+                        <div class="col-lg-4 col-md-6 mb-4 d-flex align-items-stretch">
+                            <div class="plan-card w-100">
+                                <div class="plan-header">
+                                    <h3 class="plan-title">Premium</h3>
+                                    <div class="plan-price">€99</div>
+                                    <div class="plan-duration">/ month</div>
+                                </div>
+                                <ul class="plan-features">
+                                    <li>Unlimited access to all courses</li>
+                                    <li>24/7 support</li>
+                                    <li>Certificate of completion</li>
+                                    <li>Full access to resources</li>
+                                    <li>4 coaching sessions/month</li>
+                                    <li>Access to VIP community</li>
+                                </ul>
+                                <div class="plan-footer">
+                                    <form class="stripe-form" action="/create-checkout-session" method="POST">
+                                        <input type="hidden" name="plan" value="premium">
+                                        <input type="hidden" name="payment_method" id="payment_method">
+                                        <button type="submit" class="custom-stripe-button">Subscribe Now</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+
+                   
+            </section>
+            <!-- Subscription Section End -->
+        </main>
+        <!-- main area end  -->
+        
+        <%-include('partials/footer')%>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/particles.min.js" defer></script>
+    <script src="assets/js/main.js" defer></script>
+    <script src="https://js.stripe.com/v3/" async></script>
+    <script>
+        // Configuration des particules avec couleurs adaptées
+        const particlesConfig = {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#855e1b" // Couleur dorée pour les particules
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.3,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#0a0b1a", // Couleur bleu nuit pour les lignes
+                    "opacity": 0.2,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 2,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "grab"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 140,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        };
+
+        // Initialisation des particules
+        document.addEventListener('DOMContentLoaded', function() {
+            particlesJS('particles-js', particlesConfig);
+        });
+
+        // Égalisation hauteur des cartes
+        function equalizeCardHeights() {
+            let maxHeight = 0;
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.style.height = 'auto';
+                if (card.offsetHeight > maxHeight) maxHeight = card.offsetHeight;
+            });
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.style.height = maxHeight + 'px';
+            });
+        }
+
+        window.addEventListener('load', equalizeCardHeights);
+        window.addEventListener('resize', equalizeCardHeights);
+
+        // Gestion des paiements
+        const stripe = Stripe('<%= stripePublicKey%>');
+        
+        // Soumission des formulaires
+        document.querySelectorAll('.stripe-form').forEach(form => {
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const plan = form.querySelector('input[name="plan"]').value;
+                const paymentMethod = form.querySelector('#payment_method').value;
+
+                try {
+                    const response = await fetch('/create-checkout-session', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            plan: plan,
+                            payment_method: paymentMethod
+                        }),
+                    });
+
+                    const session = await response.json();
+                    const result = await stripe.redirectToCheckout({
+                        sessionId: session.id
+                    });
+
+                    if (result.error) {
+                        alert(result.error.message);
+                    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

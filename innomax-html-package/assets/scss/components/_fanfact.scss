@@ -1,0 +1,422 @@
+.fanfact-item {
+    padding: 45px 30px;
+    position: relative;
+    cursor: pointer;
+    max-height: 288px;
+    @include transition(.5s);
+    @include border-radius(10px);
+    background: var(--color-white);
+    &::before {
+        top: 0;
+        left: 0;
+        opacity: 0;
+        content: '';
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        @include transition(.3s);
+        transform: scale(0.9);
+        @include border-radius(10px);
+        background: var(--color-heading);
+    }
+    &:hover {
+        &::before {
+            opacity: 1;
+            @include transition(.3s);
+            transform: scale(1);
+        }
+        .xb-item {
+            &--title,
+            &--content,
+            &--number,
+            &--text  {
+                color: var(--color-white);
+            }
+        }
+        .fanfact-icon {
+            .icon {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    }
+    .xb-item {
+        &--title  {
+            font-size: 20px;
+            margin-bottom: 10px;
+            letter-spacing: 0em;
+            @include transition(.3s);
+        }
+        &--content {
+            @include transition(.3s);
+            @include respond(lg) {
+                max-width: 235px;
+            }
+        }
+        &--number  {
+            font-weight: 500;
+            font-size: 48px;
+            display: block;
+            margin: 45px 0 20px;
+            letter-spacing: -0.02em;
+            color: var(--color-heading);
+            font-family: var(--font-heading);
+            @include transition(.3s);
+            @include respond(lg) {
+                font-size: 35px;
+            }
+            @media only screen and (max-width: 992px) {
+                font-size: 30px;
+            }
+        }
+        &--text  {
+            font-weight: 500;
+            font-size: 20px;
+            letter-spacing: 0em;
+            color: var(--color-heading);
+            font-family: var(--font-heading);
+            @include transition(.3s);
+            @media only screen and (max-width: 992px) {
+                font-size: 18px;
+            }
+        }
+    }
+    .fanfact-icon {
+        .icon {
+            opacity: 0;
+            position: absolute;
+            cursor: pointer;
+            transform: scale(0.6);
+            border: 3px solid #fff;
+            @include transition(.3s);
+            @include border-radius(100%);
+            &--one {
+                top: -130px;
+                right: 132px;
+                height: 108px;
+                width: 108px;
+                transition-delay: .1s;
+                @include respond(lg) {
+                    top: -100px;
+                    right: 125px;
+                    height: 90px;
+                    width: 90px;
+                }
+                @include respond(md) {
+                    top: -85px;
+                    height: 80px;
+                    width: 80px;
+                }
+            }
+            &--two {
+                height: 100px;
+                width: 100px;
+                left: 30px;
+                bottom: -74px;
+                transition-delay: .2s;
+                @include respond(lg) {
+                    height: 80px;
+                    width: 80px;
+                    left: 50px;
+                    bottom: -50px;
+                }
+                @include respond(md) {
+                    height: 60px;
+                    width: 60px;
+                    left: 58px;
+                    bottom: -33px;
+                }
+            }
+            &--three {
+                bottom: -60px;
+                right: 28px;
+                height: 133px;
+                width: 133px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition-delay: .3s;
+                background: var(--color-primary);
+                @include respond(lg) {
+                    bottom: -40px;
+                    right: 11px;
+                    height: 100px;
+                    width: 100px;
+                }
+                @include respond(md) {
+                    width: 85px;
+                    height: 85px;
+                }
+                @include respond(md) {
+                    right: 35px;
+                    bottom: -30px;
+                }
+            }
+        }
+        &--two {
+            .icon {
+                &--one {
+                    top: -120px;
+                    right: 25px;
+                    height: 72px;
+                    width: 72px;
+                    @include respond(md) {
+                        top: 65px;
+                        right: -29px;
+                        width: 65px;
+                        height: 65px;
+                    }
+                    @include respond(xs) {
+                        top: 86px;
+                        right: -12px;
+                        width: 55px;
+                        height: 55px;
+                    }
+                }
+                &--two {
+                    height: 100px;
+                    width: 100px;
+                    right: 47px;
+                    bottom: -74px;
+                    left: auto;
+                    @include respond(lg) {
+                        height: 80px;
+                        width: 80px;
+                        right: 70px;
+                        bottom: -53px;
+                    }
+                    @include respond(md) {
+                        height: 75px;
+                        width: 75px;
+                        bottom: -30px;
+                    }
+                }
+                &--three {
+                    top: -93px;
+                    right: 112px;
+                    transition-delay: .2s;
+                    @include respond(lg) {
+                        top: -70px;
+                    }
+                    @include respond(md) {
+                        top: -35px;
+                    }
+                }
+            }
+        }
+        &--three {
+            .icon {
+                &--one {
+                    top: -61px;
+                    left: 30px;
+                    height: 86px;
+                    width: 86px;
+                    @include respond(lg) {
+                        top: -50px;
+                        left: 40px;
+                        height: 76px;
+                        width: 76px;
+                    }
+                    @include respond(md) {
+                        top: -32px;
+                        left: 50px;
+                        height: 66px;
+                        width: 66px;
+                    }
+                }
+                &--two {
+                    height: 92px;
+                    width: 92px;
+                    right: -54px;
+                    bottom: 88px;
+                    left: auto;
+                    @include respond(lg) {
+                        height: 72px;
+                        width: 72px;
+                        right: -13px;
+                        bottom: 105px;
+                    }
+                    @include respond(md) {
+                        height: 62px;
+                        width: 62px;
+                        right: -30px;
+                        bottom: 128px;
+                    }
+                    @include respond(xs) {
+                        height: 55px;
+                        width: 55px;
+                        right: -13px;
+                    }
+                }
+                &--three {
+                    bottom: -67px;
+                    @include respond(lg) {
+                        bottom: -55px;
+                    }
+                }
+            }
+        }
+    }
+}
+.xb-fanfact-item {
+    width: 31.5%;
+    padding: 47px 40px 45px;
+    @include border-radius(20px);
+    background: rgba(229, 160, 227, 0.16);
+    margin-top: 30px;
+    @include respond(md) {
+        padding: 30px 20px;
+    }
+    @include respond(xs) {
+        width: 100%;
+    }
+    .xb-item {
+        &--number {
+            font-weight: 600;
+            font-size: 50px;
+            letter-spacing: -0.05em;
+            color: var(--color-heading-three);
+            font-family: var(--font-body);
+            @include respond(md) {
+                font-size: 30px;
+            }
+            @include respond(lg) {
+                font-size: 42px;
+            }
+        }
+    }
+    &--two {
+        background: rgba(217, 244, 137, 0.36);
+    }
+    &--four {
+        background: rgba(100, 64, 224, 0.09);
+    }
+}
+.cd-fanfact-inner {
+    margin-left: -60px;
+    margin-right: -60px;
+    padding: 106px 60px;
+    background: #161c66;
+    @include border-radius(26px);
+    .xb-item {
+        &--item_box {
+            min-height: 233px;
+            max-width: 305px;
+            &:nth-child(2) {
+                .xb-item--number {
+                    color: var(--color-primary-four);
+                }
+            }
+            &:nth-child(3) {
+                .xb-item--number {
+                    color: #bb33df;
+                }
+            }
+        }
+        &--number {
+            font-size: 80px;
+            font-weight: 800;
+            color: #00b59f;
+            display: block;
+            margin-bottom: 48px;
+            letter-spacing: -0.02em;
+            font-family: var(--font-heading-four);
+            @include respond(xs) {
+                font-size: 50px;
+                margin-bottom: 20px;
+            }
+            .time {
+                font-size: 40px;
+                font-weight: 500;
+                margin-left: -5px;
+                display: inline-block;
+                transform: translateY(-10px);
+            }
+            .suffix {
+                margin-left: 10px;
+            }
+        }
+        &--content {
+            font-weight: 500;
+            font-size: 24px;
+            line-height: 37px;
+            letter-spacing: -0.01em;
+            text-transform: capitalize;
+            color: #fff;
+        }
+    }
+}
+.ap-fanfact-item {
+    .xb-item {
+        &--number {
+            font-weight: 700;
+            font-size: 130px;
+            margin-bottom: 7px;
+            letter-spacing: -0.01em;
+            color: var(--color-primary-two);
+            @include respond(lg) {
+                font-size: 80px;
+            }
+            @include respond(md) {
+                font-size: 50px;
+            }
+        }
+        &--text {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 20px;
+            text-transform: uppercase;
+            color: var(--color-heading-two);
+            @include respond(md) {
+                font-size: 18px;
+            }
+        }
+    }
+    &--last {
+        float: right;
+        @include respond(xs) {
+            float: none;
+        }
+    }
+    &--middle {
+        padding-left: 60px;
+        @include respond(md) {
+            padding-left: 0;
+        }
+    }
+    
+}
+.pg-fanfact-item {
+    position: relative;
+    &:not(:last-child) {
+        &::before {
+            position: absolute;
+            height: 166px;
+            width: 2px;
+            content: '';
+            top: 22px;
+            right: -100px;
+            background: rgba(12, 17, 29, 0.1);
+            @include respond(lg) {
+                display: none;
+            }
+        }
+    }
+    .xb-item {
+        &--number {
+            font-size: 80px;
+            @include respond(xs) {
+                font-size: 54px;
+            }
+        }
+        &--content {
+            max-width: 294px;
+            display: block;
+            margin-top: 13px;
+        }
+    }
+}
+.pg-fan-bg {
+    background: linear-gradient(360deg, #f6f6f8 0%, #fff 100%);
+    
+}

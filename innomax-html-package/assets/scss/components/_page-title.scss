@@ -1,0 +1,229 @@
+.page-title {
+	@include respond(lg) {
+        padding-top: 160px;
+    }
+}
+.page-title-box {
+    .sub-title {
+        font-weight: 600;
+        font-size: 18px;
+        display: inline-flex;
+        align-items: center;
+        margin-bottom: 26px;
+        
+        color: var(--color-heading-two);
+        img {
+            margin-right: 6px;
+        }
+    }
+    .title {
+        font-weight: 700;
+        font-size: 55px;
+        line-height: 76px;
+        color: var(--color-heading-two);
+        @include respond(laptop) {
+            font-size: 50px;
+            line-height: 65px;
+        }
+        @include respond(lg) {
+            font-size: 42px;
+            line-height: 55px;
+        }
+        @include respond(md) {
+            font-size: 28px;
+            line-height: 42px;
+        }
+    }
+    .page-update_time {
+        font-weight: 600;
+        font-size: 18px;
+        margin-top: 25px;
+        display: inline-block;
+        color: var(--color-heading-two);
+    }
+}
+.count-box {
+    float: right;
+    transform: translateY(-15px);
+    @include respond(md) {
+        float: none;
+    }
+    .number {
+        font-weight: 700;
+        font-size: 160px;
+        margin-bottom: 7px;
+        letter-spacing: -0.01em;
+        color: var(--color-primary-two);
+        @include respond(laptop) {
+            font-size: 120px;
+        }
+        @include respond(lg) {
+            font-size: 100px;
+        }
+        @include respond(xs) {
+            font-size: 60px;
+        }
+        .suffix {
+            font-weight: 250;
+        }
+    }
+    .text {
+        font-weight: 700;
+        font-size: 20px;
+        text-transform: uppercase;
+        color: var(--color-primary-two);
+        font-family: var(--font-heading);
+    }
+}
+.page-title-wrap {
+    padding-top: 40px;
+    padding-bottom: 43px;
+}
+.cp-img-slide {
+    position: absolute;
+    top: 26%;
+    right: 12%;
+    @include respond(laptop) {
+        right: 2%;
+    }
+    @include respond(lg) {
+        right: 1%;
+    }
+    @include respond(md) {
+        top: 29%;
+    }
+    @include respond(xs) {
+        @include transform(rotate(90deg));
+        position: unset;
+    }
+    &::before,
+    &::after {
+        position: absolute;
+        top: -155px;
+        left: -70px;
+        content: '';
+        z-index: 1;
+        width: 683px;
+        height: 213px;
+        background: #e4eafc;
+        filter: blur(25.799999237060547px);
+    }
+    &::after {
+        top: auto;
+        bottom: -110px;
+        left: -70px;
+        background: #fff;
+        @include respond(lg) {
+            bottom: -50px;
+        }
+        @include respond(md) {
+            bottom: -120px;
+        }
+        @include respond(xs) {
+            bottom: -180px;
+        }
+    }
+}
+.cp-img-inner {
+    max-height: 535px;
+    overflow: hidden;
+    @include respond(md) {
+        max-height: 400px;
+    }
+    @include respond(xs) {
+        gap: 20px;
+        overflow: unset;
+    }
+    .cp-item {
+        &:not(:last-child) {
+            margin-right: 20px;
+        }
+        .xb-img {
+            margin-bottom: 20px;
+            @include respond(xs) {
+                @include transform(rotate(-90deg));
+                margin-bottom: 0;
+            }
+            img {
+                @include border-radius(15px);
+            }
+        }
+    }
+}
+.cp-page-title {
+    overflow: hidden;
+    .page-title-wrap {
+        padding-top: 45px;
+        padding-bottom: 143px;
+        @include respond(md) {
+            padding-bottom: 80px;
+        }
+        @include respond(xs) {
+            padding-bottom: 0;
+        }
+    }
+}
+.pg-title-wrap {
+    padding-top: 36px;
+    padding-bottom: 47px
+}
+.pg-img-right {
+    & > img {
+        float: right;
+        margin-right: -75px;
+        margin-top: -111px;
+        @include respond(laptop) {
+            margin-right: 0;
+        }
+        @include respond(lg) {
+            margin-right: 0;
+            margin-top: -29px;
+        }
+        @include respond(md) {
+            float: none;
+        }
+    }
+    .shape {
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+}
+.sd-right-img {
+    float: right;
+    margin-right: -17px;
+    @include respond(md) {
+        float: none;
+        margin-right: 0;
+    }
+}
+.sd-title-wrap {
+    padding-top: 10px;
+    
+}
+.cp-img-inner .cp-item {
+	@include respond(lg) {
+        width: 160px;
+    }
+    @include respond(md) {
+        width: 130px;
+    }
+}
+.pg-arrow-shape {
+    position: absolute;
+    top: -22px;
+    right: -2px;
+}
+.sd-arrow-shape {
+    position: absolute;
+    top: 31%;
+    right: 0;
+    &.style-2 {
+        top: 34px;
+        right: 15%;
+    }
+    &.style-3 {
+        top: 41px;
+        right: 9%;
+    }
+}

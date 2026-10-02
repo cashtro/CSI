@@ -1,0 +1,105 @@
+
+
+#royal_preloader.text .loader,
+.list-social-nav li:hover.icon-soc-nav a,
+.cd-scndr-nav a:hover,
+.cd-scndr-nav label:hover,
+.cur-nav-color,
+#filter li a:hover ,
+#filter li .current,
+.curtain-text .arrow-right,
+.about-link:hover,
+.contact-details p,
+.comm-number p a,
+.name-aut-replay a,
+.link-recents a:hover,
+.pricing-item:hover h6,
+.pricing-item.popular h6{
+	color:#e67e22;
+}
+.grid--style-2 .caption{
+	color:rgba(230, 126, 34,.8);
+}
+.home-text-sec p span,
+#cd-zoom-in, #cd-zoom-out{
+	background-color: rgba(230, 126, 34,.8);
+}
+#filter li a:after,
+.about-quarter-2,
+#ajax-form button:hover,
+.comments button:hover,
+.sidebar input:active,
+.sidebar input:focus,
+.link-tag a:hover,
+.pricing-item a.price-link:hover,
+.counter-line {
+	background-color: #e67e22;
+}
+.light-over-2{
+	background-color:rgba(230, 126, 34,.8);
+}
+#ajax-form textarea:focus,
+#ajax-form input:focus,
+#ajax-form textarea:active,
+#ajax-form input:active {	
+	border-bottom:1px solid #e67e22;
+}
+.cd-pagination .current {
+	background-color: #e67e22;
+	border-color: #e67e22;
+}
+.comments textarea:focus,
+.comments input:focus,
+.comments textarea:active,
+.comments input:active {	
+	border-bottom:1px solid #e67e22;
+}
+.sidebar input:-ms-input-placeholder  {
+	color:#e67e22;
+}
+.sidebar input::-moz-placeholder  {
+	color:#e67e22;
+}
+.sidebar input:-moz-placeholder  {
+	color:#e67e22;
+}
+.sidebar input::-webkit-input-placeholder  {
+	color:#e67e22;
+}
+
+
+
+
+
+
+::selection {
+	background: #e67e22;
+}
+::-moz-selection {
+	background: #e67e22;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

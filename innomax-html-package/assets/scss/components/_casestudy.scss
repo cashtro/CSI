@@ -1,0 +1,91 @@
+.casestudy-menu {
+    margin: 0 15px;
+}
+.casestudy-item {
+    position: relative;
+    .casestudy-img {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+        @include transition(.3s);
+        @include border-radius(10px);
+        &:before {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            content: '';
+            opacity: 0;
+            z-index: 1;
+            @include transition(.3s);
+            background: rgba(0, 0, 0, 0.5);
+        }
+        img {
+            @include transition(.3s);
+        }
+        .content_wrap {
+            left: 0;
+            right: 0;
+            bottom: 0;
+            gap: 5px;
+            z-index: 2;
+            padding: 30px;
+            display: flex;
+            position: absolute;
+            flex-direction: column;
+            align-items: flex-start;
+            .item_title,
+            .item_tag {
+                opacity: 0;
+                top: 16px;
+                line-height: 1;
+                display: inline-block;
+                position: relative;
+                color: var(--color-heading-two);
+                background-color: var(--color-white);
+                @include border-radius(7px);
+                transform-origin: bottom;
+                @include transition(.3s);
+                transform: perspective(500px) rotateX(20deg);
+            }
+            .item_title {
+                font-size: 24px;
+                font-weight: 700;
+                padding: 16px 20px;
+                margin-bottom: 5px;
+            }
+            .item_tag {
+                font-size: 16px;
+                font-weight: 600;
+                padding: 10px 21px;
+                color: var(--color-heading-two);
+            }
+        }
+    }
+    .xb-overlay {
+        z-index: 2;
+    }
+    &:hover {
+        .casestudy-img {
+            &::before {
+                opacity: 1;
+            }
+            img {
+                transform: scale(1.09) rotate(3deg);
+            }
+            .content_wrap {
+                .item_title,
+                .item_tag {
+                    top: 0;
+                    opacity: 1;
+                    transform: perspective(1000px) rotateX(0deg);
+                }
+                .item_tag {
+                    transition-delay: .1s;
+                }
+            }
+        }
+        
+    }
+}

@@ -1,0 +1,151 @@
+.roadmap-item {
+    padding: 40px 0 54px;
+    max-height: 398px;
+    @include border-radius(15px);
+    background: var(--color-white);
+    @include respond(laptop) {
+        padding: 40px 0 0;
+    }
+    @include respond(lg) {
+        max-height: none;
+        padding-bottom: 0;
+    }
+    .xb-item {
+        &--top {
+            display: flex;
+            align-items: center;
+            @include respond(laptop) {
+                img {
+                    display: none;
+                }
+            }
+            @include respond(lg) {
+                img {
+                    display: none;
+                }
+            }
+        }
+        &--ques {
+            margin: 0 20px;
+            font-weight: 700;
+            font-size: 36px;
+            color: var(--color-heading-two);
+            font-family: var(--font-heading);
+            @include respond(laptop) {
+                margin: 0 auto;
+            }
+            @include respond(lg) {
+                margin: 0 auto;
+            }
+        }
+        &--holder {
+            padding: 40px;
+        }
+        &--year {
+            padding: 8.5px 14.5px;
+            font-weight: 700;
+            font-size: 30px;
+            letter-spacing: 0em;
+            display: inline-block;
+            border: 1px solid #e7e8ec;
+            @include border-radius(20px);
+            color: var(--color-primary-two);
+            font-family: var(--font-heading);
+            background: rgba(15, 85, 220, 0.1);
+        }
+        &--title {
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: 0em;
+            margin: 25px 0 25px;
+            color: var(--color-heading-two);
+            @include respond(lg) {
+                font-size: 24px;
+            }
+        }
+        &--content {
+            max-width: 529px;
+        }
+    }
+}
+.raodmap-slider {
+    margin-left: -120px;
+    margin-right: -120px;
+    padding-bottom: 78px;
+    @include respond(laptop) {
+        margin-left: -300px;
+        margin-right: -300px;
+        padding-bottom: 65px;
+    }
+    @include respond(xs) {
+        margin-left: 0;
+        margin-right: 0;
+        padding-bottom: 40px;
+    }
+    .swiper-pagination {
+        bottom: 19%;
+        z-index: 1;
+        @media only screen and (min-width: 1200px) and (max-width: 1500px) {
+            bottom: 12%;
+        }
+        @include respond(xs) {
+            bottom: 11%;
+        }
+        .swiper-pagination-bullet {
+            width: 10px;
+            height: 10px;
+            opacity: .2;
+            background: var(--color-white);
+            &:not(:last-child) {
+                margin-right: 6px;
+            }
+            &.swiper-pagination-bullet-active {
+                opacity: 1;
+                transform: scale(1.4);
+            }
+        }
+    }
+}
+.roadmap-shape {
+    .shape {
+        position: absolute;
+        &--one {
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        &--two {
+            left: 50%;
+            bottom: 10.7%;
+            transform: translateX(-50%);
+            @media (max-width: 1300px) {
+                display: none;
+            }
+        }
+        &--three {
+            bottom: 18px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+    }
+}
+.roadmap-button {
+    .sa-swiper-btn {
+        background: #0f55dc;
+        color: var(--color-white);
+        &:hover {
+            background: var(--color-white);
+            i {
+                color: var(--color-black);
+            }
+        }
+    }
+}
+.roadmap-pb {
+    @media only screen and (min-width: 1200px) and (max-width: 1300px) {
+        padding-bottom: 100px;
+    }
+    @include respond(xs) {
+        padding-bottom: 100px;
+    }
+}

@@ -1,0 +1,311 @@
+/* Portfolio CSS */
+/* Réinitialiser le fond du body pour qu'il ne s'applique pas à toute la page */
+
+
+body {
+    background-image: none;
+    background-color: initial; /* Utilise la couleur par défaut */
+}
+
+/* Sélectionner la section des cartes et toutes les sections suivantes jusqu'au footer */
+#scroll-link, 
+#scroll-link ~ .section:not(footer),
+.padding-top-bottom-small:not(.dark-back) {
+    background-image: url('assets/img/lotto/9.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+    background-attachment: fixed !important; /* Fixed pour un effet de parallaxe */
+    background-repeat: no-repeat !important;
+    position: relative;
+}
+
+/* Cibler spécifiquement la section grise avant le footer */
+.padding-top-bottom-small {
+    background-image: url('assets/img/lotto/9.jpg') !important;
+    background-size: cover !important;
+    background-position: center !important;
+}
+
+/* Exclure spécifiquement le footer */
+footer, .dark-back {
+    background-image: none !important;
+}
+
+/* Assurer que les cartes ont un fond semi-transparent */
+.card {
+    background-color: rgba(20, 20, 20, 0.7) !important;
+    border: 3px solid rgba(20, 20, 20, 0.8);
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
+}
+
+/* Rendre la boîte de contenu semi-transparente */
+.content-box {
+    background: rgba(0, 0, 0, 0.7) !important;
+}
+
+.content-box:hover {
+    background: linear-gradient(45deg, 
+        rgba(10, 11, 26, 0.8), 
+        rgba(133, 94, 27, 0.8), 
+        rgba(10, 11, 26, 0.8), 
+        rgba(133, 94, 27, 0.8)) !important;
+}
+
+/* S'assurer que le conteneur de cartes est transparent */
+#card-container {
+    background-color: transparent !important;
+    position: relative;
+    z-index: 2;
+}
+
+/* Léger overlay sur les sections avec l'image de fond pour améliorer la lisibilité */
+#scroll-link::before,
+#scroll-link ~ .section:not(footer)::before,
+.padding-top-bottom-small:not(.dark-back)::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Améliorer la lisibilité du texte */
+.card-title, .card-content {
+    text-shadow: 0 0 8px rgba(0, 0, 0, 0.9);
+}
+
+/* S'assurer que tout le contenu reste visible au-dessus de l'overlay */
+.container, #card-container, .left-footer, .right-footer, .arrow-up-footer {
+    position: relative;
+    z-index: 2;
+}
+
+/* S'assurer que la ligne verticale et d'autres éléments sont visibles */
+.ver-line-bottom-2 {
+    z-index: 3;
+    position: relative;
+}
+
+
+	
+		/* Styles 3D Card modifiés pour affichage côte à côte */
+		#card-container {
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: center;
+			gap: 20px;
+			padding: 20px;
+			background-color: transparent !important;
+		}
+
+        .parent {
+            width: 30%;
+            min-width: 300px;
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            border: 3px solid #141414;
+            transform-style: preserve-3d;
+            background-size: 60px 60px;
+            background-position: 0 0, 0 0;
+            background-color: #141414;
+            box-shadow: rgba(142, 142, 142, 0.3) 0px 30px 30px -10px;
+            transition: all 0.5s ease-in-out;
+            position: relative;
+            min-height: 400px;
+        }
+
+        .card img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 3px solid #141414;
+        }
+
+        .card:hover {
+            background-position: -100px 100px, -100px 100px;
+            transform: rotate3d(0.5, 1, 0, 30deg);
+        }
+
+        .content-box {
+    background: black;
+    padding: 25px;
+    transform-style: preserve-3d;
+    transition: background 0.3s ease-in-out;
+}
+
+.content-box:hover {
+    background: linear-gradient(45deg, #0a0b1a, #855e1b, #0a0b1a, #855e1b);
+}
+
+        .card-title {
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+            margin: 0 0 10px 0;
+            transform: translate3d(0px, 0px, 50px);
+        }
+
+        .card-content {
+    font-size: 14px;
+    font-weight: 700;
+    color: #ffffff;
+    transform: translate3d(0px, 45px, 30px); /* Combine les deux transformations */
+    margin-top: 0;
+    margin-bottom: 20px; /* Ajoute un espace supplémentaire si nécessaire */
+}
+
+        .see-more {
+            display: inline-block;
+            background: #ffffff;
+            color: #000000;
+            padding: 8px 15px;
+            margin-top: 15px;
+            font-weight: 900;
+            text-transform: uppercase;
+            text-decoration: none;
+            transform: translate3d(0px, 0px, 20px);
+        }
+
+        .date-box {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #141414;
+            border: 1px solid #EFBF04;
+            padding: 10px;
+            text-align: center;
+            transform: translate3d(0px, 0px, 80px);
+        }
+
+        .month {
+            font-size: 12px;
+            color: #EFBF04;
+        }
+
+        .date {
+            font-size: 24px;
+            color: #EFBF04;
+            font-weight: bold;
+        }
+
+        #projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 20px;
+        }
+
+		.Btn {
+  width: 140px;
+  margin-left: 53% !important;
+  height: 40px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(to right,#77530a,#ffd277,#77530a,#77530a,#ffd277,#77530a);
+  background-size: 250%;
+  background-position: left;
+  color: #ffd277;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition-duration: 1s;
+  overflow: hidden;
+}
+
+.Btn::before {
+  position: absolute;
+  content: "See More";
+  color: #ffd277;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 97%;
+  height: 90%;
+  border-radius: 8px;
+  transition-duration: 1s;
+  background-color: rgba(0, 0, 0, 0.842);
+  background-size: 200%;
+}
+
+.Btn:hover {
+  background-position: right;
+  transition-duration: 1s;
+}
+
+.Btn:hover::before {
+  background-position: right;
+  transition-duration: 1s;
+}
+
+.Btn:active {
+  transform: scale(0.95);
+}
+
+
+.dark-back, footer, .section.padding-top-bottom-small.dark-back {
+    background-color: #000000 !important; /* Noir solide */
+    background-image: none !important; /* Pas d'image de fond */
+    position: relative;
+    z-index: 2;
+}
+        /* Fin des styles 3D Card */
+
+
+        /* Version mobile (moins de 768px) */
+        @media (max-width: 767px) {
+  .section.full-height {
+    height: 100vh !important;
+    min-height: auto !important; /* Supprime la contrainte fixe */
+    overflow: hidden;
+    position: relative;
+  }
+  
+  #video-wrap {
+    position: absolute;
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden;
+  }
+  
+  #video_background {
+    width: auto;
+    height: auto;
+    min-width: 100% !important;
+    min-height: 100% !important;
+    object-fit: contain; /* Affiche toute la vidéo sans crop */
+    object-position: center;
+    position: absolute;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) scale(0.5) !important; /* Centrage parfait avec dézoom plus important à 0.6 */
+    pointer-events: none !important;
+    z-index: -100 !important; /* Assure que la vidéo est derrière tout le contenu */
+  }
+  
+  
+  /* Dézoom progressif selon la taille d'écran */
+  @media (max-width: 576px) {
+    #video_background {
+      transform: translate(-50%, -50%) scale(0.5); /* Encore plus petit sur les très petits écrans */
+    }
+  }
+  
+  /* Dézoom maximal pour les très petits mobiles */
+  @media (max-width: 375px) {
+    #video_background {
+      transform: translate(-50%, -50%) scale(0.4); /* Dézoom maximal pour les très petits écrans */
+    }
+  }
+}
+
+	

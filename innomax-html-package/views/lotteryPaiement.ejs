@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandora Business Technology & Marketing</title>
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+    
+    <!-- Stylesheets -->
+
+    <link rel="stylesheet" href="assets/css/normalize.css">
+
+    <!-- ✅ Bundle global -->
+<link rel="preload" href="assets/css/style.bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="assets/css/style.bundle.min.css"></noscript>
+
+<!-- ✅ Spécifiques -->
+<link rel="stylesheet" href="assets/css/lotteryPaiment.css">
+<link rel="stylesheet" href="assets/css/creditCardForm.css">
+
+<!-- ✅ Google Fonts si nécessaire -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+
+    <style>
+      /* Style ultra premium */
+      :root {
+        --primary-color: #070536;
+        --accent-color: #ffd700;
+        --secondary-color: #d4af37;
+        --gradient-start: #0f0c29;
+        --gradient-mid: #302b63;
+        --gradient-end: #24243e;
+        --card-bg: rgba(13, 12, 34, 0.85);
+        --text-primary: #ffffff;
+        --text-secondary: #b8b8d4;
+      }
+      
+      body {
+        background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid), var(--gradient-end));
+        font-family: 'Poppins', sans-serif;
+        color: var(--text-primary);
+        position: relative;
+        overflow-x: hidden;
+      }
+      
+      body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZlcnNpb249IjEuMSIgeG1sbnM6eGxpbms9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkveGxpbmsiIHhtbG5zOnN2Z2pzPSJodHRwOi8vc3ZnanMuZGV2L3N2Z2pzIiB3aWR0aD0iMTQ0MCIgaGVpZ2h0PSI1NjAiIHByZXNlcnZlQXNwZWN0UmF0aW89Im5vbmUiIHZpZXdCb3g9IjAgMCAxNDQwIDU2MCI+PHBhdGggZD0iTTAgMjgwTDYwIDI2Mi43QzEyMCAyNDUuMyAxODAgMjEwLjcgMjQwIDIxMC43QzMwMCAyMTAuNyAzNjAgMjQ1LjMgNDIwIDI1MEM0ODAgMjU0LjcgNTQwIDIyOS4zIDYwMCAyMDguMkM2NjAgMTg3IDcyMCAxNzAgNzgwIDE3NC44Qzg0MCAxNzkuNyA5MDAgMjA2LjMgOTYwIDIxOUM5OTAgMjI1LjMgMTAyMCAyMzEuNyAxMDUwIDIyNC4zQzEwODAgMjE3IDExMTAgMTk2IDExNDAgMTk4LjJDMTE3MCAyMDAuMyAxMjAwIDIyNS43IDEyNjAgMjM2LjhDMTMyMCAyNDggMTM4MCAyNDUgMTQxMCAyNDMuNUwxNDQwIDI0MlY1NjBIMEwyOTkiIGZpbGw9IiNmZmZmZmYiIG9wYWNpdHk9IjAuMDMiIHN0cm9rZT0ibm9uZSI+PC9wYXRoPjwvc3ZnPg==');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.3;
+        z-index: -1;
+        pointer-events: none;
+      }
+      
+      body::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: radial-gradient(circle at 20% 30%, rgba(41, 196, 255, 0.05) 0%, transparent 40%), 
+                          radial-gradient(circle at 80% 60%, rgba(255, 215, 0, 0.07) 0%, transparent 30%);
+        z-index: -1;
+        pointer-events: none;
+      }
+      
+      .payment-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 1.5rem 0;
+      }
+      
+      .container {
+        position: relative;
+        z-index: 1;
+        max-width: 1400px;
+      }
+      
+      /* Canvas container styling with premium border effect */
+      .canvas-wrapper {
+        border-radius: 1.2rem;
+        overflow: hidden;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), 
+                    0 0 0 1px rgba(255, 255, 255, 0.1);
+        position: relative;
+        background: rgba(10, 8, 38, 0.5);
+        padding: 4px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 600px;
+      }
+      
+      .canvas-wrapper::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 1.2rem;
+        padding: 4px;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.5), rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0), rgba(255, 215, 0, 0), rgba(255, 215, 0, 0.2));
+        -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        pointer-events: none;
+      }
+      
+      .canvas-wrapper:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 
+                    0 0 0 1px rgba(255, 255, 255, 0.15),
+                    0 0 30px rgba(255, 215, 0, 0.15);
+      }
+      
+      #lottery-canvas-container {
+        border-radius: 1rem;
+        overflow: hidden;
+        height: 100%;
+      }
+      
+      .lottery-canvas {
+        width: 100%;
+        height: 100%;
+        background: none !important; /*Pour enlever le fond blanc du canvas*/
+      }
+      
+      /* Payment form styling with ultra premium effects */
+      .payment-form-card {
+        background: var(--card-bg);
+        border-radius: 1.2rem;
+        backdrop-filter: blur(15px);
+        padding: 2rem;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 
+                    0 0 0 1px rgba(255, 255, 255, 0.1),
+                    inset 0 0 30px rgba(255, 215, 0, 0.03);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.4s ease;
+        height: 600px;
+        display: flex;
+        flex-direction: column;
+      }
+      
+      .payment-form-card::before {
+        content: "";
+        position: absolute;
+        top: -2px;
+        left: 15%;
+        right: 15%;
+        height: 2px;
+        background: linear-gradient(90deg, transparent, var(--accent-color), transparent);
+        border-radius: 100%;
+        filter: blur(1px);
+      }
+      
+      .payment-form-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 200px;
+        background: radial-gradient(ellipse at bottom, rgba(255, 215, 0, 0.1), transparent 70%);
+        z-index: -1;
+      }
+      
+      .payment-form-card:hover {
+        box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4), 
+                    0 0 0 1px rgba(255, 255, 255, 0.15),
+                    inset 0 0 30px rgba(255, 215, 0, 0.05),
+                    0 0 20px rgba(255, 215, 0, 0.1);
+      }
+      
+      .payment-form-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+        padding-right: 1rem;
+      }
+
+      .payment-form-content::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .payment-form-content::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 3px;
+      }
+
+      .payment-form-content::-webkit-scrollbar-thumb {
+        background: rgba(255, 215, 0, 0.3);
+        border-radius: 3px;
+      }
+
+      .product-header {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .product-image-container {
+        flex-shrink: 0;
+        width: 120px;
+        height: 120px;
+        border-radius: 0.8rem;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      .product-image-container img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .product-title-section {
+        flex: 1;
+      }
+
+      .full-description {
+        background: rgba(255, 255, 255, 0.05);
+        padding: 1.2rem;
+        border-radius: 0.8rem;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+        margin-bottom: 1.5rem;
+        max-height: 120px;
+        overflow-y: auto;
+      }
+
+      .full-description p {
+        margin: 0;
+        line-height: 1.6;
+        font-size: 0.95rem;
+      }
+
+      .lottery-stats {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        padding: 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 0.8rem;
+        border: 1px solid rgba(255, 215, 0, 0.1);
+      }
+
+      .timer {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-radius: 50px;
+        border: 1px solid rgba(255, 215, 0, 0.2);
+      }
+
+      .entry-cost-info {
+        background: rgba(255, 255, 255, 0.03);
+        padding: 1.2rem;
+        border-radius: 0.8rem;
+        border: 1px solid rgba(255, 215, 0, 0.1);
+        display: flex;
+
+      }
+      
+      /* Ultra premium typography */
+      h3 {
+        font-weight: 700;
+        background: linear-gradient(to right, #ffffff, #d6c490);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        letter-spacing: 0.5px;
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+        margin-bottom: 1.2rem;
+      }
+      
+      .text-warning {
+        color: var(--accent-color) !important;
+        font-weight: 600;
+        text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+      }
+      
+      /* Input styling with premium effects */
+      .input-group {
+        margin:0;
+      }
+      
+      .input-group-text {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: var(--accent-color);
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+      
+      .form-control {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: white;
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+        font-weight: 500;
+      }
+
+      .form-control:invalid {
+        border-color: rgba(255, 0, 0, 0.5);
+        box-shadow: 0 0 0 0.25rem rgba(255, 0, 0, 0.15);
+      }
+
+      .form-control:focus {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--accent-color);
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.15),
+                   inset 0 0 8px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Hide number input arrows */
+      input[type="number"]::-webkit-outer-spin-button,
+      input[type="number"]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      input[type="number"] {
+        -moz-appearance: textfield;
+      }
+      
+      /* Ultra premium button styling */
+      .btn-premium {
+        background: linear-gradient(135deg, #ffd700, #d4af37);
+        color: #000;
+        border: none;
+        border-radius: 50px;
+        padding: 0.8rem 2rem;
+        font-weight: 600;
+        transition: all 0.4s ease;
+        position: relative;
+        overflow: hidden;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3),
+                   inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+      }
+      
+      .btn-premium::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        transition: 0.6s;
+      }
+      
+      .btn-premium:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 15px 30px rgba(212, 175, 55, 0.4),
+                   inset 0 0 0 1px rgba(255, 255, 255, 0.2);
+        color: #000;
+      }
+      
+      .btn-premium:hover::before {
+        left: 100%;
+      }
+      
+      .btn-premium:active {
+        transform: translateY(-1px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+      }
+      
+      /* Premium spinner styling */
+      .spinner-border {
+        vertical-align: middle;
+        margin-right: 8px;
+        border-color: rgba(0, 0, 0, 0.5);
+        border-right-color: transparent;
+      }
+      
+      /* Glowing dot animation */
+      @keyframes glow {
+        0% { opacity: 0.3; }
+        50% { opacity: 1; }
+        100% { opacity: 0.3; }
+      }
+      
+      .text-muted {
+        color: var(--text-secondary) !important;
+        position: relative;
+      }
+      
+      /* Responsive enhancements */
+      @media (max-width: 992px) {
+        .payment-form-card {
+          padding: 2rem;
+        }
+      }
+      
+      @media (max-width: 768px) {
+        .payment-form-card {
+          padding: 1.75rem;
+          margin-top: 2rem;
+        }
+        
+        h3 {
+          font-size: 1.5rem;
+        }
+        
+      }
+
+      /* Enhanced number input styling */
+      .number-input-container {
+        position: relative;
+        display: flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        border-radius: 0.5rem;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+
+      .number-input-container:focus-within {
+        border-color: var(--accent-color);
+        box-shadow: 0 0 0 0.25rem rgba(255, 215, 0, 0.15);
+      }
+
+      .number-input-btn {
+        background: rgba(255, 215, 0, 0.1);
+        border: none;
+        color: var(--accent-color);
+        width: 2.5rem;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 1.2rem;
+        padding: 0;
+      }
+
+      .number-input-btn:hover {
+        background: rgba(255, 215, 0, 0.2);
+      }
+
+      .number-input-btn:active {
+        background: rgba(255, 215, 0, 0.3);
+      }
+
+      .number-input-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+
+      .number-input {
+        background: transparent;
+        border: none;
+        color: white;
+        width: 3rem;
+        text-align: center;
+        font-size: 1.1rem;
+        padding: 0.5rem;
+        -moz-appearance: textfield;
+      }
+
+      .number-input::-webkit-outer-spin-button,
+      .number-input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+      }
+
+      .number-input:focus {
+        outline: none;
+      }
+
+      .input-group-text {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        color: var(--accent-color);
+        transition: all 0.3s ease;
+        box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-group-text:hover {
+        background: rgba(255, 215, 0, 0.1);
+      }
+      .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 8, 38, 0.85);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  transition: opacity 0.3s ease;
+}
+
+.modal-content {
+  background: var(--card-bg);
+  border: 1px solid rgba(255, 215, 0, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+  color: var(--text-primary);
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  color: var(--text-secondary);
+  font-size: 1.5rem;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-body {
+  margin-top: 1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.modal-body ul {
+  padding-left: 1.5rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.policies-button {
+  background: transparent;
+  border: none;
+  color: var(--accent-color);
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.9rem;
+}
+
+.policies-button:hover {
+  color: #fff;
+  text-decoration: none;
+}
+.text-light{
+  display: flex;
+  align-self: center;
+
+}
+
+.text-light mb-0{
+  align-self: center;
+  margin-left: auto;
+}
+
+
+    </style>
+</head>
+<body class="payment-wrapper">
+    <div class="container">
+        <div class="row align-items-center">
+            <!-- Canvas Column -->
+            <div class="col-md-6 order-md-1 mb-4 mb-md-0">
+                <div class="canvas-wrapper">
+                    <div id="lottery-canvas-container">
+                        <canvas class="lottery-canvas" id="lottery-canvas" width="1000" height="800"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Payment Form Column -->
+            <div class="col-md-6 order-md-2">
+                <div class="payment-form-card">
+                    <div class="payment-form-content">
+                        <div class="product-header">
+                            <% if (lotteryData.data.imageProduit) { %>
+                                <div class="product-image-container">
+                                    <img src="<%= lotteryData.data.imageProduit %>" alt="<%= lotteryData.data.nomProduit %>">
+                                </div>
+                            <% } %>
+                            <div class="product-title-section">
+                                <h3 class="text-white mb-2"><%= lotteryData.data.nomProduit %></h3>
+                                <div class="timer">
+                                    <i class="fas fa-clock"></i>
+                                    <span class="text-warning" id="countdown-timer"></span>
+                                    <span id="lottery-time" data-time="<%= lotteryData.data.lotteryTime %>" style="display: none;"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <% if (lotteryData.data.fullDescription) { %>
+                            <div class="full-description">
+                                <p class="text-light"><%= lotteryData.data.fullDescription %></p>
+                            </div>
+                        <% } %>
+
+                        <div class="lottery-stats">
+                            <p class="text-muted mb-0">Total Entries: <strong class="text-warning"><%= lotteryData.data.totalEntries || 0 %></strong></p>
+                            <p class="text-muted mb-0">Your Entries: <strong class="text-warning"><%= canvasData.data ? canvasData.data.filter(entry => entry.userId === userId).reduce((total, entry) => total + (entry.entryCount || 0), 0) : 0 %></strong></p>
+                            <p class="text-muted mb-0">Cost: <strong class="text-warning">$<%= lotteryData.data.entrieCost %></strong></p>
+                        </div>
+
+                        <div class="entry-cost-info">
+                            <div class="input-group">
+                                <span class="input-group-text bg-transparent border-end-0">
+                                    <i class="fas fa-ticket-alt text-warning"></i>
+                                </span>
+                                <div class="number-input-container">
+                                    <button type="button" class="number-input-btn" onclick="decrementQuantity()">-</button>
+                                    <input type="number" 
+                                           class="number-input" 
+                                           id="entry-quantity" 
+                                           min="1" 
+                                           value="1" 
+                                           required
+                                           pattern="[0-9]*"
+                                           inputmode="numeric"
+                                           onkeypress="return event.charCode >= 48 && event.charCode <= 57"
+                                           onpaste="return false"
+                                           ondrop="return false">
+                                    <button type="button" class="number-input-btn" onclick="incrementQuantity()">+</button>
+                                </div>
+                            </div>
+                            <p class="text-light mb-0">Total: <span class="text-warning" id="total-cost">$<%= lotteryData.data.entrieCost %></span></p>
+                        </div>
+
+                        <form id="payment-form" class="mt-auto">
+                            <input type="hidden" name="lotteryId" value="<%= lotteryData.data.lotteryId %>">
+                            <input type="hidden" name="entrieCost" value="<%= lotteryData.data.entrieCost %>">
+                            <input type="hidden" name="entryQuantity" id="entry-quantity-hidden" value="1">
+                            <input type="hidden" name="totalCost" id="total-cost-hidden" value="<%= lotteryData.data.entrieCost %>">
+                            
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-premium">
+                                    <span class="fw-bold">Proceed to Payment</span>
+                                </button>
+                            </div>
+                            <div style="text-align: center; margin-top: 10px;">
+                              <!-- policies-->
+                              <button type="button" onclick="togglePoliciesModal()" class="policies-button">View Policies</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Tags Container - Kept exactly as in the original -->
+    <div id="tagsContainer" style="display: none;">
+      <% if (canvasData && canvasData.data && canvasData.data.length > 0) {  %>
+          <% canvasData.data.forEach(entry => { %>
+              <% if (entry.Users && entry.Users.username) { %>
+                  <% for (let i = 0; i < entry.entryCount; i++) { %>
+                      <a href="#" style="color: #ffd700;"><%= entry.Users.username %></a>
+                  <% } %>
+              <% } %>
+          <% }); %>
+      <% } else { %>
+          <a href="#" style="color: #ffd700;">.</a>
+      <% } %>
+  </div>
+
+  <!-- WINNER MODAL -->
+  <div id="winnerModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background: linear-gradient(135deg, #000000 0%, #1a1200 50%, #332600 100%); z-index:9999; justify-content:center; align-items:center; animation: fadeIn 0.5s ease-out;">
+    <div style="background: rgba(0,0,0,0.8); padding:2.5rem; border-radius:12px; text-align:center; max-width:450px; border: 2px solid gold; box-shadow: 0 0 30px rgba(255,215,0,0.5); color: gold; transform: scale(0.9); animation: zoomIn 0.5s ease-out forwards, float 3s ease-in-out infinite; position:relative; overflow:hidden;">
+        <!-- Animated gold particles -->
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden;">
+            <div style="position:absolute; width:4px; height:4px; background:gold; border-radius:50%; top:20%; left:15%; animation: twinkle 2s infinite;"></div>
+            <div style="position:absolute; width:6px; height:6px; background:gold; border-radius:50%; top:60%; left:80%; animation: twinkle 3s infinite 0.5s;"></div>
+            <div style="position:absolute; width:3px; height:3px; background:gold; border-radius:50%; top:30%; left:50%; animation: twinkle 1.5s infinite 1s;"></div>
+        </div>
+        
+        <h2 style="color: gold; font-size:2.2rem; margin-bottom:1.5rem; text-shadow: 0 0 10px rgba(255,215,0,0.7); animation: pulse 2s infinite;">🎉 WINNER! 🎉</h2>
+        <p id="winnerUsername" style="font-size:1.8rem; font-weight:bold; color: gold; margin:1.5rem 0; text-shadow: 0 0 8px rgba(255,215,0,0.5); animation: slideUp 0.8s ease-out;"></p>
+        <button onclick="closeWinnerModal()" style="background: linear-gradient(to bottom, gold, #daa520); color: #222; border: none; padding: 12px 30px; border-radius:6px; cursor:pointer; font-weight:bold; font-size:1.1rem; box-shadow: 0 4px 15px rgba(218, 165, 32, 0.4); transition: all 0.3s; position:relative; overflow:hidden;">
+            <span style="position:relative; z-index:2;">CLOSE</span>
+            <span style="position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.2); transform:translateX(-100%); transition:transform 0.3s;"></span>
+        </button>
+    </div>
+</div>
+
+<!-- Policies Modal -->
+<div id="policies-modal" class="modal-overlay hidden">
+  <div class="modal-content">
+    <button class="modal-close" onclick="togglePoliciesModal()">✕</button>
+    <h2>Policies</h2>
+    <div class="modal-body">
+      <p>Welcome to our platform. Please review the following policies carefully:</p>
+      <ul>
+        <li>The lottery will be drawn at the end of the scheduled duration.</li>
+        <li>If the minimum number of participants is not reached, the lottery will be automatically extended in 24-hour increments until the requirement is met.</li>
+        <li>The winner will be notified by email.</li>
+        <li><strong>No refunds will be issued once a ticket is purchased.</strong></li>
+      </ul>
+      <p>By clicking <strong>"Proceed to Payment"</strong>, you agree to our <span class="text-warning">Terms of Service</span> and <span class="text-warning">Privacy Policy</span>.</p>
+    </div>
+  </div>
+</div>
+
+
+
+  
+    
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" async></script>
+    <script src="assets/js/ballJavaScript/tagcanva.js"></script>
+    <script>
+        // Pass the Stripe public key to the module
+        window.stripePublicKey = "<%= stripePublicKey %>";
+    </script>
+    <script>
+      // Simple global function for toggling modal
+      function togglePoliciesModal() {
+        const modal = document.getElementById("policies-modal");
+        modal.classList.toggle("hidden");
+      }
+    </script>
+    <script type="module" src="assets/js/lotteryPaiement.js"></script>
+</body>
+</html>

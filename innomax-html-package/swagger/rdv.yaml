@@ -1,0 +1,101 @@
+openapi: 3.0.0
+info:
+  title: Rendez-vous API
+  version: "1.0.0"
+paths:
+  /rdv/create:
+    post:
+      summary: Créer un rendez-vous
+      description: Crée un rendez-vous après paiement.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                heure:
+                  type: string
+                duree:
+                  type: string
+              required:
+                - date
+                - heure
+                - duree
+      responses:
+        "201":
+          description: Rendez-vous créé avec succès.
+        "400":
+          description: Erreur de validation.
+        "500":
+          description: Erreur lors de la création.
+  /rdv/update/{id}:
+    put:
+      summary: Mettre à jour un rendez-vous
+      description: Met à jour les informations d'un rendez-vous.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                heure:
+                  type: string
+                duree:
+                  type: string
+              required:
+                - date
+                - heure
+                - duree
+      responses:
+        "200":
+          description: Rendez-vous mis à jour.
+        "400":
+          description: Erreur de validation.
+        "500":
+          description: Erreur lors de la mise à jour.
+  /rdv/cancel/{id}:
+    delete:
+      summary: Annuler un rendez-vous
+      description: Annule un rendez-vous et déclenche un remboursement éventuel.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Rendez-vous annulé.
+        "400":
+          description: Erreur de validation.
+        "500":
+          description: Erreur lors de l'annulation.
+  /rdv/all:
+    get:
+      summary: Récupérer les rendez-vous d'un utilisateur
+      description: Récupère les rendez-vous pour un utilisateur (acheteur ou vendeur).
+      parameters:
+        - in: query
+          name: userId
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Liste des rendez-vous.
+        "400":
+          description: Erreur de validation.
+        "500":
+          description: Erreur lors de la récupération.

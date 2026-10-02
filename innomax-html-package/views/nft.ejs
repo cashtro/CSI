@@ -1,0 +1,1254 @@
+<!doctype html>
+<html lang="zxx">
+
+<head>
+
+    <!--========= Required meta tags =========-->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Pandora Business Technology & Marketing, in partnership with CasaCrypto and Prolifik, introduces the world’s first NFT that unlocks crypto at low fees, discounts on marketing & tech services, and exclusive custom varsity jackets. Own an NFT, unlock real-world value!">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Pandora Business Technology & Marketing </title>
+    <%- include('partials/metaPixel', { pixelId: pixelId }) %>
+
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+    <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.80/build/spline-viewer.js"></script>
+
+    <!-- css include -->
+    <link rel="stylesheet" href="assets/css/normalize.css">
+
+   <link rel="preload" href="/assets/css/style.bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="/assets/css/style.bundle.min.css"></noscript>
+    <link rel="stylesheet" href="assets/css/home.css">
+    <link rel="stylesheet" href="assets/css/brands.css">
+    <link rel="stylesheet" href="assets/css/home2.css">
+    <link rel="stylesheet" href="assets/css/nft.css">
+</head>
+
+<style>
+
+/* Ajoutez ces règles media queries à la fin de votre feuille de style */
+@media (max-width: 768px) {
+  .service {
+    position: relative !important;
+    padding-bottom: 100px !important; /* Laisse de la place pour l’image */
+  }
+
+  .cs-ser_shape {
+    position: absolute;
+    bottom: -30px !important; /* Descend l'image */
+    width: 100%;
+    text-align: center;
+  }
+
+  .cs-ser_shape img {
+    max-width: 80%; /* Réduit la taille de l'image */
+    height: auto;
+    position: relative;
+    transform: translateY(20px); /* Ajustement fin de position */
+  }
+}
+
+
+@media (max-width: 768px) {
+    .Btn::before, 
+    .Btn1::before, 
+    .BtnToken::before {
+        width: calc(100% - 2px);
+        height: calc(100% - 2px);
+    }
+    
+    /* Conserver le centrage des boutons */
+    .legend-media .Btn,
+    .legend-media .BtnToken,
+    .legend-media .Btn1 {
+        margin: 15px auto !important;
+    }
+}
+
+@media (max-width: 768px) {
+  .xb-item--content {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.6);
+    margin-top: 60% !important;
+  }
+
+  .shape--1 {
+    margin-top: -19rem !important; 
+  }
+}
+
+@media (min-width: 769px) {
+  .xb-item--content {
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.3);
+    margin-top: 40% !important;
+  }
+
+  .xb-shape {
+    margin-top: 2rem !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .sa-process-image video {
+    width: 240px !important;
+    height: 450px !important;
+    margin-right: 75px;
+  }
+}
+
+@media (max-width: 768px) {
+  .xb-blog-item {
+    margin-bottom: 30px !important;
+  }
+}
+
+@media (max-width: 1199px) {
+  .mission-wrapper .mission-image-items .mission-image {
+    height: 750px;
+  }
+}
+@media (max-width: 767px) {
+  .mission-wrapper .mission-image-items .mission-image {
+    height: 400px;
+    padding: 30px;
+    margin-left: -100px;
+  }
+  .mission-wrapper .mission-image-items .mission-image spline-viewer {
+    transform: scale(0.85);
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 575px) {
+  .mission-wrapper .mission-image-items .mission-image {
+    height: 950px;
+    padding: 20px;
+    margin-left: -230px;
+  }
+  .mission-wrapper .mission-image-items .mission-image spline-viewer {
+    transform: scale(0.7);
+    transform-origin: center center;
+  }
+}
+
+@media (max-width: 480px) {
+  .mission-wrapper .mission-image-items .mission-image {
+    height: 900px;
+    padding: 15px;
+    margin-left: -230px;
+  }
+  .mission-wrapper .mission-image-items .mission-image spline-viewer {
+    transform: scale(0.7);
+    transform-origin: center center;
+  }
+}
+
+
+/* CSS for Legends NFT Section */
+
+/* General styles for Legends section */
+.legends-section {
+  position: relative;
+  z-index: 1;
+}
+
+.section-main-title {
+  font-family: "Monument Extended", sans-serif;
+  font-size: 42px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 30px;
+}
+
+/* Legend Grid Layout */
+.legend-grid {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 50px 30px;
+  margin: 0 auto;
+  max-width: 1400px;
+  position: relative;
+  z-index: 1;
+}
+
+/* NFT Legends Section Base Styles */
+.legends-section-nft {
+  background-color: #000 !important;
+  padding: 60px 0 !important;
+  margin-top: 70px !important;
+  width: 100% !important;
+}
+
+.section-title-nft {
+  text-align: center !important;
+  color: white !important;
+  margin-bottom: 20px !important;
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  margin-bottom: 10% !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+.gold-accent-nft {
+  color: #E6C373 !important;
+}
+
+/* Legend Grid Container */
+.legend-grid-nft {
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  padding: 50px 6% !important;
+  background-size: cover !important;
+  background-position: center !important;
+  position: relative !important;
+  overflow: hidden !important;
+  margin-bottom: 50px !important;
+}
+
+.legend-grid-nft.reversed-nft {
+  flex-direction: row-reverse !important;
+}
+
+/* Legend Media Container */
+.legend-media-nft {
+  flex: 0 0 45% !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* NFT Preview Video Container - Updated with zoom effect */
+.legend-preview-nft {
+  width: 90% !important;
+  height: 450px !important; /* Fixed height for better control */
+  border-radius: 10px !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+  margin-bottom: 20px !important;
+  object-fit: cover !important; /* Changed from 'contain' to 'cover' */
+  object-position: center !important; /* Focus on the center of the video */
+  transform: scale(1) !important; /* Zoom effect to focus on center */
+  overflow: hidden !important;
+}
+
+/* Container for the preview to manage overflow */
+.preview-container-nft {
+  width: 90% !important;
+  height: 350px !important;
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  position: relative !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* NFT Button */
+.btn-nft {
+  padding: 10px 20px !important;
+  background-color: #E6C373 !important;
+  color: #000 !important;
+  border: none !important;
+  border-radius: 5px !important;
+  font-weight: bold !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  margin-top: 15px !important;
+}
+
+.btn-nft:hover {
+  background-color: #d4b05e !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Legend Info Container */
+.legend-info-nft {
+  flex: 0 0 55% !important;
+  padding: 20px !important;
+}
+
+/* Legend Name Title */
+.legend-name-nft {
+  font-size: 28px !important; /* Smaller title */
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 15px !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Legend Biography Text */
+.legend-bio-nft {
+  font-size: 14px !important; /* Smaller text */
+  line-height: 1.6 !important;
+  color: #ffffff !important;
+  margin-bottom: 20px !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.9) !important;
+  max-width: 90% !important;
+}
+
+/* Documentary Section */
+.documentary-section-nft {
+  margin-top: 20px !important;
+}
+
+/* Documentary Title */
+.doc-title-nft {
+  font-size: 20px !important; /* Smaller documentary title */
+  font-weight: 600 !important;
+  color: #E6C373 !important;
+  margin-bottom: 15px !important;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* YouTube Embed Container */
+.yt-embed-container-nft {
+  position: relative !important;
+  padding-bottom: 44% !important;
+  height: 0 !important;
+  overflow: hidden !important;
+  max-width: 90% !important;
+  border-radius: 8px !important;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.6) !important;
+}
+
+.yt-embed-container-nft iframe {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+}
+
+/* Specific Background Styles for Each Legend */
+.muhammad-ali-bg-nft {
+  background-image: url(assets/img/lotto/06.webp) !important;
+  margin-top: 0px !important;
+}
+
+.kobe-bryant-bg-nft {
+  background-image: url(assets/img/lotto/345-34-violet-orange-neon-corp.webp) !important;
+  margin-bottom: 60px !important;
+}
+
+.pele-bg-nft {
+  background-image: url(assets/img/lotto/green-neon-glow-perf.webp) !important;
+  margin-top: 0px !important;
+}
+
+.bruce-lee-bg-nft {
+  background-image: url(assets/img/lotto/pspf.webp) !important;
+  margin-top: 0px !important;
+}
+
+.niki-lauda-bg-nft {
+  background-image: url(assets/img/lotto/03.webp) !important;
+  margin-top: 0px !important;
+}
+
+/* Sponsor Title Section */
+.sponsor-title-section-nft {
+  text-align: center !important;
+  padding: 30px 0 !important;
+  margin-top: -300px !important;
+  position: relative !important;
+  z-index: 2 !important;
+}
+
+.sponsor-title-nft {
+  font-size: 38px !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  text-transform: uppercase !important;
+  margin-bottom: 15px !important;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7) !important;
+}
+
+.title-separator-nft {
+  width: 80px !important;
+  height: 4px !important;
+  margin: 0 auto !important;
+  background-color: #E6C373 !important;
+}
+
+@media (max-width: 768px) {
+  /* Réorganisation mobile */
+  .legend-grid-nft {
+    flex-direction: column !important;
+    padding: 30px 15px !important;
+    margin-bottom: 30px !important;
+    min-height: auto !important;
+    position: relative !important;
+  }
+
+  /* Conteneur vidéo */
+  .legend-media-nft {
+    width: 100% !important;
+    flex: none !important;
+    order: 1 !important;
+    z-index: 2 !important;
+    position: relative !important;
+  }
+
+  /* Vidéo carrée */
+  .legend-preview-nft {
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4/3; /* Pour un format vidéo standard */
+    border-radius: 10px !important;
+    margin-bottom: 25px !important;
+    object-position: center; /* Centre l'image verticalement */
+
+  }
+
+  /* Conteneur texte */
+  .legend-info-nft {
+    width: 100% !important;
+    flex: none !important;
+    order: 2 !important;
+    padding: 0 !important;
+    z-index: 2 !important;
+    position: relative !important;
+    text-align: center !important;
+  }
+
+  /* Overlay pour lisibilité */
+  .legend-grid-nft::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)) !important;
+    z-index: 1;
+  }
+
+  /* Textes */
+  .legend-name-nft {
+    font-size: 24px !important;
+    margin-bottom: 20px !important;
+    color: #E6C373 !important;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.9) !important;
+  }
+
+  .legend-bio-nft {
+    font-size: 14px !important;
+    line-height: 1.6 !important;
+    max-width: 100% !important;
+    text-align: justify !important;
+    margin: 0 auto 25px !important;
+    padding: 0 10px !important;
+    color: #fff !important;
+  }
+
+  /* Documentaire */
+  .documentary-section-nft {
+    width: 100% !important;
+    margin-top: 30px !important;
+  }
+
+  .doc-title-nft {
+    font-size: 18px !important;
+    margin-bottom: 20px !important;
+    text-align: center !important;
+  }
+
+  .yt-embed-container-nft {
+    max-width: 100% !important;
+    padding-bottom: 56.25% !important;
+    margin: 0 auto !important;
+    border-radius: 8px !important;
+  }
+
+  /* Bouton */
+  .legend-media-nft .Btn {
+    width: 160px !important;
+    height: 45px !important;
+    margin: 15px auto 30px !important;
+    display: block !important;
+    position: relative !important;
+    z-index: 3 !important;
+  }
+
+  /* Ajustements spécifiques pour Kobe/Bruce Lee */
+  .kobe-bryant-bg-nft,
+  .bruce-lee-bg-nft {
+    background-position: 60% center !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Suppression du reverse sur mobile */
+  .legend-grid-nft.reversed-nft {
+    flex-direction: column !important;
+  }
+
+  /* Réinitialisation du padding desktop */
+  .reversed-nft .legend-info-nft {
+    padding: 0 !important;
+    text-align: center !important;
+  }
+
+  /* Correction spécifique pour Kobe & Bruce Lee */
+  .kobe-bryant-bg-nft .legend-bio-nft,
+  .bruce-lee-bg-nft .legend-bio-nft {
+    text-align: justify !important;
+    padding: 0 15px !important;
+    max-width: 100% !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* Ajustement background */
+  .kobe-bryant-bg-nft {
+    background-position: 65% center !important;
+  }
+
+  .bruce-lee-bg-nft {
+    background-position: 35% center !important;
+  }
+
+  /* Overlay renforcé */
+  .kobe-bryant-bg-nft::before {
+    background-image: url(assets/img/lotto/345-34-violet-orange-neon-corp.webp) !important;
+  }
+  .bruce-lee-bg-nft::before {
+    background-image: url(assets/img/lotto/pspf.webp) !important;
+  }
+}
+
+/* Desktop uniquement */
+@media (min-width: 769px) {
+  .legend-grid-nft.reversed-nft {
+    flex-direction: row-reverse !important;
+  }
+  
+  .reversed-nft .legend-info-nft {
+    padding-left: 60px !important;
+    padding-right: 0 !important;
+    text-align: left !important;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Ajustement spécifique pour le bouton du hero */
+  .hero-btn .Btn1 {
+    margin-top: 50px !important; /* Réduction importante de la marge */
+    transform: translateY(-30%); /* Remonte le bouton */
+    width: 180px !important; /* Largeur légèrement réduite */
+    height: 38px !important; /* Hauteur ajustée */
+  }
+
+  /* Ajustement du texte dans le bouton */
+  .Btn1::before {
+    font-size: 13px !important; /* Taille de police réduite */
+    padding: 2px 5px !important; /* Padding interne ajusté */
+  }
+
+  /* Ajustement global de la section hero */
+  .xb-item--holder {
+    padding-bottom: 40px !important; /* Espacement bas réduit */
+  }
+}
+
+@media (max-width: 768px) {
+  .horizontal-images .container {
+    padding: 90px 10px !important;
+    margin-top: 0 !important;
+  }
+  
+  .horizontal-image-item {
+    margin: 10px;
+    min-width: 250px;
+  }
+  
+  .partner-title {
+    font-size: 1.1rem !important;
+  }
+  
+  .partner-description {
+    font-size: 0.9rem !important;
+  }
+}
+
+.legend-media-nft, .legend-info-nft, .Btn {
+  position: relative !important;
+  z-index: 2 !important;
+}
+</style>
+
+<body class="cybersecurity">
+
+    <!-- backtotop - start -->
+    <div class="xb-backtotop style-3">
+        <a href="#" class="scroll">
+            <i class="far fa-arrow-up"></i>
+        </a>
+    </div>
+    <!-- backtotop - end -->
+
+    <!-- Preloader - Start 
+    <div id="xb-loadding" class="xb-loader style-3">
+        <div class="xb-dual-ring"></div>
+    </div>
+     Preloader - End -->
+
+    <div class="body_wrap">
+
+        <!-- header start -->
+
+        <%- include('partials/header') %>
+        
+        <!-- header end -->
+
+            <!-- main area start  -->
+            <main>
+              <section class="hero hero-style-three" style="position: relative; overflow: hidden;">
+                <div class="container" style="background-color: transparent !important;">
+                    <div class="hero_wrap pt-90">
+                        <div class="xb-hero text-center">
+                            <h1 class="xb-item--title wow skewIn center shadow-2xl" data-wow-delay="000ms" data-wow-duration="900ms" style="margin-top: 0%; text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.4);">
+                                Pandora
+                            </h1>                          
+                            <div class="xb-item--holder wow fadeInUp" data-wow-delay="150ms" data-wow-duration="600ms">
+                              <p class="xb-item--content" style="font-size: x-large !important; margin-top: 30% !important; text-shadow: 10px 10px 10px rgba(0, 0, 0, 2) !important;">Business Technology <br> & Marketing</p>
+                                <div class="btn">
+                                    <!-- Bouton normal avec sa structure d'origine -->
+                                    <button id="mainCalendarButton" class="Btn1" style="margin-top: 140%; margin-left: 0%;">Live Consultation</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- Video Background -->
+                <div class="video-container">
+                    <video class="responsive-video" autoplay loop muted playsinline>
+                        <source src="assets/img/video/nftvid1.mp4" type="video/mp4">
+                        Votre navigateur ne supporte pas les vidéos HTML5.
+                    </video>
+                    <div class="xb-shape">
+                        <div class="shape shape--1" style="margin-top: -8% !important;">
+                            <img src="assets/img/shape/black.webp" alt="" fetchpriority="high">
+                        </div>
+                        <div class="shape shape--two" style="margin-bottom: 0% !important;">
+                            <img src="assets/img/shape/logogo.webp" alt="">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Script pour la redirection au clic -->
+                <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        document.getElementById('mainCalendarButton').addEventListener('click', function() {
+                            window.open('https://calendar.google.com/calendar/appointments/schedules/AcZssZ3130jugUgfErFhHZrwSg9sRTAsD3B04zfFGKS3RWZQu3jXAn8NM-3_sNtz6OY3bRvz7JcI3Fkl?gv=true', '_blank');
+                        });
+                    });
+                </script>
+            </section>
+                  <!-- Hero Section End -->
+
+                <!-- service section start  -->
+                <section class="service pt-60 pb-20">
+                  <div class="container">
+                      <div class="cd-service_wrap pos-rel">
+                          <div class="sec-title--two sec-title--three text-center mb-30">
+                              <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img
+                                      src="assets/img/icon/ser_layer.svg" alt=""><span>Missions</span></span>
+                              <h2 class="title wow fadeInDown" data-wow-duration="600ms" id="about-our-work">Our <span style="color: #E6C373;">work</span>
+                              </h2>
+                              
+                              <!-- Nouveaux boutons NFT et Token ajoutés ici -->
+                              <h2 class="title wow fadeInDown" data-wow-duration="600ms"><span style="color: #E6C373;">NFT</span> and <span style="color: #E6C373;">Token</span></h2>
+                              <div style="display: flex; justify-content: center; gap: 20px;">
+                                  <button class="Btn" onclick="window.open('https://solsea.io/c/68681029ed8923c8fc73231f')"></button>
+                              </div>
+                          </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="cs-service-item mt-30">
+                                        <div class="xb-item--inner">
+                                            <div class="xb-item--icon">
+                                                <img src="assets/img/icon/airdrop-white.svg" alt="">
+                                            </div>
+                                            <h3 class="xb-item--title">Tech & A.I</h3>
+                                            <ul class="xb-item--item list-unstyled">
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> Consistently Secure the
+                                                    Enterprise.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> Apply Al inline to
+                                                    prevent evasive.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> Simplify network
+                                                    security operations.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> Adopt Zero Trust across
+                                                    the network.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> Simplify with AI-Powered
+                                                    SASE.</li>
+                                            </ul>
+                                        </div>
+                                        <div class="border-bg1">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8961)" stroke="#23263C" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint1_radial_1685_896345)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8961" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <radialGradient id="paint1_radial_1685_896345" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div class="border-bg2">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8951)"
+                                                    stroke="url(#paint1_linear_1685_895)" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint2_radial_1685_8951)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8952" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <linearGradient id="paint1_linear_1685_895" x1="410" y1="369.333"
+                                                        x2="221.101" y2="288.747" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0" stop-color="#855e1b" />
+                                                        <stop offset="1" stop-color="#141414" />
+                                                    </linearGradient>
+                                                    <radialGradient id="paint2_radial_1685_8951" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <a href="service-details.html" class="xb-overlay xb-overlay-link"></a>
+                                    </div>
+                                    <div class="cs-service-item mt-30">
+                                        <div class="xb-item--inner">
+                                            <div class="xb-item--icon">
+                                                <img src="assets/img/icon/finger-scan.svg" alt="">
+                                            </div>
+                                            <h3 class="xb-item--title">Education</h3>
+                                            <ul class="xb-item--item list-unstyled">
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Let our experts be of
+                                                    your team.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Move from reactive to
+                                                    proactive.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Get world-class threat
+                                                    intelligence</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Every second counts when
+                                                    attack</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Make our experience your
+                                                    experience</li>
+                                            </ul>
+                                        </div>
+                                        <div class="border-bg1">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8962)" stroke="#23263C" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint1_radial_1685_89678)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8962" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <radialGradient id="paint1_radial_1685_89678" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div class="border-bg2">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8953)"
+                                                    stroke="url(#paint1_linear_1685_8951)" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint2_radial_1685_8953)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8953" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <linearGradient id="paint1_linear_1685_8951" x1="410" y1="369.333"
+                                                        x2="221.101" y2="288.747" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0" stop-color="#855e1b" />
+                                                        <stop offset="1" stop-color="#141414" />
+                                                    </linearGradient>
+                                                    <radialGradient id="paint2_radial_1685_8953" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <a href="service-details.html" class="xb-overlay xb-overlay-link"></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="cs-service-item mt-30">
+                                        <div class="xb-item--inner">
+                                            <div class="xb-item--icon">
+                                                <img src="assets/img/icon/cloud-add.svg" alt="">
+                                            </div>
+                                            <h3 class="xb-item--title">Marketing Digital</h3>
+                                            <ul class="xb-item--item list-unstyled">
+                                                <li><img src="assets/img/icon/plus.svg" alt="">End-to-End Cloud
+                                                    Security.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Real-Time Threat
+                                                    Detection.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Identity & Access
+                                                    Management.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Data Encryption &
+                                                    Privacy.</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Compliance & Governance.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                        <div class="border-bg1">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8962)" stroke="#23263C" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint1_radial_1685_89678)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8962" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <radialGradient id="paint1_radial_1685_89678" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div class="border-bg2">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8953)"
+                                                    stroke="url(#paint1_linear_1685_8951)" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint2_radial_1685_8953)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8953" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <linearGradient id="paint1_linear_1685_8951" x1="410" y1="369.333"
+                                                        x2="221.101" y2="288.747" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0" stop-color="#855e1b" />
+                                                        <stop offset="1" stop-color="#141414" />
+                                                    </linearGradient>
+                                                    <radialGradient id="paint2_radial_1685_8953" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <a href="service-details.html" class="xb-overlay xb-overlay-link"></a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="cs-service-item mt-30">
+                                        <div class="xb-item--inner">
+                                            <div class="xb-item--icon">
+                                                <img src="assets/img/icon/check02.svg" alt="">
+                                            </div>
+                                            <h3 class="xb-item--title">NFT</h3>
+                                            <ul class="xb-item--item list-unstyled">
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Accelerate Threat
+                                                    Detection</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Automate Security
+                                                    Processes</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Streamline Incident
+                                                    Response</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Attack Surface Management
+                                                </li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Integrated Security
+                                                    Monitoring</li>
+                                            </ul>
+                                        </div>
+                                        <div class="border-bg1">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_896466)" stroke="#23263C" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint1_radial_1685_89677)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_896466" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <radialGradient id="paint1_radial_1685_89677" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div class="border-bg2">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_89588)"
+                                                    stroke="url(#paint1_linear_1685_89599)" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint2_radial_1685_8956)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_89588" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <linearGradient id="paint1_linear_1685_89599" x1="410" y1="369.333"
+                                                        x2="221.101" y2="288.747" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0" stop-color="#855e1b" />
+                                                        <stop offset="1" stop-color="#141414" />
+                                                    </linearGradient>
+                                                    <radialGradient id="paint2_radial_1685_8956" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <a href="service-details.html" class="xb-overlay xb-overlay-link"></a>
+                                    </div>
+                                    <div class="cs-service-item mt-30">
+                                        <div class="xb-item--inner">
+                                            <div class="xb-item--icon">
+                                                <img src="assets/img/icon/ranking.svg" alt="">
+                                            </div>
+                                            <h3 class="xb-item--title">Lottery Draw</h3>
+                                            <ul class="xb-item--item list-unstyled">
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Public sector</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Financial services</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Manufacturing</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Small & medium business
+                                                    solutions</li>
+                                                <li><img src="assets/img/icon/plus.svg" alt="">Healthcare</li>
+                                            </ul>
+                                        </div>
+                                        <div class="border-bg1">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_8965107)" stroke="#23263C" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint1_radial_1685_896111)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_8965107" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <radialGradient id="paint1_radial_1685_89611" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <div class="border-bg2">
+                                            <svg width="410" height="360" viewBox="0 0 410 360" fill="none"
+                                                preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+                                                <rect width="410" height="360" rx="15" fill="#010315" />
+                                                <rect x="0.5" y="0.5" width="409" height="359" rx="14.5"
+                                                    fill="url(#paint0_radial_1685_89512)"
+                                                    stroke="url(#paint1_linear_1685_89513)" />
+                                                <rect opacity="0.5" x="63" width="190" height="1"
+                                                    fill="url(#paint2_radial_1685_8958)" />
+                                                <defs>
+                                                    <radialGradient id="paint0_radial_1685_89512" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(205) scale(288.23 306.36)">
+                                                        <stop offset="0" stop-color="white" stop-opacity="0.05" />
+                                                        <stop offset="1" stop-color="#050014" stop-opacity="0" />
+                                                    </radialGradient>
+                                                    <linearGradient id="paint1_linear_1685_89513" x1="410" y1="369.333"
+                                                        x2="221.101" y2="288.747" gradientUnits="userSpaceOnUse">
+                                                        <stop offset="0" stop-color="#855e1b" />
+                                                        <stop offset="1" stop-color="#141414" />
+                                                    </linearGradient>
+                                                    <radialGradient id="paint2_radial_1685_8958" cx="0" cy="0" r="1"
+                                                        gradientUnits="userSpaceOnUse"
+                                                        gradientTransform="translate(158 0.5) scale(95 0.5)">
+                                                        <stop offset="0" stop-color="white" />
+                                                        <stop offset="1" stop-color="white" stop-opacity="0" />
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                        </div>
+                                        <a href="service-details.html" class="xb-overlay xb-overlay-link"></a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="cs-ser_shape">
+                                <img src="assets/img/icon/casaCrypto.webp" alt="" height="100%" width="100%">
+                            </div>
+                        </div>                       
+                    </div>
+                </section>
+                <!-- service section end  -->
+
+
+                <!-- Section Légendes -->
+<!-- Section Légendes -->
+<section class="legends-section-nft" style="margin-top: -2%  !important;  margin-bottom: -10% !important;">
+  <h2 class="section-title-nft">
+    Sports <span class="gold-accent-nft">Legends</span> NFT
+  </h2>
+</section>
+
+<section>
+  <!-- Muhammad Ali -->
+  <div class="legend-grid-nft muhammad-ali-bg-nft">
+    <div class="legend-media-nft">
+      <video class="legend-preview-nft" autoplay loop muted playsinline>
+        <source src="assets/mp4/Muhammad Ali Nft.mp4" type="video/mp4">
+      </video>
+      <button class="Btn" onclick="window.open('https://solsea.io/n/5bsngvgo9Y6sLr9CwuQdtXhvEFf8sY1AN34GkyJrNRRC/k')">View NFT</button>
+    </div>
+    <div class="legend-info-nft">
+      <h3 class="legend-name-nft">Muhammad Ali - The Greatest</h3>
+      <p class="legend-bio-nft" style="text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);">
+        Muhammad Ali's bold stand against the Vietnam War showcased his unwavering commitment to his beliefs, even at great personal cost. His refusal to be drafted, citing his religious convictions, not only stripped him of his titles and wealth but also landed him in legal battles. Yet, Ali remained resolute, becoming a symbol of defiance against injustice. Beyond boxing, Ali's charisma and advocacy for civil rights resonated globally, inspiring generations and elevating the sport to new heights. His legacy as a champion of social justice endures, reminding us to stand tall in the face of adversity and fight for what is right.
+      </p>
+      <div class="documentary-section-nft">
+        <h4 class="doc-title-nft">Documentary: Muhammad Ali</h4>
+        <div class="yt-embed-container-nft">
+          <iframe src="https://www.youtube.com/embed/vg5Nxbg7oMs?autoplay=1&mute=1" allow="autoplay" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kobe Bryant -->
+  <div class="legend-grid-nft reversed-nft kobe-bryant-bg-nft">
+    <div class="legend-media-nft">
+      <video class="legend-preview-nft" autoplay loop muted playsinline>
+        <source src="assets/mp4/nft kobe ad.mp4" type="video/mp4">
+      </video>
+      <button class="Btn" onclick="window.open('https://solsea.io/n/9pjHZYVSMNpp3QbQLHJRoJdUXDxtmWzqhzzmP9owLDd9/')">View NFT</button>
+    </div>
+    <div class="legend-info-nft">
+      <h3 class="legend-name-nft">Kobe Bryant - Black Mamba</h3>
+      <p class="legend-bio-nft" style="text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);">
+        Kobe Bryant's story is the stuff of legends, a tale of relentless drive and unmatched passion for basketball. From overcoming obstacles to redefining what it means to be a true competitor, Kobe's legacy extends far beyond the court. His "Mamba Mentality" continues to inspire generations, reminding us all to chase our dreams with unwavering determination. Choosing to delve into Kobe's journey for your project is more than just studying a sports hero; it's embracing a mindset of resilience and excellence that transcends boundaries and empowers us to reach new heights in our own lives.
+      </p>
+      <div class="documentary-section-nft">
+        <h4 class="doc-title-nft">Documentary: Kobe Bryant</h4>
+        <div class="yt-embed-container-nft">
+          <iframe src="https://www.youtube.com/embed/-tjC7j7QTyA?autoplay=1&mute=1" allow="autoplay" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pelé -->
+  <div class="legend-grid-nft pele-bg-nft">
+    <div class="legend-media-nft">
+      <video class="legend-preview-nft" autoplay loop muted playsinline>
+        <source src="assets/mp4/Pele Nft ad.mp4" type="video/mp4">
+      </video>
+      <button class="Btn" onclick="window.open('https://solsea.io/n/9kQPN76s9Jskf1DEsmymX7WLwVMrk4ZVrYxMVXWXaE6M/')">View NFT</button>
+    </div>
+    <div class="legend-info-nft">
+      <h3 class="legend-name-nft">Pele - The King of Football</h3>
+      <p class="legend-bio-nft" style="text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);">
+        Pele's legacy in soccer is unmatched. His three FIFA World Cup victories with Brazil remain a testament to his exceptional talent and leadership. More than just a player, Pele revolutionized the sport, inspiring a new generation with his creative style and emphasis on teamwork. His impact on soccer's mentality and global appeal is undeniable, making him a true legend of the game. Studying Pele's remarkable career for your project is a celebration of his enduring influence and the joy he brought to millions of fans worldwide.
+      </p>
+      <div class="documentary-section-nft">
+        <h4 class="doc-title-nft">Documentary: Pele</h4>
+        <div class="yt-embed-container-nft">
+          <iframe src="https://www.youtube.com/embed/J2D_uVetdz4?autoplay=1&mute=1" allow="autoplay" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bruce Lee -->
+  <div class="legend-grid-nft reversed-nft bruce-lee-bg-nft">
+    <div class="legend-media-nft">
+      <video class="legend-preview-nft" autoplay loop muted playsinline>
+        <source src="assets/mp4/bruce lee ft ads.mp4" type="video/mp4">
+      </video>
+      <button class="Btn" onclick="window.open('https://solsea.io/n/3B9zKNyXPmWQkytAwrXnXjrt32PXvWCYNYSdRiVdtcfu/')">View NFT</button>
+    </div>
+    <div class="legend-info-nft">
+      <h3 class="legend-name-nft">Bruce Lee - The Little Dragon</h3>
+      <p class="legend-bio-nft" style="text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);">
+        Bruce Lee's legacy transcends martial arts; he's an icon of self-mastery, philosophy, and cultural influence. Rising from humble beginnings, Lee revolutionized martial arts with his innovative Jeet Kune Do philosophy, emphasizing adaptability and fluidity over rigid technique. His unparalleled skill and charisma captivated audiences worldwide, propelling him to stardom in Hollywood. But Lee was more than just a movie star; he was a philosopher who advocated for personal growth and self-expression. His timeless wisdom and groundbreaking martial arts techniques continue to inspire generations, cementing his status as a true legend. Exploring Bruce Lee's life and teachings is not just a study of martial arts history; it's a journey into the depths of human potential and the pursuit of excellence in all aspects of life.
+      </p>
+      <div class="documentary-section-nft">
+        <h4 class="doc-title-nft">Documentary: Bruce Lee</h4>
+        <div class="yt-embed-container-nft">
+          <iframe src="https://www.youtube.com/embed/LeiT2WQh83M?autoplay=1&mute=1" allow="autoplay" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Niki Lauda -->
+  <div class="legend-grid-nft niki-lauda-bg-nft">
+    <div class="legend-media-nft">
+      <video class="legend-preview-nft" autoplay loop muted playsinline>
+        <source src="assets/mp4/nft nicky lauda ads.mp4" type="video/mp4">
+      </video>
+      <button class="Btn" onclick="window.open('https://solsea.io/n/DuWisuRYD9b4Vv1YXNRzTtqVeZDrx4haFp4qd4FpHmKt/')">View NFT</button>
+    </div>
+    <div class="legend-info-nft">
+      <h3 class="legend-name-nft">Niki Lauda - The Phoenix of F1</h3>
+      <p class="legend-bio-nft" style="text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5);">
+        Niki Lauda's story in racing is a testament to courage, resilience and the triumph of the human spirit against adversity. Surviving a horrific crash at the Nürburgring in 1976, where he was trapped in a burning car, Lauda defied death and returned to the track just six weeks later. His remarkable recovery and determination to continue racing showcased his unwavering commitment to his passion. Despite enduring severe burns and lifelong scars, Lauda's sheer willpower propelled him to further success, winning two more Formula One World Championships. Beyond his racing achievements, Lauda's bravery in the face of mortal danger inspired a generation of drivers and fans alike. His legacy as a racing icon and symbol of resilience continues to resonate, reminding us all of the power of determination and perseverance in overcoming life's greatest challenges.
+      </p>
+      <div class="documentary-section-nft">
+        <h4 class="doc-title-nft">Documentary: Niki Lauda</h4>
+        <div class="yt-embed-container-nft">
+          <iframe src="https://www.youtube.com/embed/BMqdg2OZqtY?si=Zh0iKggRuly6eR7J?autoplay=1&mute=1" allow="autoplay" allowfullscreen></iframe>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="sponsor-title-section-nft">
+    <h2 class="sponsor-title-nft"></h2>
+    <div class="title-separator-nft"></div>
+  </div>
+</section>
+    <!-- Ajout juste après la section "Contact" -->
+    <!-- Ajout juste après la section "Contact" -->
+    <section class="section horizontal-images" aria-label="horizontal-images" style="margin-top: 8%; margin-bottom: -15% ;">
+      <div class="container" style="position: relative; overflow: hidden; padding: 200px 20px; margin-top: -12%;">
+        <!-- Video Background -->
+    
+        <div class="horizontal-image-container">
+          <a href="https://prolifikcouture.com/" target="_blank" class="horizontal-image-item">
+            <div class="image-wrapper">
+              <img src="assets/img/icon/prolifik.webp" loading="lazy" alt="Prolifik" class="nft-img">
+            </div>
+            <h3 class="partner-title" style="color: black !important;">Prolifik</h3>
+            <p class="partner-description" style="color: black !important;">Discover our exclusive collection of streetwear clothing.</p>
+          </a>
+    
+          <a href="https://www.facebook.com/CuttingedgeofMarketing/" target="_blank" class="horizontal-image-item">
+            <div class="image-wrapper">
+              <img src="assets/img/icon/crypto.webp" loading="lazy" alt="Crypto" class="nft-img">
+            </div>
+            <h3 class="partner-title" style="color: black !important;">PBTM</h3>
+            <p class="partner-description" style="color: black !important;">Pandora Business Technology & Marketing.</p>
+          </a>
+    
+          <a href="https://casacrypto.ca/" target="_blank" class="horizontal-image-item">
+            <div class="image-wrapper">
+              <img src="assets/img/icon/casaCrypto.webp" loading="lazy" alt="Casa Crypto" class="nft-img">
+            </div>
+            <h3 class="partner-title" style="color: black !important;">Casa Crypto</h3>
+            <p class="partner-description" style="color: black !important;">Your guide to understanding and investing in cryptocurrency.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+                              
+            </main>
+            <!-- main area end  -->
+                
+        <!-- footer start -->
+                
+        <%- include('partials/footer') %>
+                
+        <!-- footer end -->
+                
+    </div>
+
+    <!-- jquery include -->
+    <script src="assets/js/jquery-3.7.1.min.js"></script>
+    <script src="assets/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/js/swiper.min.js"></script>
+    <script src="assets/js/slick.min.js"></script>
+    <script src="assets/js/gsap.js"></script>
+    <script src="assets/js/wow.min.js"></script>
+    <script src="assets/js/appear.js"></script>
+    <script src="assets/js/parallaxie.js"></script>
+    <script src="assets/js/parallax-scroll.js"></script>
+    <script src="assets/js/odometer.min.js"></script>
+    <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+    <script src="assets/js/isotope.pkgd.min.js"></script>
+    <script src="assets/js/cursor-bundle.js"></script>
+    <script src="assets/js/easing.min.js"></script>
+    <script src="assets/js/scrollspy.js"></script>
+    <script src="assets/js/jquery.nice-select.min.js"></script>
+    <script src="assets/js/jquery.marquee.min.js"></script>
+    <script src="assets/js/jquery.magnific-popup.min.js"></script>
+    <script src="assets/js/main.js"></script>
+    
+
+</body>
+
+
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pandora Business Technology & Marketing</title>
+
+  <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Poppins:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/login.css">
+
+</head>
+
+<style>
+  /* Ajustements mobile */
+  @media (max-width: 767px) {
+    .container {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .video-container {
+      order: -1; /* Place la vidéo en première position */
+      height: 10vh; /* Hauteur vidéo réduite */
+      width: 100%;
+      margin: 0 0 20px 0; /* Marge uniquement en bas */
+    }
+
+    .login-card {
+      margin-top: 0; /* Supprime l'espace au-dessus du formulaire */
+      width: 100%; /* Pleine largeur */
+    }
+
+    .video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: none; /* Retire le décalage précédent */
+    }
+  }
+</style>
+
+<body>
+  
+  <div class="container">
+    <div class="video-container">
+      <video autoplay loop muted>
+        <source src="/assets/mp4/pbrandlogin.webm" type="video/webm">
+        Votre navigateur ne supporte pas la lecture de vidéos.
+      </video>
+    </div>
+    
+    <div class="login-card">
+      <div class="company-name" style="margin-right: 77% !important;">
+        <a href="/">HOME</a>
+      </div>
+      <div class="company-name">PANDORA</div>
+      <h1 class="login-title">Login</h1>
+      
+      <form id="loginForm" action="/api/auth/login" method="POST">
+        <div class="form-group">
+          <input type="email" name="email" class="form-control" placeholder="Email Adress" required>
+        </div>
+        
+        <div class="form-group">
+          <input type="password" name="password" class="form-control" placeholder="Password" id="password" required>
+          <i class="bi bi-eye-slash password-toggle" onclick="togglePassword()"></i>
+        </div>
+
+        <div class="options-section">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="rememberMe">
+            <label class="form-check-label" for="rememberMe">Remember me</label>
+          </div>
+          <a href="#" id="forgotPasswordLink">Forgot password ?</a>
+        </div>
+
+        <button type="submit" class="btn-login">Login</button>
+      </form>
+
+      <style>
+        /* Error states */
+.input-error {
+    border: 2px solid #D4AF37 !important;
+    background-color: rgba(255, 215, 0, 0.12);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+      </style>
+
+      <div class="divider">
+        <span>or</span>
+      </div>
+
+      <div class="social-login">
+        <button id="googleLogin" class="social-btn">
+          <img src="assets/img/icon/05.webp" alt="Google">
+        </button>
+        </div>
+
+      <div>
+      <p class="signup-text">
+        Don't have an account yet ? <a href="signup">Sign up here</a>
+      </p>
+    </div>
+  </div>
+  
+<!-- Modal QR Code Authentification -->
+<div id="qrCodeModal" class="verification-modal">
+  <div class="verification-content">
+    <div class="modal-header">
+      <h2>2FA VERIFICATION</h2>
+      <span class="close-modal">&times;</span>
+    </div>
+    <div class="modal-body">
+      <p>Scan the QR code with 2FA app from your phone :</p>
+      
+      <div class="qr-code-container">
+        <img id="qrCodeImage" alt="QR Code Authentification" />
+      </div>
+      
+      <div class="manual-instructions">
+        <p>Use Google Authenticator, Authy or any similar app</p>
+      </div>
+      
+      <div class="manual-code">
+        <p>or enter this code manually :</p>
+        <div id="manualCode" class="secret-code"></div>
+      </div>
+    </div>
+    <div class="code-container">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+    </div>
+    <button class="btn-qr-verify">Verify Code</button>
+  </div>
+</div>
+  
+<!-- Modal Code Authentification -->
+<div id="codeModal" class="verification-modal">
+  <div class="verification-content">
+    <div class="modal-header">
+      <h2>2FA VERIFICATION</h2>
+      <span class="close-modal">&times;</span>
+    </div>
+   
+    <div class="code-container">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+      <input type="text" class="code-input" maxlength="1">
+    </div>
+    <div class="regenerate-qr">
+      <button class="btn-regenerate">I lost my QR code</button>
+    </div>
+    <button class="btn-verify">Verify Code</button>
+  </div>
+</div>
+
+  <!-- Modal de récupération de mot de passe oublié -->
+  <div id="forgotPasswordModal" class="forgot-password-modal">
+    <div class="forgot-password-content">
+      <div class="modal-header">
+        <h2>Forgot password</h2>
+        <span class="close-modal" id="closeForgotPassword">&times;</span>
+      </div>
+      <div class="modal-body">
+        <p>Please enter your email address to receive the password reset instructions.</p>
+        
+        <form id="forgotPasswordForm">
+          <div class="form-group">
+            <input type="email" class="form-control" placeholder="Votre adresse email" id="forgotPasswordEmail" required>
+          </div>
+          
+          <ul class="forgot-password-steps">
+            <li>A password reset email will be sent to the provided address</li>
+            <li>Click the link in the email</li>
+            <li>Create your new password</li>
+          </ul>
+          
+          <div class="success-message" id="resetSuccessMessage">
+            <i class="bi bi-check-circle-fill"></i> Password reset email sent successfully!
+          </div>
+          
+          <button type="submit" class="btn-reset">Reset Password</button>
+          </form>
+      </div>
+    </div>
+  </div>
+
+  
+<script type="module" src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js/dist/umd/supabase.js"></script>
+<script>
+  // Pass to the module
+  window.supabaseUrl = "<%= supabaseUrl %>";
+  window.supabaseAnonKey = "<%= supabaseAnonKey %>";
+  window.APP_URL = "<%= APP_URL %>";
+ 
+</script>
+  <script type="module" src="/assets/js/login.js"></script>
+  <script type="module" src="assets/js/provider.js"></script>

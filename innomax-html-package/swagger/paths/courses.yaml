@@ -1,0 +1,35 @@
+createCourse:
+  post:
+    tags:
+      - Courses
+    summary: Create a new course
+    security:
+      - BearerAuth: []
+    requestBody:
+      content:
+        multipart/form-data:
+          schema:
+            type: object
+            properties:
+              nom:
+                type: string
+              prix:
+                type: number
+              files:
+                type: array
+                items:
+                  type: string
+                  format: binary
+    responses:
+      201:
+        description: Course created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+      400:
+        description: Invalid input
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Error'

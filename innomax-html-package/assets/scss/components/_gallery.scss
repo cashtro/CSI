@@ -1,0 +1,26 @@
+.gallery-wrap {
+    flex-wrap: nowrap;
+}
+.gallery-item {
+    &:not(:last-child) {
+        margin-right: 20px;
+    }
+    .img {
+        margin-bottom: 20px;
+        img {
+            @include border-radius(15px);
+        }
+        &--1 {
+            float: right;
+        }
+        &--5 {
+            float: left;
+        }
+    }
+    &--two {
+        transform: translateY(30px);
+    }
+    &--three {
+        transform: translateY(-10px);
+    }
+}

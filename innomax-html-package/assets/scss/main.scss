@@ -1,0 +1,114 @@
+/*-----------------------------------------------------------------------------------
+
+    Project Name: Innomax - Technology & IT Startup HTML Template
+    Author: XpressBuddy -->> (https://themeforest.net/user/xpressbuddy)
+    Support: support@xpressbuddy.com
+    Description: Innomax - Technology & IT Startup HTML Template
+    Developer: Mohammad Wasim Mia -> contact@xpressbuddy.com
+    Version: 1.0
+
+-----------------------------------------------------------------------------------
+
+    CSS INDEX
+    ==================
+    
+	01. Theme default CSS
+    02. header
+    03. global
+    04. hero
+    05. feature
+    06. about
+    07. service
+    08. team
+    09. testimonial
+    10. contact
+    11. blog
+    12. bramd
+    13. pricing
+    14. project
+    15. cta
+    16. fanfact
+    17. marquee
+    18. process
+    19. banner
+    20. portfolio
+    21. accordion
+    22. mission
+    23. career
+    24. shop
+    25. breadcrumb
+    26. sidebar
+    27. backtotop
+    28. sec-title
+    29. search
+    30. mobile-menu
+    31. 404
+    32. preloader
+    
+
+-----------------------------------------------------------------------------------*/
+// abstracts scss
+@import
+    'abstracts/variables',
+    'abstracts/mixins';
+
+// base scss
+@import 
+    'base/fonts',
+    'base/base',
+    'base/spacing',
+    'base/typography',
+    'base/animation',
+    'base/overlay';
+
+// layout scss
+@import 
+    'layout/header',
+    'layout/navigation';
+ 
+// components scss
+@import 
+    'components/sec-title',
+    'components/fanfact',
+    'components/about',
+    'components/brand',
+    'components/project',
+    'components/process',
+    'components/service',
+    'components/feature',
+    'components/testimonial',
+    'components/industrie',
+    'components/team',
+    'components/blog',
+    'components/parallax',
+    'components/faq',
+    'components/cta',
+    'components/contact',
+    'components/work',
+    'components/award',
+    'components/video',
+    'components/integration',
+    'components/page-title',
+    'components/roadmap',
+    'components/gallery',
+    'components/details',
+    'components/pricing',
+    'components/casestudy',
+    'components/sidebar',
+    'components/global',
+    'components/hero',
+    'components/cursor',
+    'components/breadcrumb',
+    'components/buttons',
+    'components/backtotop',
+    'components/mobile-menu',
+    'components/preloader';
+
+// home scss
+
+
+// layout scss
+@import
+    'layout/footer';
+ 
+

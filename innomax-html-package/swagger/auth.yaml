@@ -1,0 +1,108 @@
+openapi: 3.0.0
+info:
+  title: Auth API
+  version: "1.0.0"
+paths:
+  /auth/register:
+    post:
+      summary: Inscription utilisateur
+      description: Crée un nouvel utilisateur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                age:
+                  type: integer
+                password:
+                  type: string
+              required:
+                - username
+                - email
+                - password
+      responses:
+        "201":
+          description: Utilisateur inscrit avec succès.
+        "409":
+          description: Email déjà utilisé.
+        "500":
+          description: Erreur interne du serveur.
+  /auth/login:
+    post:
+      summary: Connexion utilisateur
+      description: Authentifie un utilisateur.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        "200":
+          description: Connexion réussie.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  accessToken:
+                    type: string
+                  refreshToken:
+                    type: string
+        "401":
+          description: Erreur d'authentification.
+  /auth/logout:
+    post:
+      summary: Déconnexion utilisateur
+      description: Déconnecte l'utilisateur.
+      responses:
+        "200":
+          description: Déconnexion réussie.
+        "500":
+          description: Erreur lors de la déconnexion.
+  /auth/{provider}:
+    get:
+      summary: Redirection OAuth
+      description: Initie le processus OAuth pour un fournisseur (google, facebook, github).
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [google, facebook, github]
+      responses:
+        "302":
+          description: Redirection vers le fournisseur OAuth.
+  /auth/{provider}/callback:
+    get:
+      summary: Callback OAuth
+      description: Retour d'authentification via OAuth pour un fournisseur.
+      parameters:
+        - in: path
+          name: provider
+          required: true
+          schema:
+            type: string
+            enum: [google, facebook, github]
+      responses:
+        "200":
+          description: Authentification réussie.
+        "400":
+          description: Erreur lors de l'authentification.

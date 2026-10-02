@@ -1,0 +1,2799 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Éducation et Loterie</title>
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+    
+    <link rel="stylesheet" href="assets/css/dashboard.css">
+    
+</head>
+
+<body>
+
+    <!-- Mobile Navigation Bar Addition -->
+    <style>
+        /* On mobile */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+            
+            /* Hide the previous mobile menu selector */
+            .mobile-menu-selector {
+                display: none;
+            }
+            
+            /* Mobile navbar styling */
+            .mobile-navbar {
+                display: flex;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background: #2c3e50;
+                padding: 10px 0;
+                justify-content: space-around;
+                z-index: 100;
+                box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .mobile-nav-item {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: #94a3b8;
+                font-size: 0.7rem;
+                text-decoration: none;
+                padding: 5px 0;
+            }
+            
+            .mobile-nav-item.active {
+                color: #ffffff;
+            }
+            
+            .mobile-nav-icon {
+                margin-bottom: 4px;
+            }
+            
+            /* Add padding to main content to prevent overlap with navbar */
+            .main-content {
+                padding-bottom: 70px;
+            }
+        }
+    
+        /* On tablet and desktop */
+        @media (min-width: 769px) {
+            .mobile-navbar {
+                display: none;
+            }
+        }
+    </style>
+    
+    <!-- Add this mobile navbar at the end of the body but before closing body tag -->
+    <div class="mobile-navbar">
+        <a href="#" class="mobile-nav-item active" data-page="dashboard" data-title="Dashboard">
+            <div class="mobile-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+            </div>
+            <span>Dashboard</span>
+        </a>
+        
+        <a href="#" class="mobile-nav-item" data-page="courses" data-title="Courses">
+            <div class="mobile-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                    <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                    <line x1="6" y1="1" x2="6" y2="4"></line>
+                    <line x1="10" y1="1" x2="10" y2="4"></line>
+                    <line x1="14" y1="1" x2="14" y2="4"></line>
+                </svg>
+            </div>
+            <span>Courses</span>
+        </a>
+        
+        <a href="#" class="mobile-nav-item" data-page="portfolio" data-title="Portfolio">
+            <div class="mobile-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <span>Portfolio</span>
+        </a>
+        
+        
+        <a href="#" class="mobile-nav-item" data-page="draws" data-title="Draws">
+            <div class="mobile-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="14.31" y1="8" x2="20.05" y2="17.94"></line>
+                    <line x1="9.69" y1="8" x2="21.17" y2="8"></line>
+                    <line x1="7.38" y1="12" x2="13.12" y2="2.06"></line>
+                    <line x1="9.69" y1="16" x2="3.95" y2="6.06"></line>
+                    <line x1="14.31" y1="16" x2="2.83" y2="16"></line>
+                    <line x1="16.62" y1="12" x2="10.88" y2="21.94"></line>
+                </svg>
+            </div>
+            <span>Draws</span>
+        </a>
+
+        <a href="#" class="mobile-nav-item" data-page="teacher-requests" data-title="Portfolio">
+            <div class="mobile-nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <span>Teacher Requests</span>
+        </a>
+    </div>
+    
+    <!-- JavaScript for mobile navbar functionality -->
+    <script>
+        // Add event listeners to mobile navbar items
+        document.querySelectorAll('.mobile-navbar .mobile-nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const page = this.dataset.page;
+                showPage(page);
+                setActiveMobileNavItem(page);
+            });
+        });
+        
+        // Function to set active class on mobile nav item
+        function setActiveMobileNavItem(page) {
+            document.querySelectorAll('.mobile-navbar .mobile-nav-item').forEach(item => {
+                item.classList.remove('active');
+                if(item.dataset.page === page) {
+                    item.classList.add('active');
+                }
+            });
+            
+            // Vérifie si la fonction setActiveMenuItem existe avant de l'appeler
+            if(typeof window.setActiveMenuItem === 'function') {
+                setActiveMenuItem(page);
+            }
+        }
+        
+        // Modified showPage function to update both navigation systems
+        function showPage(page) {
+            // Hide all page content
+            document.querySelectorAll('.page-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Show the selected page content
+            const pageContent = document.getElementById(page + '-content');
+            if (pageContent) {
+                pageContent.classList.add('active');
+                
+                // Update page title from the clicked element's data-title attribute
+                const activeElement = document.querySelector(`[data-page="${page}"]`);
+                if (activeElement && activeElement.dataset.title) {
+                    const pageTitle = document.querySelector('.page-title');
+                    if (pageTitle) {
+                        pageTitle.textContent = activeElement.dataset.title;
+                    }
+                }
+            }
+            
+            // Update both navigation systems
+            setActiveMobileNavItem(page);
+        }
+    
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Active la page courante basée sur l'URL ou 'dashboard' par défaut
+            const currentPage = window.location.hash.substring(1) || 'dashboard';
+            showPage(currentPage);
+        });
+    </script>
+        <!-- Ajoutez ceci dans la top-bar -->
+    <style>
+        /* Sur mobile */
+        @media (max-width: 768px) {
+        .sidebar {
+            display: none;
+        }
+        
+        .mobile-menu-selector {
+            display: block;
+            position: relative; /* Ajout crucial */
+            top: 5px; /* Déplacement effectif */
+            margin-right: 15px;
+        }
+        
+        #mobile-menu {
+            background: #2c3e50;
+            color: white;
+            border: 1px solid #34495e;
+            padding: 8px 12px;
+            border-radius: 6px;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+    }
+    
+    .mobile-menu-selector {
+        display: block;
+        transform: translateY(50px); /* Déplace de 50px vers le bas */
+        margin-right: 15px;
+    }
+    
+    /* Sur desktop */
+    @media (min-width: 769px) {
+        .mobile-menu-selector {
+            display: none;
+        }
+    }
+    </style>
+
+
+
+
+
+
+
+
+
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                        </path>
+                        <polyline points="7.5 4.21 12 6.81 16.5 4.21"></polyline>
+                        <polyline points="7.5 19.79 7.5 14.6 3 12"></polyline>
+                        <polyline points="21 12 16.5 14.6 16.5 19.79"></polyline>
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                    </svg>
+                </div>
+                <div class="logo-text">AdminDashboard</div>
+            </div>
+
+            <div class="menu">
+                <div class="menu-category">Main Menu</div>
+
+                <div class="menu-item active" data-page="dashboard">
+                    <div class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="3" width="7" height="7"></rect>
+                            <rect x="14" y="14" width="7" height="7"></rect>
+                            <rect x="3" y="14" width="7" height="7"></rect>
+                        </svg>
+                    </div>
+                    <div class="menu-text">Dashboard</div>
+                    
+                </div>
+
+                <div class="menu-category">Education</div>
+
+                <div class="menu-item" data-page="courses">
+                    <div class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                            <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                            <line x1="6" y1="1" x2="6" y2="4"></line>
+                            <line x1="10" y1="1" x2="10" y2="4"></line>
+                            <line x1="14" y1="1" x2="14" y2="4"></line>
+                        </svg>
+                    </div>
+                    <div class="menu-text">Courses</div>
+                </div>
+
+                <div class="menu-item" data-page="portfolio">
+                    <div class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"></path>
+                            <line x1="2" y1="20" x2="2" y2="20"></line>
+                        </svg>
+                    </div>
+                    <div class="menu-text">Portfolio</div>
+
+                </div>
+                <div class="menu-category">Store</div>
+
+                    
+                    <div class="menu-item" data-page="achat">
+                        <div class="menu-icon">🛒</div>
+                        <div class="menu-text">Buy</div>
+                    </div>
+                <div class="menu-category">Lottery</div>
+
+                <div class="menu-item" data-page="draws">
+                    <div class="menu-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="14.31" y1="8" x2="20.05" y2="17.94"></line>
+                            <line x1="9.69" y1="8" x2="21.17" y2="8"></line>
+                            <line x1="7.38" y1="12" x2="13.12" y2="2.06"></line>
+                            <line x1="9.69" y1="16" x2="3.95" y2="6.06"></line>
+                            <line x1="14.31" y1="16" x2="2.83" y2="16"></line>
+                            <line x1="16.62" y1="12" x2="10.88" y2="21.94"></line>
+                        </svg>
+                    </div>
+                    <div class="menu-text">Raffle</div>
+                </div>
+
+
+                <div class="menu-category">Manage Teachers</div>
+                <div class="menu-item" data-page="teacher-requests">
+                    <div class="menu-icon">🎓</div>
+                    <div class="menu-text">Teacher Requests</div>
+                </div>
+                
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="top-bar">
+                <div class="page-title">
+                    Dashboard
+                </div>
+
+                <div class="search-container">
+                    <div class="search-box">
+                        <div class="search-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <input type="text" class="search-input" placeholder="Rechercher...">
+                    </div>
+                </div>
+
+                <div class="toolbar">
+
+                    <div class="language-selector">
+                        <select id="language-select">
+                            <option value="fr">Français</option>
+                            <option value="en" selected>English</option>
+                            <option value="es">Español</option>
+                            <option value="de">Deutsch</option>
+                        </select>
+                    </div>
+
+
+                    <a href="/" class="toolbar-item user-avatar">
+                        <img src="assets/img/logo/cropped-LogoPB512gold-1.webp" alt="User Avatar">
+                    </a>
+                </div>
+            </div>
+
+            <!-- DASHBOARD SECTION -->
+            <div class="page-content active" id="dashboard-content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <div class="welcome-info">
+                        <div class="welcome-avatar">
+                            <img src="assets\img\logo\cropped-LogoPB512gold-1.webp" alt="User Avatar">
+                        </div>
+                        <div class="welcome-text">
+                            <h3>Welcome</h3>
+                            <h2>PANDORA</h2>
+                        </div>
+                    </div>
+
+                    <!-- <div class="welcome-metrics">
+                        <div class="metric">
+                            <div class="metric-value">$324K</div>
+                            <div class="metric-label">Funds raised</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill green" style="--fill-width: 65%"></div>
+                            </div>
+                        </div>
+
+                        <div class="metric">
+                            <div class="metric-value">78.4%</div>
+                            <div class="metric-label">Growth rate</div>
+                            <div class="progress-bar">
+                                <div class="progress-fill orange" style="--fill-width: 78%"></div>
+                            </div>
+                        </div>
+                    </div> -->
+
+                    <div class="welcome-illustration">
+                        <img src="assets\img\lotto\Photoshop 3D World copy 3.webp" alt="Education Illustration">
+                    </div>
+                </div>
+
+                <!-- Dashboard Cards -->
+                <div class="dashboard-cards">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                          <div class="card-title">Total Courses</div>                          
+                        </div>
+                        <div class="card-value" id="totalCourses">0</div>
+                        <div class="card-label">Available Courses</div>
+                    
+                        <div class="circle-chart">
+                            <svg viewBox="0 0 36 36">
+                                <path d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831" 
+                                    fill="none" stroke="rgba(255, 255, 255, 0.1)"
+                                    stroke-width="3" stroke-dasharray="100, 100" />
+                                <path class="chart-progress" d="M18 2.0845
+                                    a 15.9155 15.9155 0 0 1 0 31.831
+                                    a 15.9155 15.9155 0 0 1 0 -31.831" 
+                                    fill="none" stroke="url(#gradient)"
+                                    stroke-width="3" stroke-dasharray="0, 100" /> <!-- Valeur initiale à 0% -->
+                                <defs>
+                                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                        <stop offset="0%" stop-color="#4e73df" />
+                                        <stop offset="100%" stop-color="#224abe" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <div class="circle-chart-percentage">0%</div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <div class="card-title">Ticket sales</div>                            
+                        </div>
+                    
+                        <div class="card-value" id="totalTickets">0</div>  <!-- Ajout d'un ID -->
+                        <div class="card-label">Total tickets</div>
+                    
+                        <div class="chart-container">
+                            <svg viewBox="0 0 500 100" preserveAspectRatio="none">
+                                <path d="M0,50 C150,20 200,80 300,50 C400,20 450,70 500,40" fill="none" stroke="#ffc107"
+                                    stroke-width="3"></path>
+                                <path d="M0,99 L0,55 C150,30 200,90 300,60 C400,30 450,80 500,50 L500,99 Z"
+                                    fill="url(#chartGradient)" stroke="none"></path>
+                                <defs>
+                                    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stop-color="#ffc107" stop-opacity="0.5" />
+                                        <stop offset="100%" stop-color="#ffc107" stop-opacity="0.1" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal pour éditer un projet portfolio -->
+            <div class="portfolio-edit-modal" style="display: none;">
+                <div class="modal-content">
+                    <form id="edit-portfolio-form" enctype="multipart/form-data">
+                        <h3>Modifier un projet</h3>
+                        <input type="hidden" id="edit-portfolio-id" name="id">
+                        <div class="form-group">
+                            <label for="edit-portfolio-title">Title*</label>
+                            <input type="text" id="edit-portfolio-title" name="title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-portfolio-genre">Type*</label>
+                            <input type="text" id="edit-portfolio-genre" name="genre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-portfolio-url">Project URL*</label>
+                            <input type="url" id="edit-portfolio-url" name="urlPortfolio" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-portfolio-image">New project image (optional)</label>
+                            <input type="file" id="edit-portfolio-image" name="file" accept="image/*">
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="cancel-btn">Cancel</button>
+                            <button type="submit" class="submit-btn">Update</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RAPPORTS MENSUELS SECTION -->
+            <div class="page-content" id="rapports-mensuels-content">
+                <div class="rapports-mensuels-content">
+                    <div class="content-header">
+                        <div class="content-title">Monthly Reports</div>
+                        <div class="content-description">Visualization of monthly performance and key indicators
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">January 2025</div>
+                            <div class="content-card-value">156 K$</div>
+                            <div class="content-card-desc">Finalized on  05/02/2025</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">February 2025</div>
+                            <div class="content-card-value">172 K$</div>
+                            <div class="content-card-desc">Finalized on 08/03/2025</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">March 2025</div>
+                            <div class="content-card-value">195 K$</div>
+                            <div class="content-card-desc">Currently being finalized</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PORTFOLIO SECTION -->
+            <div class="page-content" id="portfolio-content">
+                <div class="portfolio-content">
+                    <div class="content-header">
+                        <div class="content-title">Portfolio</div>
+                        <div class="content-description">Portfolio Project Management</div>
+                        <button id="add-portfolio-btn" class="add-course-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add a project
+                        </button>
+                    </div>
+
+        <style>
+            /* Portfolio Modal Styles */
+            .portfolio-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                font-family: 'Arial', sans-serif;
+            }
+
+            .portfolio-modal .modal-content {
+                background-color: #1f2937;
+                border-radius: 12px;
+                width: 90%;
+                max-width: 500px; /* Smaller width compared to lottery modal */
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+                padding: 25px;
+                color: #f3f4f6;
+            }
+
+            .portfolio-modal form h3 {
+                color: #ffc107;
+                margin-bottom: 20px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 15px;
+                font-size: 1.5rem;
+                text-align: center;
+            }
+
+            .portfolio-modal .form-group {
+                margin-bottom: 18px;
+            }
+
+            .portfolio-modal label {
+                display: block;
+                margin-bottom: 8px;
+                color: #ffc107;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            .portfolio-modal input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                color: #f3f4f6;
+                transition: all 0.3s ease;
+            }
+
+            .portfolio-modal input:focus {
+                outline: none;
+                border-color: #ffc107;
+                box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
+            }
+
+            .portfolio-modal .form-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 15px;
+                margin-top: 20px;
+                border-top: 1px solid rgba(255,255,255,0.1);
+                padding-top: 20px;
+            }
+
+            .portfolio-modal .cancel-btn,
+            .portfolio-modal .submit-btn {
+                padding: 10px 20px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .portfolio-modal .cancel-btn {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #f3f4f6;
+                border: none;
+            }
+
+            .portfolio-modal .cancel-btn:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .portfolio-modal .submit-btn {
+                background-color: #ffc107;
+                color: #111827;
+                border: none;
+            }
+
+            .portfolio-modal .submit-btn:hover {
+                background-color: #ffca28;
+            }
+
+            .portfolio-modal input[type="file"] {
+                display: block;
+                background: none;
+                border: 2px dashed rgba(255, 255, 255, 0.2);
+                padding: 15px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .portfolio-modal input[type="file"]:hover {
+                border-color: #ffc107;
+            }
+
+            
+    /* Portfolio Edit Modal Styles */
+    .portfolio-edit-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .portfolio-edit-modal .modal-content {
+        background-color: #1f2937;
+        border-radius: 12px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        padding: 25px;
+        color: #f3f4f6;
+    }
+    
+    /* Les autres styles similaires au modal d'ajout */
+    .portfolio-edit-modal form h3 {
+        color: #ffc107;
+        margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        padding-bottom: 15px;
+        font-size: 1.5rem;
+        text-align: center;
+    }
+
+    .portfolio-edit-modal .form-group {
+        margin-bottom: 18px;
+    }
+
+    .portfolio-edit-modal label {
+        display: block;
+        margin-bottom: 8px;
+        color: #ffc107;
+        font-weight: 600;
+        font-size: 0.9rem;
+    }
+
+    .portfolio-edit-modal input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 8px;
+        color: #f3f4f6;
+        transition: all 0.3s ease;
+    }
+
+    .portfolio-edit-modal input:focus {
+        outline: none;
+        border-color: #ffc107;
+        box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
+    }
+
+    .portfolio-edit-modal .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 15px;
+        margin-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        padding-top: 20px;
+    }
+
+    .portfolio-edit-modal .cancel-edit-btn,
+    .portfolio-edit-modal .submit-btn {
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .portfolio-edit-modal .cancel-edit-btn {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #f3f4f6;
+        border: none;
+    }
+
+    .portfolio-edit-modal .cancel-edit-btn:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .portfolio-edit-modal .submit-btn {
+        background-color: #ffc107;
+        color: #111827;
+        border: none;
+    }
+
+    .portfolio-edit-modal .submit-btn:hover {
+        background-color: #ffca28;
+    }
+
+    .image-upload-container {
+    margin-top: 10px;
+}
+
+.image-preview {
+    width: 100%;
+    height: 200px;
+    border: 2px dashed rgba(255, 193, 7, 0.3);
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.upload-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: rgba(255, 255, 255, 0.5);
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+}
+
+.upload-placeholder svg {
+    margin-bottom: 10px;
+    color: rgba(255, 193, 7, 0.6);
+}
+
+.preview-container {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+#preview-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+input[type="file"]#course-image {
+    position: absolute;
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    z-index: -1;
+}
+
+/* Ajoutez ces styles pour le mode modification */
+.current-image-preview {
+    max-width: 100%;
+    max-height: 200px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.current-image-preview img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: contain;
+    display: block;
+}
+
+        </style>
+
+        <!-- Modal pour ajouter un projet -->
+        <div class="portfolio-modal" style="display: none;">
+            <div class="modal-content">
+                <form id="add-portfolio-form" enctype="multipart/form-data">
+                    <h3>Add a new project</h3>
+                    <div class="form-group">
+                        <label for="portfolio-title">Title*</label>
+                        <input type="text" id="portfolio-title" name="title" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="portfolio-genre">Type*</label>
+                        <input type="text" id="portfolio-genre" name="genre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="portfolio-url">Project URL*</label>
+                        <input type="url" id="portfolio-url" name="urlPortfolio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="portfolio-image">Project image</label>
+                        <input type="file" id="portfolio-image" name="file" accept="image/*">
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn">Cancel</button>
+                        <button type="submit" class="submit-btn">Add</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="content-body" id="portfolio-list">
+            <div class="portfolio-grid"></div>
+            <div class="loading-portfolio">
+                <div class="spinner"></div>
+                <p>Loading portfolio...</p>
+            </div>
+        </div>
+    </div>
+</div>
+            <!-- ANALYSE DONNÉES SECTION -->
+            <div class="page-content" id="analyse-donnees-content">
+                <div class="analyse-donnees-content">
+                    <div class="content-header">
+                        <div class="content-title">Data Analysis</div>
+                        <div class="content-description">In-depth studies and data segmentation</div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">User segmentation</div>
+                            <div class="content-card-value">7 segments</div>
+                            <div class="content-card-desc">Last updated: 28/03/2025</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Behavioral analysis</div>
+                            <div class="content-card-value">12 models</div>
+                            <div class="content-card-desc">Last update: 30/03/2025</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Purchase predictions</div>
+                            <div class="content-card-value">85% accuracy</div>
+                            <div class="content-card-desc">Last update: 01/04/2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TENDANCES SECTION -->
+            <div class="page-content" id="tendances-content">
+                <div class="tendances-content">
+                    <div class="content-header">
+                        <div class="content-title">Trends</div>
+                        <div class="content-description">Analysis of emerging trends and strategic directions
+                        </div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">User growth</div>
+                            <div class="content-card-value">+23.7%</div>
+                            <div class="content-card-desc">Compared to the previous quarter</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Mobile engagement</div>
+                            <div class="content-card-value">+42.8%</div>
+                            <div class="content-card-desc">Increase in mobile usage</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Retention</div>
+                            <div class="content-card-value">68.5%</div>
+                            <div class="content-card-desc">30-day retention rate</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- NOUVEAUX PROGRAMMES SECTION -->
+            <div class="page-content" id="nouveaux-programmes-content">
+                <div class="nouveaux-programmes-content">
+                    <div class="content-header">
+                        <div class="content-title">New Programs</div>
+                        <div class="content-description">Manage recently created programs</div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">Scientific Program 2025</div>
+                            <div class="content-card-value">56 registered</div>
+                            <div class="content-card-desc">Launch scheduled for May 15, 2025</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Engineering Program</div>
+                            <div class="content-card-value">42 registered</div>
+                            <div class="content-card-desc">Launch scheduled for June 1, 2025</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Artistic Program</div>
+                            <div class="content-card-value">38 registered</div>
+                            <div class="content-card-desc">Launch scheduled for May 20, 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROGRAMMES ACTIFS SECTION -->
+            <div class="page-content" id="programmes-actifs-content">
+                <div class="programmes-actifs-content">
+                    <div class="content-header">
+                        <div class="content-title">Active Programs</div>
+                        <div class="content-description">Manage currently running programs</div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">Mathematics Program</div>
+                            <div class="content-card-value">124 participants</div>
+                            <div class="content-card-desc">Progression: 68%</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Literature Program</div>
+                            <div class="content-card-value">89 participants</div>
+                            <div class="content-card-desc">Progression: 52%</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Chemistry Program</div>
+                            <div class="content-card-value">76 participants</div>
+                            <div class="content-card-desc">Progression: 45%</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Physics Program</div>
+                            <div class="content-card-value">92 participants</div>
+                            <div class="content-card-desc">Progression: 73%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ARCHIVES SECTION -->
+            <div class="page-content" id="archives-content">
+                <div class="archives-content">
+                    <div class="content-header">
+                        <div class="content-title">Archives</div>
+                        <div class="content-description">History of completed programs</div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">Biology Program 2024</div>
+                            <div class="content-card-value">143 graduates</div>
+                            <div class="content-card-desc">Completed on December 15, 2024</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">History Program 2024</div>
+                            <div class="content-card-value">98 graduates</div>
+                            <div class="content-card-desc">Completed on November 10, 2024</div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">2023 Music Program</div>
+                            <div class="content-card-value">76 graduates</div>
+                            <div class="content-card-desc">Completed June 20, 2023</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COURS SECTION -->
+            <div class="page-content" id="courses-content">
+                <div class="courses-content">
+                    <div class="content-header">
+                        <div class="content-title">Course</div>
+                        <div class="content-description">Management of courses and training offered</div>
+                        <button id="add-course-btn" class="add-course-btn">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Add a course
+                        </button>
+                    </div>
+                    <div class="course-modal" style="display: none;">
+                        <div class="modal-content">
+                            <form id="add-course-form" accept-charset="UTF-8" enctype="multipart/form-data">
+                                <h3>Add a new course</h3>
+                                <div class="form-steps">
+                                    <!-- Étape 1 - Informations de base -->
+
+                                    <!-- Ajouter ceci dans la première étape du formulaire (form-step active) -->
+                                            <div class="form-group">
+                                                <label for="course-image">Image du cours*</label>
+                                                <div class="image-upload-container">
+                                                    <div class="image-preview" id="course-image-preview">
+                                                        <div class="upload-placeholder">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                                                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                                                                <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                                                                <polyline points="21 15 16 10 5 21"></polyline>
+                                                            </svg>
+                                                            <span>Choisir une image</span>
+                                                        </div>
+                                                        <img id="preview-img" src="" alt="" style="display: none;">
+                                                    </div>
+                                                    <input type="file" id="course-image" name="courseImage" accept="image/*" required>
+                                                </div>
+                                                <small class="hint">Format recommandé: 16:9, minimum 600×338 pixels</small>
+                                            </div>
+                                    <div class="form-step active" data-step="1">
+                                        <div class="form-group">
+                                            <label for="title">Course title*</label>
+                                            <input type="text" id="title" name="nom" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="niveau">Level*</label>
+                                            <select id="niveau" name="niveau" required>
+                                                <option value="débutant">Beginner</option>
+                                                <option value="intermédiaire">Intermediate</option>
+                                                <option value="avancé">Advance</option>
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="hours">Number of hours*</label>
+                                            <input type="number" id="hours" name="nombre_heures" min="1" max="500"
+                                                required>
+                                        </div>
+
+                                        <div class="step-nav">
+                                            <button type="button" class="next-step">next →</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Étape 2 - Contenu pédagogique -->
+                                    <div class="form-step" data-step="2">
+                                        <div class="form-group">
+                                            <label>Learning points</label>
+                                            <div class="dynamic-list" id="learning-points">
+                                                <div class="list-item">
+                                                    <input type="text" name="learning_points[]">
+                                                    <button type="button" class="remove-item">×</button>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="add-item">+ Add a point</button>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Course program</label>
+                                            <div class="dynamic-list" id="program">
+                                                <div class="list-item">
+                                                    <input type="text" name="program[]">
+                                                    <button type="button" class="remove-item">×</button>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="add-item">+ Add a point</button>
+                                        </div>
+
+                                        <div class="step-nav">
+                                            <button type="button" class="prev-step">← Previous</button>
+                                            <button type="button" class="next-step">next→</button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Étape 3 - Prix, Fichiers & Finalisation -->
+                                    <div class="form-step" data-step="3">
+                                        <div class="form-group">
+                                            <label for="price">Course price*</label>
+                                            <input type="number" id="price" name="prix" min="1" max="500" step="any"
+                                                required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="files">Fichiers du cours*</label>
+                                            <input type="file" id="files" name="files" multiple required>
+                                            <small class="hint">Accepted formats: MP4, PDF, ZIP (max 50MB)</small>
+                                            
+                                            <!--TODO make content wysiwig in future-->
+                                            <input type="hidden" id="lessons" name="lessons">
+                                            <input type="hidden" id="content" name="content">
+                                        </div>
+
+                                        <div class="step-nav">
+                                            <button type="button" class="prev-step">← Previous</button>
+                                            <button type="submit" class="submit-btn">Create the course</button>
+                                        </div>
+                                    </div>
+
+                                    <!--<div class="form-actions">
+                                    <button type="button" class="cancel-btn">Annuler</button>
+                                    <button type="submit" class="submit-btn">Créer le cours</button>
+                                </div>-->
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="content-body" id="courses-list">
+                        <div class="loading-courses">
+                            <div class="spinner"></div>
+                            <p>Loading courses...</p>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <!-- PROGRAMMES EDUCATION SECTION -->
+            <div class="page-content" id="edu-programs-content">
+                <div class="edu-programs-content">
+                    <div class="content-header">
+                        <div class="content-title">Educational Programs</div>
+                        <div class="content-description">Overview of educational programs</div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">Science</div>
+                            <div class="content-card-value">520 students</div>
+                            <div class="content-card-desc">8 specializations available</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Letters and Humanities</div>
+                            <div class="content-card-value">410 students</div>
+                            <div class="content-card-desc">6 specializations available</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Technologies</div>
+                            <div class="content-card-value">680 students</div>
+                            <div class="content-card-desc">12 specializations available</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Arts</div>
+                            <div class="content-card-value">290 students</div>
+                            <div class="content-card-desc">5 specializations available</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROJETS SECTION -->
+            <div class="page-content" id="projects-content">
+                <div class="projects-content">
+                    <div class="content-header">
+                        <div class="content-title">Projects</div>
+                        <div class="content-description">Monitoring and management of educational projects</div>
+                    </div>
+                    <div class="content-body">
+                        <div class="content-card">
+                            <div class="content-card-title">Virtual Laboratory</div>
+                            <div class="content-card-value">Phase 2/4</div>
+                            <div class="content-card-desc">Budget: $120K - Expected end: June 2025</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Digital Campus</div>
+                            <div class="content-card-value">Phase 3/3</div>
+                            <div class="content-card-desc">Budget: $250K - Expected end: May 2025</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Virtual Library</div>
+                            <div class="content-card-value">Phase 1/3</div>
+                            <div class="content-card-desc">Budget: $85K - Expected end: September 2025</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                        <div class="content-card">
+                            <div class="content-card-title">Educational AI</div>
+                            <div class="content-card-value">Phase 1/4</div>
+                            <div class="content-card-desc">Budget: $180K - Expected end: Dec 2025</div>
+                            <div class="content-card-actions">
+                                <button class="edit-btn">Modify</button>
+                                <button class="delete-btn">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Magasin -->
+<!-- Magasin -->
+<div class="page-content" id="achat-content">
+  <div class="achat-content">
+    <div class="content-header">
+      <div class="content-title">Buy</div>
+      <div class="content-description">Manage shop items</div>
+      <button id="add-achat-btn" class="add-course-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+          fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        Add an item
+      </button>
+    </div>
+
+    <!-- ACHAT MODAL STYLES + CARD STYLES -->
+    <style>
+      /* Achat Modal Styles */
+      .achat-modal {
+        position: fixed;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.6);
+        display: none; justify-content: center; align-items: center;
+        z-index: 1000; font-family: 'Arial', sans-serif;
+      }
+      .achat-modal .modal-content {
+        background: #1f2937; border-radius: 12px;
+        width: 90%; max-width: 500px; max-height: 90vh;
+        overflow-y: auto; box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        padding: 25px; color: #f3f4f6;
+      }
+      .achat-modal form h3 {
+        color: #ffc107; margin-bottom: 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px;
+        font-size: 1.5rem; text-align: center;
+      }
+      .achat-modal .form-group { margin-bottom: 18px; }
+      .achat-modal label {
+        display: block; margin-bottom: 8px; color: #ffc107;
+        font-weight: 600; font-size: 0.9rem;
+      }
+      .achat-modal input, .achat-modal textarea {
+        width: 100%; padding: 12px 15px; border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(0,0,0,0.2); border-radius: 8px; color: #f3f4f6;
+        transition: all 0.3s; font-size: 1rem;
+      }
+      .achat-modal input:focus, .achat-modal textarea:focus {
+        outline: none; border-color: #ffc107;
+        box-shadow: 0 0 10px rgba(255,193,7,0.2);
+      }
+      .achat-modal .form-actions {
+        display: flex; justify-content: flex-end; gap: 15px; margin-top: 20px;
+        border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;
+      }
+      .achat-modal .cancel-btn, .achat-modal .submit-btn {
+        padding: 10px 20px; border-radius: 8px;
+        font-weight: 600; cursor: pointer; transition: all 0.3s;
+      }
+      .achat-modal .cancel-btn { background: rgba(255,255,255,0.1); color: #f3f4f6; border: none; }
+      .achat-modal .cancel-btn:hover { background: rgba(255,255,255,0.2); }
+      .achat-modal .submit-btn { background: #ffc107; color: #111827; border: none; }
+      .achat-modal .submit-btn:hover { background: #ffca28; }
+      .achat-modal input[type="file"] {
+        display: block; background: none; border: 2px dashed rgba(255,255,255,0.2);
+        padding: 15px; text-align: center; cursor: pointer;
+      }
+      .achat-modal input[type="file"]:hover { border-color: #ffc107; }
+
+      /* ACHAT CARD STYLES */
+      .achat-item {
+        display: flex; flex-direction: column; border-radius: 8px; overflow: hidden;
+        background: #2a3042; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      }
+      .achat-image { width: 100%; height: 200px; overflow: hidden; }
+      .achat-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+      .achat-item:hover .achat-image img { transform: scale(1.05); }
+      .achat-info { padding: 15px; flex-grow: 1; }
+      .achat-info h3 { margin: 0 0 8px 0; color: #fff; font-size: 16px; }
+      .achat-info .achat-price { color: #ffc107; font-size: 16px; font-weight: bold; }
+      .achat-actions {
+        display: flex; padding: 0 15px 15px 15px; gap: 10px;
+      }
+      .achat-actions button {
+        flex: 1; padding: 8px; border: none; border-radius: 4px;
+        cursor: pointer; font-size: 14px; transition: background 0.2s;
+      }
+      .achat-actions .edit-btn { background: #3a4a6b; color: white; }
+      .achat-actions .delete-btn { background: #5c2a3a; color: white; }
+      .achat-actions button:hover { opacity: 0.9; }
+      .achat-grid {
+        display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr));
+        gap: 20px; width: 100%;
+      }
+      .achat-no-image {
+        width: 100%; height: 200px; background: #3a4a6b;
+        display: flex; align-items: center; justify-content: center; color: #a0a8c3;
+      }
+    </style>
+
+    <!-- Modal for adding achat item -->
+    <div class="achat-modal" style="display: none;">
+      <div class="modal-content">
+        <form id="add-achat-form" enctype="multipart/form-data">
+            <h3>Add an Item to the Shop</h3>
+          <!-- Hidden fields if required by backend -->
+          <input type="hidden" name="buyable" value="true">
+          <!-- Shop fields -->
+          <div class="form-group">
+            <label for="nomProduit">Product Name*</label>
+            <input type="text" id="nomProduit" name="nomProduit" required>
+          </div>
+          <div class="form-group">
+            <label for="price">Direct Buy Price*</label>
+            <input type="number" id="price" name="price" min="1" required>
+          </div>
+          <div class="form-group">
+            <label for="shortDescription">Short Description</label>
+            <input type="text" id="shortDescription" name="shortDescription">
+          </div>
+          <div class="form-group">
+            <label for="fullDescription">Full Description</label>
+            <textarea id="fullDescription" name="fullDescription"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="imageProduit">Image</label>
+            <input type="file" id="imageProduit" name="imageProduit" accept="image/*">
+          </div>
+          <div class="form-actions">
+            <button type="button" class="cancel-btn">Cancel</button>
+            <button type="submit" class="submit-btn">Add Product</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Achat List/Grid -->
+    <div class="content-body" id="achat-list">
+      <div class="achat-grid">
+        <!-- JS will render achat-item cards here -->
+      </div>
+      <div class="loading-achat">
+        <div class="spinner"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal open/close JS -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const addAchatBtn = document.getElementById('add-achat-btn');
+    const achatModal = document.querySelector('.achat-modal');
+    const cancelAchatBtn = achatModal.querySelector('.cancel-btn');
+    if (addAchatBtn && achatModal) {
+      addAchatBtn.addEventListener('click', () => achatModal.style.display = 'flex');
+      cancelAchatBtn.addEventListener('click', () => achatModal.style.display = 'none');
+    }
+  });
+</script>
+
+
+           <!-- SECTION TIRAGE -->
+<div class="page-content" id="draws-content">
+    <div class="draws-content">
+        <div class="content-header">
+            <div class="content-title">Lottery</div>
+            <div class="content-description">Management of draws and associated prizes</div>
+            <button id="add-lottery-btn" class="add-course-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                    stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                Add a drawing
+            </button>
+        </div>
+
+        
+
+        <style>
+            /* Lottery Modal Styles */
+            .lottery-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background-color: rgba(0, 0, 0, 0.6);
+                display: none;
+                justify-content: center;
+                align-items: center;
+                z-index: 1000;
+                font-family: 'Arial', sans-serif;
+            }
+
+            .lottery-modal .modal-content {
+                background-color: #1f2937;
+                border-radius: 12px;
+                width: 90%;
+                max-width: 600px;
+                max-height: 90vh;
+                overflow-y: auto;
+                box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+                padding: 30px;
+                color: #f3f4f6;
+            }
+
+            .lottery-modal form h3 {
+                color: #ffc107;
+                margin-bottom: 25px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 15px;
+                font-size: 1.5rem;
+            }
+
+            .lottery-modal .form-group {
+                margin-bottom: 20px;
+            }
+
+            .lottery-modal label {
+                display: block;
+                margin-bottom: 8px;
+                color: #ffc107;
+                font-weight: 600;
+                font-size: 0.9rem;
+            }
+
+            .lottery-modal input, 
+            .lottery-modal textarea {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background-color: rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                color: #f3f4f6;
+                transition: all 0.3s ease;
+            }
+
+            .lottery-modal input:focus, 
+            .lottery-modal textarea:focus {
+                outline: none;
+                border-color: #ffc107;
+                box-shadow: 0 0 10px rgba(255, 193, 7, 0.2);
+            }
+
+            .lottery-modal .form-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 15px;
+                margin-top: 25px;
+                border-top: 1px solid rgba(255,255,255,0.1);
+                padding-top: 20px;
+            }
+
+            .lottery-modal .cancel-btn,
+            .lottery-modal .submit-btn {
+                padding: 12px 25px;
+                border-radius: 8px;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .lottery-modal .cancel-btn {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: #f3f4f6;
+                border: none;
+            }
+
+            .lottery-modal .cancel-btn:hover {
+                background-color: rgba(255, 255, 255, 0.2);
+            }
+
+            .lottery-modal .submit-btn {
+                background-color: #ffc107;
+                color: #111827;
+                border: none;
+            }
+
+            .lottery-modal .submit-btn:hover {
+                background-color: #ffca28;
+            }
+
+            /* File Input Styles */
+            .lottery-modal input[type="file"] {
+                display: block;
+                background: none;
+                border: 2px dashed rgba(255, 255, 255, 0.2);
+                padding: 20px;
+                text-align: center;
+                cursor: pointer;
+            }
+
+            .lottery-modal input[type="file"]:hover {
+                border-color: #ffc107;
+            }
+        </style>
+
+        <div class="lottery-modal" style="display: none;">
+    <div class="modal-content">
+        <form id="create-lottery-form" enctype="multipart/form-data">
+            <h3>Ajouter un nouveau tirage</h3>
+            <div class="form-group">
+                <label for="lottery-name">Nom du tirage*</label>
+                <input type="text" id="lottery-name" name="nomProduit" required>
+            </div>
+            <div class="form-group">
+                <label for="lottery-date">Date du tirage*</label>
+                <input type="datetime-local" id="lottery-date" name="lotteryTime" required>
+            </div>
+            <div class="form-group">
+                <label for="ticket-price">Prix du ticket*</label>
+                <input type="number" id="ticket-price" name="entrieCost" min="1" required>
+            </div>
+            <!-- Nouveau champ pour le nombre minimum d'entrées nécessaires -->
+            <!-- Nouveau champ pour le nombre minimum d'entrées nécessaires -->
+<div class="form-group">
+    <label for="minimum-entry-needed">Nombre minimum de participations*</label>
+    <input type="number" id="minimum-entry-needed" name="minimumEntryNeeded" min="1" value="10" required>
+    <small style="color: rgba(255, 255, 255, 0.6); display: block; margin-top: 5px;">Nombre minimum d'entrées nécessaires pour que le tirage soit valide</small>
+</div>
+            <div class="form-group">
+                <label for="short-description">Description courte*</label>
+                <input type="text" id="short-description" name="shortDescription" required>
+            </div>
+            <div class="form-group">
+                <label for="full-description">Description complète*</label>
+                <textarea id="full-description" name="fullDescription" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="imageProduit">Image du tirage*</label>
+                <input type="file" id="imageProduit" name="imageProduit" accept="image/*" required>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="cancel-btn">Annuler</button>
+                <button type="submit" class="submit-btn">Créer le tirage</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+        <br><br><br>
+        <div class="content-body">
+            <div class="content-card">
+                <!-- Lottery cards will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+</div>
+    <!-- GAGNANTS SECTION -->
+    <div class="page-content" id="winners-content">
+        <div class="winners-content">
+            <div class="content-header">
+                <div class="content-title">Winners</div>
+                <div class="content-description">List of winners of previous draws</div>
+            </div>
+            <div class="content-body">
+                <div class="content-card">
+                    <div class="content-card-title">March 2025 draw</div>
+                    <div class="content-card-value">12 winners</div>
+                    <div class="content-card-desc">Release: March 15, 2025</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-card-title">February Special Draw</div>
+                    <div class="content-card-value">8 winners</div>
+                    <div class="content-card-desc">Release: February 25, 2025</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-card-title">January 2025 draw</div>
+                    <div class="content-card-value">15 winners</div>
+                    <div class="content-card-desc">Distribution: January 10, 2025</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINANCEMENT SECTION -->
+    <div class="page-content" id="finance-content">
+        <div class="finance-content">
+            <div class="content-header">
+                <div class="content-title">Funding</div>
+                <div class="content-description">Funding and partnership management</div>
+            </div>
+            <div class="content-body">
+                <div class="content-card">
+                    <div class="content-card-title">Educational Partners</div>
+                    <div class="content-card-value">42 partners</div>
+                    <div class="content-card-desc">Contribution: $4.8M annually</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-card-title">Sponsors</div>
+                    <div class="content-card-value">18 sponsors</div>
+                    <div class="content-card-desc">Contribution: $2.5M annually</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-card-title">Grants</div>
+                    <div class="content-card-value">12 sources</div>
+                    <div class="content-card-desc">Contribution: $3.2M annually</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+                <div class="content-card">
+                    <div class="content-card-title">Donations</div>
+                    <div class="content-card-value">1,240 donors</div>
+                    <div class="content-card-desc">Contribution: $1.8M annually</div>
+                    <div class="content-card-actions">
+                        <button class="edit-btn">Modify</button>
+                        <button class="delete-btn">Delete</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="page-content" id="teacher-requests-content">
+        <div class="teacher-requests-content">
+            <div class="content-header">
+                <div class="content-title">Teacher Requests</div>
+                <div class="content-description">Manage incoming teacher access requests and current teachers</div>
+            </div>
+    
+            <div class="content-body">
+                <h3>Pending Requests</h3>
+                <div id="pending-requests" class="content-card">Loading...</div>
+    
+                <h3>Current Teachers</h3>
+                <div id="current-teachers" class="content-card">Loading...</div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+    async function loadTeacherData() {
+        try {
+            const requestsRes = await fetch('/api/teacher/requests', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+                }
+            });
+            const requests = await requestsRes.json();
+
+             const teachersRes = await fetch('/api/teacher/users?role=teacher', {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+                }
+            });
+            const teachers = await teachersRes.json();
+
+            renderRequests(requests);
+            renderTeachers(teachers);
+        } catch (err) {
+            console.error(err);
+            document.getElementById('pending-requests').innerHTML = 'Error loading requests';
+            document.getElementById('current-teachers').innerHTML = 'Error loading teachers';
+        }
+    }
+
+    function renderRequests(requests) {
+        const container = document.getElementById('pending-requests');
+        if (!requests.length) return container.innerHTML = "No pending requests.";
+
+        container.innerHTML = requests.map(req => `
+            <div class="request-card">
+                
+                <p>Message: </br>${req.message}</p>
+                <button onclick="acceptRequest('${req.id}')">Accept</button>
+                <button onclick="refuseRequest('${req.id}')">Refuse</button>
+            </div>
+        `).join('');
+    }
+
+    function renderTeachers(teachers) {
+        const container = document.getElementById('current-teachers');
+        if (!teachers.length) return container.innerHTML = "No current teachers.";
+
+        container.innerHTML = teachers.map(user => `
+            <div class="teacher-card">
+                <p><strong>${user.username}</strong> (${user.email})</p>
+                <button onclick="revokeTeacher('${user.userId}')">Revoke teacher access</button>
+            </div>
+        `).join('');
+    }
+
+    window.acceptRequest = async function (id) {
+        const response = await fetch(`/api/teacher/acceptRequest/${id}`, { method: 'POST',
+        headers:{
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+            }
+        });
+
+        if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        console.error(`Erreur lors de l'acceptation :`, response.status, err);
+        alert(`Erreur: ${response.status} - ${(err && err.error) || 'Inconnu'}`);
+        return;
+    }
+
+
+        loadTeacherData();
+    }
+
+    window.refuseRequest = async function (id) {
+        const response = await fetch(`/api/teacher/refuseRequest/${id}`, { method: 'DELETE',
+        headers:{
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+            }
+         });
+        loadTeacherData();
+    }
+
+    window.revokeTeacher = async function (id) {
+         
+        const response = await fetch(`/api/teacher/revokeTeacher/${id}`, { method: 'POST',
+        headers:{
+            'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+            }
+         });
+
+          if (!response.ok) {
+        const err = await response.json().catch(() => ({}));
+        console.error(`Erreur lors de la révocation :`, response.status, err);
+        alert(`Erreur: ${response.status} - ${(err && err.error) || 'Inconnu'}`);
+        return;
+    }
+        loadTeacherData();
+    }
+
+    loadTeacherData();
+});
+
+    </script>
+<style>
+/* ===== VERSION DESKTOP ===== */
+#teacher-requests-content {
+  padding: 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.teacher-requests-content {
+  background: #1f2937;
+  border-radius:  12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.content-header {
+  margin-bottom: 2rem;
+  border-bottom: 1px solid #374151;
+  padding-bottom: 1rem;
+}
+
+.content-title {
+  font-size: 1.8rem;
+  color: white;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.content-description {
+  color: #9ca3af;
+  font-size: 1.1rem;
+}
+
+/* Conteneur principal */
+.content-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+}
+
+/* Sections */
+.pending-requests-section,
+.current-teachers-section {
+  background: #111827;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: inset 0 0 0 1px #374151;
+}
+
+/* Grille des demandes en attente (2x2) */
+.pending-requests-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.section-title {
+  color: white;
+  font-size: 1.4rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #374151;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  align-items: center;
+}
+
+.section-title::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3b82f6;
+  margin-right: 12px;
+}
+
+/* Cartes */
+.request-card,
+.teacher-card {
+  background: #1a202c;
+  border-radius: 10px;
+  padding: 1.5rem;
+  border-left: 4px solid #3b82f6;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.request-card:hover,
+.teacher-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Boutons desktop (comme mobile) */
+.request-card button,
+.teacher-card button {
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-weight: 500;
+  font-size: 1rem;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 15px;
+  width: 100%;
+}
+
+.request-card button:hover,
+.teacher-card button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Bouton Accepter */
+.request-card button:nth-child(1) {
+  background: #22c55e;
+  color: white;
+}
+
+/* Bouton Refuser */
+.request-card button:nth-child(2) {
+  background: #ef4444;
+  color: white;
+}
+
+/* Bouton Révoquer */
+.teacher-card button {
+  background: #f59e0b;
+  color: #111827;
+}
+
+/* ===== VERSION MOBILE ===== */
+/* ===== VERSION MOBILE OPTIMISÉE ===== */
+@media only screen and (max-width: 768px) {
+    #teacher-requests-content {
+        padding: 15px;
+        margin-bottom: 80px;
+    }
+
+    .teacher-requests-content {
+        width: 100%;
+        padding: 20px;
+        background: #1f2937;
+        border-radius: 12px;
+    }
+
+    .content-header {
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 1px solid #374151;
+    }
+
+    .content-title {
+        font-size: 1.6rem;
+        color: white;
+        margin-bottom: 10px;
+        font-weight: 600;
+    }
+
+    .content-description {
+        font-size: 1rem;
+        color: #9CA3AF;
+        line-height: 1.5;
+    }
+
+    .content-body {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .content-body h3 {
+        font-size: 1.4rem;
+        color: white;
+        margin: 15px 0 10px 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #374151;
+    }
+
+    .content-card {
+        background: #111827;
+        border-radius: 12px;
+        padding: 20px;
+        color: white;
+        margin-bottom: 25px;
+    }
+
+    /* Styles spécifiques pour les cartes */
+    .request-card, 
+    .teacher-card {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        font-size: 1.1rem;
+    }
+
+    .request-card button,
+    .teacher-card button {
+        padding: 12px 20px;
+        border-radius: 25px; /* Boutons très arrondis */
+        font-weight: 500;
+        width: 100%;
+        margin-top: 15px;
+        font-size: 1.1rem;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    /* Bouton Accepter */
+    .request-card button:nth-child(1) {
+        background: #22C55E;
+        color: white;
+    }
+
+    /* Bouton Refuser */
+    .request-card button:nth-child(2) {
+        background: #EF4444;
+        color: white;
+    }
+
+    /* Bouton Révoquer */
+    .teacher-card button {
+        background: #F59E0B;
+        color: #111827;
+    }
+
+    /* Effet au survol */
+    .request-card button:hover,
+    .teacher-card button:hover {
+        transform: scale(1.02);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+}
+
+</style>
+    
+    /*
+    <!-- Admin bouton
+    <button class="settings-button" id="adminBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+                d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+        </svg>
+        Personalize
+    </button>-->
+    </div>
+    </div> 
+
+    <!-- Admin Panel Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">Admin Panel</div>
+                <div class="close-modal" id="closeModal">×</div>
+            </div>
+
+            <div class="admin-options">
+                <div class="admin-option">
+                    <div class="admin-option-icon">👤</div>
+                    <div class="admin-option-title">User management</div>
+                    <div class="admin-option-desc">Manage accounts and permissions</div>
+                </div>
+
+                <div class="admin-option">
+                    <div class="admin-option-icon">🎓</div>
+                    <div class="admin-option-title">Educational programs</div>
+                    <div class="admin-option-desc">Configure scholarships and courses</div>
+                </div>
+
+                <div class="admin-option">
+                    <div class="admin-option-icon">🎮</div>
+                    <div class="admin-option-title">Drawings management</div>
+                    <div class="admin-option-desc">Plan and configure lotteries</div>
+                </div>
+
+                <div class="admin-option">
+                    <div class="admin-option-icon">📊</div>
+                    <div class="admin-option-title">Reports and statistics</div>
+                    <div class="admin-option-desc">Analyze data and trends</div>
+                </div>
+
+                <div class="admin-option">
+                    <div class="admin-option-icon">💰</div>
+                    <div class="admin-option-title">Financial management</div>
+                    <div class="admin-option-desc">Funds and Allocations Monitoring</div>
+                </div>
+
+                <div class="admin-option">
+                    <div class="admin-option-icon">⚙️</div>
+                    <div class="admin-option-title">System Settings</div>
+                    <div class="admin-option-desc">Advanced technical setup
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+   
+
+    <!-- Modal pour ajouter un tirage 
+                <div class="lottery-modal" style="display: none;">
+                    <div class="modal-content">
+                        <h3>Créer un nouveau tirage</h3>
+                        <form id="create-lottery-form">
+                            <div class="form-group">
+                                <label for="lottery-name">Nom du tirage*</label>
+                                <input type="text" id="lottery-name" name="lottery-name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lottery-date">Date du tirage*</label>
+                                <input type="datetime-local" id="lottery-date" name="lottery-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="ticket-price">Prix du ticket*</label>
+                                <input type="number" id="ticket-price" name="ticket-price" min="1" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="lottery-description">Description*</label>
+                                <textarea id="lottery-description" name="lottery-description" required></textarea>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="cancel-btn">Annuler</button>
+                                <button type="submit" class="submit-btn">Créer</button>
+                            </div>
+                        </form>
+                    </div>
+                </div> -->
+
+    <script src="assets/js/dashboardlottery.js"></script>
+    <script src="assets/js/dashboard-demo.js"></script>
+    <script src="routes(api)/portfolioCrud.js"></script>
+    <script src="assets/js/dashboardStats.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Gestion du modal Portfolio
+            const addPortfolioBtn = document.getElementById('add-portfolio-btn');
+            const portfolioModal = document.querySelector('.portfolio-modal');
+            const cancelPortfolioBtn = portfolioModal?.querySelector('.cancel-btn');
+            
+            if (addPortfolioBtn && portfolioModal) {
+                addPortfolioBtn.addEventListener('click', () => {
+                    portfolioModal.style.display = 'flex';
+                });
+                
+                if (cancelPortfolioBtn) {
+                    cancelPortfolioBtn.addEventListener('click', () => {
+                        portfolioModal.style.display = 'none';
+                    });
+                }
+            }
+        
+            // Chargement des projets portfolio
+           
+        // Définir loadPortfolio comme fonction globale
+function loadPortfolio() {
+    try {
+        fetch('/api/portfolio/portfolio')
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Erreur ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(portfolioItems => {
+                renderPortfolio(portfolioItems);
+            })
+            .catch(error => {
+                console.error('Erreur détaillée:', error);
+                document.getElementById('portfolio-list').innerHTML = 
+                    `<div class="error-message">${error.message}</div>`;
+            });
+    } catch (error) {
+        console.error('Erreur détaillée:', error);
+        document.getElementById('portfolio-list').innerHTML = 
+            `<div class="error-message">${error.message}</div>`;
+    }
+}
+            // Affichage des projets
+            function renderPortfolio(items) {
+                const portfolioList = document.getElementById('portfolio-list');
+                
+                if (items.length === 0) {
+                    portfolioList.innerHTML = '<div class="empty-message">Aucun projet dans le portfolio</div>';
+                    return;
+                }
+                
+                portfolioList.innerHTML = items.map(item => `
+                    <div class="portfolio-item">
+                        <div class="portfolio-image">
+                            ${item.image_portfolio ? `<img src="${item.image_portfolio}" alt="${item.title}">` : ''}
+                        </div>
+                        <div class="portfolio-info">
+                            <h3>${item.title}</h3>
+                            <p class="genre">${item.genre}</p>
+                            <a href="${item.urlPortfolio}" target="_blank" class="portfolio-link">Voir le projet</a>
+                        </div>
+                        <div class="portfolio-actions">
+                            <button class="edit-btn" data-id="${item.id}">Modify</button>
+                            <button class="delete-btn" data-id="${item.id}">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                
+                // Ajout des écouteurs d'événements pour les boutons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        if (confirm('Delete this project ?')) {
+                            try {
+                                const response = await fetch(`/api/portfolio/portfolio/${e.target.dataset.id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken') }`
+                                    }
+                                });
+                                
+                                if (response.ok) {
+                                    loadPortfolio();
+                                } else {
+                                    alert('Erreur lors de la suppression');
+                                }
+                            } catch (error) {
+                                console.error('Erreur:', error);
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const projectId = e.target.dataset.id;
+            try {
+                const response = await fetch(`/api/portfolio/portfolio/${projectId}`);
+                
+                if (!response.ok) throw new Error('Projet non trouvé');
+                
+                const projectData = await response.json();
+                openEditModal(projectData);
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Impossible de charger les données du projet');
+            }
+        });
+    });
+
+                
+            }
+        
+            // Soumission du formulaire d'ajout
+            const portfolioForm = document.getElementById('add-portfolio-form');
+            if (portfolioForm) {
+                portfolioForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const formData = new FormData(portfolioForm);
+                    
+                    try {
+                        const response = await fetch('/api/portfolio/portfolio', {
+                            method: 'POST',
+                            body: formData,
+                            headers: {
+                                'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken')}`
+                            }
+                        });
+                        
+                        if (response.ok) {
+                            portfolioModal.style.display = 'none';
+                            portfolioForm.reset();
+                            loadPortfolio();
+                        } else {
+                            const error = await response.json();
+                            alert(error.error || 'Erreur lors de l\'ajout');
+                        }
+                    } catch (error) {
+                        console.error('Erreur:', error);
+                    }
+                });
+            }
+        
+            // Charger le portfolio au démarrage
+            loadPortfolio();
+        });
+
+
+// Fonction pour ouvrir le modal d'édition du portfolio
+function openEditModal(projectData) {
+    const editModal = document.querySelector('.portfolio-edit-modal');
+    const form = document.getElementById('edit-portfolio-form');
+    
+    if (!editModal || !form) {
+        console.error('Modal d\'édition ou formulaire non trouvé');
+        return;
+    }
+    
+    // Remplir le formulaire avec les données du projet
+    document.getElementById('edit-portfolio-id').value = projectData.id;
+    document.getElementById('edit-portfolio-title').value = projectData.title;
+    document.getElementById('edit-portfolio-genre').value = projectData.genre;
+    document.getElementById('edit-portfolio-url').value = projectData.urlPortfolio;
+    
+    // Afficher le modal
+    editModal.style.display = 'flex';
+    
+    // Gérer la fermeture du modal
+    // D'abord, sélectionner le bon bouton (s'assurer qu'il existe dans votre HTML)
+    let cancelBtn = editModal.querySelector('.cancel-btn');
+    if (!cancelBtn) {
+        // Si .cancel-btn n'existe pas, essayons de trouver .cancel-edit-btn
+        cancelBtn = editModal.querySelector('.cancel-edit-btn');
+    }
+    
+    if (cancelBtn) {
+        // Supprimer les anciens écouteurs pour éviter les doublons
+        const newCancelBtn = cancelBtn.cloneNode(true);
+        cancelBtn.parentNode.replaceChild(newCancelBtn, cancelBtn);
+        
+        // Appliquer le style rouge au bouton
+        newCancelBtn.style.backgroundColor = '#dc3545';
+        newCancelBtn.style.color = 'white';
+        newCancelBtn.style.border = 'none';
+        newCancelBtn.style.padding = '10px 20px';
+        newCancelBtn.style.borderRadius = '4px';
+        newCancelBtn.style.cursor = 'pointer';
+        
+        // Ajouter l'écouteur d'événement
+        newCancelBtn.addEventListener('click', () => {
+            editModal.style.display = 'none';
+        });
+    } else {
+        console.error('Bouton d\'annulation non trouvé dans le modal');
+    }
+}
+
+// Modifier la partie qui gère les boutons d'édition
+document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.addEventListener('click', async (e) => {
+        const projectId = e.target.dataset.id;
+        try {
+            const response = await fetch(`/api/portfolio/portfolio/${projectId}`, {
+                headers: {
+                    'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken')}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Projet non trouvé');
+            
+            const projectData = await response.json();
+            openEditModal(projectData);
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Impossible de charger les données du projet');
+        }
+    });
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Modal logic
+    const addAchatBtn = document.getElementById('add-achat-btn');
+    const achatModal = document.querySelector('.achat-modal');
+    const cancelAchatBtn = achatModal?.querySelector('.cancel-btn');
+    const achatForm = document.getElementById('add-achat-form');
+    let editAchatId = null; // Track edit mode
+
+    // Open modal to add
+    if (addAchatBtn && achatModal) {
+        addAchatBtn.addEventListener('click', () => {
+            achatModal.style.display = 'flex';
+            achatForm.reset();
+            editAchatId = null;
+            document.querySelector('.achat-modal h3').textContent = "Add an Item to the Shop";
+            document.querySelector('.achat-modal .submit-btn').textContent = "Add Product";
+        });
+        if (cancelAchatBtn) {
+            cancelAchatBtn.addEventListener('click', () => {
+                achatModal.style.display = 'none';
+                achatForm.reset();
+                editAchatId = null;
+            });
+        }
+    }
+
+    // Submit: add or edit
+    if (achatForm) {
+        achatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(achatForm);
+            let url = '/api/achats';
+            let method = 'POST';
+            if (editAchatId) {
+                url = `/api/achats/${editAchatId}`;
+                method = 'PUT';
+            }
+            try {
+                const response = await fetch(url, {
+                    method,
+                    body: formData,
+                    headers: {
+                        'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken')}`
+                    }
+                });
+                if (response.ok) {
+                    achatModal.style.display = 'none';
+                    achatForm.reset();
+                    loadAchat();
+                    editAchatId = null;
+                    document.querySelector('.achat-modal h3').textContent = "Add an Item to the Shop";
+                    document.querySelector('.achat-modal .submit-btn').textContent = "Add Product";
+                } else {
+                    const error = await response.json();
+                    alert(error.error || 'Error saving item');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    }
+
+    // Load items
+    function loadAchat() {
+        fetch('/api/achats')
+            .then(res => res.json())
+            .then(items => renderAchat(items))
+            .catch(err => {
+                document.getElementById('achat-list').innerHTML = `<div class="error-message">${err.message}</div>`;
+            });
+    }
+
+    function renderAchat(items) {
+        const achatGrid = document.querySelector('.achat-grid');
+        if (!items.length) {
+            achatGrid.innerHTML = '<div class="empty-message">No items in the shop</div>';
+            return;
+        }
+        achatGrid.innerHTML = items.map(item => `
+            <div class="achat-item">
+                <div class="achat-image">${item.imageProduit ? `<img src="${item.imageProduit}" alt="${item.nomProduit}">` : ''}</div>
+                <div class="achat-info">
+                    <h3>${item.nomProduit}</h3>
+                    <p>${item.shortDescription}</p>
+                    <div class="achat-price">$${item.price}</div>
+                </div>
+                <div class="achat-actions">
+                    <button class="edit-btn" data-id="${item.id}">Edit</button>
+                    <button class="delete-btn" data-id="${item.id}">Delete</button>
+                </div>
+            </div>
+        `).join('');
+
+        // DELETE logic
+        achatGrid.querySelectorAll('.delete-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                const id = btn.dataset.id;
+                if (confirm('Delete this item?')) {
+                    try {
+                        const res = await fetch(`/api/achats/${id}`, { method: 'DELETE' });
+                        if (res.ok) {
+                            loadAchat();
+                        } else {
+                            alert('Error deleting item');
+                        }
+                    } catch (err) {
+                        alert('Error deleting item');
+                    }
+                }
+            });
+        });
+
+        // EDIT logic (open modal, pre-fill fields, set edit mode)
+        achatGrid.querySelectorAll('.edit-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const id = btn.dataset.id;
+                const item = items.find(i => i.id == id);
+                if (!item) return;
+                editAchatId = id;
+                document.getElementById('nomProduit').value = item.nomProduit;
+                document.getElementById('price').value = item.price;
+                document.getElementById('shortDescription').value = item.shortDescription || '';
+                document.getElementById('fullDescription').value = item.fullDescription || '';
+                achatModal.style.display = 'flex';
+                document.querySelector('.achat-modal h3').textContent = "Edit Item";
+                document.querySelector('.achat-modal .submit-btn').textContent = "Save Changes";
+            });
+        });
+    }
+
+    // Initial load
+    loadAchat();
+});
+
+
+// Ajouter la gestion du formulaire d'édition
+document.addEventListener('DOMContentLoaded', function() {
+    const editForm = document.getElementById('edit-portfolio-form');
+    if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(editForm);
+            const projectId = formData.get('id');
+            
+            // Si pas de nouvelle image sélectionnée, créer un objet JSON
+            if (!formData.get('file') || formData.get('file').size === 0) {
+                const requestData = {
+                    title: formData.get('title'),
+                    genre: formData.get('genre'),
+                    urlPortfolio: formData.get('urlPortfolio')
+                };
+                
+                try {
+                    const response = await fetch(`/api/portfolio/portfolio/${projectId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken')}`
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Erreur lors de la mise à jour');
+                    }
+                    
+                    document.querySelector('.portfolio-edit-modal').style.display = 'none';
+                    try {
+        fetch('/api/portfolio/portfolio')
+            .then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => {
+                        throw new Error(`Erreur ${response.status}: ${text}`);
+                    });
+                }
+                return response.json();
+            })
+            .then(portfolioItems => {
+                const items = portfolioItems;
+                const portfolioList = document.getElementById('portfolio-list');
+                
+                if (items.length === 0) {
+                    portfolioList.innerHTML = '<div class="empty-message">Aucun projet dans le portfolio</div>';
+                    return;
+                }
+                
+                portfolioList.innerHTML = items.map(item => `
+                    <div class="portfolio-item">
+                        <div class="portfolio-image">
+                            ${item.image_portfolio ? `<img src="${item.image_portfolio}" alt="${item.title}">` : ''}
+                        </div>
+                        <div class="portfolio-info">
+                            <h3>${item.title}</h3>
+                            <p class="genre">${item.genre}</p>
+                            <a href="${item.urlPortfolio}" target="_blank" class="portfolio-link">Voir le projet</a>
+                        </div>
+                        <div class="portfolio-actions">
+                            <button class="edit-btn" data-id="${item.id}">Modify</button>
+                            <button class="delete-btn" data-id="${item.id}">Delete</button>
+                        </div>
+                    </div>
+                `).join('');
+                
+                
+                // Ajout des écouteurs d'événements pour les boutons
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        if (confirm('Delete this project ?')) {
+                            try {
+                                const response = await fetch(`/api/portfolio/portfolio/${e.target.dataset.id}`, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken') }`
+                                    }
+                                });
+                                
+                                if (response.ok) {
+                                    loadPortfolio();
+                                } else {
+                                    alert('Erreur lors de la suppression');
+                                }
+                            } catch (error) {
+                                console.error('Erreur:', error);
+                            }
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const projectId = e.target.dataset.id;
+            try {
+                const response = await fetch(`/api/portfolio/portfolio/${projectId}`);
+                
+                if (!response.ok) throw new Error('Projet non trouvé');
+                
+                const projectData = await response.json();
+                openEditModal(projectData);
+            } catch (error) {
+                console.error('Erreur:', error);
+                alert('Impossible de charger les données du projet');
+            }
+        });
+    });
+
+            })
+            .catch(error => {
+                console.error('Erreur détaillée:', error);
+                document.getElementById('portfolio-list').innerHTML = 
+                    `<div class="error-message">${error.message}</div>`;
+            });
+    } catch (error) {
+        console.error('Erreur détaillée:', error);
+        document.getElementById('portfolio-list').innerHTML = 
+            `<div class="error-message">${error.message}</div>`;
+    }
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    alert(error.message);
+                }
+            } else {
+                // Si nouvelle image, envoyer le FormData directement
+                try {
+                    const response = await fetch(`/api/portfolio/portfolio/${projectId}`, {
+                        method: 'PUT',
+                        body: formData,
+                        headers: {
+                            'Authorization': `Bearer ${sessionStorage.getItem('accessToken') || localStorage.getItem('accessToken')}`
+                        }
+                    });
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error || 'Erreur lors de la mise à jour');
+                    }
+                    
+                    document.querySelector('.portfolio-edit-modal').style.display = 'none';
+                    loadPortfolio();
+                } catch (error) {
+                    console.error('Erreur:', error);
+                    alert(error.message);
+                }
+            }
+        });
+    }
+});
+
+        // Dictionnaire de traductions
+const translations = {
+    en: {
+        dashboard: "Dashboard",
+        statistics: "Statistics",
+        programs: "Programs",
+        education: "Education",
+        courses: "Courses",
+        portfolio: "Portfolio",
+        lottery: "Lottery",
+        draws: "Raffle",
+        welcome: "Welcome",
+        // Ajoutez toutes les autres traductions nécessaires
+    },
+    fr: {
+        dashboard: "Tableau de bord",
+        statistics: "Statistiques",
+        programs: "Programmes",
+        education: "Éducation",
+        courses: "Cours",
+        portfolio: "Portfolio",
+        lottery: "Loterie",
+        draws: "Tirages",
+        welcome: "Bienvenue",
+        // Ajoutez toutes les autres traductions nécessaires
+    },
+    es: {
+        dashboard: "Panel",
+        statistics: "Estadísticas",
+        // ... autres traductions espagnoles
+    },
+    de: {
+        dashboard: "Dashboard",
+        statistics: "Statistiken",
+        // ... autres traductions allemandes
+    }
+};
+
+// Fonction pour changer la langue
+function changeLanguage(lang) {
+    // Sauvegarder la préférence
+    localStorage.setItem('preferredLanguage', lang);
+    
+    // Récupérer les traductions
+    const t = translations[lang];
+    
+    // Mettre à jour les éléments de l'interface
+    document.querySelectorAll('[data-translate]').forEach(el => {
+        const key = el.getAttribute('data-translate');
+        if (t[key]) {
+            el.textContent = t[key];
+        }
+    });
+    
+    // Mettre à jour les attributs alt, placeholder, etc.
+    document.querySelector('.search-input').placeholder = t.searchPlaceholder || 'Search...';
+}
+
+// Initialisation au chargement
+document.addEventListener('DOMContentLoaded', function() {
+    const langSelect = document.getElementById('language-select');
+    const preferredLang = localStorage.getItem('preferredLanguage') || 'en';
+    
+    // Définir la langue sélectionnée
+    if (langSelect) {
+        langSelect.value = preferredLang;
+        langSelect.addEventListener('change', (e) => {
+            changeLanguage(e.target.value);
+        });
+    }
+    
+    // Appliquer la langue
+    changeLanguage(preferredLang);
+});
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Gestion de l'aperçu d'image de cours
+    const courseImageInput = document.getElementById('course-image');
+    const previewContainer = document.getElementById('course-image-preview');
+    const previewImg = document.getElementById('preview-img');
+    const placeholder = previewContainer?.querySelector('.upload-placeholder');
+
+    if (courseImageInput && previewContainer && previewImg && placeholder) {
+        // Clic sur la zone d'aperçu déclenche l'input file
+        previewContainer.addEventListener('click', function() {
+            courseImageInput.click();
+        });
+
+        // Afficher l'aperçu lors de la sélection de fichier
+        courseImageInput.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    placeholder.style.display = 'none';
+                };
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+    }
+});
+
+        </script>
+</body>
+
+</html>

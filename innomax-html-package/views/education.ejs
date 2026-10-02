@@ -1,0 +1,537 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Pandora Business Technology & Marketing Education empowers learners and businesses with cutting-edge digital skills, marketing know-how, and technology insights. Elevate knowledge and accelerate growth in today’s digital world.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" async></script>
+    <script src="https://js.stripe.com/v3/"></script>
+
+    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/metaPixel', { pixelId: pixelId }) %>
+
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+
+    <!-- css include -->
+    <link rel="stylesheet" href="assets/css/normalize.css">
+
+    <link rel="preload" href="assets/css/style.bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/style.bundle.min.css"></noscript>
+    <link rel="stylesheet" href="assets/css/education.css">
+   
+</head>
+
+<body class="sco_agency">
+
+<!-- Particules en arrière-plan -->
+<div class="particles-container" style="height:85px"></div>
+
+<!-- backtotop - start -->
+<div class="xb-backtotop style-3">
+    <a href="#" class="scroll">
+        <i class="far fa-arrow-up"></i>
+    </a>
+</div>
+<!-- backtotop - end -->
+
+   <!-- Preloader - Start 
+  <div id="xb-loadding" class="xb-loader style-3">
+    <div class="xb-dual-ring"></div>
+</div>
+ Preloader - End -->
+    
+    <!-- L'en-tête existant est préservé -->
+    <%-include('partials/header')%>
+    
+<div class="body_wrap">
+    <!-- main area start  -->
+    <main>
+        <!-- Hero Video Section Start -->
+        <section class="hero-section position-relative">
+            <video class="hero-video w-100 h-100" autoplay loop muted playsinline>
+                <source src="assets/mp4/digital-e-learning-technology-online-education-bac-2024-02-28-05-38-22-utc.webm"
+                    type="video/webm">
+                Votre navigateur ne supporte pas la vidéo HTML5.
+            </video>
+
+            <div class="xb-btn text-center mt-60">
+                <a href="#courses" class="blc-btn">
+                    <div class="hero-btn">
+                        <button class="BtnEdu">
+                        </button>
+                    </div>
+                </a>
+            </div>
+
+        </section>
+        <!-- Hero Video Section End -->
+
+        <script>
+            function adjustVideo() {
+                const video = document.querySelector('.hero-video');
+                if (window.innerWidth <= 767) {
+                    video.style.transform = 'scale(1)';
+                    video.style.objectFit = 'cover';
+                } else {
+                    video.style.transform = '';
+                }
+            }
+            window.addEventListener('resize', adjustVideo);
+            adjustVideo(); // Exécute au chargement
+        </script>
+
+        <!-- Features Section Start -->
+         
+        <section class="features-section reveal" style = "background-image: url(assets/img/lotto/389-32-blue-golden-geom-stripes-dots.webp) !important ;  background-size: cover !important;">
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-lg-6 mx-auto text-center">
+                        <h2 class="" style="font-size: 28px; font-weight: 700; margin-bottom: 10px;color: #855e1b;text-align: center;">Why choose us?</h2>
+                        <p class="section-subtitle">Our platform offers a unique learning experience with features designed to help you succeed.</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-box glow-effect">
+                            <div class="feature-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <h3 class="feature-title">Pre-recorded video courses</h3>
+                            <p style="color: #ffffff;">Access high-quality courses that you can follow at your own pace, anytime and anywhere.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-box glow-effect">
+                            <div class="feature-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h3 class="feature-title">Personalized Appointments</h3>
+                            <p style="color: #ffffff;">Book one-on-one sessions with your instructors whenever you need help or want to dive deeper into a specific topic.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-4">
+                        <div class="feature-box glow-effect">
+                            <div class="feature-icon">
+                                <i class="fas fa-infinity"></i>
+                            </div>
+                            <h3 class="feature-title">Unlimited Subscription</h3>
+                            <p style="color: #ffffff;">Choose our premium subscription for unlimited access to sessions with instructors and unlock your full potential.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Features Section End -->
+
+       
+    <!-- Courses Section Start - DYNAMIQUE DEPUIS LA BASE DE DONNÉES -->
+   
+            
+<section id="courses" class="py-4 reveal position-relative" style="overflow: hidden;">
+        <video class="position-absolute w-100 h-100 object-fit-cover" autoplay loop muted playsinline style="top: 0; left: 0; z-index: -1;">
+            <source src="assets/mp4/black-luxury-background-with-gold-lines-2023-11-27-05-36-22-utc (1).mp4" type="video/mp4">
+        </video>
+        
+        <div class="position-absolute w-100 h-100" style="top: 0; left: 0; background: rgba(0,0,0,0.6); z-index: -1;"></div>
+        <div class="container">
+            <div class="row mb-3">
+                <div class="col-lg-6 mx-auto text-center">
+                    <h2 class="" style="font-size: 28px; font-weight: 700; margin-bottom: 10px;color: #855e1b;text-align: center;">Our Popular Courses</h2>
+                    <p class="section-subtitle">Explore our selection of courses across various academic fields.</p>
+                </div>
+            </div>
+            <div class="row">
+                <% if (courses && courses.length > 0) { %>
+                    <% courses.slice(0, 3).forEach(function(course) { %>
+                        <div class="col-md-4 mb-3">
+                            <div class="course-card glow-effect">
+                                <img src="<%= course.image_url || `https://image.pollinations.ai/prompt/${encodeURIComponent(course.nom + ' intech')}` %>" alt="<%= course.nom %>" class="course-image">
+                                <div class="course-info" style="text-align: center;">
+                                    <h3 class="course-title"><%= course.nom %></h3>
+                                    <div class="course-meta" style="text-align: center;">
+                                        <p><i class="fas fa-user"></i> <%= course.prof_name %></p>
+                                        <p><i class="fas fa-clock"></i> <%= course.nombre_heures %>  hours of content</p>
+                                        <p><i class="fas fa-signal"></i> Level: <%= course.niveau %></p>
+                                    </div>
+                                    <div class="price-tag" style="margin: 10px auto;"><%= course.prix  %> $</div>
+                                    <div class="d-flex justify-content-center align-items-center" style="margin-top: 15px;">
+                                        <a href="/course-details/<%= course.id %>" class="Btn" style="margin-right: 8px;">View Course</a>
+                                        <a href="#" 
+                                           class="Btn" 
+                                           style="margin-left: 8px;" 
+                                           onclick="event.preventDefault(); enrollCourse('<%= course.id %>');">
+                                           Buy Now
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <% }); %>
+                <% } else { %>
+                    <div class="col-12 text-center">
+                        <p>No courses available at the moment.</p>
+                    </div>
+                <% } %>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-center">
+                    <a href="/all-courses" class="Btnall" style="margin-left: 45%;">View All Courses</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Courses Section End -->
+
+    <!-- Subscription Plans Section Start - NOUVELLE VERSION AMÉLIORÉE -->
+<!-- 
+<section id="subscription" class="subscription-section reveal" style = "background-image: url(assets/img/lotto/gnn.jpg) !important ;  background-size: cover !important;">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-lg-8 mx-auto text-center">
+                <h2 class="section-title mb-3">Premium Subscriptions</h2>
+                <p class="section-subtitle">Gain unlimited access to learning with our plans designed for your academic success</p>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-4 mb-4">
+                <div class="plan-card glow-effect">
+                    <div class="plan-header">
+                        <h3 class="plan-title">Discovery</h3>
+                        <div class="plan-price">39€</div>
+                        <div class="plan-duration">per month</div>
+                    </div>
+                    <ul class="plan-features">
+                        <li>Access to all video courses</li>
+                        <li>Community support forum</li>
+                        <li>2 instructor sessions per month</li>
+                        <li>Downloadable resources</li>
+                        <li>Email support (within 48 hours)</li>
+                    </ul>
+                    <div class="plan-footer">
+                        <a href="subscription" class="btn-view w-100 btn-glow">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+    -->
+<!-- Subscription Plans Section End -->
+<section id="subscription" class="subscription-section reveal" style="background-image: url(assets/img/lotto/gnn.webp) !important; background-size: cover !important; color: #ffffff; padding: 15px 0; margin: 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="text-center mb-3">
+                    <h2 class="" style="background: linear-gradient(to right, #E6C373, #f8e6b9, #E6C373); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 1.8rem; font-weight: 700; font-size: 28px;">Flexible Learning Options</h2>
+                </div>
+                
+                <div class="d-flex justify-content-center">                
+                    <div class="card">
+                      <div class="card-pattern-grid"></div>
+                    
+                      <div class="card-title-area">
+                        <span>Learning</span>
+                        <span class="card-tag">Premium</span>
+                      </div>
+                    
+                      <div class="card-body">
+                        <div class="card-description">
+                          Discover versatile ways to access our courses with unlimited learning options.
+                        </div>
+                    
+                        <div class="feature-grid">
+                          <div class="feature-item">
+                            <div class="feature-icon">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"></path>
+                              </svg>
+                            </div>
+                            <span class="feature-text">All Courses</span>
+                          </div>
+                    
+                          <div class="feature-item">
+                            <div class="feature-icon">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z"></path>
+                              </svg>
+                            </div>
+                            <span class="feature-text">Anytime</span>
+                          </div>
+                    
+                          <div class="feature-item">
+                            <div class="feature-icon">
+                              <svg viewBox="0 0 24 24">
+                                <path d="M17,13H13V17H11V13H7V11H11V7H13V11H17M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"></path>
+                              </svg>
+                            </div>
+                            <span class="feature-text">Full Access</span>
+                          </div>
+                    
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z" />
+                                </svg>
+                        
+                            </div>
+                            <span class="feature-text">1 on 1 Teaching</span>
+                        </div>
+                        </div>
+                    
+                        <div class="card-actions">
+                          <div class="card-price">
+                            <span class="price-currency">$</span>39
+                            <span class="price-period">per month</span>
+                          </div>
+                    
+                          <a href="/course-details/1#enrollment-options" class="custom-btn">
+                            <span style="opacity: 0;">Subscribe Now</span>
+                          </a>
+                        </div>
+                      </div>
+                    
+                      <div class="corner-slice"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+        <!-- Call to Action Section Start -->
+        <section class="cta-custom py-5 reveal position-relative" style="overflow: hidden;">
+            <!-- Video Background -->
+            <video class="position-absolute w-100 h-100 object-fit-cover" autoplay loop muted playsinline style="top: 0; left: 0; z-index: -1;">
+                <source src="assets/mp4/abstract-luxury-black-grey-gradient-backgrounds-wi-2024-01-10-17-25-03-utc.mp4" type="video/mp4" >
+                Votre navigateur ne supporte pas la vidéo HTML5.
+            </video>
+            
+            <!-- Overlay to ensure text readability -->
+            <div class="position-absolute w-100 h-100" style="top: 0; left: 0; background: rgba(0,0,0,0.5); z-index: -1;"></div>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8 mx-auto text-center">
+                        <h2 class="" style="font-size: 28px; font-weight: 700; margin-bottom: 10px;color: #855e1b;text-align: center;">Ready to start your learning journey?</h2>
+                        <p class="section-subtitle mb-4">Join our platform today and gain access to high-quality courses and personalized support.</p>
+                        <div class="d-flex justify-content-center">
+                            <a href="signup" class="Btn signup-btn" style="margin-right: 15px;">Sign Up Now</a>
+                            <a href="contact" class="Btn contact-btn">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+         <!-- World section start-->
+     <section class="world" data-background="assets/img/imgs/grisbg.webp">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-10 col-md-12">
+                  <div class="world-map"><img src="assets/img/imgs/canada2.webp" width="1056" height="702" alt="Illustration Canada" loading="lazy"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Call to Action Section End -->
+    </main>
+    <!-- main area end  -->
+
+
+    <%-include('partials/footerEducation')%>
+     
+    <!-- Le pied de page est préservé mais adapté au style sombre -->
+     <!--
+    <footer class="footer footer-style-two pt-200 bg_img pos-rel" data-bg-color="#0a0514">
+        <div class="container">
+            <div class="xb-footer pt-120">
+                <div class="footer-info ul_li_between">
+                    <div class="info-item ul_li">
+                        <div class="xb-item--icon">
+                            <span><img src="assets/img/icon/sms-white.svg" alt=""></span>
+                        </div>
+                        <div class="xb-item--holder">
+                            <p class="xb-item--content">Écrivez-nous</p>
+                            <h4 class="xb-item--title">innomax@gmail.com</h4>
+                        </div>
+                    </div>
+                    <div class="info-item ul_li">
+                        <div class="xb-item--icon clr-blue">
+                            <span><img src="assets/img/icon/call-white.svg" alt=""></span>
+                        </div>
+                        <div class="xb-item--holder">
+                            <p class="xb-item--content">Appelez-nous</p>
+                            <h4 class="xb-item--title">+(514) 123 456</h4>
+                        </div>
+                    </div>
+                    <div class="info-item ul_li">
+                        <div class="xb-item--icon clr-sky">
+                            <span><img src="assets/img/icon/location.svg" alt=""></span>
+                        </div>
+                        <div class="xb-item--holder">
+                            <p class="xb-item--content">Notre bureau</p>
+                            <h4 class="xb-item--title">Montreal , Canada</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="footer-inner mt-70 mb-100 ul_li_between align-items-start">
+                    <div class="sa-newslatter footer-widget">
+                        <span class="xb-item--sub-title">Newsletter</span>
+                        <p class="xb-item--content clr-white">Inscrivez-vous à notre newsletter pour recevoir les dernières mises à jour.</p>
+                        <div class="xb-item--input_field pos-rel">
+                            <input type="email" name="gmail" id="text6" placeholder="Entrez votre email">
+                            <div class="img"><img src="assets/img/icon/sms02.svg" alt=""></div>
+                            <button type="submit" class="xb-item--btn"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                        <span class="xb-item--text">En continuant, vous acceptez les <a href="#!">Conditions</a> d'utilisation et la <a href="#!">Politique de confidentialité</a> </span>
+                    </div>
+                    <div class="footer-widget">
+                        <span class="xb-item--sub-title">À propos</span>
+                        <ul class="xb-item--holder list-unstyled">
+                            <li class="xb-item--list"><a href="#!">Notre équipe</a></li>
+                            <li class="xb-item--list"><a href="#!">Nous contacter</a></li>
+                            <li class="xb-item--list"><a href="#!">Tarifs</a></li>
+                            <li class="xb-item--list"><a href="#!">Blog</a></li>
+                            <li class="xb-item--list"><a href="#!">Professeurs</a></li>
+                            <li class="xb-item--list"><a href="#!">Témoignages</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-widget">
+                        <span class="xb-item--sub-title">Nos services</span>
+                        <ul class="xb-item--holder list-unstyled">
+                            <li class="xb-item--list"><a href="#!">Cours en ligne</a></li>
+                            <li class="xb-item--list"><a href="#!">Tutorat personnalisé</a></li>
+                            <li class="xb-item--list"><a href="#!">Préparation aux examens</a></li>
+                            <li class="xb-item--list"><a href="#!">Coaching académique</a></li>
+                            <li class="xb-item--list"><a href="#!">Cours collectifs</a></li>
+                            <li class="xb-item--list"><a href="#!">Certification</a></li>
+                        </ul>
+                    </div>
+                    <div class="footer-widget">
+                        <span class="xb-item--sub-title">Domaines d'étude</span>
+                        <ul class="xb-item--holder list-unstyled">
+                            <li class="xb-item--list"><a href="#!">Mathématiques</a></li>
+                            <li class="xb-item--list"><a href="#!">Physique</a></li>
+                            <li class="xb-item--list"><a href="#!">Informatique</a></li>
+                            <li class="xb-item--list"><a href="#!">Langues</a></li>
+                            <li class="xb-item--list"><a href="#!">Sciences humaines</a></li>
+                            <li class="xb-item--list"><a href="#!">Art & Design</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-copyright mt-70 ul_li_between">
+                    <p class="copyright mt-20">Copyright © 2025 <a href="index.html"></a>. Tous droits réservés.</p>
+                    <ul class="footer-link ul_li mt-20">
+                        <li><span>Suivez-nous :</span></li>
+                        <li><a href="#!"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#!"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#!"><i class="fab fa-linkedin-in"></i></a></li>
+                        <li><a href="#!"><i class="fab fa-youtube"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+</div>
+-->
+<!-- jquery include -->
+<script src="assets/js/jquery-3.7.1.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/swiper.min.js"></script>
+<script src="assets/js/slick.min.js"></script>
+<script src="assets/js/gsap.js"></script>
+<script src="assets/js/wow.min.js"></script>
+<script src="assets/js/appear.js"></script>
+<script src="assets/js/parallaxie.js"></script>
+<script src="assets/js/parallax-scroll.js"></script>
+<script src="assets/js/odometer.min.js"></script>
+<script src="assets/js/imagesloaded.pkgd.min.js"></script>
+<script src="assets/js/isotope.pkgd.min.js"></script>
+<script src="assets/js/cursor-bundle.js"></script>
+<script src="assets/js/easing.min.js"></script>
+<script src="assets/js/scrollspy.js"></script>
+<script src="assets/js/jquery.nice-select.min.js"></script>
+<script src="assets/js/jquery.marquee.min.js"></script>
+<script src="assets/js/jquery.magnific-popup.min.js"></script>
+<script src="assets/js/main.js" defer></script>
+
+
+<script>
+    // Initialiser Stripe (only ONCE)
+    const stripe = Stripe("<%= stripePublicKey%>");
+
+    // Make enrollCourse globally available
+    window.enrollCourse = async function(courseId) {
+        try {
+            const response = await fetch(`/api/course/${courseId}/enroll`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken')}`
+                }
+            });
+            if (!response.ok) {
+                console.error(response);
+                throw new Error('Failed to create enrollment session');
+            }
+            const data = await response.json();
+            if (data && data.id) {
+                const { error } = await stripe.redirectToCheckout({ sessionId: data.id });
+                if (error) {
+                    console.error("Stripe Checkout error:", error);
+                    throw error;
+                }
+            }
+        } catch (error) {
+            console.error("Error during enrollment:", error);
+            alert("Payment error: " + error.message);
+        }
+    };
+
+    // Animation des éléments au défilement
+    function revealElements() {
+        const reveals = document.querySelectorAll('.reveal');
+        for (let i = 0; i < reveals.length; i++) {
+            const windowHeight = window.innerHeight;
+            const elementTop = reveals[i].getBoundingClientRect().top;
+            const elementVisible = 150;
+            if (elementTop < windowHeight - elementVisible) {
+                reveals[i].classList.add('active');
+            }
+        }
+    }
+
+    window.addEventListener('scroll', revealElements);
+
+    document.addEventListener('DOMContentLoaded', function() {
+        revealElements();
+
+        // Créer des particules d'arrière-plan pour un effet visuel amélioré
+        function createParticles() {
+            const particleCount = 50;
+            const particlesContainer = document.querySelector('.particles-container');
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                const size = Math.random() * 5 + 1;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+                particle.style.left = `${posX}px`;
+                particle.style.top = `${posY}px`;
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                const animDuration = Math.random() * 20 + 10;
+                particle.style.animation = `float ${animDuration}s linear infinite`;
+                particle.style.animationDelay = `${Math.random() * 5}s`;
+                particlesContainer.appendChild(particle);
+            }
+        }
+        createParticles();
+    });
+</script>
+</body>
+</html>

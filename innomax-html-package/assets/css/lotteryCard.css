@@ -1,0 +1,281 @@
+/* Main container styles - Switched to CSS Grid */
+.lottery-container {
+    max-width: 1500px;
+    margin: 0 auto;
+    padding: 15px;
+    position: relative;
+    z-index: 5 !important;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Fixed 3 columns */
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .lottery-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .lottery-container {
+        grid-template-columns: 1fr;
+        padding: 10px;
+        gap: 10px;
+    }
+}
+
+/* Card wrapper */
+.parent {
+    height: 100%; /* Fixed height */
+    padding: 15px;
+    perspective: 1000px;
+    overflow: hidden; /* Prevent content overflow */
+}
+
+@media (max-width: 768px) {
+    .parent {
+        padding: 10px;
+    }
+}
+
+.card {
+    border: 2px solid rgba(255, 215, 0, 0.3); /* Or doré */
+    transform-style: preserve-3d;
+    background: linear-gradient(145deg, #0a0a0a 0%, #1e1e1e 100%);
+    height: 100%; /* Take full parent height */
+    box-shadow: 0 10px 30px rgba(255, 215, 0, 0.1); /* Ombre dorée */
+    transition: all 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* For absolute positioning of children */
+}
+
+@media (max-width: 768px) {
+    .card {
+        border-width: 1px;
+    }
+}
+
+.content-box {
+    height: 100%; /* Fill parent height */
+    padding: 50px 15px 15px 15px;
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    background: transparent;
+    transition: all 0.3s ease-in-out;
+    border-top: 1px solid rgba(192, 192, 192, 0.2); /* Ligne argentée */
+}
+
+@media (max-width: 768px) {
+    .content-box {
+        padding: 40px 12px 12px 12px;
+    }
+}
+
+.card:hover {
+    background-position: -100px 100px, -100px 100px;
+    transform: rotate3d(0.5, 1, 0, 30deg);
+    border-color: rgba(255, 215, 0, 0.7); /* Bordure dorée plus visible au survol */
+    box-shadow: 0 15px 40px rgba(255, 215, 0, 0.2); /* Ombre dorée plus prononcée */
+}
+
+@media (max-width: 768px) {
+    .card:hover {
+        transform: none; /* Disable 3D effect on mobile for better usability */
+    }
+}
+
+.content-box .card-title {
+    display: flex;
+    align-items: center;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 900;
+    transition: all 0.3s ease-in-out;
+    transform: translate3d(0px, 0px, 40px);
+    min-height: 50px; /* Reserve space for 2-line titles */
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+    margin-left: 10px;
+
+}
+
+@media (max-width: 768px) {
+    .content-box .card-title {
+        font-size: 16px;
+        min-height: 40px;
+        transform: translate3d(0px, 0px, 20px);
+    }
+}
+
+.content-box .card-title:hover {
+    transform: translate3d(0px, 0px, 50px);
+    color: #FFD700; /* Texte doré au survol */
+}
+
+.content-box .card-content {
+    margin-top: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #e0e0e0; /* Gris clair */
+    transition: all 0.3s ease-in-out;
+    transform: translate3d(0px, 0px, 20px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3; /* Limit to 3 lines */
+    -webkit-box-orient: vertical;
+}
+
+@media (max-width: 768px) {
+    .content-box .card-content {
+        font-size: 11px;
+        transform: translate3d(0px, 0px, 15px);
+    }
+}
+
+.content-box .card-content:hover {
+    transform: translate3d(0px, 0px, 40px);
+    color: #ffffff; /* Blanc pur au survol */
+}
+
+/* Button positioning */
+.buy-entries-btn {
+    margin-top: auto; /* Pushes button to bottom */
+    align-self: flex-start; /* Aligns to left */
+    margin-bottom: 8px; /* Add some bottom margin */
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 900;
+    font-size: 9px;
+    text-transform: uppercase;
+    color: #000000; /* Noir pour contraste */
+    background: linear-gradient(135deg, #FFD700 0%, #FFEC8B 100%); /* Dégradé doré */
+    padding: 0.4rem 0.6rem;
+    transition: all 0.3s ease-in-out;
+    transform: translate3d(0px, 0px, 15px);
+    position: sticky;
+    bottom: 8px; /* Extra spacing from bottom */
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    letter-spacing: 1px;
+    margin-left: 5px;
+}
+
+@media (max-width: 768px) {
+    .buy-entries-btn {
+        padding: 0.3rem 0.5rem;
+        font-size: 8px;
+        transform: translate3d(0px, 0px, 10px);
+    }
+}
+
+.content-box .buy-entries-btn:hover {
+    transform: translate3d(0px, 0px, 40px);
+    background: linear-gradient(135deg, #FFEC8B 0%, #FFD700 100%); /* Inversion du dégradé */
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* Style pour le timer horizontal */
+.date-box {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    height: auto;
+    width: auto;
+    min-width: 220px;
+    padding: 12px 15px;
+    background: linear-gradient(135deg, #ffffff 0%, #f0f0f0 100%); /* Dégradé blanc */
+    border: 2px solid #C0C0C0; /* Bordure argentée */
+    border-radius: 10px;
+    transform: translate3d(0px, 0px, 80px);
+    box-shadow: 0 10px 25px rgba(192, 192, 192, 0.3); /* Ombre argentée */
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+.time-unit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 35px;
+}
+
+.time-value {
+    font-size: 22px;
+    font-weight: 900;
+    color: #000000; /* Noir */
+    line-height: 1;
+    text-shadow: 0 0 2px rgba(255, 215, 0, 0.3); /* Légère lueur dorée */
+}
+
+.time-label {
+    color: #555555; /* Gris foncé */
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .date-box {
+        min-width: 180px;
+        padding: 8px 10px;
+        top: 15px;
+        right: 15px;
+    }
+    .time-value {
+        font-size: 18px;
+    }
+    .time-label {
+        font-size: 8px;
+    }
+}
+
+.product-image {
+    width: 100%;
+    height: 180px;
+    margin-bottom: 8px;
+    margin-top: 40px;
+    object-fit: contain;
+    flex-shrink: 0; /* Prevent image from shrinking */
+    filter: drop-shadow(0 5px 15px rgba(255, 215, 0, 0.2)); /* Ombre portée dorée */
+}
+
+@media (max-width: 768px) {
+    .product-image {
+        height: 150px;
+    }
+}
+
+/* Ajout d'éléments métalliques */
+.card::before {
+    content: "";
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    border: 1px solid rgba(192, 192, 192, 0.1); /* Ligne argentée subtile */
+    pointer-events: none;
+    z-index: -1;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, #FFD700, #C0C0C0, #FFD700); /* Barre dorée-argentée */
+    opacity: 0.7;
+}

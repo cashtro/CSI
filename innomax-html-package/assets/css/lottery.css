@@ -1,0 +1,1296 @@
+/* Luxury Lottery Design - Ultimate Premium Version */
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800;900&display=swap');
+ 
+:root {
+    /* Colors */
+    --primary-color: #b8860b;
+    --secondary-color: #ffd700;
+    --gold-light: #ffd700;
+    --gold-deep: #b8860b;
+    --gold-text: #855e1b;
+    --silver: #e0e0e0;
+    --dark-bg: #0a001f;
+    --card-bg: rgba(25, 22, 40, 0.85);
+   
+    /* Gradients */
+    --gradient-gold: linear-gradient(135deg, #ffd700, #b8860b);
+    --gradient-luxury: linear-gradient(45deg, #24243e, #302b63, #0f0c29);
+   
+    /* Effects */
+    --card-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+    --card-glow: 0 0 25px rgba(184, 134, 11, 0.5);
+    --text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+    --gold-shadow: 0 0 20px rgba(255, 215, 0, 0.4);
+   
+    /* Typography */
+    --font-primary: 'Raleway', sans-serif;
+    --font-display: 'Playfair Display', serif;
+}
+ 
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+ 
+body {
+    font-family: var(--font-primary);
+    background-color: var(--dark-bg);
+    color: var(--gold-text);
+    line-height: 1.7;
+    background-image: linear-gradient(to bottom, #0f0c29, #302b63, #24243e);
+    background-attachment: fixed;
+    position: relative;
+    overflow-x: hidden;
+}
+ 
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI1IiBoZWlnaHQ9IjUiPgo8cmVjdCB3aWR0aD0iNSIgaGVpZ2h0PSI1IiBmaWxsPSIjMGYwYzI5Ij48L3JlY3Q+CjxwYXRoIGQ9Ik0wIDVMNSAwWk02IDRMNCA2Wk0tMSAxTDEgLTFaIiBzdHJva2U9IiMzMDJiNjMiIHN0cm9rZS13aWR0aD0iMSI+PC9wYXRoPgo8L3N2Zz4=');
+    opacity: 0.07;
+
+    pointer-events: none;
+}
+ 
+/* Animated Particles Background */
+.particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    pointer-events: none;
+}
+ 
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background-color: var(--gold-light);
+    opacity: 0.6;
+    border-radius: 50%;
+    animation: float 15s infinite linear;
+}
+ 
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+ 
+/* Cards Section Container */
+#cards-section {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 50px;
+    padding: 80px 30px;
+    position: relative;
+
+    max-width: 1600px;
+    margin: 0 auto;
+}
+ 
+/* Luxury Card Styles - Removed Borders */
+#cards-section .card {
+    display: flex;
+    flex-direction: row;
+    border: none;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 1200px;
+    height: 450px;
+    background: var(--card-bg);
+    backdrop-filter: blur(25px);
+    overflow: hidden;
+    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.5s ease;
+    box-shadow: var(--card-shadow);
+    position: relative;
+
+    background-color: #000000;
+    overflow: hidden;
+}
+ 
+/* Ajout des particules pour cards-section */
+#cards-section .card::before,
+#cards-section .card::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png'); /* Exemple de texture */
+    opacity: 0.6; /* Augmenté pour plus de visibilité */
+    animation: moveParticles 8s linear infinite; /* Raccourci pour un effet plus dynamique */
+    filter: brightness(1.5) contrast(1.2); /* Accentue l'effet visuel */
+}
+ 
+@keyframes moveParticles {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    50% {
+        transform: translateY(-30px) scale(1.05);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+ 
+ 
+ 
+/* Card Interior Shine */
+#cards-section .card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -150%;
+    width: 150%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.05), transparent);
+    transform: rotate(25deg);
+    transition: transform 0.7s ease-in-out;
+}
+ 
+/* Card Hover Effects */
+.card:hover {
+    transform: translateY(-15px) scale(1.02);
+    box-shadow: var(--card-shadow), var(--card-glow);
+}
+ 
+.card:hover::after {
+    left: 150%;
+    transition: left 0.7s ease-in-out;
+}
+ 
+/* Image Card Styles - Removed Borders */
+.image-card {
+    width: 48%;
+    height: 85%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    overflow: hidden;
+    margin: auto 0 auto 30px;
+    position: relative;
+    box-shadow: none;
+   
+}
+ 
+/* Card Image Styles - Removed Borders */
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: none;
+    transition: transform 0.5s ease, filter 0.5s ease;
+   
+    filter: brightness(1.05) contrast(1.05) saturate(1.1);
+}
+ 
+.card:hover .card-image {
+    transform: scale(1.05);
+    filter: brightness(1.15) contrast(1.1) saturate(1.2);
+   
+   
+}
+ 
+/* Card Text Content Styles */
+.card-text-content {
+    width: 48%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+ 
+/* Luxury Heading Style */
+.card-content-h3 {
+    font-family: var(--font-display);
+    padding: 0;
+    text-align: center;
+    margin: 0 0 25px 0;
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    text-shadow: rgba(255, 215, 0, 0.4) 0px 0px 20px, rgb(255, 73, 0) 0px 0px 24.7581px;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+ 
+/* Elegant underline for heading */
+.card-content-h3::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: -10px;
+    width: 80px;
+    height: 3px;
+    background: var(--gradient-gold);
+    transform: translateX(-50%);
+    border-radius: 3px;
+}
+ 
+.card-content-p {
+    padding: 0;
+    text-align: center;
+    color: var(--gold-text);
+    margin: 0 0 30px 0;
+    font-size: 18px;
+    line-height: 1.8;
+    font-weight: 400;
+    letter-spacing: 0.5px;
+}
+ 
+/* Timer Styles */
+.timer {
+    margin: 25px auto;
+    text-align: center;
+    color: var(--gold-text);
+    font-size: 18px;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(10, 0, 31, 0.6);
+    border-radius: 50px;
+    width: fit-content;
+    border: 1px solid rgba(184, 134, 11, 0.4);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2), 0 0 10px rgba(184, 134, 11, 0.1) inset;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+ 
+.timer i {
+    margin-right: 12px;
+    font-size: 22px;
+    color: var(--gold-light);
+}
+ 
+/* Entry Info Styles */
+.entry-info {
+    color: var(--gold-text);
+    text-align: center;
+    margin: 25px 0;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+ 
+.your-entries {
+    color: var(--gold-light);
+    font-size: 36px;
+    margin: 15px 0;
+    font-weight: 800;
+    text-shadow: rgba(255, 215, 0, 0.4) 0px 0px 20px, rgb(255, 73, 0) 0px 0px 24.7581px;
+    font-family: var(--font-display);
+}
+ 
+/* Premium Button Styles */
+.button,
+button[type="submit"],
+.buy-entries-button {
+    background: var(--gradient-gold);
+    color: #000000;
+    font-weight: 800;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.7);
+    letter-spacing: 2px;
+    padding: 16px 40px;
+    border-radius: 50px;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.4s ease;
+    font-size: 18px;
+    text-align: center;
+    text-transform: uppercase;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3), 0 0 0 2px rgba(255, 215, 0, 0.1);
+    position: relative;
+    overflow: hidden;
+    border: none;
+    cursor: pointer;
+    margin: 25px auto 15px;
+    display: block;
+    width: fit-content;
+}
+ 
+.button::before,
+button[type="submit"]::before,
+.buy-entries-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+    transition: 0.6s;
+}
+ 
+.button:hover,
+button[type="submit"]:hover,
+.buy-entries-button:hover {
+    transform: translateY(-7px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(255, 215, 0, 0.2);
+    letter-spacing: 2.5px;
+}
+ 
+.button:hover::before,
+button[type="submit"]:hover::before,
+.buy-entries-button:hover::before {
+    left: 100%;
+}
+ 
+/* Section Titles - Luxury Style */
+h2 {
+    position: relative;
+    z-index: 1;
+    color: var(--gold-text);
+    text-align: center;
+    margin: 70px 0 50px;
+    font-size: 44px;
+    font-weight: 800;
+    text-shadow: var(--text-shadow);
+    letter-spacing: 3px;
+    font-family: var(--font-display);
+}
+ 
+/* Title Video Container */
+.title-video-container {
+    position: relative;
+    overflow: hidden;
+    margin: 80px 0 60px;
+    padding: 20px 0;
+    margin-top: 2px;
+}
+
+/* Video Background for Title */
+.title-video-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 0;
+    filter: brightness(0.7); /* Adjust as needed for better text visibility */
+}
+
+/* Super Draw Title - Ultra Premium with transparent background */ 
+.super-draw-title {
+    position: relative;
+    z-index: 1;
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-align: center;
+    font-size: 68px;
+    font-weight: 900;
+    text-shadow: var(--gold-shadow);
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    font-family: var(--font-display);
+    line-height: 1.2;
+    
+    /* Essential animations */
+    animation:
+        float 4s ease-in-out infinite,
+        neonPulse 1.5s ease-in-out infinite;
+    transform-origin: center bottom;
+    filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.3));
+    transition: all 0.3s ease;
+}
+ 
+/* Casino symbol effect */
+.super-draw-title::after {
+    content: '♠♣♥♦';
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    animation: chipBurst 3s ease-in-out infinite;
+    opacity: 0;
+    pointer-events: none;
+}
+ 
+/* Hover enhancement */
+.super-draw-title:hover {
+    transform: scale(1.04);
+    filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.6));
+}
+ 
+/* Keyframes */
+@keyframes neonPulse {
+    0%, 100% { text-shadow: var(--gold-shadow), 0 0 15px #ffd700; }
+    50% { text-shadow: var(--gold-shadow), 0 0 25px #ff4500; }
+}
+ 
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+}
+ 
+@keyframes chipBurst {
+    0%, 100% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 0.4; transform: scale(1.1); }
+}
+ 
+ 
+ 
+/* Form Styles (Maintaining Dark Mode) */
+form {
+    background: rgba(25, 22, 40, 0.9);
+    border-radius: 24px;
+    padding: 50px;
+    box-shadow: var(--card-shadow);
+    margin: 50px auto;
+    max-width: 700px;
+    border: 1px solid rgba(108, 11, 169, 0.3);
+    backdrop-filter: blur(20px);
+    position: relative;
+    overflow: hidden;
+}
+ 
+/* Form Background Accent */
+form::before {
+}
+.card-image::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+   
+    z-index: 1;
+}
+ 
+/* Form Title */
+form h3 {
+    color: white;
+    font-size: 28px;
+    margin-bottom: 30px;
+    text-align: center;
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+ 
+/* Form Groups */
+.form-group {
+    margin-bottom: 30px;
+}
+ 
+/* Elegant Labels */
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 17px;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+}
+ 
+/* High-End Form Inputs */
+input[type="text"],
+input[type="date"],
+input[type="email"],
+input[type="tel"],
+textarea {
+    width: 100%;
+    padding: 18px 20px;
+    border: 1.5px solid rgba(108, 11, 169, 0.5);
+    border-radius: 16px;
+    background-color: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-size: 16px;
+    transition: all 0.3s;
+    font-family: var(--font-primary);
+    letter-spacing: 0.5px;
+}
+ 
+input[type="text"]:focus,
+input[type="date"]:focus,
+input[type="email"]:focus,
+input[type="tel"]:focus,
+textarea:focus {
+    border-color: var(--gold-light);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(184, 134, 11, 0.15);
+    background-color: rgba(255, 255, 255, 0.08);
+}
+ 
+/* Lotto Ball Card Styles */
+.lottoBall-card {
+    width: 30%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    position: relative;
+   
+}
+ 
+/* Lottery Canvas Container */
+#lottery-canvas-container {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    padding: 30px;
+    position: relative;
+   
+}
+ 
+/* Canvas Styles */
+.lottery-canvas {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100%;
+  display: block;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px #ffc107;
+  background-color: #000000 !important;
+   
+}
+ 
+/* Video Background */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+ 
+.video-background::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to bottom, rgba(15, 12, 41, 0.8), rgba(48, 43, 99, 0.7), rgba(36, 36, 62, 0.8));
+    z-index: 1;
+}
+ 
+/* Elegant Scrollbar */
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    background: rgba(10, 0, 31, 0.6);
+}
+ 
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(var(--primary-color), var(--gold-deep));
+    border-radius: 6px;
+    border: 3px solid rgba(10, 0, 31, 0.6);
+}
+ 
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(var(--gold-deep), var(--primary-color));
+}
+ 
+/* Selection Styling */
+::selection {
+    background-color: var(--gold-deep);
+    color: white;
+}
+ 
+/* Floating Elements */
+.floating-element {
+    position: absolute;
+    border-radius: 50%;
+    background: linear-gradient(45deg, var(--gold-light), transparent);
+    filter: blur(60px);
+    opacity: 0.15;
+    z-index: -1;
+}
+ 
+.floating-element-1 {
+    width: 300px;
+    height: 300px;
+    top: 10%;
+    left: 5%;
+}
+ 
+.floating-element-2 {
+    width: 400px;
+    height: 400px;
+    bottom: 15%;
+    right: 5%;
+    background: linear-gradient(45deg, var(--gold-light), transparent);
+}
+ 
+.floating-element-3 {
+    width: 250px;
+    height: 250px;
+    top: 60%;
+    left: 20%;
+    background: linear-gradient(45deg, var(--gold-deep), transparent);
+}
+ 
+/* Glitter Effect */
+.glitter {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background-color: var(--gold-light);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9;
+    animation: glitter 3s ease-in-out infinite;
+}
+ 
+@keyframes glitter {
+    0%, 100% { opacity: 0; transform: scale(0.1); }
+    50% { opacity: 0.8; transform: scale(1); }
+}
+ 
+/* Responsive Design */
+@media (max-width: 1200px) {
+    #cards-section .card {
+        width: 95%;
+        height: 400px;
+       
+    }
+   
+    .card-content-h3 {
+        font-size: 40px;
+    }
+   
+    .super-draw-title {
+        font-size: 56px;
+    }
+}
+ 
+@media (max-width: 992px) {
+    #cards-section .card {
+        height: auto;
+        flex-direction: column;
+        padding: 30px 0;
+    }
+   
+    .image-card, .card-text-content {
+        width: 90%;
+        margin: 20px auto;
+    }
+   
+    .image-card {
+        height: 300px;
+    }
+   
+    .card-content-h3 {
+        font-size: 36px;
+    }
+   
+    .super-draw-title {
+        font-size: 48px;
+        letter-spacing: 3px;
+    }
+   
+    .super-draw-title::after {
+        width: 180px;
+    }
+   
+    form {
+        padding: 40px 30px;
+        width: 90%;
+    }
+}
+ 
+@media (max-width: 768px) {
+    #cards-section {
+        padding: 50px 15px;
+    }
+   
+    .card-content-h3 {
+        font-size: 32px;
+    }
+   
+    .card-content-p {
+        font-size: 16px;
+    }
+   
+    .super-draw-title {
+        font-size: 36px;
+        letter-spacing: 2px;
+        margin: 60px 0 40px;
+    }
+   
+    .super-draw-title::before {
+        width: 80px;
+        height: 4px;
+    }
+   
+    .super-draw-title::after {
+        width: 140px;
+        height: 4px;
+    }
+   
+    h2 {
+        font-size: 32px;
+    }
+   
+    form {
+        padding: 30px 20px;
+    }
+   
+    .button,
+    button[type="submit"],
+    .buy-entries-button {
+        padding: 16px 56px;
+        min-width: 220px;
+    }
+}
+ 
+/* Add random glitter elements to the page */
+@keyframes sparkle {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+}
+ 
+.sparkle {
+    position: fixed;
+    width: 3px;
+    height: 3px;
+    background-color: var(--gold-light);
+    border-radius: 50%;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 9;
+    animation: sparkle 2s ease-in-out infinite;
+}
+
+.shape.shape--one {
+    position: relative;
+    width: 100%;
+    overflow: hidden; /* Contient l'image pendant le zoom */
+    margin-bottom: -10px;
+  }
+  
+  .shape.shape--one img {
+    width: 100% !important;
+    height: auto !important;
+    max-width: 100% !important;
+    min-width: 100%; /* Nouveau - crucial pour le zoom */
+    display: block;
+    image-rendering: -webkit-optimize-contrast; /* Améliore le rendu au zoom */
+    transform: translateZ(0); /* Hack GPU pour certains navigateurs */
+    box-sizing: border-box;
+  }
+
+
+  /* Text lottery */
+
+  /* From Uiverse.io by satyamchaudharydev */ 
+/* === removing default button style ===*/
+.lotteryText {
+    margin: 0;
+    height: auto;
+    background: transparent;
+    padding: 0;
+    border: none;
+    cursor: pointer;
+  }
+  
+  /* button styling */
+  .lotteryText {
+    --border-right: 6px;
+    --text-stroke-color: rgba(255,255,255,0.6);
+    --animation-color: #ffd700;
+    --fs-size: 2em;
+    letter-spacing: 3px;
+    text-decoration: none;
+    font-size: var(--fs-size);
+    font-family: "Arial";
+    position: relative;
+    text-transform: uppercase;
+    color: transparent;
+    -webkit-text-stroke: 1px var(--text-stroke-color);
+  }
+  /* this is the text, when you hover on button */
+  .lotteryText .hover-text {
+    position: absolute;
+    box-sizing: border-box;
+    content: attr(data-text);
+    color: var(--animation-color);
+    width: 0%;
+    inset: 0;
+    border-right: var(--border-right) solid var(--animation-color);
+    overflow: hidden;
+    transition: 0.5s;
+    -webkit-text-stroke: 1px var(--animation-color);
+  }
+  /* hover */
+  .lotteryText:hover .hover-text {
+    width: 100%;
+    filter: drop-shadow(0 0 23px var(--animation-color))
+  }
+
+    /* 1. Fixer le header au-dessus de tout */
+header, .header {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    z-index: 9999 !important; /* Valeur très élevée pour s'assurer qu'il reste au-dessus */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+}
+
+
+        .lottery-canvas-section {
+    padding: 30px 0 20px !important; /* Réduit de 60px 0 40px */
+    background-color: #000000;
+    position: relative;
+    text-align: center;
+    overflow: hidden;
+}
+
+
+
+.container {
+    position: relative;
+    z-index: 1;
+}
+
+.lottery-main-canvas {
+    position: relative;
+    z-index: 2;
+}
+
+.lottery-main-canvas {
+    margin: 0 auto;
+  width: 100%;
+  max-width: 800px; /* tu peux ajuster à 1000px ou plus si nécessaire */
+  padding: 20px;
+}
+
+@media (min-width: 1600px) {
+  .lottery-main-canvas {
+    max-width: 1000px;
+  }
+
+  .lottery-canvas {
+    max-width: 100%;
+  }
+}
+
+/* Animation pour le titre principal */
+@keyframes titleGlow {
+    0% {
+        color: #ffc107;
+        text-shadow: 0 0 10px #ffc107, 0 0 20px #ffc107, 0 0 30px rgba(255, 193, 7, 0.5);
+    }
+    50% {
+        color: #ffdb58;
+        text-shadow: 0 0 15px #ffc107, 0 0 25px #ffc107, 0 0 35px rgba(255, 193, 7, 0.7);
+    }
+    100% {
+        color: #ffc107;
+        text-shadow: 0 0 10px #ffc107, 0 0 20px #ffc107, 0 0 30px rgba(255, 193, 7, 0.5);
+    }
+}
+
+/* Animation légère de montée pour les textes */
+@keyframes floatUp {
+    0% {
+        transform: translateY(10px);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Animation de soulignement */
+@keyframes underlineExpand {
+    0% {
+        width: 0;
+        opacity: 0;
+    }
+    100% {
+        width: 100px;
+        opacity: 1;
+    }
+}
+
+/* Titre Lottery Draw avec animation lumineuse */
+.lottery-canvas-text h3.glow-effect {
+    font-size: 60px;
+    font-weight: 700;
+    color: #ffc107;
+    margin-bottom: 30px;
+    text-align: center;
+    animation: titleGlow 3s infinite alternate ease-in-out;
+    letter-spacing: 2px;
+    position: relative;
+    display: inline-block;
+    text-transform: uppercase;
+}
+
+/* Effet de soulignement pour le titre */
+.lottery-canvas-text h3.glow-effect::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #ffc107, transparent);
+    animation: underlineExpand 1.5s forwards ease-out;
+}
+
+/* Paragraphes standard avec animation d'entrée */
+.lottery-canvas-text p {
+    font-size: 18px;
+    color: #ffffff;
+    margin-bottom: 20px;
+    line-height: 1.6;
+    text-align: center;
+    text-shadow: 0 0 5px rgba(0, 0, 0, 0.7);
+    animation: floatUp 0.8s forwards ease-out;
+    opacity: 0;
+}
+
+/* Délai d'animation pour créer un effet cascadé */
+.lottery-canvas-text p:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.lottery-canvas-text p:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.lottery-canvas-text p:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+/* Paragraphe d'explication avec style spécial */
+.lottery-canvas-text p.lottery-explanation {
+    font-size: 16px;
+    max-width: 650px;
+    margin: 0 auto 30px;
+    color: #f8f8f8;
+    line-height: 1.8;
+    position: relative;
+    animation: floatUp 1s forwards ease-out;
+    animation-delay: 0.8s;
+}
+
+/* Animation pour l'icône décorative avant l'explication */
+@keyframes iconPulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+}
+
+/* Icône décorative avant le texte d'explication */
+.lottery-canvas-text p.lottery-explanation::before {
+    content: '★★★★★';
+    color: #ffc107;
+    font-size: 22px;
+    display: block;
+    text-align: center;
+    margin-bottom: 10px;
+    animation: iconPulse 2s infinite ease-in-out;
+}
+
+/* Container principal sans bordures ni fond */
+.lottery-canvas-text {
+    position: relative;
+    z-index: 10;
+    padding: 25px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.down-arrows {
+    margin-top: 25px;
+    padding-bottom: 10px;
+}
+
+.down-arrows i {
+    color: #ffc107;
+    font-size: 24px;
+    margin: 0 8px;
+    animation: float 2s ease-in-out infinite;
+}
+
+@keyframes neonPulse {
+    from {
+        text-shadow: rgba(255, 215, 0, 0.4) 0px 0px 20px, rgb(255, 73, 0) 0px 0px 24.7361px;
+    }
+    to {
+        text-shadow: rgba(255, 215, 0, 0.6) 0px 0px 25px, rgb(255, 73, 0) 0px 0px 30px;
+    }
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-7.89533px);
+    }
+}
+
+.down-arrows i:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.down-arrows i:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+/* Ajout des particules */
+.lottery-canvas-section::before, 
+.lottery-canvas-section::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80%;
+    pointer-events: none;
+    background: url('https://www.transparenttextures.com/patterns/stardust.png'); /* Exemple de texture */
+    opacity: 0.6;
+    animation: moveParticles 8s linear infinite;
+}
+
+@keyframes moveParticles {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+.contact-form input:focus, 
+        .contact-form textarea:focus {
+            box-shadow: 0 0 15px #ffc107 !important;
+            outline: none;
+        }
+        
+        .blc-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 193, 7, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .xb-item--cont_info img {
+            filter: brightness(0) saturate(100%) invert(76%) sepia(65%) saturate(478%) hue-rotate(359deg) brightness(104%) contrast(101%);
+        }
+
+        .buy-button-container {
+    text-align: center;
+    margin: 50px auto;
+}
+
+.buy-button {
+    width: 80%;
+    max-width: 740px;
+    height: 70px;
+    border: none;
+    border-radius: 15px;
+    background: linear-gradient(to right, #77530a, #ffd277, #77530a, #77530a, #ffd277, #77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #000000;
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 40px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.buy-button::before{
+    position: absolute;
+    content: "BUY NOW";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 90%;
+    border-radius: 15px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+    font-size: 26px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.buy-button:hover{
+    background-position: right;
+    transition-duration: 1s;
+    box-shadow: 0 8px 25px rgba(212, 179, 102, 0.5);
+}
+
+.buy-button:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.buy-button:active {
+    transform: scale(0.95);
+}
+
+.redirect-info {
+    text-align: center;
+    color: #E6C373;
+    font-size: 16px;
+    margin-top: 15px;
+    width: 80%;
+    max-width: 740px;
+    margin-left: auto;
+    margin-right: auto;
+    text-shadow: 0 0 5px rgba(255, 193, 7, 0.3);
+}
+
+
+
+/* Dany */
+/* bg responsive */
+
+@media (max-width: 767px) {
+    .world .container {
+        background: none !important;
+    }
+  }
+
+/* bg responsive */
+
+@media (max-width: 767px) {
+    .lottery-canvas-section .container {
+        background: none !important;
+    }
+  }
+
+
+.Btn1 {
+    width: 200px;
+    height: 40px;
+    margin-top: 10px;
+    margin-left: -3px;
+    border: none;
+    border-radius: 10px;
+    background: linear-gradient(to right,#77530a,#ffd277,#77530a,#77530a,#ffd277,#77530a);
+    background-size: 250%;
+    background-position: left;
+    color: #ffd277;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition-duration: 1s;
+    overflow: hidden;
+}
+
+.Btn1::before {
+    position: absolute;
+    content: "LIVE CONSULTATION";
+    color: #ffd277;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 97%;
+    height: 92%;
+    border-radius: 8px;
+    transition-duration: 1s;
+    background-color: rgba(0, 0, 0, 0.842);
+    background-size: 200%;
+}
+
+.Btn1:hover {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn1:hover::before {
+    background-position: right;
+    transition-duration: 1s;
+}
+
+.Btn1:active {
+    transform: scale(0.95);
+}
+
+
+/* Conteneur vidéo */
+.video-container {
+ 
+    top: 0%;
+    left: 0;
+    width: 100%;
+    height: 80% !important;
+}
+
+/* Vidéo elle-même */
+.responsive-video {
+    width: 100%;
+    height: 80%;
+    object-fit: cover; /* Garantit que la vidéo couvre tout l'espace sans déformation */
+    object-position: center;
+}
+
+.xb-item--content{
+    z-index: 10;
+}
+

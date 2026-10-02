@@ -1,0 +1,563 @@
+<!doctype html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Tous les cours - D. School">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Pandora Business Technology & Marketing</title>
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+
+    <!-- css include -->
+    <link rel="stylesheet" href="assets/css/normalize.css">
+
+    <link rel="preload" href="assets/css/style.bundle.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/style.bundle.min.css"></noscript>
+    <style>
+        /* Style personnalisé avec les nouvelles couleurs */
+        body {
+            background: #000000; /* Noir profond comme fond principal */
+            color: #ffffff;
+        }
+        
+        .courses-section {
+            background-color: #000000; /* Fond noir profond */
+            color: #ffffff;
+            padding: 120px 0;
+            position: relative;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 35px;
+            padding: 20px;
+        }
+
+        .course-card {
+            background: rgba(10, 11, 26, 0.95); /* Fond bleu nuit pour les cartes */
+            border-radius: 18px;
+            overflow: hidden;
+            border: 1px solid rgba(133, 94, 27, 0.2); /* Bordure dorée subtile */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .course-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.4);
+            border-color: rgba(133, 94, 27, 0.7); /* Bordure dorée plus visible au survol */
+        }
+
+        .course-image {
+            height: 220px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            transition: transform 0.5s ease;
+        }
+
+        .course-card:hover .course-image {
+            transform: scale(1.05);
+        }
+
+        .course-image::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 60%;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        }
+
+        .course-content {
+            padding: 30px;
+        }
+
+        .course-title {
+            font-size: 1.6rem;
+            color: #fff;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .course-card:hover .course-title {
+            color: #d0d0d0; /* Gris plus clair au survol */
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+            color: #d0d0d0;
+        }
+
+        .course-meta i {
+            margin-right: 5px;
+            color: #855e1b; /* Icônes en doré (#855e1b) */
+        }
+
+        .course-description {
+            color: #b8b8b8;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .btn-details {
+            display: inline-block;
+            background: #0a0b1a; /* Bouton bleu nuit */
+            color: white;
+            padding: 12px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(133, 94, 27, 0.3); /* Bordure légèrement dorée */
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-details::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(133, 94, 27, 0.15) 0%, transparent 70%); /* Lueur dorée */
+            transition: opacity 0.3s ease;
+            opacity: 0;
+        }
+
+        .btn-details:hover {
+            background: #141731; /* Bleu un peu plus clair au survol */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+            border-color: rgba(133, 94, 27, 0.6); /* Bordure dorée plus visible au survol */
+        }
+
+        .btn-details:hover::before {
+            opacity: 1;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            text-align: center;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #ffffff, #855e1b); /* Dégradé bleu/doré */
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(10, 11, 26, 0.3);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            margin-bottom: 60px;
+            color: #bbbbbb;
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+        }
+
+        /* Ajout d'un effet de particules subtil avec les nouvelles couleurs */
+        .courses-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: radial-gradient(circle at 30% 20%, rgba(133, 94, 27, 0.05) 0%, transparent 25%),
+                              radial-gradient(circle at 70% 60%, rgba(10, 11, 26, 0.05) 0%, transparent 25%);
+            pointer-events: none;
+        }
+        
+        /* Ajout d'un effet de brillance sur les cartes */
+        .course-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(to right, transparent, rgba(133, 94, 27, 0.8), transparent); /* Bordure brillante dorée */
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .promo-image-container {
+    max-width: 1000px;
+    margin: 40px auto;
+    border-radius: 15px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 30px rgba(133, 94, 27, 0.2);
+    border: 1px solid rgba(133, 94, 27, 0.3);
+}
+
+.promo-image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(45deg, rgba(10, 11, 26, 0.4), rgba(133, 94, 27, 0.2));
+    border-radius: 15px;
+}
+        .course-card:hover::after {
+            opacity: 1;
+        }
+        
+        /* Effet de particules */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+        }
+        
+        .body_wrap {
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Effet de brillance pour les éléments dorés */
+        @keyframes goldShimmer {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+        
+        .gold-shimmer {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .gold-shimmer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        rgba(133, 94, 27, 0.2), 
+                        transparent);
+            z-index: -1;
+            animation: goldShimmer 1.5s infinite;
+            transform: skewX(-15deg);
+        }
+        
+        /* Badge nouveau cours */
+        .new-badge {
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: #855e1b; /* Badge en doré */
+            color: white;
+            padding: 5px 30px;
+            transform: rotate(45deg);
+            font-weight: 600;
+            font-size: 14px;
+            z-index: 3;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+    </style>
+</head>
+
+<body class="sco_agency" style="background: #000000;">
+    <!-- Particules en arrière-plan -->
+    <div id="particles-js"></div>
+
+    <%-include('partials/header')%>
+
+
+    <div class="body_wrap">
+        <main>
+            <section class="courses-section">
+                <div class="container">
+                    <h1 class="section-title">Our Course Catalog</h1>
+                    <!-- Image ajoutée ici -->
+        <div class="promo-image-container mb-5">
+            <img src="assets/mp4/universalll.jpg" 
+                 alt="Présentation des cours"
+                 class="promo-image w-100">
+            <div class="image-overlay"></div>
+        </div>
+                    <p class="section-subtitle">
+                        Dive into a world of learning with our expert programs and premium resources
+                    </p>
+
+                    <div class="search-container mb-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-8">
+                                <div class="search-bar">
+                                    <input type="text" id="courseSearch" 
+                                           class="form-control" 
+                                           placeholder="Search courses by title or description..."
+                                           aria-label="Search courses">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        .search-container {
+                            margin: 40px 0;
+                        }
+                    
+                        .search-bar {
+                            position: relative;
+                        }
+                    
+                        #courseSearch {
+                            background: rgba(10, 11, 26, 0.9);
+                            border: 1px solid rgba(133, 94, 27, 0.4);
+                            color: #ffffff;
+                            border-radius: 50px;
+                            padding: 15px 30px 15px 50px;
+                            font-size: 1.1rem;
+                            transition: all 0.3s ease;
+                        }
+                    
+                        #courseSearch:focus {
+                            border-color: rgba(133, 94, 27, 0.8);
+                            box-shadow: 0 0 15px rgba(133, 94, 27, 0.2);
+                            background: rgba(10, 11, 26, 0.95);
+                        }
+                    
+                        .search-bar .fa-search {
+                            position: absolute;
+                            left: 25px;
+                            top: 50%;
+                            transform: translateY(-50%);
+                            color: rgba(133, 94, 27, 0.8);
+                        }
+                    
+                        .course-card {
+                            transition: all 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+                        }
+                    </style>
+                    
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const searchInput = document.getElementById('courseSearch');
+                            
+                            searchInput.addEventListener('keyup', function() {
+                                const searchTerm = this.value.toLowerCase();
+                                const cards = document.querySelectorAll('.course-card');
+                                
+                                cards.forEach(card => {
+                                    const title = card.querySelector('.course-title').textContent.toLowerCase();
+                                    const description = card.querySelector('.course-description').textContent.toLowerCase();
+                                    
+                                    if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                                        card.style.display = 'block';
+                                        setTimeout(() => {
+                                            card.style.opacity = '1';
+                                            card.style.transform = 'translateY(0)';
+                                        }, 50);
+                                    } else {
+                                        card.style.opacity = '0';
+                                        card.style.transform = 'translateY(20px)';
+                                        setTimeout(() => {
+                                            card.style.display = 'none';
+                                        }, 300);
+                                    }
+                                });
+                            });
+                        });
+                    </script>
+                    
+                    
+                    <div class="course-grid">
+                        <% data.courses.forEach((course, index) => { %>
+                            <div class="course-card <%= index < 2 ? 'gold-shimmer' : '' %>">
+                                <% if (index === 0) { %>
+                                    <div class="new-badge">New</div>
+                                <% } %>
+                                <div class="course-image" 
+                                     style="background-image: url('<%= course.image_url || `https://image.pollinations.ai/prompt/${encodeURIComponent(course.nom + " intech")}` %>');"></div>
+                                <div class="course-content">
+                                    <h3 class="course-title"><%= course.nom %></h3>
+                                    <div class="course-meta">
+                                        <span><i class="fas fa-clock"></i> <%= course.nombre_heures %></span>
+                                        <span><i class="fas fa-signal"></i> <%= course.niveau %></span>
+                                    </div>
+                                    <p class="course-description"><%= course.courseDescription %></p>
+                                    <a href='/course-details/<%=course.id%>' class="btn-details">
+                                        Explore the course
+                                    </a>
+                                </div>
+                            </div>
+                        <% }); %>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <%-include('partials/footer')%>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/assets/js/jquery-3.7.1.min.js"></script>
+    <script src="/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/js/particles.min.js"></script>
+    <script src="/assets/js/main.js" defer></script>
+    
+    <script>
+        // Configuration des particules avec couleurs adaptées
+        document.addEventListener('DOMContentLoaded', function() {
+            if (typeof particlesJS !== 'undefined') {
+                particlesJS('particles-js', {
+                    "particles": {
+                        "number": {
+                            "value": 80,
+                            "density": {
+                                "enable": true,
+                                "value_area": 800
+                            }
+                        },
+                        "color": {
+                            "value": "#855e1b" // Particules dorées
+                        },
+                        "shape": {
+                            "type": "circle",
+                            "stroke": {
+                                "width": 0,
+                                "color": "#000000"
+                            }
+                        },
+                        "opacity": {
+                            "value": 0.3,
+                            "random": false,
+                            "anim": {
+                                "enable": false,
+                                "speed": 1,
+                                "opacity_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "size": {
+                            "value": 3,
+                            "random": true,
+                            "anim": {
+                                "enable": false,
+                                "speed": 40,
+                                "size_min": 0.1,
+                                "sync": false
+                            }
+                        },
+                        "line_linked": {
+                            "enable": true,
+                            "distance": 150,
+                            "color": "#0a0b1a", // Lignes bleu nuit
+                            "opacity": 0.2,
+                            "width": 1
+                        },
+                        "move": {
+                            "enable": true,
+                            "speed": 2,
+                            "direction": "none",
+                            "random": false,
+                            "straight": false,
+                            "out_mode": "out",
+                            "bounce": false,
+                            "attract": {
+                                "enable": false,
+                                "rotateX": 600,
+                                "rotateY": 1200
+                            }
+                        }
+                    },
+                    "interactivity": {
+                        "detect_on": "canvas",
+                        "events": {
+                            "onhover": {
+                                "enable": true,
+                                "mode": "grab"
+                            },
+                            "onclick": {
+                                "enable": true,
+                                "mode": "push"
+                            },
+                            "resize": true
+                        },
+                        "modes": {
+                            "grab": {
+                                "distance": 140,
+                                "line_linked": {
+                                    "opacity": 1
+                                }
+                            },
+                            "push": {
+                                "particles_nb": 4
+                            }
+                        }
+                    },
+                    "retina_detect": true
+                });
+            }
+            
+            // Animation au défilement pour les cartes de cours
+            function revealCards() {
+                const cards = document.querySelectorAll('.course-card');
+                
+                cards.forEach((card, index) => {
+                    const cardTop = card.getBoundingClientRect().top;
+                    const cardVisible = 150;
+                    
+                    if (cardTop < window.innerHeight - cardVisible) {
+                        // Ajouter un délai progressif pour chaque carte
+                        setTimeout(() => {
+                            card.style.opacity = '1';
+                            card.style.transform = 'translateY(0)';
+                        }, index * 150); // 150ms de délai entre chaque carte
+                    }
+                });
+            }
+            
+            // Initialiser les cartes avec transformation et opacité
+            const cards = document.querySelectorAll('.course-card');
+            cards.forEach(card => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            });
+            
+            // Déclencher l'animation au chargement et au défilement
+            revealCards();
+            window.addEventListener('scroll', revealCards);
+        });
+    </script>
+</body>
+</html>

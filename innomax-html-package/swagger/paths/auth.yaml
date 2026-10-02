@@ -1,0 +1,68 @@
+register:
+  post:
+    tags:
+      - Authentication
+    summary: Register a new user
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              username:
+                type: string
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+            required:
+              - email
+              - password
+    responses:
+      201:
+        description: User created
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      409:
+        $ref: '#/components/responses/Conflict'
+
+login:
+  post:
+    tags:
+      - Authentication
+    summary: User login
+    requestBody:
+      required: true
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+                format: email
+              password:
+                type: string
+                format: password
+            required:
+              - email
+              - password
+    responses:
+      200:
+        description: Login successful
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                user:
+                  $ref: '#/components/schemas/User'
+      401:
+        $ref: '#/components/responses/Unauthorized'

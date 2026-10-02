@@ -1,0 +1,13 @@
+node_modules
+node_modules/*
+*/node_modules
+*/node_modules/*
+**/node_modules/*
+**/.vscode/*
+**/.scannerwork/*
+sonar-project.properties
+.env
+.env.*
+!.env.example
+__MACOSX/
+.DS_Store

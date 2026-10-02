@@ -1,0 +1,64 @@
+@font-face {
+    font-family: 'Aeonik';
+    src: url('../fonts/Aeonik-Medium.woff2') format('woff2'),
+    url('../fonts/Aeonik-Medium.woff') format('woff');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Aeonik';
+    src: url('../fonts/Aeonik-Bold.woff2') format('woff2'),
+    url('../fonts/Aeonik-Bold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TransducerTest';
+    src: url('../fonts/TransducerTest-Medium-BF645c3dd896377.woff2') format('woff2'),
+    url('../fonts/TransducerTest-Medium-BF645c3dd896377.woff') format('woff');
+    font-weight: 500;
+    font-display: swap;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'TransducerTest';
+    src: url('../fonts/TransducerTest-Bold-BF645c3dd70a4f5.woff2') format('woff2'),
+    url('../fonts/TransducerTest-Bold-BF645c3dd70a4f5.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'GT-Super-Text';
+    src: url('../fonts/GT-Super-Text-Medium-Trial.woff2') format('woff2'),
+    url('../fonts/GT-Super-Text-Medium-Trial.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'GT-Super-Text';
+    src: url('../fonts/GT-Super-Text-Bold-Trial.woff2') format('woff2'),
+    url('../fonts/GT-Super-Text-Bold-Trial.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Agrandir';
+    src: url('../fonts/Agrandir-TextBold.woff2') format('woff2'),
+    url('../fonts/Agrandir-TextBold.woff') format('woff');
+    font-weight: 700;
+    font-display: swap;
+    font-style: normal;
+    
+}
+@font-face {
+    font-family: 'Agrandir';
+    src: url('../fonts/Agrandir-GrandHeavy.woff2') format('woff2'),
+    url('../fonts/Agrandir-GrandHeavy.woff') format('woff');
+    font-weight: 800;
+    font-display: swap;
+    font-style: normal;
+}

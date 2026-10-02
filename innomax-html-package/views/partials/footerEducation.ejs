@@ -1,0 +1,172 @@
+<!-- Script et liens CSS pour le bouton Google Calendar -->
+<link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+<script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+ 
+<!-- css include -->
+
+<link rel="stylesheet" href="assets/css/headerfooter.css">
+ 
+<!-- footer strt -->
+<footer class="footer bg_img footer-style-two footer-style-three pt-120 pos-rel" data-bg-color="#010315" data-background="assets/img/bg/footer_overly.webp">
+    <div class="container">
+        <div class="xb-footer">
+            <div class="sec-title--two sec-title--three text-center mb-40">
+                <span class="sub-title"><img src="assets/img/icon/airdrop01.svg" alt=""><span>Join the Pandora community</span></span>
+            </div>
+            <div class="social-link ul_li_between">
+                <div class="social-item">
+                    <a href="https://www.facebook.com/PANDORABRANDMARKETING/" class="xb-icon"><img src="assets/img/footer/facebook-logo-nobg-removed-previ.png" alt=""></a>
+                </div>
+                <div class="social-item">
+                    <a href="https://www.instagram.com/pbm_tech?igsh=MTN5NnZ0N3o1dzhvNA==" class="xb-icon"><img src="assets/img/footer/instagram-logo-nobg-removebg-pre.png" alt=""></a>
+                </div>
+                <div class="social-item">
+                    <a href="https://wa.me/message/RK6RAKIRZDIPK1" class="xb-icon"><img src="assets/img/footer/whatsapp-logo-removebg-pre.png" alt=""></a>
+                </div>
+                <!--<div class="social-item">
+                    <a href="https://www.instagram.com/reel/DFSRg2wOBI5/?utm_source=ig_web_copy_link" class="xb-icon"><img src="assets/img/footer/whatsapp-logo-removebg-pre.png" alt=""></a>
+                </div>-->
+                <div class="social-item">
+                    <a href="https://www.linkedin.com/in/pbtm/" class="xb-icon"><img src="assets/img/footer/social-link04.png" alt=""></a>
+                </div>
+            </div>
+            <div class="footer-inner mt-80 mb-70 ul_li_between align-items-start">
+                <div class="footer-widget">
+                    <span class="xb-item--sub-title">Company</span>
+                    <ul class="xb-item--holder list-unstyled">
+                        <li class="xb-item--list"><a href="#about-our-work">About us</a></li>
+                        <li class="xb-item--list"><a href="/contact">Internships</a></li>
+                        <li class="xb-item--list"><a href="#!">Processes</a></li>
+                        <li class="xb-item--list"><a href="/contact">Contact us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <span class="xb-item--sub-title">Our Services</span>
+                    <ul class="xb-item--holder list-unstyled">
+                        <li class="xb-item--list"><a href="/TechAi">Tech and A.I.</a></li>
+                        <li class="xb-item--list"><a href="/marketing">Marketing Digital</a></li>
+                        <li class="xb-item--list"><a href="/nft">Our NFTS</a></li>
+                        <li class="xb-item--list"><a href="/education">Education</a></li>
+                    </ul>
+                </div>
+                <div class="footer-widget">
+                    <span class="xb-item--sub-title" style="display: block; text-align: center;">Our Partners</span>
+                    <div style="display: flex; gap: 10%">
+                        <ul class="xb-item--holder list-unstyled">
+                        </ul>
+                        <ul class="xb-item--holder1 list-unstyled">
+                            <li class="xb-item--list"><a href="https://www.synoptech.ca">Synoptech</a></li>
+                            <li class="xb-item--list"><a href="https://www.iterinnovandi.com">IterInnovandi</a></li>
+                            <li class="xb-item--list"><a href="https://blkboxmedia.co">BlkBoxMedia</a></li>
+                            <li class="xb-item--list"><a href="https://prolifikcouture.com/">Prolifik</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="footer-widget">
+                    <span class="xb-item--sub-title" style="margin-top: 0 !important;">Book a Consultation</span>
+                    <p class="xb-item--content clr-white" style="color: white !important; margin: auto !important;">Schedule a meeting with our team to discuss your project.</p>
+                    <div id="button1-container" style="margin-bottom: 20px;">
+                        <!-- Le bouton Google Calendar sera inséré ici par le script -->
+                    </div>
+                        <span class="xb-item--sub-title" style="margin-top: 10px !important;"></span>
+                        <div id="button2-container" style="margin-bottom: 20px;">
+                            <a href="/contact" class="thm-btn thm-btn--devops thm-btn--devops" style="display: inline-block; text-align: center; padding: 12px 24px; background-color: #FFF; color: #000; border-radius: 5px; text-decoration: none; font-weight: 600; margin-top: 20px;">Contact Us</a>                           <!-- Le bouton Google Calendar sera inséré ici par le script -->
+                        </div>
+                </div>
+            </div>
+            <div class="footer-copyright mt-70 ul_li_between">
+                <p class="copyright mt-20">Copyright © Since 2018 <a href="https://g.co/kgs/5v9nHM1">Pandora Business Technology & Marketing</a>. All rights reserved.</p>
+                <p class="mt-20">Designed by PBTM & Team</p>
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- footer end -->
+ 
+<script>
+(function() {
+  // Attendre que le DOM soit chargé
+  window.addEventListener('load', function() {
+    // Trouver le conteneur du bouton
+    var buttonContainer = document.getElementById('button1-container');
+   
+    // S'assurer que le conteneur existe
+    if (buttonContainer) {
+      // Configurer directement le bouton de calendrier dans ce conteneur
+      calendar.schedulingButton.load({
+        class: "thm-btn thm-btn--devops thm-btn--devops_yellow",
+        url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3130jugUgfErFhHZrwSg9sRTAsD3B04zfFGKS3RWZQu3jXAn8NM-3_sNtz6OY3bRvz7JcI3Fkl?gv=true',
+        color: '#FFF',
+        label: 'Book a consultation',
+        target: buttonContainer
+      });
+    }
+  });
+})();
+</script>
+ 
+<!-- Style supplémentaire pour le responsive -->
+<style>
+/* Styles généraux pour les boutons */
+.contact-button-container {
+  display: block;
+  width: 100%;
+}
+ 
+.contact-button-container a {
+  width: 100%;
+  text-align: center;
+}
+ 
+/* Styles pour mobile */
+@media screen and (max-width: 767px) {
+  .footer-inner {
+    flex-direction: column;
+    align-items: center !important;
+  }
+ 
+  .xb-item--holder1 {
+    margin-left: 25% !important;
+  }
+ 
+  .footer-widget {
+    width: 100%;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+ 
+  .social-link {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+ 
+  .social-item {
+    margin: 10px;
+  }
+ 
+  .footer-copyright {
+    flex-direction: column;
+    text-align: center;
+  }
+ 
+  /* Style pour le bouton de consultation sur mobile */
+  #button1-container, .contact-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-top: 15px;
+  }
+}
+ 
+/* Styles pour tablette */
+@media screen and (min-width: 768px) and (max-width: 991px) {
+  .footer-inner {
+    flex-wrap: wrap;
+  }
+ 
+  .footer-widget {
+    width: 45%;
+    margin-bottom: 30px;
+  }
+}
+</style>

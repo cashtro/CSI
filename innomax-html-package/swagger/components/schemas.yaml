@@ -1,0 +1,31 @@
+User:
+  type: object
+  properties:
+    userid:
+      type: string
+      format: uuid
+    username:
+      type: string
+    email:
+      type: string
+      format: email
+    age:
+      type: number
+
+Course:
+  type: object
+  properties:
+    id:
+      type: integer
+    nom:
+      type: string
+    prix:
+      type: number
+
+Error:
+  type: object
+  properties:
+    error:
+      type: string
+    message:
+      type: string

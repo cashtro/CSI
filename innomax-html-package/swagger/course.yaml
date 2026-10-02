@@ -1,0 +1,121 @@
+openapi: 3.0.0
+info:
+  title: Course API
+  version: "1.0.0"
+paths:
+  /course/test:
+    get:
+      summary: Test de l'endpoint course
+      description: Récupère une URL publique de test.
+      responses:
+        "200":
+          description: URL récupérée.
+  /course:
+    post:
+      summary: Créer un cours
+      description: Crée un cours avec gestion d'upload de fichiers.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+                lessons:
+                  type: string
+                  description: JSON string représentant les leçons.
+                content:
+                  type: string
+                  description: JSON string pour le contenu complémentaire.
+              required:
+                - lessons
+                - content
+      responses:
+        "201":
+          description: Cours créé avec succès.
+        "400":
+          description: Erreur de format JSON.
+        "500":
+          description: Erreur lors de la création du cours.
+  /course/all-courses:
+    get:
+      summary: Récupérer tous les cours
+      description: Liste de tous les cours.
+      responses:
+        "200":
+          description: Liste des cours.
+        "500":
+          description: Erreur lors de la récupération.
+  /course/{id}:
+    put:
+      summary: Mettre à jour un cours
+      description: Mise à jour d'un cours existant.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Données à mettre à jour.
+      responses:
+        "200":
+          description: Cours mis à jour.
+        "500":
+          description: Erreur lors de la mise à jour.
+    delete:
+      summary: Supprimer un cours
+      description: Supprime un cours et ses fichiers associés.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "204":
+          description: Cours supprimé.
+        "500":
+          description: Erreur lors de la suppression.
+  /course/course-details/{id}:
+    get:
+      summary: Détails d'un cours
+      description: Récupère les détails d'un cours spécifique.
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Détails du cours.
+        "404":
+          description: Cours non trouvé.
+        "500":
+          description: Erreur lors de la récupération.
+  /course/{courseId}/enroll:
+    post:
+      summary: Inscrire un étudiant à un cours
+      description: Gère le paiement et l'inscription d'un étudiant.
+      parameters:
+        - in: path
+          name: courseId
+          required: true
+          schema:
+            type: string
+      responses:
+        "201":
+          description: Inscription réussie.
+        "500":
+          description: Erreur lors de l'inscription.

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/metaPixel', { pixelId: pixelId }) %>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9fafb;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+        }
+        .thank-you-container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+        }
+        .thank-you-container h1 {
+            color: #0F55DC;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+        .thank-you-container p {
+            font-size: 1.2em;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .thank-you-container a {
+            background-color: #0F55DC;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .thank-you-container a:hover {
+            background-color: #0c449f;
+        }
+    </style>
+</head>
+<body>
+    <div class="thank-you-container">
+        <h1>Merci !</h1>
+        <p>Votre message a bien été envoyé. Nous vous contacterons dans les plus brefs délais.</p>
+        <a href="/">Retour à l'accueil</a>
+    </div>
+</body>
+</html>

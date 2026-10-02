@@ -1,0 +1,582 @@
+
+.team-wrap {
+    gap: 30px;
+    margin-top: 53px;
+    .xb-item {
+        &--skill {
+            @include respond(md) {
+                width: 100%;
+                flex-wrap: wrap;
+                display: inline-flex;
+            }
+            @include respond(xs) {
+                margin-bottom: 20px;
+            }
+            li {
+                font-weight: 500;
+                letter-spacing: -0.01em;
+                color: #49515b;
+                position: relative;
+                padding-left: 34px;
+                @include respond(md) {
+                    width: 50%;
+                }
+                @include respond(xs) {
+                    width: 100%;
+                }
+                &:not(:last-child) {
+                    margin-bottom: 20px;
+                }
+                &::before {
+                    position: absolute;
+                    content: '\f00c';
+                    font-size: 14px;
+                    font-weight: 400;
+                    line-height: 30px;
+                    font-family: "Font Awesome 5 Pro";
+                    left: 0;
+                    top: 0;
+                    width: 24px;
+                    height: 24px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #fff;
+                    @include border-radius(100%);
+                    background: var(--color-heading);
+                }
+            }
+        }
+        &--title {
+            font-size: 30px;
+            line-height: 34px;
+            letter-spacing: 0em;
+            margin-bottom: 30px;
+        }
+        &--holders {
+            max-width: 457px;
+            @include respond(lg) {
+                max-width: 339px;
+                transform: translateY(11px);
+            }
+            @include respond(md) {
+                max-width: 348px;
+            }
+        }
+    }
+}
+.team-heading {
+    .title {
+        font-size: 305px;
+        letter-spacing: -0.02em;
+        display: inline-block;
+        @include respond(laptop) {
+            font-size: 280px;
+        }
+        @include respond(lg) {
+            font-size: 238px;
+        }
+        @media only screen and (max-width: 1023px) {
+            font-size: 228px;
+        }
+        @include respond(md) {
+            font-size: 150px;
+        }
+        @include respond(xs) {
+            font-size: 91px;
+        }
+        @include respond(sm) {
+            font-size: 125px;
+        }
+    }
+    .team-member {
+        .member {
+            position: absolute;
+            @include border-radius(50%);
+            border: 3px solid #fff;
+            @include transition(.3s);
+            background-color: #fff;
+            img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            &--one {
+                left: 7%;
+                bottom: 25px;
+                height: 65px;
+                width: 65px;
+                @include respond(laptop) {
+                    left: 11%;
+                }
+                @media only screen and (min-width: 1200px) and (max-width: 1300px) {
+                    left: 7%;
+                }
+                @include respond(md) {
+                    left: 35px;
+                    bottom: -5px;
+                    height: 55px;
+                    width: 55px;
+                }
+                @include respond(xs) {
+                    left: 20px;
+                    bottom: -13px;
+                    height: 40px;
+                    width: 40px;
+                }
+                @include respond(sm) {
+                    left: 32px;
+                    bottom: -2px;
+                }
+            }
+            &--two {
+                top: 15%;
+                left: 15%;
+                height: 91px;
+                width: 91px;
+                @include respond(laptop) {
+                    top: 12%;
+                    left: 17%;
+                }
+                @include respond(lg) {
+                    top: 10%;
+                    left: 14%;
+                    height: 81px;
+                    width: 81px;
+                }
+                @include respond(md) {
+                    top: 2%;
+                    left: 14%;
+                    height: 70px;
+                    width: 70px;
+                }
+                @include respond(xs) {
+                    top: -12%;
+                    left: 13%;
+                    height: 52px;
+                    width: 52px;
+                }
+                @include respond(sm) {
+                    top: 3%;
+                    left: 15%;
+                }
+            }
+            &--three {
+                bottom: 57px;
+                left: 39%;
+                height: 60px;
+                width: 60px;
+                @include respond(lg) {
+                    left: 36%;
+                    bottom: 53px;
+                }
+                @include respond(lg) {
+                    left: 38%;
+                    bottom: 28px;
+                    height: 50px;
+                    width: 50px;
+                }
+                @include respond(xs) {
+                    left: 37%;
+                    bottom: 8px;
+                    height: 35px;
+                    width: 35px;
+                }
+                @include respond(sm) {
+                    left: 38%;
+                    bottom: 20px;
+                }
+            }
+            &--four {
+                top: 19%;
+                left: 49%;
+                height: 49px;
+                width: 49px;
+                @include respond(lg) {
+                    top: 15%;
+                    left: 48%;
+                }
+                @include respond(xs) {
+                    top: 2%;
+                    left: 45%;
+                    height: 32px;
+                    width: 32px;
+                }
+                @include respond(sm) {
+                    top: 13px;
+                    left: 46%;
+                }
+            }
+            &--five {
+                bottom: 30px;
+                right: 30%;
+                height: 65px;
+                width: 65px;
+                @include respond(lg) {
+                    bottom: 10px;
+                }
+                @include respond(md) {
+                    bottom: -2px;
+                    right: 30%;
+                    height: 55px;
+                    width: 55px;
+                }
+                @include respond(xs) {
+                    bottom: -15px;
+                    right: 28%;
+                    height: 41px;
+                    width: 41px;
+                }
+                @include respond(sm) {
+                    bottom: -7px;
+                    right: 30%;
+                }
+            }
+            &--six {
+                top: 20%;
+                right: 17%;
+                height: 87px;
+                width: 87px;
+                @include respond(laptop) {
+                    top: 16%;
+                    right: 18%;
+                }
+                @include respond(lg) {
+                    top: 16%;
+                    right: 16%;
+                    height: 77px;
+                    width: 77px;
+                }
+                @include respond(md) {
+                    top: 11%;
+                    right: 17%;
+                    height: 67px;
+                    width: 67px;
+                }
+                @include respond(xs) {
+                    top: -7%;
+                    right: 13%;
+                    height: 52px;
+                    width: 52px;
+                }
+                @include respond(sm) {
+                    top: 8%;
+                    right: 14%;
+                }
+            }
+            &--seven {
+                bottom: 28%;
+                right: 0%;
+                height: 65px;
+                width: 65px;
+                @include respond(laptop) {
+                    right: 2%;
+                }
+                // @include respond(lg) {
+                //     right: -1%;
+                // }
+                @include respond(md) {
+                    bottom: 23%;
+                    right: -3%;
+                    height: 57px;
+                    width: 57px;
+                }
+                @include respond(xs) {
+                    bottom: 23%;
+                    right: -3%;
+                    height: 35px;
+                    width: 35px;
+                }
+            }
+        }
+    }
+}
+.team-item {
+    padding: 10px;
+    @include border-radius(15px);
+    border: 1px solid #e7e8ec;
+    background-color: var(--color-white);
+    position: relative;
+    @include transition(.5s);
+    &:before {
+        position: absolute;
+        content: '';
+        left: 30px;
+        bottom: -12px;
+        width: calc(100% - 60px);
+        height: 12px;
+        opacity: 0;
+        visibility: hidden;
+        border-radius: 0 0 12px 12px;
+        background: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 0 1px rgba(47, 1, 151, 0.04), 0 32px 24px -12px rgba(0, 39, 118, 0.06), 0 11px 4px 0 rgba(0, 39, 118, 0.01), 0 6px 4px 0 rgba(0, 39, 118, 0.02), 0 3px 3px 0 rgba(0, 39, 118, 0.03), 0 1px 1px 0 rgba(0, 39, 118, 0.04);
+        @include transition(.3s);
+    }
+    &:hover {
+        &:before {
+            opacity: 0.7;
+            visibility: visible;
+        }
+    }
+    .xb-item {
+        &--item {
+            top: 30px;
+            right: 20px;
+            position: absolute;
+        }
+        &--content {
+            text-align: end;
+            .xb-item--img img {
+                width: 100%;
+            }
+        }
+        &--skill {
+            font-weight: 500;
+            font-size: 20px;
+            letter-spacing: 0em;
+            color: #0c111d;
+            display: block;
+            margin-bottom: 18px;
+            font-family: var(--font-heading);
+        }
+        &--reating {
+            padding: 3px 5px;
+            color: var(--color-heading);
+            border: 1px solid #CCC39A;
+            @include border-radius(15px);
+            background-color: var(--color-white);
+            i {
+                color: var(--color-yellow);
+                margin-right: 5px;
+            }
+        }
+        &--inner {
+            padding: 0 20px 25px;
+            position: relative;
+            @include respond(md) {
+                padding: 18px 20px 17px;
+            }
+        }
+        &--avatar {
+            height: 114px;
+            width: 114px;
+            margin: -80px 0 23px;
+            border: 3px solid #fff;
+            @include border-radius(100%);
+            box-shadow: 0 4px 13px 0 rgba(119, 152, 215, 0.19);
+            @include respond(lg) {
+                height: 100px;
+                width: 100px;
+            }
+            @include respond(md) {
+                height: 60px;
+                width: 60px;
+            }
+        }
+        &--name {
+            font-size: 24px;
+            margin-bottom: 5px;
+            letter-spacing: 0em;
+        }
+        &--social-link {
+            li {
+                &:not(:last-child) {
+                    margin-right: 15px;
+                }
+                a {
+                    font-size: 20px;
+                    color: var(--color-black);
+                    svg {
+                        @include transform(translateY(-2px));
+                    }
+                }
+            }
+
+        }
+    }
+}
+.team-slider {
+    padding-bottom: 30px;
+    .swiper-slide-active .team-item {
+        &:before {
+            opacity: 0.7;
+            visibility: visible;
+        }
+    }
+}
+.sa-team {
+    .sa-swiper-btn {
+        position: absolute;
+        top: 38%;
+        font-size: 30px;
+        width: 36px;
+        height: 43px;
+        transform: translateY(-50%);
+        color: var(--color-black);
+        border: 1px solid #e7e8ec;
+        @include border-radius(5px);
+        background: #f6f6f8;
+        @include transition(.3s);
+        &::after, 
+        &::before {
+            display: none;
+        }
+        &:hover {
+            background: var(--color-primary-two);
+            i {
+                color: #fff;
+            }
+        }
+    }
+    .swiper-button-next {
+        right: -85px;
+    }
+    .swiper-button-prev {
+        left: -85px;
+    }
+}
+.cd-team-member {
+    margin-top: -10%;
+    .xb-btn {
+        position: absolute;
+        bottom: 13%;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 2;
+        @include respond(xs) {
+            left: 0;
+            right: 0;
+            margin: auto;
+            text-align: center;
+            transform: translateX(0%);
+        }
+    }
+    .xb-shape {
+        position: absolute;
+        top: 33%;
+        right: 38%;
+        transform: translate(-50%, -50%);
+    }
+}
+.cp-team-item {
+    padding: 50px;
+    position: relative;
+    overflow: hidden;
+    margin-top: 20px;
+    width: 100%;
+    @include transition(.3s);
+    @include border-radius(15px);
+    background: var(--color-white);
+    border: 1px solid #e7e8ec;
+    @include respond(md) {
+        padding: 20px 25px;
+    }
+    &::after {
+        position: absolute;
+        left: 0;
+        top: 0;
+        content: '';
+        height: 100%;
+        width: 7px;
+        @include transition(.3s);
+        background: var(--color-primary-two);
+    }
+    .xb-item {
+        &--inner {
+            gap: 30px;
+        }
+        &--holder {
+            gap: 20px 0;
+        }
+        &--title {
+            font-weight: 700;
+            font-size: 28px;
+            letter-spacing: 0em;
+            margin-bottom: 23px;
+            color: var(--color-heading-two);
+            @include respond(xs) {
+                font-size: 24px;
+            }
+            a {
+                color: currentColor;
+            }
+        }
+        &--meta {
+            font-weight: 500;
+            font-size: 18px;
+            color: var(--color-heading-two);
+            &:not(:last-child) {
+                margin-right: 82px;
+            }
+            img {
+                margin-right: 9px;
+            }
+        }
+    }
+    &:hover {
+        background: #F6F6F8;
+        &::after {
+            background: var(--color-yellow);
+        }
+        .cp-team-btn a {
+            color: var(--color-heading-two);
+            background: var(--color-yellow);
+            i {
+                color: var(--color-heading-two);
+            }
+        }
+    }
+}
+.cp-team-wrap {
+    margin-left: 80px;
+    margin-right: 80px;
+    @include respond(lg) {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+.team-menu {
+    padding: 7px;
+    background: #f6f6f8;
+    border: 1px solid #e7e8ec;
+    @include border-radius(10px);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    button {
+        z-index: 1;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+        background: none;
+        padding: 9px 20px;
+        position: relative;
+        color: var(--color-heading-two);
+        font-family: var(--font-heading);
+        &:not(:last-child) {
+            margin-right: 17px;
+            @include respond(xs) {
+                margin-right: 5px;
+            }
+        }
+        &::before {
+            position: absolute;
+            content: '';
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            z-index: -1;
+            opacity: 0;
+            @include border-radius(10px);
+            background: var(--color-white);
+            border: 1px solid #e7e8ec;
+            box-shadow: 0 6px 13px 0 rgba(167, 197, 203, 0.39);
+        }
+        &.active {
+            &::before {
+               opacity: 1;
+            }
+        }
+    }
+}

@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="zxx">
+
+<head>
+
+    <!--========= Required meta tags =========-->
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="description" content="Pandora Brains Lucky Draw helps companies promote their products or services by offering them as raffle prizes — and we provide FREE digital marketing! Participants enter to win amazing prizes, while your brand gets promoted.">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="rocket-loader" content="manual">
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" async></script>
+
+    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/metaPixel', { pixelId: pixelId }) %>
+
+
+    <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
+
+    <!-- css include -->
+   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/fontawesome.css">
+    <link rel="stylesheet" href="assets/css/animate.css">
+    <link rel="stylesheet" href="assets/css/swiper.min.css">
+    <link rel="stylesheet" href="assets/css/slick.css">
+    <link rel="stylesheet" href="assets/css/odometer.css">
+    <link rel="stylesheet" href="assets/css/nice-select.css">
+    <link rel="stylesheet" href="assets/css/magnific-popup.css">
+    <link rel="stylesheet" href="assets/css/cursor.css">
+    <link rel="stylesheet" href="assets/css/custom-font.css">
+    <link rel="stylesheet" href="assets/css/main.css">
+ 
+    <!-- LOTTERY CSS -->
+    <link rel="stylesheet" href="assets/css/lottery.css">
+    <!--Css pour carrouselle swiper-->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+</head>
+
+<body class="sco_agency">
+
+<!-- backtotop - start -->
+<div class="xb-backtotop style-3">
+    <a href="#" class="scroll">
+        <i class="far fa-arrow-up"></i>
+    </a>
+</div>
+<!-- backtotop - end -->
+
+    <!-- Preloader - Start 
+  <div id="xb-loadding" class="xb-loader style-3">
+    <div class="xb-dual-ring"></div>
+</div>
+ Preloader - End -->
+
+<div class="body_wrap o-hidden">
+
+    <!-- header start -->
+    <%-include('partials/header')%>
+    <!-- header end -->
+
+    <!-- main area start  -->
+    <main style="position: relative; overflow: hidden; background-color: black;">
+      <!-- Hero Section start -->
+      <section class="hero hero-style-three" style="position: relative; overflow: hidden;">
+        <div class="container" style="background-color: transparent !important;">
+            <div class="hero_wrap pt-90">
+                <div class="xb-hero text-center">
+                    <h1 class="xb-item--title wow skewIn center shadow-2xl" data-wow-delay="000ms" data-wow-duration="900ms" style="margin-top: 0%; text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.4);">
+                        Pandora
+                    </h1>                          
+                    <div class="xb-item--holder wow fadeInUp" data-wow-delay="150ms" data-wow-duration="600ms">
+                        <p class="xb-item--content" style="font-size: x-large; margin-top: 20%; color: #ffffff !important; text-shadow: 10px 10px 10px rgba(0, 0, 0, 2) !important; font-weight: 700;">Business Technology <br> & Marketing</p>
+                        <div class="btn">
+                            <!-- Bouton normal avec sa structure d'origine -->
+                            <button id="mainCalendarButton" class="Btn1" style="margin-top: 105%; margin-left: 0%;">Live Consultation</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+        <!-- Video Background -->
+        <div class="video-container">
+            <video class="responsive-video" autoplay loop muted playsinline>
+                <source src="assets/mp4/slot machine.mp4" type="video/mp4">
+                <track src="captions-fr.vtt" kind="captions" srclang="fr" label="Français">
+                Votre navigateur ne supporte pas les vidéos HTML5.
+            </video>
+            <div class="xb-shape">
+                <div class="shape shape--1" style="margin-top: -10% !important;">
+                    <img src="assets/img/shape/black.webp" alt="" fetchpriority="high">
+                </div>
+                <div class="shape shape--two" style="margin-bottom: 3%;">
+                    <img src="assets/img/shape/logogo.webp" alt="">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Script pour la redirection au clic -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('mainCalendarButton').addEventListener('click', function() {
+                    window.open('https://calendar.google.com/calendar/appointments/schedules/AcZssZ3130jugUgfErFhHZrwSg9sRTAsD3B04zfFGKS3RWZQu3jXAn8NM-3_sNtz6OY3bRvz7JcI3Fkl?gv=true', '_blank');
+                });
+            });
+        </script>
+    </section>
+      <!-- Hero Section End -->
+     
+ <!-- Lottery Canvas Section with Video Background --> 
+<section class="lottery-canvas-section">
+    <!-- Video Background -->
+    <video class="video-background" autoplay loop muted playsinline>
+        <source src="assets/mp4/black-luxury-background-with-gold-lines-2023-11-27-05-36-22-utc (1).mp4" type="video/mp4" >
+    </video>
+    
+    <div class="container" style="margin-top: 0% !important;">
+        <div class="row align-items-center">
+            <!-- Canvas à gauche -->
+            <div class="col-md-6 order-md-1">
+                <div class="lottery-main-canvas mb-4">
+                    <canvas class="lottery-canvas" id="lottery-canvas-main" width="800" height="600"></canvas>
+                </div>
+            </div>
+
+            <!-- Texte à droite -->
+            <div class="col-md-6 order-md-2">
+                <div class="lottery-canvas-text">
+                    <h2>
+                    <button class="lotteryText" data-text="Awesome">
+                        <span class="actual-text">&nbsp;Lottery Draw&nbsp;</span>
+                        <span aria-hidden="true" class="hover-text">&nbsp;Lottery Draw &nbsp;</span>
+                    </button>
+                    </h2>
+                    <!-- <h3 class="glow-effect">Lottery Draw</h3> -->
+                    <p>Participate now for amazing prizes!</p>
+                    <p class="lottery-explanation">
+                        Every spin of the wheel brings you closer to winning fantastic rewards.
+                        Watch as participants' names rotate in our virtual draw. Your name could be the next winner!
+                        Each entry increases your chances. Join the excitement and be part of our community of winners.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Flèches en bas -->
+        <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <div class="down-arrows mt-5">
+                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down"></i>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- HIDDEN TAGS CONTAINER -->
+    <div id="tagsContainer"></div>
+</section>
+ 
+    
+    <h2>
+        <button class="lotteryText" data-text="Awesome">
+            <span class="actual-text">&nbsp;Your Turn to Win&nbsp;</span>
+            <span aria-hidden="true" class="hover-text">&nbsp;Your Turn to Win &nbsp;</span>
+        </button>
+    </h2>
+
+    <!--Section des tirages USER-->
+    <%-include ('partials/lotteryComponent/superDrawUser', { lotteries: lotteries })%>
+
+    <!-- Buy button section -->
+    <div class="buy-button-container">
+        <a href="/achats" id="buyEntriesBtn" class="buy-button"></a>
+        <p class="redirect-info">You can also buy the product/service at full price.Click here if you're interested!</p>
+    </div>
+    
+ <!-- World section start-->
+ <section class="world" data-background="assets/img/imgs/grisbg.webp" !important>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-md-12">
+                 <div class="world-map"><img src="assets/img/imgs/canada2.webp" width="1056" height="702" alt="Illustration Canada" loading="lazy"></div>
+            </div>
+        </div>
+    </div>
+        </section>
+        <!-- World section end -->
+    </main>
+    <!-- main area end -->
+    
+    <!-- footer start -->
+    <%- include('partials/footer') %>
+    <!-- footer end -->
+
+</div>
+
+<!-- jquery include -->
+<script src="assets/js/jquery-3.7.1.min.js"></script>
+<script src="assets/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/swiper.min.js"></script>
+<script src="assets/js/slick.min.js"></script>
+<script src="assets/js/gsap.js"></script>
+<script src="assets/js/wow.min.js"></script>
+<script src="assets/js/appear.js"></script>
+<script src="assets/js/parallaxie.js"></script>
+<script src="assets/js/parallax-scroll.js"></script>
+<script src="assets/js/odometer.min.js"></script>
+<script src="assets/js/imagesloaded.pkgd.min.js"></script>
+<script src="assets/js/isotope.pkgd.min.js"></script>
+<script src="assets/js/cursor-bundle.js"></script>
+<script src="assets/js/easing.min.js"></script>
+<script src="assets/js/scrollspy.js"></script>
+<script src="assets/js/jquery.nice-select.min.js"></script>
+<script src="assets/js/jquery.marquee.min.js"></script>
+<script src="assets/js/jquery.magnific-popup.min.js"></script>
+<script src="assets/js/main.js"></script>
+
+<!-- Scripts pour le TagCanvas -->
+ <script src="assets/js/ballJavaScript/tagcanva.js" data-cfasync="false"></script>
+ <script src="assets/js/ballJavaScript/member.js" data-cfasync="false"></script>
+
+
+<script>
+function initializeMainCanvas() {
+    const tagsContainer = document.getElementById('tagsContainer');
+    const canvas = document.getElementById('lottery-canvas-main');
+
+    if (!tagsContainer || !canvas) {
+        console.error('Canvas or tagsContainer not found');
+        return;
+    }
+
+    if (typeof TagCanvas === 'undefined') {
+        console.error('TagCanvas is not loaded');
+        return;
+    }
+    
+
+    // Populate the tags container
+    tagsContainer.innerHTML = '';
+    member.forEach(participant => {
+        const a = document.createElement('a');
+        a.href = '#';
+        a.textContent = participant.name;
+        tagsContainer.appendChild(a);
+    });
+
+    try {
+        TagCanvas.Start('lottery-canvas-main', 'tagsContainer', {
+            textColour: '#ffffff',
+            outlineColour: '#000000',
+            outlineThickness: 1,
+            initial: [0.03, -0.02],
+            maxSpeed: 0.05,
+            depth: 0.8,
+            dragControl: true,
+            wheelZoom: false,
+            shuffleTags: true,
+            noSelect: true,
+            textHeight: 14,
+            reverse: true,
+            fadeIn: 1000,
+            shadow: '#000',
+            weight: true
+        });
+
+        tagsContainer.remove();
+    } catch(e) {
+        console.error('TagCanvas initialization failed:', e);
+    }
+}
+
+window.addEventListener('DOMContentLoaded', initializeMainCanvas);
+</script>
+
+</body>
+
+</html>

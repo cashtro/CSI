@@ -1,0 +1,14 @@
+<div class="col-md-4">
+    <div class="course-card">
+        <img src="<%= data.courseImage %>" alt="<%= data.courseTitle %>" class="course-image">
+        <div class="course-info">
+            <h3 class="course-title"><%= data.courseTitle %></h3>
+            <p class="course-meta"><i class="fas fa-clock"></i> <%= data.courseDuration %></p>
+            <p class="course-meta"><i class="fas fa-signal"></i> <%= data.courseLevel %></p>
+            <p class="course-meta"><i class="fas fa-user"></i> <%= data.courseInstructor %></p>
+            <p><%= data.courseDescription %></p>
+            <div class="price-tag"><%= data.coursePrice %></div>
+            <a href="<%= data.courseLink %>" class="btn-view">Voir les détails</a>
+        </div>
+    </div>
+</div>

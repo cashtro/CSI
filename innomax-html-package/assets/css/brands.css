@@ -1,0 +1,304 @@
+/* From Uiverse.io by vinodjangid07 */
+.BtnB {
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    background-color: transparent;
+    position: relative;
+    /* overflow: hidden; */
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all .3s;
+}
+
+.svgContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    backdrop-filter: blur(0px);
+    letter-spacing: 0.8px;
+    border-radius: 10px;
+    transition: all .3s;
+    border: 1px solid rgba(156, 156, 156, 0.466);
+}
+
+.BG {
+    position: absolute;
+    content: "";
+    width: 100%;
+    height: 100%;
+    background: #181818;
+    z-index: -1;
+    border-radius: 10px;
+    pointer-events: none;
+    transition: all .3s;
+}
+
+.BtnB:hover .BG {
+    transform: rotate(35deg);
+    transform-origin: bottom;
+}
+
+.BtnB:hover .svgContainer {
+    background-color: rgba(156, 156, 156, 0.466);
+    backdrop-filter: blur(4px);
+}
+
+/* Personnalisation par logo (optionnel) */
+/* Couleur Postman */
+.BtnB.discord .BG {
+    background: #5865F2;
+}
+
+/* Couleur GitHub */
+.BtnB.github .BG {
+    background: #181818;
+    /* Noir GitHub */
+}
+
+/* Couleur Docker */
+.BtnB.docker .BG {
+    background: #2496ED;
+    /* Bleu Docker officiel */
+}
+
+/* Animation spécifique pour Docker (optionnel) */
+.BtnB.docker:hover .BG {
+    transform: rotate(35deg) scale(1.1);
+}
+
+.BtnB.docker:hover .svgContainer {
+    border-color: rgba(36, 150, 237, 0.7);
+}
+
+/* Couleur Twitter */
+.BtnB.twitter .BG {
+    background: #000000;
+}
+
+/* Effets au survol */
+.BtnB.twitter:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.twitter:hover .svgContainer {
+    border-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur Facebook Ads (Bleu Meta) */
+.BtnB.facebook-ads .BG {
+    background: #1877F2;
+    /* Bleu Facebook officiel */
+}
+
+/* Effets au survol */
+.BtnB.facebook-ads:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.facebook-ads:hover .svgContainer {
+    border-color: rgba(24, 119, 242, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.BtnB.google .BG {
+    background: white;
+    /* Fond blanc comme Google */
+}
+
+.BtnB.google:hover .svgContainer {
+    border-color: rgba(66, 133, 244, 0.3);
+    /* Bleu Google léger */
+}
+
+/* Couleur AWS (Orange officiel) */
+.BtnB.aws .BG {
+    background: #2982b6;
+}
+
+.BtnB.aws:hover .BG {
+    transform: rotate(35deg);
+    transform-origin: bottom;
+}
+
+.BtnB.aws:hover .svgContainer {
+    border: 1px solid rgba(226, 226, 226, 0.466);
+    background-color: rgba(204, 204, 204, 0.466);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur Microsoft Azure (Bleu officiel) */
+.BtnB.azure .BG {
+    background: #0089D6;
+}
+
+/* Effets au survol */
+.BtnB.azure:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.azure:hover .svgContainer {
+    border-color: rgba(0, 137, 214, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+.BtnB.insta .BG {
+    background: linear-gradient(45deg, #833ab4, #fd1d1d, #f56040);
+}
+
+/* Couleur linkedIn (Bleu officiel) */
+.BtnB.link .BG {
+    background: #0077b5;
+}
+
+/* Effets au survol */
+.BtnB.postgresql:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.postgresql:hover .svgContainer {
+    border-color: rgba(51, 103, 145, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur React */
+.BtnB.react .BG {
+    background: #F5FCFF;
+}
+
+/* Effets au survol */
+.BtnB.react:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.react:hover .svgContainer {
+    border-color: rgba(97, 218, 251, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur HTML (Orange officiel) */
+.BtnB.html .BG {
+    background: #E34F26;
+}
+
+/* Effets au survol */
+.BtnB.html:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.html:hover .svgContainer {
+    border-color: rgba(227, 79, 38, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur VSCode (Bleu officiel) */
+.BtnB.vscode .BG {
+    background: #007ACC;
+}
+
+/* Effets au survol */
+.BtnB.vscode:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.vscode:hover .svgContainer {
+    border-color: rgba(0, 122, 204, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur CSS (Bleu officiel) */
+.BtnB.css .BG {
+    background: #1572B6;
+}
+
+/* Effets au survol */
+.BtnB.css:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.css:hover .svgContainer {
+    border-color: rgba(21, 114, 182, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur whatsApp (Vert officiel) */
+.BtnB.whats .BG {
+    background: #25D366;
+}
+
+/* Effets au survol */
+.BtnB.whats:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.whats:hover .svgContainer {
+    border-color: rgba(55, 118, 171, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur Adobe Photoshop (Bleu officiel) */
+.BtnB.photoshop .BG {
+    background: #31A8FF;
+}
+
+/* Effets au survol */
+.BtnB.photoshop:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.photoshop:hover .svgContainer {
+    border-color: rgba(49, 168, 255, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur reddit (Orange officiel) */
+.BtnB.illustrator .BG {
+    background: #FF4500;
+}
+
+/* Effets au survol */
+.BtnB.illustrator:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.illustrator:hover .svgContainer {
+    border-color: rgba(255, 154, 0, 0.7);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur Solana (Dégradé violet/rose officiel) */
+.BtnB.solana .BG {
+    background: linear-gradient(135deg, #9945FF 0%, #14F195 100%);
+}
+
+/* Effets au survol */
+.BtnB.solana:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.solana:hover .svgContainer {
+    border-color: rgba(153, 69, 255, 0.5);
+    backdrop-filter: blur(4px);
+}
+
+/* Couleur Chat  */
+.BtnB.chat .BG {
+    background: #343541;
+}
+
+/* Effets au survol */
+.BtnB.chat:hover .BG {
+    transform: rotate(35deg) scale(1.05);
+}
+
+.BtnB.chat:hover .svgContainer {
+    border-color: #343541;
+    backdrop-filter: blur(4px);
+}

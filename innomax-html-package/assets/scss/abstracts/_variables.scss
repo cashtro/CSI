@@ -1,0 +1,33 @@
+// variable
+:root {
+    --font-body: "Inter", sans-serif;
+    --font-heading: 'Aeonik';
+    --font-heading-two: 'TransducerTest';
+    --font-heading-three: 'GT-Super-Text';
+    --font-heading-four: 'Agrandir';
+    --font-heading-five: "Red Hat Display", serif;
+
+    --color-primary: #d44a00;
+    --color-primary-rgb: 212, 74, 0;
+    --color-primary-two: #0f55dc;
+    --color-primary-two-rgb: 15, 83, 220;
+    --color-primary-three: #9a4497;
+    --color-primary-three-rgb: 154, 68, 151;
+    --color-primary-four: #ff6a00;
+    --color-primary-four-rgb: 255, 106, 0;
+    --color-primary-five: #1438bc;
+    --color-primary-five-rgb: 20, 56, 188;
+    --color-heading:  #111112;
+    --color-heading-two:  #0c111d;
+    --color-heading-three:  #16140c;
+    --color-heading-four: #212877;
+
+    --color-default:  #49515b;
+    --color-default-two:  #494d57;
+    --color-yellow: #ffd600;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-body: #eaeef0;
+
+    --easing: cubic-bezier(0.67, 0.04, 0.3, 0.91);
+}

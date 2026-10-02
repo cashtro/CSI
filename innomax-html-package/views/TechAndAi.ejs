@@ -1,0 +1,1002 @@
+<!doctype html>
+<html lang="zxx">
+
+<head>
+
+
+
+
+  <!--========= Required meta tags =========-->
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="description" content="Explore cutting-edge AI solutions with PandoraBrains Tech AI – automation, analytics, and innovation for smarter business growth">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Pandora Business Technology & Marketing</title>
+  <%- include('partials/metaPixel', { pixelId: pixelId }) %>
+
+
+  <link rel="shortcut icon" href="assets/img-optimized/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" height="60px" width="60" />
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" defer />
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.91/build/spline-viewer.js"></script>
+  
+  <!-- CSS include -->
+   
+  <link rel="stylesheet" href="assets/css/normalize.css">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/fontawesome.css" >
+  <link rel="stylesheet" href="assets/css/animate.css">
+  <link rel="stylesheet" href="assets/css/swiper.min.css">
+  <link rel="stylesheet" href="assets/css/slick.css">
+  <link rel="stylesheet" href="assets/css/odometer.css">
+  <link rel="stylesheet" href="assets/css/nice-select.css">
+  <link rel="stylesheet" href="assets/css/magnific-popup.css" >
+    <link rel="stylesheet" href="assets/css/custom-font.css">
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/techai.css">
+
+   <link href="https://fonts.googleapis.com/css2?family=Teko:wght@300..700&display=swap" rel="stylesheet" async>
+   <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;...&display=swap" rel="stylesheet" async>
+
+
+  </head>
+
+<style>
+ /* Styles pour les cartes verticales */
+.counter-wrapper-vertical {
+    padding-top: 0 !important;
+    height: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+@media (max-width: 991px) {
+    .counter-wrapper-vertical {
+        padding-top: 30px !important;
+    }
+}
+
+/* Styles réduits pour les cartes */
+.counter-wrapper-vertical .counter-box-items {
+    border-radius: 15px !important;
+    border: 1px solid #434343 !important;
+    margin-left: 20% !important;
+    background: #222 !important;
+    padding: 30px !important;
+    margin-bottom: 15px !important;
+    height: auto !important;
+    max-width: 50% !important;
+    transition: all 0.3s ease !important; /* Transition douce pour tous les effets */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2) !important; /* Légère ombre par défaut */
+}
+
+/* Effet hover - carte complète */
+.counter-wrapper-vertical .counter-box-items:hover {
+    transform: translateY(-5px) !important; /* Léger mouvement vers le haut */
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.3) !important; /* Ombre plus prononcée */
+    border-color: #E6C373 !important; /* Bordure dorée */
+}
+
+/* Effet hover - changement de couleur du texte */
+.counter-wrapper-vertical .counter-box-items:hover h3 {
+    color: #E6C373 !important; /* Même couleur dorée que dans les titres */
+}
+
+.counter-wrapper-vertical .counter-box-items h3 {
+    color: var(--white) !important;
+    font-size: 18px !important;
+    margin-bottom: 5px !important;
+    transition: color 0.3s ease !important; /* Transition douce pour le changement de couleur */
+}
+
+.counter-wrapper-vertical .counter-box-items p {
+    font-size: 16px !important;
+    font-weight: 500 !important;
+    color: var(--white) !important;
+    text-transform: uppercase !important;
+}
+
+/* Ajustements responsifs */
+@media (max-width: 767px) {
+    .counter-wrapper-vertical .counter-box-items {
+        padding: 20px !important;
+        margin-bottom: 10px !important;
+        margin-right: 15% !important;
+        max-width: 100% !important;
+    }
+    
+    .counter-wrapper-vertical .counter-box-items h3 {
+        font-size: 16px !important;
+    }
+}
+
+
+.hero1 {
+  padding-top: 40px !important;
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.hero1 > * {
+  margin-bottom: 0 !important;
+  box-sizing: inherit;
+}
+
+.content1 {
+  position: relative !important;
+  z-index: 10 !important;
+  margin-top: 4% !important;  /* Réglage fin */
+  margin-bottom: 0 !important;
+}
+
+.robot-3d {
+  display: block;
+  width: 100% !important;
+  max-height: 600px !important;
+  margin: 0 auto;
+  margin-top: -30% !important; /* Fait remonter légèrement le robot */
+  margin-bottom: -40px !important; /* Réduit l'espace avec la section suivante */
+}
+
+@media (max-width: 768px) {
+  .content1 {
+    margin-top: 2% !important;
+    position: relative;
+    z-index: 2;
+    /* Ajout pour l'espace */
+    min-height: 40vh; /* Réserve de l'espace vertical */
+  }
+
+  .robot-3d {
+    max-height: 100% !important;
+    margin-top: 120% !important;
+    margin-left: 0 !important; /* Suppression du margin-left */
+    position: absolute !important;
+    bottom: -10% !important;
+    left: 20% !important;
+    transform: translateX(-50%) scale(1.2) translateY(20%) !important; /* Ajout translation verticale */
+    width: 100% !important; /* Réduction de la largeur */
+    height: auto !important;
+    z-index: 1;
+    right: 0; /* Assurance centrage */
+    margin-right: 0 !important;
+  }
+
+  .hero1 {
+    padding-top: 20px !important;
+    display: flex;
+    flex-direction: column;
+    /* Ajout pour container */
+    min-height: 100vh !important; /* Garantit l'espace */
+    overflow: visible !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .choose-us-section .container {
+      background: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .world .container {
+      background: none !important;
+  }
+}
+
+
+
+</style>
+
+
+<body class="tech">
+  <img class="image-gradient" src="assets/img-optimized/imgs/gradient.webp" alt="gradient" fetchpriority="high">">
+  <div class="layer-blur"></div>
+
+  <!-- Back to top -->
+  <div class="xb-backtotop style-3">
+    <button class="scroll"><i class="far fa-arrow-up"></i></button>
+  </div>
+  <!-- Preloader 
+  <div id="xb-loadding" class="xb-loader style-3">
+    <div class="xb-dual-ring"></div>
+  </div>-->
+
+  <div class="body_wraptech">
+    <%- include('partials/header') %>
+
+      <main>
+        <!-- Section Hero -->
+        <section class="hero1" aria-label="hero1">
+          <div class="content1">
+            <div class="tag-box">
+              <a href="https://www.google.com/search?client=opera-gx&sca_esv=7dba40b02027fc13&sxsrf=AHTn8zqtE8uqzjnarQdSGQkqdX64bxcTgQ:1745527339458&si=APYL9bs7Hg2KMLB-4tSoTdxuOx8BdRvHbByC_AuVpNyh0x2KzT8bv8GXpURQLCPSEZiL7z66wUio_cEXIsx0Bo72iJXRuWpAJFO1RrK5jawtaNyIUWzbearVYZBicwAamxjLS8zO1v45x9i43ahk4ZoGF1yjaXthiZVW2OoqC9U9t7ZzPW9cq1I%3D&q=Pandora+Business+Technology+%26+Marketing+Avis&sa=X&ved=2ahUKEwjzlY6IxPGMAxWUEFkFHZXROvgQ0bkNegQINxAD&biw=1708&bih=869&dpr=1.1" target="_blank" rel="noopener noreferrer">
+                <div class="tag" style="color: white; font-weight: 700;">Pandora</div>
+              </a>
+            </div>
+            <h1>WELCOME TO <br> <span style="color: #E6C373;">THE FUTURE</span></h1>
+            <p class="description text-white" style="font-size: large; margin-top: 3rem !important;">
+              Step into the world of cutting-edge technology and artificial intelligence. From machine learning breakthroughs to the latest in robotics, we explore how innovation is shaping our world and redefining the future.
+             <br>DISCOVER. LEARN. INNOVATE.
+            </p>
+            <div class="buttons">
+              <a href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ3130jugUgfErFhHZrwSg9sRTAsD3B04zfFGKS3RWZQu3jXAn8NM-3_sNtz6OY3bRvz7JcI3Fkl?gv=true" class="Btn" style="margin-top: -3% !important;"></a>
+            </div>
+          </div>
+          <!-- Modèle 3D placé dans le hero -->
+          <spline-viewer class="robot-3d"
+            url="https://prod.spline.design/Qw7J3nKPwj-wOJAY/scene.splinecode"></spline-viewer>
+        </section>
+        <!-- brand section start -->
+        <section class="brand pt-110 pb-200 desktop-margin" style="margin-bottom: 20% !important;">
+          <div class="container">
+            <div class="xb-brand-wrapper o-hidden">
+              <div class="brand-sub_title">
+                <span>Trusted by global brands</span>
+              </div>
+              <div class="brand-wrap marquee-left">
+                <div class="brand-logo"><img src="assets/img-optimized/brand/javascript.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/htmllogo5.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/css3.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/pythonlogo.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/javalogo.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/reactnat.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/stripelogo.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/Firebase-Logo.webp" alt=""></div>
+                <div class="brand-logo"><img src="assets/img-optimized/brand/node.webp" alt=""></div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- brand section end  -->
+
+        <!-- Section Feature (Tech & AI Focus) -->
+        <section class="feature pb-100 pt-100">
+          <div class="container">
+            <div class="feature-wrap">
+              <div class="row align-items-center mt-none-30">
+
+                <!-- Section Vidéo -->
+                <div class="col-lg-6 mt-30">
+                  <div class="feature-left-item pos-rel">
+                    <div class="xb-img">
+                      <video class="featurevid" autoplay muted loop playsinline>
+                      <source src="assets/img/video/tech ads 2.webm" type="video/webm">
+                    </div>
+                    <div class="xb-img-two">
+                      <video class="featurevid" autoplay muted loop playsinline>
+                        <source >
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Section Texte et Accords -->
+                <div class="col-lg-6 mt-30" style="margin-top: -6rem !important;">
+                  <div class="feature-right-item mt-30">
+                    <div class="sec-title--two sec-title--four mb-40">
+                      <h2 class="title mb-10 wow skewIn text-white" data-wow-duration="600ms" style="font-size: 40px !important;">
+                        Elevating Tech & AI for a <br><span style="color: #E6C373;">Smarter Future</span>
+                      </h2>                      
+                      </h2>
+                      <p class="text-white" style="font-size: 120%;">
+                        Artificial intelligence is transforming how we live, work, and innovate. By harnessing its power, we drive progress, enhance efficiency, and open new frontiers of possibility. Join us as we shape the future. 
+                        <br>INNOVATE. TRANSFORM. EMPOWER.
+                      </p>
+                    </div>
+                    <div class="xb-faq xb-faq-two">
+                      <ul class="accordion_box clearfix list-unstyled">
+                        <li class="accordion block">
+                          <div class="acc-btn" style="font-size: 110%;">
+                            Accelerate Innovation
+                            <span class="arrow"></span>
+                          </div>
+                          <div class="acc_body">
+                            <div class="content" style="font-size: 100%;">
+                              <p>
+                                Stay ahead of the curve with AI-powered solutions designed to fast-track product development, optimize workflows, and unlock new market opportunities.
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="accordion block active-block">
+                          <div class="acc-btn active" style="font-size: 110%;">
+                            Optimized Performance & Scalability
+                            <span class="arrow"></span>
+                          </div>
+                          <div class="acc_body current">
+                            <div class="content" style="font-size: 100%;">
+                              <p>
+                                Stay ahead with high-performance websites and applications designed for speed, security, and seamless scalability.
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="accordion block">
+                          <div class="acc-btn" style="font-size: 110%;">
+                            Seamless Digital Transformation
+                            <span class="arrow"></span>
+                          </div>
+                          <div class="acc_body">
+                            <div class="content" style="font-size: 100%;">
+                              <p>
+                                Modernize your digital presence with future-proof web solutions, from custom development to AI-powered automation.
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                        <li class="accordion block">
+                          <div class="acc-btn" style="font-size: 110%;">
+                            Next-Gen User Experiences
+                            <span class="arrow"></span>
+                          </div>
+                          <div class="acc_body">
+                            <div class="content" style="font-size: 100%;">
+                              <p>
+                                Create intuitive, engaging, and data-driven digital experiences that captivate and convert.
+                              </p>
+                            </div>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- techAI section start -->
+        <section class="mission-section theme-bg-2 fix pt-40 pb-0">
+          <div class="container">
+              <div class="section-title text-center">
+                  <h6 class="text-white wow fadeInUp">our mission & vision</h6>
+                  <h2 class="text-white tp_reveal_anim" style="font-size: 1.5em;">
+                      Tailored <span style="color: #E6C373;">Solutions</span>, Proven <span
+                          style="color: #E6C373;">Results</span>, <br /> and Exceptional <span
+                          style="color: #E6C373;">Service</span>
+                  </h2>
+              </div>
+              <div class="mission-wrapper">
+                  <div class="row">
+                      <div class="col-xl-8 wow fadeInUp" data-wow-delay=".3s">
+                          <div class="mission-image-items" style="border: none; width: 80%; margin: 0 auto;">
+                              <div class="p-relative mission-image full-img-wrap3 secondrobot"
+                                  style="border: none; outline: none; height: 650px; width: 700px;">
+                                  <spline-viewer url="https://prod.spline.design/2qiT0Hj9oJ5CYwoU/scene.splinecode"
+                                      style="border: none; outline: none; width: 100%; height: 100%;"></spline-viewer>
+                              </div>
+                          </div>
+                      </div>
+                      <div class="col-xl-4">
+                          <div class="mission-content">
+                              <div class="header-title wow fadeInUp" data-wow-delay=".3s">
+                                  <h6 style="font-size: 0.9em; margin-left: 30%; margin-top: -10%; margin-bottom: 10%;">our mission & vision
+                                  </h6>
+                                  <h3 style="font-size: 1.5em; margin-left: 10%;"><span style="color: #E6C373;">Skills</span>
+                                      <br> That Drive Innovation.
+                                  </h3>
+                              </div>
+                              <ul class="list-items wow fadeInUp" data-wow-delay=".5s">
+                                  <li>
+                                      <div class="content">
+                                          <h4 style="font-size: 0.9em;">01</h4>
+                                          <h3 style="font-size: 1.2em;">Creativity</h3>
+                                          <p style="font-size: 0.85em;">
+                                              Creativity turns ideas into reality, drives innovation, and unlocks new
+                                              possibilities. It's the spark behind every breakthrough, shaping the future with
+                                              fresh perspectives and bold solutions.
+                                          </p>
+                                      </div>
+                                  </li>
+                                  <li>
+                                      <div class="content">
+                                          <h4 style="font-size: 0.9em;">02</h4>
+                                          <h3 style="font-size: 1.2em;">Reliability</h3>
+                                          <p style="font-size: 0.85em;">
+                                              Your success is our priority. We provide scalable, secure, and innovative web
+                                              solutions that adapt to your evolving business needs.
+                                          </p>
+                                      </div>
+                                  </li>
+                                  <li>
+                                      <div class="content">
+                                          <h4 style="font-size: 0.9em;">03</h4>
+                                          <h3 style="font-size: 1.2em;">Efficiency</h3>
+                                          <p style="font-size: 0.85em;">
+                                            Efficiency optimizes resources, streamlining processes to deliver faster, better results. It's about working smarter and achieving more with less, driving productivity and innovation forward.
+                                          </p>
+                                        </div>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="overflow-hidden">
+                              <div class="tags-container relative"></div>
+                            </div>
+                          </div>
+                        </section>
+      <!-- techAI section end -->
+
+        <!-- Choose Us Section Start -->
+    <section class="choose-us-section section-padding bg-cover" style="background-image: url('assets/img-optimized/imgs/DS.webp');">
+      <div class="choose-us-image"></div>
+      <div class="container">
+          <div class="row">
+              <!-- Colonne gauche: Contenu textuel -->
+              <div class="col-lg-6 col-md-12">
+                <div class="section-title theme-color-3 mb-0">
+                    <h6 class="wow fadeInUp mobile-text-sm" style="font-size: 100% !important;">why choose us</h6>
+                    <h2 class="text-white title-anim mobile-heading" style="font-size: 2rem !important;">
+                        Innovating <span style="color: #E6C373 !important;">Solutions</span>, <br> 
+                        Empowering <span style="color: #E6C373 !important;">Success</span>, <br> 
+                        Driving <span style="color: #E6C373 !important;">Progress</span> <br> 
+                        Your Future Starts <span style="color: #E6C373 !important;">With Us</span>.
+                    </h2>
+                    <p class="text-white max-600 mt-4 wow fadeInUp mobile-text" data-wow-delay=".5s" style="font-size: medium !important; text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.5) !important";
+ ">
+                        We focus on fostering success by empowering you with the tools and support needed to thrive. <br> 
+                        By driving progress, we ensure that your journey is always forward-thinking, setting the stage for a brighter, <br> 
+                        more successful future. With us, you're not just staying ahead you're leading the way.
+                    </p>
+                </div>
+            </div>
+              
+              <!-- Colonne droite: Cartes verticales -->
+              <div class="col-lg-6 col-md-12">
+                  <div class="counter-wrapper-vertical">
+                      <!-- Première carte -->
+                      <div class="counter-box-items wow fadeInUp" data-wow-delay=".3s">
+                          <h3><span class="count">With a proven track record of success across countless projects</span></h3>
+                          <p> </p>
+                      </div>
+                      
+                      <!-- Deuxième carte -->
+                      <div class="counter-box-items wow fadeInUp" data-wow-delay=".5s">
+                          <h3><span class="count" style="text-align: center !important;">Delivering excellence that leaves clients consistently thrilled</span></h3>
+                          <p></p>
+                      </div>
+                      
+                      <!-- Troisième carte -->
+                      <div class="counter-box-items wow fadeInUp" data-wow-delay=".7s">
+                          <h3><span class="count">Cutting costs, saving time efficiency that puts money back where it belongs.</span></h3>
+                          <p></p>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </section>
+  <!-- Choose Us Section End -->
+        <!-- Section CTA -->
+        
+<!-- Section originale avec styles CSS intégrés pour réduire la taille -->
+<section class="cta cta-height pos-rel z-1 pt-165" data-bg-color="#000" style="transform: scale(0.85); transform-origin: center top;">
+  <div class="container">
+    <div class="row align-items-end">
+      <div class="col-12">
+        <div class="cta-icons mobile-icons" style="transform: scale(0.9);">
+          <div class="icon icon--1">
+            <img data-parallax='{"x":-50,"y":350}' src="assets/img/cta/cta_icon_01.webp" alt="" style="max-width: 90%;">
+          </div>
+          <div class="icon icon--2">
+            <img data-parallax='{"x":-30,"y":120}' src="assets/img/cta/cta_icon_02.webp" alt="" style="max-width: 90%;">
+          </div>
+          <div class="icon icon--3">
+            <img data-parallax='{"x":-10,"y":30}' src="assets/img/cta/cta_icon_03.webp" alt="" style="max-width: 90%;">
+          </div>
+          <div class="icon icon--4">
+            <img data-parallax='{"y":-40}' src="assets/img/cta/cta_icon_04.webp" alt="" style="max-width: 90%;">
+          </div>
+          <div class="icon icon--5">
+            <img data-parallax='{"x":10,"y":30}' src="assets/img/cta/cta_icon_05.webp" alt="" style="max-width: 90%;">
+          </div>
+          <div class="icon icon--6">
+            <img data-parallax='{"x":30,"y":90}' src="assets/img/cta/cta_icon_06.webp" alt="" style="max-width: 90%;">
+          </div>
+          <div class="icon icon--7">
+            <img data-parallax='{"x":20,"y":350}' src="assets/img/cta/cta_icon_07.webp" alt="" style="max-width: 90%;">
+          </div>
+        </div>
+        <div class="cta-image" style="transform: scale(1.05);">
+          <img src="assets/img/cta/cta_shape.webp" alt="" style="max-width: 240%; height: 90%;">
+        </div>
+        <div class="cd-cta">
+          <div class="sec-title--five text-center">
+            <h2 class="title wow fadeInUp" style="margin-top: 25rem; font-size: 65px;">CLOUD & DEVOPS <br> Tech Stack</h2>
+          </div>
+          <div class="xb-btn mt-20 text-center wow fadeInUp" data-wow-delay="150ms" id="button-container">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="cd-sec-shape">
+  </div>
+</section>
+        
+        <link href="https://calendar.google.com/calendar/scheduling-button-script.css" rel="stylesheet">
+        <script src="https://calendar.google.com/calendar/scheduling-button-script.js" async></script>
+        <script>
+        (function() {
+          // Attendre que le DOM soit chargé
+          window.addEventListener('load', function() {
+            // Trouver le conteneur du bouton
+            var buttonContainer = document.getElementById('button-container');
+            
+            // S'assurer que le conteneur existe
+            if (buttonContainer) {
+              // Vider le conteneur pour supprimer tout ancien bouton
+              buttonContainer.innerHTML = '';
+              
+              // Configurer directement le bouton de calendrier dans ce conteneur
+              calendar.schedulingButton.load({
+                class: "thm-btn thm-btn--devops thm-btn--devops_yellow",
+                url: 'https://calendar.google.com/calendar/appointments/schedules/AcZssZ3130jugUgfErFhHZrwSg9sRTAsD3B04zfFGKS3RWZQu3jXAn8NM-3_sNtz6OY3bRvz7JcI3Fkl?gv=true',
+                color: '#F6BF26',
+                label: 'Book a consultation',
+                target: buttonContainer
+              });
+            }
+          });
+        })();
+        </script>
+        <!-- Fin de la section CTA -->
+
+        <!-- review section start  -->
+        <section class="about pb-20">
+          <div class="container">
+              <div class="tes-heading text-center mb-40 sec-title--two sec-title--three text-center mb-10">                           
+                  <h2 class="title wow fadeInDown" data-wow-delay="100ms" data-wow-duration="600ms"
+                      style="font-size: 1.8rem;">The customer <span style="color: #E6C373 !important;">experience</span></h2>
+              </div>
+              <div class="about-wrap mt-none-30 ul_li_between">
+                  <div class="about-item mt-30 xb-mouseenter wow fadeInUp" data-wow-delay="000ms" data-wow-duration="600ms">
+                      <div class="xb-item--img">
+                          <div class="xb-item--author">
+                              <div class="author-images">
+                                  <img src="assets/img-optimized/icon/syno.webp" alt="" class="company-logo">
+                                  <img src="assets/img-optimized/testimonial/phillips.webp" alt="" class="author-avatar">
+                              </div>                                       
+                          </div>
+                      </div>
+                      <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon01.webp" alt=""></span>Alex Phillips Paquet 
+                      </h3>
+                      <div class="xb-item--holder" style="overflow: hidden !important;">
+                          <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon01.webp" alt=""></span>Co-Founder, COO Synoptech Inc.
+                          </h3>
+                          <p class="xb-item--content" style="margin-top: 0% !important ;">
+                              "Very professional, we
+                              received a high level of
+                              dedication to the project and were overall very impressed with the
+                              services we received."
+                          </p>
+                      </div>
+                  </div>
+                  <div class="about-item mt-30 xb-mouseenter wow fadeInUp" data-wow-delay="150ms" data-wow-duration="600ms">
+                      <div class="xb-item--img">
+                          <div class="author-images">
+                              <img src="assets/img-optimized/icon/erl.webp" alt="" class="company-logo">
+                              <img src="assets/img-optimized/icon/ger.webp" alt="" class="author-avatar">
+                          </div>
+                      </div>
+                      <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon02.webp" alt=""></span>Gerthie Erlande Chery
+                      </h3>
+                      <div class="xb-item--holder" style="overflow: hidden !important;">
+                          <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon02.webp" alt=""></span>CEO and Founder of EcLux Fitness</h3>
+                          <p class="xb-item--content" style="margin-top: 0% !important ;">
+                              "Professional team work with
+                              their clients. Am
+                              very
+                              satisfied with the final result of my request ☺️☺️☺️ Thank you, you’re
+                              the
+                              best👏🏾👏🏾"
+                          </p>
+                      </div>
+                  </div>
+                  <div class="about-item mt-30 xb-mouseenter active wow fadeInUp" data-wow-delay="300ms"
+                      data-wow-duration="600ms">
+                      <div class="xb-item--img">
+                          <div class="author-images">
+                              <img src="assets/img-optimized/icon/fct.webp" alt="" class="company-logo">
+                              <img src="assets/img-optimized/testimonial/patrick.webp" alt="" class="author-avatar">
+                          </div>
+                      </div>
+                      <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon03.webp" alt=""></span>Patrick King
+                      </h3>
+                      <div class="xb-item--holder" style="overflow: hidden !important;">
+                          <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon03.webp" alt=""></span>Leader of the Freedom convoy</h3>
+                          <p class="xb-item--content" style="margin-top: 0% !important ;">
+                              "Great people to work with.
+                              Amazing designs"
+                          </p>
+                      </div>                              
+                  </div>
+
+                  <!-- <div class="about-item mt-30 xb-mouseenter wow fadeInUp" data-wow-delay="300ms"
+                      data-wow-duration="600ms" style="margin: 0 auto; display: block; float: none;">
+                      <div class="xb-item--img">
+                          <div class="author-images">
+                              <img src="assets/img/icon/AgenceThaly.png" alt="" class="company-logo">
+                              <img src="assets/img/testimonial/nathalie.jpg" alt="" class="author-avatar">
+                          </div>
+                      </div>
+                      <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon03.png" alt=""></span>Nathalie Legault
+                      </h3>
+                      <div class="xb-item--holder">
+                          <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon03.png" alt=""></span>CEO and Founder of Agence Thaly</h3>
+                          <p class="xb-item--content" style="margin-top: 0% !important ;">
+                              "Superb Company..
+                              Professional, talented,
+                              creative and customer focused. I highly recommend this agency!"
+                          </p>
+                      </div>
+                  </div> -->
+
+                  <div class="xb-btn text-center mt-60">
+                      <a href="https://www.google.com/search?client=opera-gx&sca_esv=7dba40b02027fc13&sxsrf=AHTn8zqtE8uqzjnarQdSGQkqdX64bxcTgQ:1745527339458&si=APYL9bs7Hg2KMLB-4tSoTdxuOx8BdRvHbByC_AuVpNyh0x2KzT8bv8GXpURQLCPSEZiL7z66wUio_cEXIsx0Bo72iJXRuWpAJFO1RrK5jawtaNyIUWzbearVYZBicwAamxjLS8zO1v45x9i43ahk4ZoGF1yjaXthiZVW2OoqC9U9t7ZzPW9cq1I%3D&q=Pandora+Business+Technology+%26+Marketing+Avis&sa=X&ved=2ahUKEwjzlY6IxPGMAxWUEFkFHZXROvgQ0bkNegQINxAD&biw=1708&bih=869&dpr=1.1" class="blc-btn">
+                          <div class="hero-btn">
+                              <button class="BtnReview">
+                              </button>
+                          </div>
+                      </a>
+                  </div>
+
+              </div>
+          </div>
+      </section>
+      <!-- review section end  -->    
+
+      <style>
+         /* Styles à ajouter à votre feuille CSS au lieu des styles inline */
+  .cta.cta-height {
+    transform: scale(0.85);
+    transform-origin: center top;
+  }
+  
+  .cta-icons {
+    transform: scale(0.9);
+  }
+  
+  .cta-icons .icon img {
+    max-width: 90%;
+  }
+  
+  .cta-image {
+    transform: scale(0.85);
+  }
+  
+  .cta-image img {
+    max-width: 90%;
+    height: auto;
+  }
+  
+  .cd-cta .title {
+    margin-top: 18rem;
+    font-size: 45px;
+  }
+
+.cta-image img { 
+  max-width: 240%; 
+  height: 90%; 
+}
+
+@media (max-width: 767px) {
+  /* Activation du conteneur d'icônes */
+  .cta-icons .mobile-icons {
+    display: flex !important;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    padding: 20px 0;
+    transform: scale(1) !important;
+    opacity: 1 !important;
+  }
+
+  /* Réinitialisation des positions */
+  .cta-icons .icon .mobile-icons {
+    position: relative !important;
+    transform: none !important;
+    width: 25%;
+    margin: 0 !important;
+  }
+
+  /* Ajustement des images */
+  .cta-icons img {
+    max-width: 80px !important;
+    height: auto !important;
+    filter: brightness(0) invert(1);
+  }
+
+  /* Désactivation des effets parallaxe */
+  [data-parallax] {
+    transform: none !important;
+  }
+
+  /* Ajustement global de la section */
+  .cta {
+    transform: scale(1) !important;
+    padding: 30px 0 !important;
+  }
+
+  /* Positionnement du titre */
+  .cd-cta .title {
+    margin-top: 1rem !important;
+    font-size: 24px !important;
+    line-height: 1.3;
+  }
+
+  /* Masquage des éléments inutiles */
+  .cta-image,
+  .cd-sec-shape {
+    display: none !important;
+  }
+}
+
+
+        
+          /* Styles pour la version compacte */
+          .compact-testimonial {
+              padding: 20px;
+              margin: 10px;
+              width: 90%;
+              background: rgba(255, 255, 255, 0.9);
+              border-radius: 8px;
+              box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+          }
+
+          .author-images {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 15px;
+          }
+
+          .company-logo {
+              width: 50px;
+              height: 50px;
+              object-fit: contain;
+              background-color: white;
+
+              border-radius: 50%;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              border: 2px solid #000000;
+          }
+
+          .author-avatar {
+              width: 50px;
+              height: 50px;
+              border-radius: 50%;
+              object-fit: cover;
+              border: 2px solid #000000;
+          }
+
+          .xb-item--avatar {
+              margin-top: 10px !important;
+          }
+
+          .xb-item--name {
+              font-size: 1.1rem;
+              margin-bottom: 5px;
+          }
+
+          .xb-item--desig {
+              font-size: 0.8rem;
+              color: #666;
+          }
+
+          .xb-item--content {
+              font-size: 0.9rem !important;
+              line-height: 1.5;
+              margin: 15px 0;
+          }
+
+          .xb-item--bottom {
+              margin-top: -20%;
+          }
+
+          .compact-rating {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+background: rgba(255,255,255,0.9);
+padding: 3px 8px;
+border-radius: 12px;
+font-size: 0.8rem;
+transform: translateY(-10px); /* Monte l'élément */
+}
+
+          .compact-pagination {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              gap: 20px;
+              margin-top: 20px;
+          }
+
+          .swiper-button-prev,
+          .swiper-button-next {
+              position: relative;
+              width: 30px;
+              height: 30px;
+
+              color: white;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0;
+              top: auto;
+              left: auto;
+              right: auto;
+          }
+
+          @media (max-width: 768px) {
+              .compact-testimonial {
+                  padding: 15px;
+              }
+
+              .xb-item--content {
+                  font-size: 0.85rem;
+              }
+          }
+      </style>
+        
+        <section class="world" data-background="assets/img-optimized/imgs/grisbg.webp">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-lg-10 col-md-12">
+                <div class="world-map"><img src="assets/img-optimized/imgs/canada 2.webp" alt=""></div>
+              </div>
+            </div>
+          </div>
+          
+
+      </main>
+
+      <%- include('partials/footer') %>
+  </div>
+
+
+ <!-- Scripts -->
+  <script src="assets/js/jquery-3.7.1.min.js"></script>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/swiper.min.js"></script>
+  <script src="assets/js/slick.min.js"></script>
+  <script src="assets/js/gsap.js"></script>
+  <script src="assets/js/wow.min.js"></script>
+  <script src="assets/js/appear.js"></script>
+  <script src="assets/js/parallaxie.js"></script>
+  <script src="assets/js/parallax-scroll.js"></script>
+  <script src="assets/js/odometer.min.js"></script>
+  <script src="assets/js/imagesloaded.pkgd.min.js"></script>
+  <script src="assets/js/isotope.pkgd.min.js"></script>
+  <script src="assets/js/cursor-bundle.js"></script>
+  <script src="assets/js/easing.min.js"></script>
+  <script src="assets/js/scrollspy.js"></script>
+  <script src="assets/js/jquery.nice-select.min.js"></script>
+  <script src="assets/js/jquery.marquee.min.js"></script>
+  <script src="assets/js/jquery.magnific-popup.min.js"></script>
+  <script src="../assets/js/main.js"></script>
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+    AOS.init();
+  </script>
+
+  <!--<< Matter Min Icon Js >>-->
+  <script src="assets/js/matter.min.js"></script>
+  <!--<< Matter Custom Js >>-->
+  <script>
+    function initSimulation() {
+  const {
+    Engine,
+    Render,
+    Events,
+    MouseConstraint,
+    Mouse,
+    World,
+    Bodies,
+  } = Matter;
+
+  const engine = Engine.create();
+  const world = engine.world;
+
+  const container = document.querySelector(".tags-container");
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  const render = Render.create({
+    element: container,
+    engine,
+    options: {
+      width,
+      height,
+      pixelRatio: 2,
+      background: "transparent",
+      wireframes: false
+    }
+  });
+
+  Render.run(render);
+  Engine.run(engine);
+
+  // Walls
+  const wallThickness = 160;
+  const ground = Bodies.rectangle(width / 2, height + wallThickness / 2, width + 320, wallThickness, { isStatic: true });
+  const wallLeft = Bodies.rectangle(-wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+  const wallRight = Bodies.rectangle(width + wallThickness / 2, height / 2, wallThickness, height, { isStatic: true });
+  const roof = Bodies.rectangle(width / 2, -wallThickness / 2, width + 320, wallThickness, { isStatic: true });
+
+  World.add(world, [ground, wallLeft, wallRight, roof]);
+
+  // 19 Sprites
+  const radius = 17;
+  const tags = [];
+  for (let i = 1; i <= 16; i++) {
+    tags.push(
+      Bodies.rectangle(
+        width / 2 + Math.random() * 200 - 100,
+        200 + i * 10,
+        200,
+        56,
+        {
+          chamfer: { radius },
+          render: {
+            sprite: {
+              texture: `/assets/img/mattericon/t${i}.png`,
+              xScale: 1,
+              yScale: 1
+            }
+          }
+        }
+      )
+    );
+  }
+
+  World.add(world, tags);
+
+  // Mouse interaction
+  const mouse = Mouse.create(render.canvas);
+  const mouseConstraint = MouseConstraint.create(engine, {
+    mouse,
+    constraint: {
+      stiffness: 0.2,
+      render: { visible: false }
+    }
+  });
+
+  World.add(world, mouseConstraint);
+  render.mouse = mouse;
+
+  // Disable scroll hijacking
+  mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
+  mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
+}
+
+// Auto-run only once when .tags-container becomes visible
+const container = document.querySelector(".tags-container");
+if (container) {
+  container.innerHTML = ""; // clean before render
+
+  const observer = new IntersectionObserver((entries, observer) => {
+    if (entries[0].isIntersecting) {
+      initSimulation();
+      observer.disconnect();
+    }
+  });
+
+  observer.observe(container);
+}
+  </script>
+
+
+</body>
+
+</html>

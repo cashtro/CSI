@@ -1,0 +1,54 @@
+{
+  "name": "innomax-html-package",
+  "version": "1.0.0",
+  "description": "pandora brand website",
+  "main": "server.js",
+  "scripts": {
+    "devcomment": "echo \"This is a comment to let you know that npm start was node server.js\" && exit 0",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js",
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Evolu-Jeunes/Panda.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Evolu-Jeunes/Panda/issues"
+  },
+  "homepage": "https://github.com/Evolu-Jeunes/Panda;#readme",
+  "dependencies": {
+    "@sendgrid/mail": "^8.1.5",
+    "@splinetool/runtime": "^1.9.82",
+    "@supabase/supabase-js": "^2.49.1",
+    "body-parser": "^1.20.3",
+    "compression": "^1.8.0",
+    "cookie-parser": "^1.4.7",
+    "csurf": "^1.2.2",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "express-rate-limit": "^7.5.0",
+    "express-validator": "^7.2.1",
+    "i18next": "^25.0.0",
+    "innomax-html-package": "file:",
+    "multer": "^1.4.5-lts.2",
+    "nodemailer": "^6.10.0",
+    "nodemon": "^3.1.9",
+    "normalize.css": "^8.0.1",
+    "otplib": "^12.0.1",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.2",
+    "sonarqube-scanner": "^4.3.0",
+    "stripe": "^17.7.0",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
+  },
+  "devDependencies": {
+    "@sonar/scan": "^4.3.0",
+    "nodemon": "^3.1.10"
+  }
+}

@@ -1,0 +1,12 @@
+.parallax-img {
+	min-height: 875px;
+	@media only screen and (min-width: 1200px) {
+		min-height: 850px;
+	}
+	@include respond(md) {
+		min-height: 500px;
+	}
+	@include respond(xs) {
+		min-height: 300px;
+	}
+}
