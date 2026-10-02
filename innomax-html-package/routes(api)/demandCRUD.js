@@ -267,16 +267,7 @@ router.get('/users', checkAdmin, async (req, res) => {
     res.json(data);
 });
 
-router.get('/dev/users', async (req, res) => {
-    const supabase = createClient(
-        process.env.SUPABASE_URL,
-        process.env.SUPABASE_ANON_KEY
-    );
-    const { data, error } = await supabase.from('Users').select('*');
-    if (error) return res.status(500).json({ error: error.message });
-    res.json(data);
-});
-
-
+// Removed unauthenticated GET /dev/users: it returned the entire Users table
+// with no auth and had no frontend usage. Admins use GET /users (checkAdmin).
 
 module.exports = router;

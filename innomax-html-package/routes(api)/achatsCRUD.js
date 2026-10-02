@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
-const upload = require('./utils/multerConfig'); 
+const upload = require('./utils/multerConfig');
+const { checkAdmin } = require('./utils/auth-middleware');
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -16,7 +17,7 @@ function sanitizeFileName(filename) {
         .replace(/[^a-zA-Z0-9.\-_]/g, '');
 }
 
-router.post('/', upload.single('imageProduit'), async (req, res) => {
+router.post('/', checkAdmin, upload.single('imageProduit'), async (req, res) => {
     console.log('BODY:', req.body);
     console.log('FILE:', req.file);
 
@@ -102,7 +103,7 @@ router.get('/', async (req, res) => {
 });
 
 // DELETE an item by id_item
-router.delete('/:id', async (req, res) => {
+router.delete('/:id', checkAdmin, async (req, res) => {
     const { id } = req.params;
     try {
         const { error } = await supabase
@@ -120,7 +121,7 @@ router.delete('/:id', async (req, res) => {
 });
 
 // UPDATE an item by id_item
-router.put('/:id', upload.single('imageProduit'), async (req, res) => {
+router.put('/:id', checkAdmin, upload.single('imageProduit'), async (req, res) => {
     const { id } = req.params;
     const { nomProduit, price, shortDescription } = req.body;
     let updateFields = {

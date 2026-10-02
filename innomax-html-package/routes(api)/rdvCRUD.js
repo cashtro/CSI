@@ -27,7 +27,7 @@ router.get('/verify-payment', createRendezvous, async (req, res) => {
 
 
 // Update (all info)
-router.put('/update/:id', async (req, res) => {
+router.put('/update/:id', authenticateUser, async (req, res) => {
   const { id } = req.params;
   const { date, heure, duree } = req.body;
 
@@ -48,7 +48,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 // cancel
-router.delete('/cancel/:id', async (req, res) => {
+router.delete('/cancel/:id', authenticateUser, async (req, res) => {
   const { id } = req.params;
 
   try {
