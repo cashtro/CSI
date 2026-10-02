@@ -1,8 +1,9 @@
 #!/usr/bin/env node
-// Local demo of the admin "Agents" tabs, for the founder.
+// Local demo of the admin "Agents" and "Finances" tabs, for the founder.
 //
 //   DEMO_MODE=true node scripts/demo-admin.js
 //   then open http://127.0.0.1:3999/demo/connexion
+//   (or /demo/connexion?vue=finances for the Finances tab, example data)
 //
 // Refused when NODE_ENV=production, under PM2, or without DEMO_MODE=true
 // (scripts/demo/guard.js). It runs the real routers, views, guards and agent
@@ -106,12 +107,13 @@ async function main() {
     const opts = { httpOnly: true, sameSite: 'lax', secure: false, path: '/' };
     res.cookie('accessToken', token, opts);
     res.cookie(MFA_COOKIE, signMfaProof(ADMIN_ID, Date.now() + 12 * 3600 * 1000), opts);
-    res.redirect('/admin/console?vue=agents');
+    res.redirect(`/admin/console?vue=${req.query.vue === 'finances' ? 'finances' : 'agents'}`);
   });
   app.get('/login', (req, res) => res.type('text').send('Démo : ouvrez /demo/connexion pour vous reconnecter.'));
   app.post('/api/auth/logout', (req, res) => { res.clearCookie('accessToken'); res.clearCookie(MFA_COOKIE); res.json({ ok: true }); });
 
   app.use('/api/admin/agents', require('../routes(api)/agentsAdmin'));
+  app.use('/api/admin/finances', require('../routes(api)/financesAdmin'));
   app.use('/api/admin', require('../routes(api)/adminCRUD'));
   app.use(require('../routes(api)/espacePages'));
   app.use((req, res) => res.status(404).type('text').send('Introuvable dans la démo.'));
