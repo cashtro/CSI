@@ -1,0 +1,28 @@
+<%# Formulaire d'une dépense (ajout ou modification). locals: d (dépense normalisée ou null), idp, api, method, ok, bouton. %>
+<% const cents = function (c) { return d ? (c / 100).toFixed(2) : ''; }; %>
+<form class="form fin-dep-form" data-api="<%= api %>" data-method="<%= method %>" data-ok="<%= ok %>">
+  <div class="form-row">
+    <div class="field"><label for="<%= idp %>-date">Date</label><input id="<%= idp %>-date" name="date" type="date" value="<%= d ? d.jour : '' %>" required></div>
+    <div class="field"><label for="<%= idp %>-cat">Catégorie</label>
+      <select id="<%= idp %>-cat" name="categorie" required>
+        <% categories.forEach(function (c) { %><option value="<%= c %>"<% if (d && d.categorie === c) { %> selected<% } %>><%= categorieLabel[c] %></option><% }) %>
+      </select>
+      <span class="hint">IA : abonnements et outils d’IA. Le moteur des agents est compté à part, automatiquement.</span>
+    </div>
+    <div class="field"><label for="<%= idp %>-four">Fournisseur</label><input id="<%= idp %>-four" name="fournisseur" type="text" maxlength="200" value="<%= d ? d.fournisseur : '' %>" required></div>
+  </div>
+  <div class="form-row">
+    <div class="field"><label for="<%= idp %>-mt">Montant avant taxes ($ CA)</label><input id="<%= idp %>-mt" name="montant" type="number" min="0" step="0.01" inputmode="decimal" value="<%= cents(d && d.ht) %>" required></div>
+    <div class="field"><label for="<%= idp %>-tps">TPS payée</label><input id="<%= idp %>-tps" name="tps" type="number" min="0" step="0.01" inputmode="decimal" value="<%= cents(d && d.tps) %>"></div>
+    <div class="field"><label for="<%= idp %>-tvq">TVQ payée</label><input id="<%= idp %>-tvq" name="tvq" type="number" min="0" step="0.01" inputmode="decimal" value="<%= cents(d && d.tvq) %>"></div>
+  </div>
+  <div class="fin-checks">
+    <label class="fin-check"><input type="checkbox" name="taxes_auto"> Calculer la TPS (5 %) et la TVQ (9,975 %) à partir du montant</label>
+    <label class="fin-check"><input type="checkbox" name="recurrente"<% if (d && d.recurrente) { %> checked<% } %>> Dépense récurrente</label>
+  </div>
+  <div class="form-row">
+    <div class="field"><label for="<%= idp %>-pj">Pièce jointe (lien https://)</label><input id="<%= idp %>-pj" name="piece_jointe" type="url" pattern="https://.*" placeholder="https://" value="<%= d && d.piece_jointe ? d.piece_jointe : '' %>"></div>
+    <div class="field"><label for="<%= idp %>-note">Note</label><input id="<%= idp %>-note" name="note" type="text" maxlength="2000" value="<%= d ? d.note : '' %>"></div>
+  </div>
+  <div class="actions"><button class="btn btn--accent btn--sm" type="submit"><%= bouton %></button><span class="status" data-status role="status"></span></div>
+</form>

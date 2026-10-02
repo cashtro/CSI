@@ -8,6 +8,8 @@ const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { requireMember, requireAdmin, noStore, loadEspace, loadAdmin, fmt, ETAPES, STATUTS_MANDAT } = require('./utils/espace');
 const logger = require('./utils/logger');
 const catalog = require('../agents/catalog');
+const finances = require('./utils/finances');
+const { fetchStripeFinance } = require('./utils/finances-stripe');
 
 const router = express.Router();
 
@@ -23,7 +25,7 @@ function allowMicrophone(req, res, next) {
 // Agent tabs (views/partials/agents/*.ejs, assets/js/agents-console.js): the
 // page renders the forms; the script reads /api/admin/agents for live data.
 const AGENT_VUES = ['agents', 'conseil', 'travail', 'recherche', 'reglages-agents'];
-const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'mandats', 'livrables', 'cms', ...AGENT_VUES];
+const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables', 'cms', ...AGENT_VUES];
 
 // Agents for the forms' selects. A missing table (db/003 not run) shows a
 // message instead of failing the page.
@@ -57,8 +59,18 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
   const langue = req.query.langue === 'en' ? 'en' : 'fr';
   const agentVue = AGENT_VUES.includes(vue);
   const agentData = agentVue ? await loadAgentsForForms(admin) : { agents: [], agentsError: null };
+  // Finances tab (FINANCES.md): every amount is computed on the server.
+  const fin = vue === 'finances'
+    ? await finances.loadFinances(admin, {
+      mois: req.query.mois, du: req.query.du, au: req.query.au,
+      stripe: await fetchStripeFinance(),
+      usdToCad: process.env.FINANCES_USD_CAD,
+      fmtMoney: (c) => fmt.money(c / 100),
+    })
+    : null;
   res.render('admin-console', {
     vue, data, site, cmsError, langue, fmt, etapes: ETAPES, statuts: STATUTS_MANDAT, email: req.user.email || '',
+    fin, categories: finances.CATEGORIES, categorieLabel: finances.CATEGORIE_LABEL,
     agentVue, agents: agentData.agents, agentsError: agentData.agentsError, teams: catalog.TEAMS, defaultResearchAgent: catalog.DEFAULT_RESEARCH_AGENT,
   });
 });

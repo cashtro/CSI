@@ -6,6 +6,10 @@
   <link rel="stylesheet" href="/assets/css/agents-console.css">
   <script src="/assets/js/agents-console.js" defer></script>
   <% } %>
+  <% if (vue === 'finances') { %>
+  <link rel="stylesheet" href="/assets/css/finances.css">
+  <script src="/assets/js/finances.js" defer></script>
+  <% } %>
 </head>
 <%
   const enAttente = data.livrables.filter(function (l) { return l.statut === 'en_attente'; }).length;
@@ -16,6 +20,7 @@
     { id: 'entreprises', emoji: '🏢', label: 'Entreprises', count: data.entreprises.length },
     { id: 'clients', emoji: '👥', label: 'Clients', count: data.clients.length },
     { id: 'paiements', emoji: '💳', label: 'Paiements' },
+    { id: 'finances', emoji: '💰', label: 'Finances' },
     { id: 'mandats', emoji: '🗂️', label: 'Mandats', count: actifs },
     { id: 'livrables', emoji: '📦', label: 'Livrables', count: enAttente },
     { id: 'cms', emoji: '✏️', label: 'Contenu du site' },
@@ -31,6 +36,7 @@
     travail: 'Tous les travaux des agents, leurs résultats et les tâches à valider.',
     recherche: 'Pose une question : un agent cherche sur le web et cite ses sources.',
     'reglages-agents': 'Marche, arrêt, budget, modèles et agents.',
+    finances: 'L’argent de toute l’entreprise : revenus, dépenses, marge, taxes et objectifs.',
   };
   const ici = nav.find(function (n) { return n.id === vue; });
   const titreMandat = {};
@@ -54,6 +60,10 @@
 
     <% if (typeof agentVue !== 'undefined' && agentVue) { %>
       <%- include('partials/agents/' + vue) %>
+    <% } %>
+
+    <% if (vue === 'finances' && typeof fin !== 'undefined' && fin) { %>
+      <%- include('partials/finances/finances') %>
     <% } %>
 
     <% if (vue === 'apercu') { %>
