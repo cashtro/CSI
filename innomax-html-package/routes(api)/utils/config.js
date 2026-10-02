@@ -35,6 +35,20 @@ for (const [key, sentinel] of Object.entries(SENTINELS)) {
   if (!process.env[key]) process.env[key] = sentinel;
 }
 
+// Production runs with NODE_ENV=development (see README), so NODE_ENV cannot
+// tell a live site from a laptop. Degraded boot is therefore opt-in: without
+// ALLOW_DEGRADED_BOOT=true a missing credential stops the server instead of
+// serving a site whose logins and payments all fail.
+const allowDegraded = process.env.ALLOW_DEGRADED_BOOT === 'true' || process.env.NODE_ENV === 'test';
+
+if (missingEnv.length > 0 && !allowDegraded) {
+  console.error(
+    `[config] Missing required env vars: ${missingEnv.join(', ')}. ` +
+      'Refusing to start. Set them in .env, or set ALLOW_DEGRADED_BOOT=true for local/CI runs.'
+  );
+  process.exit(1);
+}
+
 if (missingEnv.length > 0) {
   console.warn(
     `[config] Missing required env vars: ${missingEnv.join(', ')}. ` +

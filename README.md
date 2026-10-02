@@ -61,7 +61,7 @@ npm cache clean --force
     APP_URL=https://pandorabrains.com # En production laisser sur https://pandorabrains.com, https://localhost:3000 en local
     OAUTH_REDIRECT_SUCCESS=https://pandorabrains.com/ # En production laisser sur https://pandorabrains.com, https://localhost:3000 en local
     OAUTH_REDIRECT_FAILURE='https://pandorabrains.com/login' # En production laisser sur https://pandorabrains.com/login, https://localhost:3000/login en local
-    NODE_ENV=development
+    NODE_ENV=production # production en ligne : masque les traces d'erreur ; development en local
     EMAIL_USER=
     EMAIL_PASSWORD=
     OWNER_EMAIL=
@@ -69,6 +69,11 @@ npm cache clean --force
     PORT=3004 # Laisser sur 3004 pour serveur PM2, 3000 en local
     SENDGRID_API_KEY=''
     SENDGRID_EMAIL=''
+    STRIPE_WEBHOOK_SECRET='' # secret du endpoint /webhook dans le tableau de bord Stripe
+    TOTP_ENC_KEY='' # clé aléatoire longue (ex. openssl rand -hex 32) : chiffre les secrets 2FA ; ne jamais la changer sans procédure
+    TWOFA_SETUP_KEY='' # optionnel, clé aléatoire pour signer les jetons de configuration 2FA (sinon dérivée de TOTP_ENC_KEY)
+    COOKIE_SECURE= # laisser vide en ligne ; false seulement en local sur http
+    ALLOW_DEGRADED_BOOT= # laisser vide en ligne ; true seulement en local/CI pour démarrer sans clés
     ```
  
 2. S'assurer que les dépendances sont installées

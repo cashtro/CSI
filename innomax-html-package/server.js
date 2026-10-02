@@ -33,7 +33,8 @@ const achatRoutes = require('./routes(api)/achatsCRUD.js');
 const teacherRoutes = require('./routes(api)/demandCRUD.js')
 
 
-const { authenticateUser } = require('./routes(api)/utils/auth-middleware.js');
+const { authenticateUser, setAuthCookies } = require('./routes(api)/utils/auth-middleware.js');
+const { cookieSecure } = require('./routes(api)/utils/cookies');
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
@@ -96,7 +97,7 @@ const csrfProtection = csrf({
   cookie: {
     httpOnly: true,
     sameSite: 'Strict',
-    secure: process.env.NODE_ENV === 'production',
+    secure: cookieSecure(),
   }
 });
 
@@ -362,20 +363,8 @@ app.get('/Purchase-Lottery-Tickets', async (req, res) => {
         user = refreshed.session.user;
         token = refreshed.session.access_token;
         
-        // Set new cookies
-        res.cookie('accessToken', refreshed.session.access_token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Lax',
-          maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
-        });
-        
-        res.cookie('refreshToken', refreshed.session.refresh_token, {
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Lax',
-          maxAge: 30 * 24 * 60 * 60 * 1000 // 30 days
-        });
+        // Same attributes as every other auth cookie, so logout can clear them.
+        setAuthCookies(res, refreshed.session.access_token, refreshed.session.refresh_token, true);
       }
     }
 

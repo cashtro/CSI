@@ -15,6 +15,7 @@
 //     the token-header dashboard flows working).
 
 const crypto = require('crypto');
+const { cookieSecure } = require('./cookies');
 
 const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 const CSRF_COOKIE = 'XSRF-TOKEN';
@@ -25,7 +26,7 @@ function issueCsrfCookie(req, res, next) {
     res.cookie(CSRF_COOKIE, token, {
       httpOnly: false, // must be readable by JS to echo back in a header
       sameSite: 'Lax',
-      secure: process.env.NODE_ENV === 'production',
+      secure: cookieSecure(),
       path: '/',
     });
     if (req.cookies) req.cookies[CSRF_COOKIE] = token; // available same-request

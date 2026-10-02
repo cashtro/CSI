@@ -1,6 +1,7 @@
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { createSupabaseClient } = require('./supabaseUtil');
+const { cookieSecure } = require('./cookies');
 
 // Stateless server-side client (no persisted/auto-refreshed session) to avoid
 // cross-request auth identity bleed. Requests pass their JWT explicitly.
@@ -68,7 +69,7 @@ function cookieBaseOptions() {
   return {
     httpOnly: true,
     sameSite: 'Lax',
-    secure: process.env.NODE_ENV === 'production',
+    secure: cookieSecure(),
     path: '/',
     domain: process.env.COOKIE_DOMAIN || undefined,
   };

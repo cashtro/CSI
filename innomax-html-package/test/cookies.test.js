@@ -16,8 +16,8 @@ describe('auth cookie options (M1)', () => {
   beforeEach(() => { jest.resetModules(); process.env = { ...ORIGINAL }; });
   afterAll(() => { process.env = ORIGINAL; });
 
-  it('secure is false outside production and options are consistent', () => {
-    process.env.NODE_ENV = 'development';
+  it('secure can be turned off for local http and options are consistent', () => {
+    process.env.COOKIE_SECURE = 'false';
     const { setAuthCookies } = require('../routes(api)/utils/auth-middleware');
     const res = mockRes();
     setAuthCookies(res, 'a', 'r', false);
@@ -27,8 +27,9 @@ describe('auth cookie options (M1)', () => {
     expect(access.opts.path).toBe('/');
   });
 
-  it('secure is true in production', () => {
-    process.env.NODE_ENV = 'production';
+  it('secure is on by default, whatever NODE_ENV says', () => {
+    delete process.env.COOKIE_SECURE;
+    process.env.NODE_ENV = 'development';
     const { setAuthCookies } = require('../routes(api)/utils/auth-middleware');
     const res = mockRes();
     setAuthCookies(res, 'a', 'r', true);
@@ -36,7 +37,7 @@ describe('auth cookie options (M1)', () => {
   });
 
   it('clearAuthCookies clears all three cookies with matching attributes', () => {
-    process.env.NODE_ENV = 'development';
+    process.env.COOKIE_SECURE = 'false';
     const { clearAuthCookies } = require('../routes(api)/utils/auth-middleware');
     const res = mockRes();
     clearAuthCookies(res);
