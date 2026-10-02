@@ -431,16 +431,16 @@ describe('cheerful theme', () => {
     expect(res.text).toMatch(/<span class="hero-emoji">🏠<\/span><span class="foil">Aperçu<\/span>/);
   });
 
-  it('takes every brand mention from one brandName variable, Panda by default', async () => {
+  it('takes every brand mention from one brandName variable, PBTM by default', async () => {
     const ejs = require('ejs');
     const client = await request(app).get('/espace?vue=nouveau').set('Cookie', cookies('tok-a'));
-    expect(client.text).toContain('<span class="foil">Panda</span><small>Business · Technologie · Marketing</small>');
-    expect(client.text).toContain('· Panda</title>');
-    expect(client.text).toContain("Transmis à l'équipe Panda");
+    expect(client.text).toContain('<span class="foil">PBTM</span><small>Panda Business Tech &amp; Marketing</small>');
+    expect(client.text).toContain('· PBTM</title>');
+    expect(client.text).toContain("Transmis à l'équipe PBTM");
     expect(client.text).toContain('class="pl-footer"');
     expect(client.text).not.toContain('Pandora');
     const admin = await request(app).get('/admin/console').set('Cookie', adminCookies());
-    expect(admin.text).toContain('Toute l’activité de Panda en un coup d’œil.');
+    expect(admin.text).toContain('Toute l’activité de PBTM en un coup d’œil.');
     expect(admin.text).not.toContain('Pandora');
     const views = path.join(__dirname, '..', 'views', 'partials', 'pilotage');
     const locals = { brandName: 'Nova & Co', title: 'X', sousTitre: 's', email: null, badge: null, salut: '', titre: 'T', intro: null, cta: null, nav: [], vue: null, base: '/' };

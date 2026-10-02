@@ -1,1 +1,1 @@
-<%# Nom de la marque, SEULE source : variable EJS brandName (app.locals.brandName ou res.render), Panda par défaut. Sortie brute, l'appelant l'échappe avec include dans une balise d'échappement. %><%- (typeof brandName === 'string' && brandName.trim()) || 'Panda' -%>
+<%# Nom de la marque, SEULE source : variable EJS brandName (app.locals.brandName ou res.render), PBTM par défaut. Sortie brute, l'appelant l'échappe avec include dans une balise d'échappement. %><%- (typeof brandName === 'string' && brandName.trim()) || 'PBTM' -%>

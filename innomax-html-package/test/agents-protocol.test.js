@@ -164,7 +164,7 @@ describe('runOrder', () => {
     const req = complete.mock.calls[0][0];
     expect(req.system).toMatch(/Ton rôle : Rédaction/);
     expect(req.system).toMatch(/Ta méthode : AIDA/);
-    expect(req.messages[0].content).toMatch(/Instruction de Pandora : Écris un courriel de suivi/);
+    expect(req.messages[0].content).toMatch(/Instruction de PBTM : Écris un courriel de suivi/);
     expect(req.messages[0].content).toMatch(/<donnees source="client">/);
     expect(saved).toHaveLength(1);
   });
