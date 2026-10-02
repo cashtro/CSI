@@ -65,9 +65,16 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Middleware pour les fichiers statiques
+// Code (JS/CSS) is revalidated on every load via ETag so a deploy reaches
+// browsers at once; media is cached for a year. Previously everything was
+// cached a year with no ETag, so JS/CSS fixes never reached returning visitors.
+const REVALIDATE = /\.(js|mjs|css|map|json|html)$/i;
 app.use('/assets', express.static(path.join(__dirname, 'assets'), {
+  etag: true,
   maxAge: '1y',
-  etag: false,
+  setHeaders(res, filePath) {
+    if (REVALIDATE.test(filePath)) res.setHeader('Cache-Control', 'no-cache');
+  },
 }));
 
 
