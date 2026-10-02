@@ -148,6 +148,24 @@ describe('client space: deliverable approval', () => {
     expect(livrable(L_A)).toMatchObject({ statut: 'modification_demandee', commentaire_client: 'Changer le titre' });
   });
 
+  it('a decision recorded meanwhile by another request is never overwritten', async () => {
+    // The row reads "en_attente" when the route loads it, then another
+    // request approves it before the update runs.
+    const row = fake.state.tables.livrables.find((l) => l.id === L_A);
+    let reads = 0;
+    let value = 'approuve';
+    Object.defineProperty(row, 'statut', {
+      enumerable: true,
+      configurable: true,
+      get() { reads += 1; return reads === 1 ? 'en_attente' : value; },
+      set(v) { value = v; },
+    });
+    const res = await post(`/api/espace/livrables/${L_A}/decision`, 'tok-a', { decision: 'modification_demandee', commentaire: 'Trop tard' });
+    expect(res.status).toBe(409);
+    expect(value).toBe('approuve');
+    expect(row.commentaire_client).toBeUndefined();
+  });
+
   it('rejects an unknown decision', async () => {
     const res = await post(`/api/espace/livrables/${L_A}/decision`, 'tok-a', { decision: 'supprimer' });
     expect(res.status).toBe(400);

@@ -50,15 +50,20 @@ router.post('/livrables/:id/decision', async (req, res) => {
   if (!livrable) return res.status(404).json({ error: 'Livrable introuvable.' });
   if (livrable.statut !== 'en_attente') return res.status(409).json({ error: 'Ce livrable a déjà reçu une décision.' });
 
-  const { error: updateError } = await admin
+  // Conditional on the status still being "en_attente": of two decisions
+  // sent at the same time, only the first one is written.
+  const { data: updated, error: updateError } = await admin
     .from('livrables')
     .update({ statut: decision, commentaire_client: commentaire, decided_by: req.user.id, decided_at: new Date().toISOString() })
     .eq('id', id)
-    .eq('entreprise_id', entrepriseId);
+    .eq('entreprise_id', entrepriseId)
+    .eq('statut', 'en_attente')
+    .select('id');
   if (updateError) {
     logger.error('[espace] livrable decision failed:', updateError.message);
     return res.status(500).json({ error: "La décision n'a pas pu être enregistrée." });
   }
+  if (!updated || !updated.length) return res.status(409).json({ error: 'Ce livrable a déjà reçu une décision.' });
   logger.info(`[espace] livrable ${id} ${decision} by ${req.user.id}`);
   res.json({ statut: decision });
 });
