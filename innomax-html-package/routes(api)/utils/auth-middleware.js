@@ -71,26 +71,39 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-// Enhanced cookie settings
-function setAuthCookies(res, accessToken, refreshToken, rememberMe) {
-  const cookieOptions = {
+// Shared cookie attributes. `secure` is env-driven (was hardcoded true, which
+// broke cookies over http in dev). Clears MUST reuse the same
+// path/domain/secure/sameSite or the browser won't remove them — that mismatch
+// was the bug (logout/validate cleared with different options).
+function cookieBaseOptions() {
+  return {
     httpOnly: true,
     sameSite: 'Lax',
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     path: '/',
     domain: process.env.COOKIE_DOMAIN || undefined,
-    maxAge: rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000
   };
+}
 
-  res.cookie('accessToken', accessToken, cookieOptions);
-  res.cookie('refreshToken', refreshToken, cookieOptions);
-  
+// Enhanced cookie settings
+function setAuthCookies(res, accessToken, refreshToken, rememberMe) {
+  const base = cookieBaseOptions();
+  const maxAge = rememberMe ? 30 * 24 * 60 * 60 * 1000 : 7 * 24 * 60 * 60 * 1000;
+
+  res.cookie('accessToken', accessToken, { ...base, maxAge });
+  res.cookie('refreshToken', refreshToken, { ...base, maxAge });
+
   // Set CSRF token
   const csrfToken = crypto.randomBytes(32).toString('hex');
-  res.cookie('csrf-token', csrfToken, {
-    ...cookieOptions,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  });
+  res.cookie('csrf-token', csrfToken, { ...base, maxAge: 24 * 60 * 60 * 1000 });
+}
+
+// Clear all auth cookies using the SAME attributes they were set with.
+function clearAuthCookies(res) {
+  const base = cookieBaseOptions();
+  res.clearCookie('accessToken', base);
+  res.clearCookie('refreshToken', base);
+  res.clearCookie('csrf-token', base);
 }
 
 // Enhanced user validation
@@ -110,8 +123,7 @@ async function getValidUser(req, res) {
  
       if (refreshError || !refreshed?.session) {
         // Clear invalid tokens
-        res.clearCookie('accessToken');
-        res.clearCookie('refreshToken');
+        clearAuthCookies(res);
         return { user: null, token: null };
       }
 
@@ -159,6 +171,7 @@ module.exports = {
   authenticateUser,
   checkAdmin,
   setAuthCookies,
+  clearAuthCookies,
   twoFaLimiter,
   authLimiter,
   csrfProtection,

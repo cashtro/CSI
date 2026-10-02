@@ -3,7 +3,7 @@ const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
-const { authenticateUser, setAuthCookies, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
+const { authenticateUser, setAuthCookies, clearAuthCookies, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
 const { loginValidation, registrationValidation, validatePassword } = require('./utils/validation-middleware');
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
@@ -36,8 +36,7 @@ router.get('/validateToken', async (req, res) => {
 
             if (refreshError || !refreshed?.session) {
                 // Clear invalid cookies and force re-login
-                res.clearCookie('accessToken');
-                res.clearCookie('refreshToken');
+                clearAuthCookies(res);
                 return res.status(401).json({ 
                     success: false, 
                     error: 'Session expired. Please log in again.' 
@@ -187,17 +186,8 @@ router.post('/logout', authenticateUser, async (req, res) => {
         const { error: logoutError } = await supabase.auth.signOut();
         if (logoutError) throw logoutError;
 
-        // Clear cookies
-        res.clearCookie('accessToken', { 
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production',  // Only set secure flag in production
-            sameSite: 'Strict' 
-        });
-        res.clearCookie('refreshToken', { 
-            httpOnly: true, 
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'Strict' 
-        });
+        // Clear cookies with the same attributes they were set with.
+        clearAuthCookies(res);
 
         return res.status(200).json({ message: "Déconnexion réussie !" });
     } catch (error) {
