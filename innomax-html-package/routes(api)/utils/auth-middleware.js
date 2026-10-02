@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 const logger = require('./logger');
 const rateLimit = require('express-rate-limit');
-const { createSupabaseClient } = require('./supabaseUtil');
+const { createSupabaseClient, createSupabaseAdmin } = require('./supabaseUtil');
 const { cookieSecure } = require('./cookies');
 
 // Stateless server-side client (no persisted/auto-refreshed session) to avoid
@@ -140,6 +140,11 @@ async function getValidUser(req, res) {
   }
 }
 
+// Admin routes of the legacy dashboard (products, lotteries, portfolio,
+// teacher requests...). Same rule as the admin console (utils/espace):
+// Users.isAdmin read with the service key, AND the signed 'mfa' cookie that
+// verify-2fa sets once this browser passed the code. A Supabase JWT alone
+// (obtained with the public anon key and the password) is not enough.
 const checkAdmin = async (req, res, next) => {
   try {
     const { user,token} = await getValidUser(req, res);
@@ -148,14 +153,18 @@ const checkAdmin = async (req, res, next) => {
       return res.status(401).json({ error: 'Token invalide ou expiré' });
     }
 
-    const { data: userData, error: userError } = await supabase
+    const { data: userData, error: userError } = await createSupabaseAdmin()
       .from('Users')
       .select('isAdmin')
       .eq('userId', user.id)
-      .single();
+      .maybeSingle();
 
-    if (userError || !userData?.isAdmin) {
+    if (userError || userData?.isAdmin !== true) {
       return res.status(403).json({ error: 'Accès refusé : admin requis' });
+    }
+    const { verifyMfaProof, MFA_COOKIE } = require('./twofa');
+    if (!verifyMfaProof(req.cookies && req.cookies[MFA_COOKIE], user.id)) {
+      return res.status(403).json({ error: 'Double authentification requise : reconnectez-vous avec votre code 2FA.' });
     }
     req.accessToken = token;
     req.user = user;
