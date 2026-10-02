@@ -8,6 +8,7 @@ const { loginValidation, registrationValidation, validatePassword } = require('.
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { sendEmail } = require('./utils/emailService');
+const { encryptSecret, decryptSecret } = require('./utils/crypto2fa');
 const crypto = require('crypto');
 
 // Initialize Supabase client
@@ -352,7 +353,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
             if (fetchError || !user2fa) {
                 throw new Error("2FA not configured");
             }
-            verificationSecret = user2fa.secret;
+            verificationSecret = decryptSecret(user2fa.secret);
         }
 
         const cleanCode = String(code).trim();
@@ -377,7 +378,7 @@ router.post('/verify-2fa', twoFaLimiter, async (req, res) => {
                 .upsert({
                     userId: user.userId,
                     email: user.email,
-                    secret: cleanSecret,
+                    secret: encryptSecret(cleanSecret),
                     enabled: true,
                     updated_at: new Date()
                 });
@@ -425,7 +426,7 @@ router.post('/toggle-2fa', authenticateUser, async (req, res) => {
             return res.status(400).json({ message: "2FA n'est pas configuré. Utilisez d'abord la configuration." });
         }
 
-        if (!code || !authenticator.verify({ token: String(code).trim(), secret: user2fa.secret })) {
+        if (!code || !authenticator.verify({ token: String(code).trim(), secret: decryptSecret(user2fa.secret) })) {
             return res.status(401).json({ message: "Code 2FA invalide" });
         }
 
@@ -561,7 +562,7 @@ router.post('/regenerate-2fa', twoFaLimiter, async (req, res) => {
         const { error: updateError } = await supabase
             .from('Users_2fa')
             .update({
-                secret: secret,
+                secret: encryptSecret(secret),
                 enabled: false,
                 updated_at: new Date()
             })
