@@ -314,3 +314,16 @@ describe('voice dictation', () => {
     expect(admin.text).toMatch(/<textarea id="l-d"[^>]*data-dictee/);
   });
 });
+
+describe('CMS registry matches the templates', () => {
+  const fs = require('fs');
+  const PAGES = { home: 'home4', marketing: 'marketing', techai: 'TechAndAi', contact: 'contact' };
+  it.each(cms.REGISTRY.map((z) => [z.key, z]))('%s is wired with the same fallback', (key, zone) => {
+    const src = fs.readFileSync(path.join(__dirname, '..', 'views', `${PAGES[key.split('.')[0]]}.ejs`), 'utf8');
+    if (zone.type === 'json') {
+      expect(src).toContain(`content('${key}', [`);
+    } else {
+      expect(src).toContain(`content('${key}', '${zone.fallback.replace(/'/g, "\\'")}')`);
+    }
+  });
+});
