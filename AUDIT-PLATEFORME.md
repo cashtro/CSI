@@ -86,6 +86,7 @@ Dans l'éditeur SQL de Supabase, un fichier à la fois :
 6. `db/006_robots.sql` (robots clients et connexions, voir `ROBOTS.md`)
 7. `db/007_finances.sql` (onglet Finances, voir `FINANCES.md`)
 8. `db/008_croissance.sql` (onglet Croissance, voir `CROISSANCE.md`)
+9. `db/009_pwa.sql` (notifications de l'app, voir `PWA.md`)
 
 Chaque fichier peut être relancé sans danger. Si 003 a été exécuté avant 002, relancez 003.
 Les huit fichiers ont été essayés dans cet ordre, deux fois de suite, sur PostgreSQL 16 avec

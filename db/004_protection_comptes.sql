@@ -1,7 +1,8 @@
 -- Protection des comptes et des tables du serveur (audit plateforme).
 --
 -- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
--- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance,
+-- 009_pwa.
 -- ORDRE D'EXECUTION : 001_fulfillments.sql, puis 002_espace_entreprises.sql,
 -- puis 003_moteur_agents.sql, puis ce fichier (004). Safe to re-run: every
 -- statement is idempotent, and each block skips a table that does not exist.

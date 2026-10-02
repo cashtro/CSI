@@ -2,7 +2,8 @@
 -- contenus, medias et communiques (voir CROISSANCE.md).
 --
 -- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
--- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance,
+-- 009_pwa.
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, 002_espace_entreprises.sql,
 -- 003_moteur_agents.sql, 004_protection_comptes.sql, 005_recherche_agents.sql,
 -- 006_robots.sql, 007_finances.sql, puis ce fichier (008).

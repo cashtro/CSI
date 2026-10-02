@@ -1,7 +1,8 @@
 -- Moteur des agents IA (innomax-html-package/agents/, voir MOTEUR-AGENTS.md).
 --
 -- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
--- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance,
+-- 009_pwa.
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, puis
 -- 002_espace_entreprises.sql, puis ce fichier (003). La regle de lecture des
 -- membres ci-dessous a besoin de public.membres et de public.mon_entreprise(),

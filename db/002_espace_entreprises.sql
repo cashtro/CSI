@@ -2,7 +2,8 @@
 -- utils/cms.js).
 --
 -- Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,
--- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance.
+-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance,
+-- 009_pwa.
 -- ORDRE D'EXECUTION OBLIGATOIRE : 001_fulfillments.sql, puis ce fichier (002),
 -- puis 003_moteur_agents.sql. 003 lit public.membres et public.mon_entreprise()
 -- crees ici ; si 003 a deja ete execute avant ce fichier, relancez 003.

@@ -7,7 +7,7 @@ const DIR = path.join(__dirname, '..', '..', 'db');
 const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8');
 // SQL without "--" comments, to check what actually runs.
 const code = (f) => read(f).replace(/--.*$/gm, '');
-const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql', '005_recherche_agents.sql', '006_robots.sql', '007_finances.sql', '008_croissance.sql'];
+const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql', '005_recherche_agents.sql', '006_robots.sql', '007_finances.sql', '008_croissance.sql', '009_pwa.sql'];
 
 describe('SQL migrations', () => {
   it('002 and 003 state the mandatory order 001, 002, 003', () => {
@@ -104,11 +104,24 @@ describe('SQL migrations', () => {
     expect(sql).toMatch(/revoke all on public\.objectifs_financiers from anon, authenticated/);
   });
 
-  it('every file states the full order 001 to 008', () => {
-    expect(FILES).toHaveLength(8);
+  it('every file states the full order 001 to 009', () => {
+    expect(FILES).toHaveLength(9);
+    expect(fs.readdirSync(DIR).filter((f) => /^\d{3}_.*\.sql$/.test(f)).sort()).toEqual(FILES);
     for (const f of FILES) {
       const head = read(f).split('\n').slice(0, 15).join('\n');
-      expect({ f, ok: /Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,\s*\n-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance\./.test(head) }).toEqual({ f, ok: true });
+      expect({ f, ok: /Ordre complet : 001_fulfillments, 002_espace_entreprises, 003_moteur_agents,\s*\n-- 004_protection_comptes, 005_recherche_agents, 006_robots, 007_finances, 008_croissance,\s*\n-- 009_pwa\./.test(head) }).toEqual({ f, ok: true });
     }
+  });
+
+  it('009 runs after 008 and keeps the push subscriptions server-only', () => {
+    const head = read('009_pwa.sql').split('\n').slice(0, 12).join('\n');
+    expect(head).toMatch(/ORDRE D'EXECUTION OBLIGATOIRE[\s\S]*007_finances\.sql, 008_croissance\.sql, puis ce fichier \(009\)/);
+    const sql = code('009_pwa.sql');
+    expect(sql).toMatch(/create table if not exists public\.push_abonnements/);
+    expect(sql).toMatch(/endpoint\s+text not null unique check \(endpoint ~ '\^https:\/\/'/);
+    expect(sql).toMatch(/role in \('admin', 'client'\)/);
+    expect(sql).toMatch(/alter table public\.push_abonnements enable row level security/);
+    expect(sql).not.toMatch(/create policy/);
+    expect(sql).toMatch(/revoke all on public\.push_abonnements from anon, authenticated/);
   });
 });
