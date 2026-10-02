@@ -22,6 +22,7 @@ function kindOf(session) {
   const m = session.metadata || {};
   if (m.type === 'lottery_entry') return 'lottery_entry';
   if (m.type === 'product') return 'product';
+  if (m.type === 'achat') return 'achat';
   if (m.disponibilite_id) return 'rendez_vous';
   if (m.course_id) return session.mode === 'subscription' ? 'subscription' : 'course';
   return 'unknown';
@@ -205,7 +206,45 @@ async function grantProduct(admin, session) {
   return { status: 'granted', id: lotteryId };
 }
 
+// Shop item from the Achat table (achatsCRUD /purchase). Used to send an
+// e-mail on every reload of the success URL and never on the webhook.
+async function grantAchat(admin, session) {
+  const { productId, quantity, size } = session.metadata;
+  const { data: product } = await admin.from('Achat').select('title_item, price_item').eq('id_item', productId).maybeSingle();
+  if (!product) throw new Error('achat product not found');
+
+  await insertBill(admin, null, `achat:${productId}`, session);
+
+  const address = session.shipping_details?.address || session.collected_information?.shipping_details?.address;
+  const addressHtml = address?.line1
+    ? [address.line1, address.line2, `${address.city || ''}, ${address.state || ''} ${address.postal_code || ''}`, address.country]
+        .filter(Boolean)
+        .map((line) => `<p>${escapeHtml(line)}</p>`)
+        .join('')
+    : '<p>No shipping address provided.</p>';
+  await sendEmail(
+    process.env.OWNER_EMAIL,
+    'Pandora Brand Achat Product Purchase',
+    `
+      <h1>New Achat Product Purchase</h1>
+      <p>The product <strong>${escapeHtml(product.title_item)}</strong> has been purchased.</p>
+      <h3>Order Details:</h3>
+      <p><strong>Quantity:</strong> ${escapeHtml(quantity)}</p>
+      <p><strong>Size:</strong> ${escapeHtml(size || 'N/A')}</p>
+      <p><strong>Price:</strong> $${escapeHtml(product.price_item)}</p>
+      <p><strong>Stripe session:</strong> ${escapeHtml(session.id)}</p>
+      <h3>Buyer Information:</h3>
+      <p><strong>Email:</strong> ${escapeHtml(session.customer_details?.email || 'Not provided')}</p>
+      <h3>Shipping Address:</h3>
+      ${addressHtml}
+      <p>Please prepare the item for delivery.</p>
+    `,
+  );
+  return { status: 'granted', id: productId };
+}
+
 const GRANTS = {
+  achat: grantAchat,
   rendez_vous: grantRendezVous,
   course: grantCourse,
   subscription: grantCourse,

@@ -7,7 +7,7 @@ let mockFailBillsOnce = false;
 
 function mockReset() {
   Object.assign(mockDb, {
-    fulfillments: [], disponibilites: [], rendez_vous: [], cours_students: [], Entry: [], Lottery: [], bills: [],
+    fulfillments: [], Achat: [], disponibilites: [], rendez_vous: [], cours_students: [], Entry: [], Lottery: [], bills: [],
   });
   mockFailBillsOnce = false;
 }
@@ -134,6 +134,23 @@ describe('products', () => {
     expect(html).not.toContain('<img');
     expect(html).toContain('&lt;img');
     expect(html).toContain('&lt;b&gt;1 rue&lt;/b&gt;');
+  });
+});
+
+describe('achats (shop items)', () => {
+  it('records the order and e-mails the owner once, with buyer text escaped', async () => {
+    mockDb.Achat.push({ id_item: 'A1', title_item: 'T-shirt', price_item: 25 });
+    const s = paid('cs_achat', { type: 'achat', productId: 'A1', quantity: '2', size: '<script>x</script>' }, {
+      customer_details: { email: 'buyer@example.com' },
+      shipping_details: { address: { line1: '<img src=x>', city: 'Québec', country: 'CA' } },
+    });
+    expect((await fulfillCheckoutSession(s)).status).toBe('granted');
+    expect((await fulfillCheckoutSession(s)).status).toBe('already_fulfilled'); // reloaded success URL
+    expect(mockDb.bills).toHaveLength(1);
+    expect(mockSendEmail).toHaveBeenCalledTimes(1);
+    const html = mockSendEmail.mock.calls[0][2];
+    expect(html).not.toMatch(/<script|<img/);
+    expect(html).toContain('&lt;script&gt;');
   });
 });
 

@@ -12,6 +12,13 @@ if (process.env.SENDGRID_API_KEY) {
 // Create a transporter using environment variables
 
 
+// Every value put into the HTML templates below may come from a user
+// (username, product name, size, address): escape it.
+function escapeHtml(value) {
+    return String(value ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+}
+const e = escapeHtml;
+
 const sendEmail = async (recipientEmail, subject, content) => {
     
     const msg = {
@@ -44,9 +51,9 @@ async function sendLotteryWinnerEmail(winnerEmail, lotteryDetails) {
         to: winnerEmail,
         subject: 'Congratulations! You Won the Lottery!',
         html: `
-            <h1>Congratulations ${lotteryDetails.winnerUsername}!</h1>
-            <p>You have won the lottery "${lotteryDetails.name}"!</p>
-            <p>Please contact the lottery owner ${lotteryDetails.ownerEmail} to claim your prize.</p>
+            <h1>Congratulations ${e(lotteryDetails.winnerUsername)}!</h1>
+            <p>You have won the lottery "${e(lotteryDetails.name)}"!</p>
+            <p>Please contact the lottery owner ${e(lotteryDetails.ownerEmail)} to claim your prize.</p>
             <p>Thank you for participating!</p>
         `
     };
@@ -67,11 +74,11 @@ async function sendLotteryOwnerEmail(ownerEmail, details) {
         subject: 'Lottery Winner Selected',
         html: `
             <h1>Lottery Winner Selected</h1>
-            <p>The lottery "${details.lotteryName}" has been completed.</p>
+            <p>The lottery "${e(details.lotteryName)}" has been completed.</p>
             <p>Winner's Details:</p>
             <ul>
-                <li>Username: ${details.winnerUsername}</li>
-                <li>Email: ${details.winnerEmail}</li>
+                <li>Username: ${e(details.winnerUsername)}</li>
+                <li>Email: ${e(details.winnerEmail)}</li>
             </ul>
             <p>Please contact the winner to arrange prize delivery.</p>
         `
@@ -90,10 +97,10 @@ async function sendFullPriceProductOwnerEmail(ownerEmail, productDetails) {
         const shippingAddress = productDetails.shippingAddress 
             ? `
                 <h3>Shipping Address:</h3>
-                <p>${productDetails.shippingAddress.line1 || ''}</p>
-                ${productDetails.shippingAddress.line2 ? `<p>${productDetails.shippingAddress.line2}</p>` : ''}
-                <p>${productDetails.shippingAddress.city}, ${productDetails.shippingAddress.state} ${productDetails.shippingAddress.postal_code}</p>
-                <p>${productDetails.shippingAddress.country}</p>
+                <p>${e(productDetails.shippingAddress.line1)}</p>
+                ${productDetails.shippingAddress.line2 ? `<p>${e(productDetails.shippingAddress.line2)}</p>` : ''}
+                <p>${e(productDetails.shippingAddress.city)}, ${e(productDetails.shippingAddress.state)} ${e(productDetails.shippingAddress.postal_code)}</p>
+                <p>${e(productDetails.shippingAddress.country)}</p>
             ` 
             : '<p>No shipping address provided.</p>';
     
@@ -103,15 +110,15 @@ async function sendFullPriceProductOwnerEmail(ownerEmail, productDetails) {
             subject: 'Pandora Brand Product Purchase',
             html: `
                 <h1>New Product Purchase</h1>
-                <p>The product <strong>${productDetails.name}</strong> has been purchased at full price.</p>
+                <p>The product <strong>${e(productDetails.name)}</strong> has been purchased at full price.</p>
                 
                 <h3>Order Details:</h3>
-                <p>Quantity: ${productDetails.quantity}</p>
-                <p>Size: ${productDetails.size || 'N/A'}</p>
-                <p>Price: $${productDetails.price}</p>
+                <p>Quantity: ${e(productDetails.quantity)}</p>
+                <p>Size: ${e(productDetails.size || 'N/A')}</p>
+                <p>Price: $${e(productDetails.price)}</p>
                 
                 <h3>Buyer Information:</h3>
-                <p>Email: ${productDetails.buyerEmail || 'Not provided'}</p>
+                <p>Email: ${e(productDetails.buyerEmail || 'Not provided')}</p>
                 
                 ${shippingAddress}
                 
@@ -134,5 +141,6 @@ module.exports = {
     sendEmail,
     sendLotteryWinnerEmail,
     sendLotteryOwnerEmail,
-    sendFullPriceProductOwnerEmail
+    sendFullPriceProductOwnerEmail,
+    escapeHtml
 }; 

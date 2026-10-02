@@ -6,6 +6,7 @@ const { createClient } = require('@supabase/supabase-js');
 const upload = require('./utils/multerConfig');
 const { checkAdmin } = require('./utils/auth-middleware');
 const { parseQuantity } = require('./utils/quantity');
+const { fulfillCheckoutSession } = require('./utils/fulfill');
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -244,83 +245,24 @@ router.post('/purchase', async (req, res) => {
     }
 });
 
-// Add verification endpoint for achats purchases
+// success_url of an achats purchase. Fulfilment (bill + owner e-mail) goes
+// through utils/fulfill: exactly once per Stripe session, shared with the
+// signed webhook, so a reloaded success URL sends nothing twice and a buyer
+// who closes the tab is still handled by the webhook.
 router.get('/verify-purchase', async (req, res) => {
+    const back = (query) => res.redirect(`${process.env.APP_URL}/achats?${query}`);
     try {
         const { session_id } = req.query;
-        if (!session_id) {
-            return res.redirect(`${process.env.APP_URL}/achats?error=session_id_required`);
-        }
-
+        if (!session_id) return back('error=session_id_required');
         const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-        
-        // Retrieve the Stripe session
-        const session = await stripe.checkout.sessions.retrieve(session_id, {
-            expand: ['customer', 'shipping.address']
-        });
-
-        if (session.payment_status !== 'paid') {
-            return res.redirect(`${process.env.APP_URL}/achats?error=payment_failed`);
-        }
-
-        const { productId, productName, quantity, size } = session.metadata;
-        const buyerEmail = session.customer_details?.email;
-        const shippingAddress = session.shipping_details?.address;
-
-        // Get product data
-        const { data: productData, error: productError } = await supabase
-            .from('Achat')
-            .select('*')
-            .eq('id_item', productId)
-            .single();
-
-        if (productError || !productData) {
-            throw new Error('Product not found during verification');
-        }
-
-        // Send email to owner with purchase details
-        const { sendFullPriceProductOwnerEmail } = require('./utils/emailService');
-        await sendFullPriceProductOwnerEmail(
-            process.env.OWNER_EMAIL,
-            'Pandora Brand Achat Product Purchase',
-            `
-            <div style="font-family: 'Poppins', sans-serif; background-color: #0e0e0e; padding: 40px; border-radius: 24px; max-width: 600px; margin: auto; color: #855e1b; box-shadow: 0 15px 50px rgba(0, 0, 0, 0.3), 0 0 60px rgba(230, 195, 115, 0.2);">
-                <h1 style="font-family: 'Cinzel', serif; font-size: 28px; margin-bottom: 20px; color: #855e1b;">New Achat Product Purchase</h1>
-                
-                <p style="font-size: 16px; line-height: 1.6; margin-bottom: 20px;">
-                    The product <strong>${productData.title_item}</strong> has been purchased.
-                </p>
-        
-                <h3 style="font-size: 20px; margin-top: 30px; color: #D4AF37;">Order Details:</h3>
-                <p><strong>Quantity:</strong> ${quantity}</p>
-                <p><strong>Size:</strong> ${size || 'N/A'}</p>
-                <p><strong>Price:</strong> $${productData.price_item}</p>
-        
-                <h3 style="font-size: 20px; margin-top: 30px; color: #D4AF37;">Buyer Information:</h3>
-                <p><strong>Email:</strong> ${buyerEmail || 'Not provided'}</p>
-        
-                <h3 style="font-size: 20px; margin-top: 30px; color: #D4AF37;">Shipping Address:</h3>
-                ${
-                    shippingAddress?.line1
-                        ? `
-                            <p>${shippingAddress.line1}</p>
-                            ${shippingAddress.line2 ? `<p>${shippingAddress.line2}</p>` : ''}
-                            <p>${shippingAddress.city}, ${shippingAddress.state} ${shippingAddress.postal_code}</p>
-                            <p>${shippingAddress.country}</p>
-                        `
-                        : '<p>No shipping address provided.</p>'
-                }
-        
-                <p style="margin-top: 40px; font-size: 14px; color: #E6C373;">Please prepare the item for delivery.</p>
-            </div>
-            `
-        );
-        
-        res.redirect(`${process.env.APP_URL}/achats?success=purchase_completed`);
-        
+        const session = await stripe.checkout.sessions.retrieve(String(session_id));
+        if (session.metadata?.type !== 'achat') return back('error=payment_failed');
+        const result = await fulfillCheckoutSession(session);
+        if (result.status === 'granted' || result.status === 'already_fulfilled') return back('success=purchase_completed');
+        return back('error=payment_failed');
     } catch (error) {
-        logger.error('Error in verify achats purchase:', error);
-        res.redirect(`${process.env.APP_URL}/achats?error=verification_failed`);
+        logger.error('Error in verify achats purchase:', error.message);
+        return back('error=verification_failed');
     }
 });
 
