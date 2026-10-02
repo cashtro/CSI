@@ -3,6 +3,7 @@ const router = express.Router();
 const { createClient } = require('@supabase/supabase-js');
 const upload = require('./utils/multerConfig');
 const { checkAdmin } = require('./utils/auth-middleware');
+const { parseQuantity } = require('./utils/quantity');
 
 // Initialize Supabase client
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -179,6 +180,12 @@ router.post('/purchase', async (req, res) => {
             return res.status(400).json({ error: 'Missing required fields' });
         }
 
+        // Bound the client-supplied quantity (was passed straight to Stripe).
+        const qty = parseQuantity(quantity, { max: 20 });
+        if (qty === null) {
+            return res.status(400).json({ error: 'Invalid quantity (must be between 1 and 20)' });
+        }
+
         // Get product data from Achat table
         const { data: productData, error: productError } = await supabase
             .from('Achat')
@@ -205,14 +212,14 @@ router.post('/purchase', async (req, res) => {
                     },
                     unit_amount: Math.round(productData.price_item * 100),
                 },
-                quantity: parseInt(quantity),
+                quantity: qty,
             }],
             mode: 'payment',
             metadata: {
                 type: 'achat',
                 productId: String(productId),
                 productName: productData.title_item,
-                quantity: String(quantity),
+                quantity: String(qty),
                 size: size || 'N/A',
             },
             shipping_address_collection: {
