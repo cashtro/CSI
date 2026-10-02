@@ -4,12 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Pandora Business Technology & Marketing Education empowers learners and businesses with cutting-edge digital skills, marketing know-how, and technology insights. Elevate knowledge and accelerate growth in today’s digital world.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" async></script>
     <script src="https://js.stripe.com/v3/"></script>
 
-    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/seo-head', { seoPage: 'education' }) %>
     <%- include('partials/metaPixel', { pixelId: pixelId }) %>
 
 
@@ -148,7 +147,7 @@
                     <% courses.slice(0, 3).forEach(function(course) { %>
                         <div class="col-md-4 mb-3">
                             <div class="course-card glow-effect">
-                                <img src="<%= course.image_url || `https://image.pollinations.ai/prompt/${encodeURIComponent(course.nom + ' intech')}` %>" alt="<%= course.nom %>" class="course-image">
+                                <img loading="lazy" decoding="async" src="<%= course.image_url || `https://image.pollinations.ai/prompt/${encodeURIComponent(course.nom + ' intech')}` %>" alt="<%= course.nom %>" class="course-image">
                                 <div class="course-info" style="text-align: center;">
                                     <h3 class="course-title"><%= course.nom %></h3>
                                     <div class="course-meta" style="text-align: center;">
@@ -341,7 +340,7 @@
     <!-- main area end  -->
 
 
-    <%-include('partials/footerEducation')%>
+    <%- include('partials/aeo-bloc', { aeoPage: 'education' }) %><%-include('partials/footerEducation')%>
      
     <!-- Le pied de page est préservé mais adapté au style sombre -->
      <!--
@@ -351,7 +350,7 @@
                 <div class="footer-info ul_li_between">
                     <div class="info-item ul_li">
                         <div class="xb-item--icon">
-                            <span><img src="assets/img/icon/sms-white.svg" alt=""></span>
+                            <span><img loading="lazy" decoding="async" src="assets/img/icon/sms-white.svg" alt=""></span>
                         </div>
                         <div class="xb-item--holder">
                             <p class="xb-item--content">Écrivez-nous</p>
@@ -360,7 +359,7 @@
                     </div>
                     <div class="info-item ul_li">
                         <div class="xb-item--icon clr-blue">
-                            <span><img src="assets/img/icon/call-white.svg" alt=""></span>
+                            <span><img loading="lazy" decoding="async" src="assets/img/icon/call-white.svg" alt=""></span>
                         </div>
                         <div class="xb-item--holder">
                             <p class="xb-item--content">Appelez-nous</p>
@@ -369,7 +368,7 @@
                     </div>
                     <div class="info-item ul_li">
                         <div class="xb-item--icon clr-sky">
-                            <span><img src="assets/img/icon/location.svg" alt=""></span>
+                            <span><img loading="lazy" decoding="async" src="assets/img/icon/location.svg" alt=""></span>
                         </div>
                         <div class="xb-item--holder">
                             <p class="xb-item--content">Notre bureau</p>
@@ -383,7 +382,7 @@
                         <p class="xb-item--content clr-white">Inscrivez-vous à notre newsletter pour recevoir les dernières mises à jour.</p>
                         <div class="xb-item--input_field pos-rel">
                             <input type="email" name="gmail" id="text6" placeholder="Entrez votre email">
-                            <div class="img"><img src="assets/img/icon/sms02.svg" alt=""></div>
+                            <div class="img"><img loading="lazy" decoding="async" src="assets/img/icon/sms02.svg" alt=""></div>
                             <button type="submit" class="xb-item--btn"><i class="fas fa-paper-plane"></i></button>
                         </div>
                         <span class="xb-item--text">En continuant, vous acceptez les <a href="#!">Conditions</a> d'utilisation et la <a href="#!">Politique de confidentialité</a> </span>

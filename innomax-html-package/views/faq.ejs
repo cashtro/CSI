@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<%- include('partials/public-head', { seoPage: 'faq', seoExtra: { faq: faqItems } }) %>
+</head>
+<body class="pl">
+<%- include('partials/pilotage/topbar', {
+  sousTitre: null, email: null, badge: null,
+  salut: '🐼 ' + include('partials/pilotage/marque'),
+  titre: '❓ Questions fréquentes',
+  intro: 'Des réponses courtes et vérifiables sur nos services d’IA, nos agents, le marketing numérique et nos formations.',
+  cta: { href: '/contact', label: 'Poser une autre question' },
+  nav: null, vue: null, base: '/'
+}) %>
+<%- include('partials/public-nav', { ici: '/faq' }) %>
+<main class="wrap main" id="contenu">
+  <div class="pl-stack">
+    <section class="panel cr-public-intro" aria-labelledby="faq-bref">
+      <h2 id="faq-bref">En bref</h2>
+      <p class="cr-lead"><%= reponse %></p>
+      <form class="cr-search" action="/faq" method="get" role="search">
+        <label for="faq-q">Chercher une question</label>
+        <div class="cr-search-row">
+          <input id="faq-q" name="q" type="search" maxlength="120" value="<%= q %>" placeholder="Ex. : agents IA, formation, contact">
+          <button class="btn btn--accent" type="submit">Chercher</button>
+        </div>
+      </form>
+      <% if (q) { %><p class="dim"><%= total %> réponse(s) pour « <%= q %> ». <a href="/faq">Tout afficher</a></p><% } %>
+    </section>
+
+    <% if (!groups.length) { %><p class="empty">Aucune question ne correspond. <a href="/contact">Écrivez-nous</a> : nous répondons en français ou en anglais.</p><% } %>
+    <% groups.forEach(function (g) { %>
+    <section class="panel" aria-labelledby="faq-<%= g.id %>">
+      <div class="panel-head"><h2 id="faq-<%= g.id %>"><%= g.label %></h2><% if (g.path) { %><a href="<%= g.path %>">Voir la page →</a><% } %></div>
+      <div class="cr-faq">
+        <% g.items.forEach(function (x) { %>
+        <details class="cr-faq-q">
+          <summary><%= x.q %></summary>
+          <p><%= x.r %></p>
+        </details>
+        <% }) %>
+      </div>
+    </section>
+    <% }) %>
+  </div>
+</main>
+<%- include('partials/pilotage/footer') %>
+</body>
+</html>

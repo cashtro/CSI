@@ -125,6 +125,8 @@ app.use(express.json());
 
 // Site CMS: exposes content(key, fallback) to every template (utils/cms).
 app.use(require('./routes(api)/utils/cms').middleware);
+// SEO/AEO: seoFor(page) and aeoFor(page) for the templates (utils/seo, CROISSANCE.md).
+app.use(require('./routes(api)/utils/seo').middleware);
 
 // Configurer le middleware CSRF avec les cookies
 const csrfProtection = csrf({
@@ -179,8 +181,12 @@ app.use('/api/agents', agentsClientRoutes);
 // Espace entreprises (client space) and the admin console. Each router checks
 // membership / admin + 2FA on the server and requires the CSRF header.
 app.use('/api/espace', require('./routes(api)/espaceCRUD.js'));
+// Croissance tab (SEO, AEO, backlinks, campaigns, media): admin + 2FA, CSRF.
+app.use('/api/admin/croissance', require('./routes(api)/croissanceAdmin.js'));
 app.use('/api/admin', require('./routes(api)/adminCRUD.js'));
 app.use(require('./routes(api)/espacePages.js'));
+// Public SEO/AEO: /sitemap.xml, /robots.txt, /llms.txt, /faq, /presse.
+app.use(require('./routes(api)/seoRoutes.js'));
 //swagger starts here to wait for all routes to start
 
 //swaggerConfig(app);

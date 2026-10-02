@@ -1,0 +1,73 @@
+<%# Croissance · AEO : questions posées aux moteurs IA, réponses suggérées par les agents, publication dans la FAQ après validation. %>
+<%
+  const jobsAeo = c.jobs.filter(function (j) { return j.type === 'aeo_questions' || j.type === 'aeo_reponses'; }).slice(0, 6);
+  const parStatut = {};
+  c.questions.forEach(function (q) { parStatut[q.statut] = (parStatut[q.statut] || 0) + 1; });
+%>
+<div class="pl-stack">
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="cr-aeo-quoi">
+      <h2 id="cr-aeo-quoi">Répondre aux moteurs IA</h2>
+      <p class="cr-lead-sm">Les clients posent leurs questions à ChatGPT, Gemini, Copilot ou Perplexity. Ces moteurs citent les sites qui donnent <strong>une réponse courte, factuelle et balisée</strong> (FAQPage). Liste ici leurs questions, fais proposer des réponses, relis, valide, puis publie dans la FAQ du site.</p>
+      <ul class="cr-steps">
+        <li><span class="num">1</span> Question</li><li><span class="num">2</span> Réponse suggérée</li><li><span class="num">3</span> Validée par toi</li><li><span class="num">4</span> Publiée sur /faq</li>
+      </ul>
+      <p class="dim">À répondre : <%= parStatut.a_repondre || 0 %> · suggérées : <%= parStatut.suggeree || 0 %> · validées : <%= parStatut.validee || 0 %> · publiées : <%= parStatut.publiee || 0 %>. <a href="/faq">Voir /faq</a> · <a href="/llms.txt">Voir /llms.txt</a></p>
+      <div class="actions">
+        <form data-api="/api/admin/croissance/aeo/suggerer" data-ok="Racine cherche des questions.">
+          <button class="btn btn--sm" type="submit">🌱 Suggérer des questions</button><span class="status" data-status role="status"></span>
+        </form>
+        <form data-api="/api/admin/croissance/aeo/repondre" data-ok="Racine rédige les réponses.">
+          <button class="btn btn--sm btn--accent" type="submit">✍️ Proposer des réponses</button><span class="status" data-status role="status"></span>
+        </form>
+      </div>
+      <% if (jobsAeo.length) { %><div class="cr-jobs"><% jobsAeo.forEach(function (j) { %><%- include('_job', { j: j, c: c, importLabel: j.type === 'aeo_questions' ? '📥 Ajouter les questions' : '📥 Recevoir les réponses' }) %><% }) %></div><% } %>
+    </section>
+
+    <section class="panel" aria-labelledby="cr-aeo-ajout">
+      <h2 id="cr-aeo-ajout">Ajouter une question</h2>
+      <form class="form" data-api="/api/admin/croissance/aeo/questions" data-ok="Question ajoutée.">
+        <div class="field"><label for="aq-q">Question telle qu’un client la pose</label><input id="aq-q" name="question" type="text" maxlength="300" required placeholder="Ex. : Quelle agence au Québec crée des agents IA pour PME ?" data-dictee></div>
+        <div class="form-row">
+          <div class="field"><label for="aq-p">FAQ de la page</label>
+            <select id="aq-p" name="page"><% c.pageIds.forEach(function (id) { %><option value="<%= id %>"><%= c.pageLabel[id] %></option><% }) %></select>
+          </div>
+          <div class="field"><label for="aq-s">Source</label><input id="aq-s" name="source" type="text" maxlength="300" placeholder="Ex. : appel client, test ChatGPT"></div>
+        </div>
+        <div class="actions"><button class="btn btn--accent" type="submit">Ajouter</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="cr-aeo-liste">
+    <div class="panel-head"><h2 id="cr-aeo-liste">Questions et réponses</h2><a href="/api/admin/croissance/export?table=aeo_questions">Exporter (CSV)</a></div>
+    <% if (!c.questions.length) { %><p class="empty">Aucune question pour l’instant.</p><% } else { %>
+    <ul class="items">
+      <% c.questions.forEach(function (q) { %>
+      <li class="item">
+        <div class="item-head"><h3><%= q.question %></h3><span class="cr-pill cr-pill--<%= q.statut %>"><%= c.labels.aeoStatuts[q.statut] || q.statut %></span></div>
+        <div class="item-meta"><%= c.pageLabel[q.page] || q.page %><% if (q.source) { %> · <%= q.source %><% } %></div>
+        <form class="form" data-api="/api/admin/croissance/aeo/questions/<%= q.id %>" data-method="PATCH" data-ok="Enregistré.">
+          <div class="field"><label for="ar-<%= q.id %>">Réponse courte (40 à 60 mots, factuelle)</label><textarea id="ar-<%= q.id %>" name="reponse" maxlength="2000" rows="3" data-dictee><%= q.reponse || '' %></textarea></div>
+          <div class="actions">
+            <% if (q.statut !== 'publiee') { %><button class="btn btn--sm" type="submit" name="statut" value="validee">👍 Valider la réponse</button><% } %>
+            <button class="btn btn--sm btn--ghost" type="submit">Enregistrer</button>
+            <span class="status" data-status role="status"></span>
+          </div>
+        </form>
+        <div class="actions">
+          <% if (q.statut === 'validee') { %>
+          <form data-api="/api/admin/croissance/aeo/questions/<%= q.id %>/publier" data-ok="Publiée dans la FAQ." data-confirm="Publier cette réponse dans la FAQ du site ?">
+            <button class="btn btn--accent btn--sm" type="submit">📣 Publier dans la FAQ</button><span class="status" data-status role="status"></span>
+          </form>
+          <% } %>
+          <form data-api="/api/admin/croissance/aeo/questions/<%= q.id %>" data-method="DELETE" data-confirm="Supprimer cette question ? (une réponse déjà publiée reste dans la FAQ)">
+            <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+          </form>
+        </div>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+</div>

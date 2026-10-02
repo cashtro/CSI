@@ -1,0 +1,6 @@
+<%# Liens du site sous l'en-tête des pages publiques au style Panda. locals : ici (chemin courant). -%>
+<nav class="wrap tabs cr-public-nav" aria-label="Site">
+<% [['/', 'Accueil'], ['/TechAi', 'Tech et IA'], ['/marketing', 'Marketing'], ['/education', 'Éducation'], ['/faq', 'FAQ'], ['/presse', 'Presse'], ['/contact', 'Contact']].forEach(function (l) { -%>
+  <a href="<%= l[0] %>"<% if (ici === l[0]) { %> aria-current="page"<% } %>><%= l[1] %></a>
+<% }) -%>
+</nav>

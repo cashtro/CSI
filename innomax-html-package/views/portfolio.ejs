@@ -7,10 +7,9 @@
     <!-- Basic Page Needs
   ================================================== -->
     <meta charset="utf-8">
-    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/seo-head', { seoPage: 'portfolio' }) %>
     <%- include('partials/metaPixel', { pixelId: pixelId }) %>
  
-    <meta name="description" content="">
     <meta name="author" content="">
  
     <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
@@ -481,7 +480,7 @@ footer, .dark-back {
        
     </main>
  
-    <%-include('partials/footer')%>
+    <%- include('partials/aeo-bloc', { aeoPage: 'portfolio' }) %><%-include('partials/footer')%>
        
     <!-- JAVASCRIPT
     ================================================== -->

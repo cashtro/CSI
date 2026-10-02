@@ -1,0 +1,69 @@
+<%# Croissance · tableau de bord. %>
+<%
+  const b = c.board;
+  const semaine = c.contenus.filter(function (x) { return x.date_prevue && x.date_prevue >= b.semaine.start && x.date_prevue < b.semaine.end; })
+    .sort(function (x, y) { return String(x.date_prevue).localeCompare(String(y.date_prevue)); });
+  const faibles = c.audit ? c.audit.pages.slice().sort(function (x, y) { return x.score - y.score; }).slice(0, 4) : [];
+  const actives = c.campagnes.filter(function (x) { return x.statut === 'active'; });
+%>
+<div class="pl-stack">
+  <div class="kpis">
+    <div class="panel panel--accent kpi kpi--accent kpi--vedette"><span class="emoji" aria-hidden="true">🔍</span><span class="label">Score SEO moyen</span><span class="value"><%= b.scoreMoyen === null ? '—' : b.scoreMoyen + ' / 100' %></span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">🔗</span><span class="label">Backlinks obtenus</span><span class="value"><%= b.backlinksObtenus %></span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">🗓️</span><span class="label">Prévus cette semaine</span><span class="value"><%= b.prevusSemaine %></span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">📣</span><span class="label">Publiés cette semaine</span><span class="value"><%= b.publiesSemaine %></span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">🚀</span><span class="label">Campagnes actives</span><span class="value"><%= b.campagnesActives %></span></div>
+  </div>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="cr-semaine">
+      <div class="panel-head"><h2 id="cr-semaine">Cette semaine</h2><a href="/admin/console?vue=croissance&amp;section=campagnes">Calendrier →</a></div>
+      <% if (!semaine.length) { %><p class="empty">Aucun contenu prévu cette semaine.</p><% } else { %>
+      <ul class="items">
+        <% semaine.forEach(function (x) { %>
+        <li class="item">
+          <div class="item-head"><h3><%= x.titre %></h3><span class="cr-pill cr-pill--<%= x.statut %>"><%= c.labels.contenuStatuts[x.statut] %></span></div>
+          <div class="item-meta"><%= (c.canaux[x.canal] && c.canaux[x.canal].label) || x.canal %> · <span class="num"><%= fmt.jour(x.date_prevue) %></span></div>
+        </li>
+        <% }) %>
+      </ul>
+      <% } %>
+    </section>
+
+    <section class="panel" aria-labelledby="cr-a-corriger">
+      <div class="panel-head"><h2 id="cr-a-corriger">Pages à améliorer</h2><a href="/admin/console?vue=croissance&amp;section=seo">Audit complet →</a></div>
+      <% if (!faibles.length) { %><p class="empty">Audit indisponible.</p><% } else { %>
+      <ul class="items">
+        <% faibles.forEach(function (p) { %>
+        <li class="item">
+          <div class="item-head"><h3><%= p.label %></h3><span class="cr-score"><meter min="0" max="100" low="60" high="85" optimum="100" value="<%= p.score %>"><%= p.score %></meter><span class="num"><%= p.score %></span></span></div>
+          <% if (p.corrections.length) { %><p class="dim"><%= p.corrections[0] %></p><% } %>
+        </li>
+        <% }) %>
+      </ul>
+      <% } %>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="cr-actives">
+    <div class="panel-head"><h2 id="cr-actives">Campagnes actives</h2><span class="tag"><%= actives.length %> active(s)</span></div>
+    <% if (!actives.length) { %><p class="empty">Aucune campagne active. Créez-en une dans <a href="/admin/console?vue=croissance&amp;section=campagnes">Campagnes</a>.</p><% } else { %>
+    <ul class="items">
+      <% actives.forEach(function (x) { %>
+      <li class="item">
+        <div class="item-head"><h3><%= x.nom %></h3><span class="num dim"><%= fmt.jour(x.date_debut) %> → <%= fmt.jour(x.date_fin) %></span></div>
+        <div class="item-meta"><%= x.objectif || '' %></div>
+        <% if (x.kpi_vises || x.kpi_reels) { %><p class="dim">🎯 <%= x.kpi_vises || '—' %> · 📈 <%= x.kpi_reels || 'à mesurer' %></p><% } %>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+
+  <section class="panel" aria-labelledby="cr-travaux">
+    <div class="panel-head"><h2 id="cr-travaux">Derniers travaux des agents</h2><a href="/admin/console?vue=travail">Tout le travail →</a></div>
+    <% if (!c.jobs.length) { %><p class="empty">Aucun travail lancé depuis Croissance.</p><% } else { %>
+    <div class="cr-jobs"><% c.jobs.slice(0, 6).forEach(function (j) { %><%- include('_job', { j: j, c: c, importLabel: null }) %><% }) %></div>
+    <% } %>
+  </section>
+</div>

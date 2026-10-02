@@ -1,0 +1,158 @@
+<%# Croissance · campagnes, calendrier éditorial (vue mois) et contenus. La publication reste manuelle. %>
+<%
+  const cal = c.calendrier;
+  const jours = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const duMois = c.contenus.filter(function (x) { return x.date_prevue && String(x.date_prevue).slice(0, 7) === cal.mois; })
+    .sort(function (x, y) { return String(x.date_prevue).localeCompare(String(y.date_prevue)); });
+  const canalLabel = function (k) { return (c.canaux[k] && c.canaux[k].label) || k; };
+%>
+<div class="pl-stack">
+  <section class="panel" aria-labelledby="cr-cal">
+    <div class="panel-head cr-cal-head">
+      <h2 id="cr-cal">Calendrier éditorial · <span class="cr-cap"><%= cal.label %></span></h2>
+      <span class="cr-cal-nav">
+        <a class="btn btn--ghost btn--sm" href="/admin/console?vue=croissance&amp;section=campagnes&amp;mois=<%= cal.prev %>" aria-label="Mois précédent">←</a>
+        <a class="btn btn--ghost btn--sm" href="/admin/console?vue=croissance&amp;section=campagnes">Aujourd’hui</a>
+        <a class="btn btn--ghost btn--sm" href="/admin/console?vue=croissance&amp;section=campagnes&amp;mois=<%= cal.next %>" aria-label="Mois suivant">→</a>
+      </span>
+    </div>
+    <div class="cr-cal" role="table" aria-label="Contenus prévus en <%= cal.label %>">
+      <div class="cr-cal-row cr-cal-days" role="row"><% jours.forEach(function (j) { %><span role="columnheader"><%= j %></span><% }) %></div>
+      <% cal.weeks.forEach(function (w) { %>
+      <div class="cr-cal-row" role="row">
+        <% w.forEach(function (d) { %>
+        <% if (!d) { %><span class="cr-cal-cell is-out" role="cell"></span><% } else { %>
+        <div class="cr-cal-cell<%= d.date === cal.today ? ' is-today' : '' %><%= d.contenus.length ? ' has-items' : '' %>" role="cell">
+          <span class="cr-cal-num num"><span class="cr-cal-wd"><%= jours[(new Date(d.date + 'T00:00:00Z').getUTCDay() + 6) % 7] %> </span><%= d.day %></span>
+          <% d.contenus.forEach(function (x) { %>
+          <a class="cr-chip cr-chip--<%= x.statut %>" href="#contenu-<%= x.id %>"><span class="cr-chip-canal"><%= canalLabel(x.canal) %></span> <%= x.titre %></a>
+          <% }) %>
+        </div>
+        <% } %>
+        <% }) %>
+      </div>
+      <% }) %>
+    </div>
+    <p class="dim cr-legend"><% Object.keys(c.labels.contenuStatuts).forEach(function (s) { %><span class="cr-chip cr-chip--<%= s %>"><%= c.labels.contenuStatuts[s] %></span> <% }) %></p>
+  </section>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="cr-camp-new">
+      <h2 id="cr-camp-new">Nouvelle campagne</h2>
+      <form class="form" data-api="/api/admin/croissance/campagnes" data-ok="Campagne créée.">
+        <div class="field"><label for="ca-n">Nom</label><input id="ca-n" name="nom" type="text" maxlength="200" required placeholder="Ex. : Lancement des agents IA, automne"></div>
+        <div class="field"><label for="ca-o">Objectif</label><textarea id="ca-o" name="objectif" maxlength="2000" rows="2" data-dictee></textarea></div>
+        <div class="field"><label for="ca-c">Cible</label><input id="ca-c" name="cible" type="text" maxlength="1000" placeholder="Ex. : PME de services, 10 à 50 employés, Québec"></div>
+        <fieldset class="cr-canaux"><legend>Canaux</legend>
+          <% Object.keys(c.canaux).forEach(function (k) { %><label class="cr-check"><input type="checkbox" name="canaux_<%= k %>" value="1"> <%= c.canaux[k].label %></label><% }) %>
+        </fieldset>
+        <div class="form-row">
+          <div class="field"><label for="ca-b">Budget ($ CA)</label><input id="ca-b" name="budget" type="number" min="0" step="50"></div>
+          <div class="field"><label for="ca-d">Début</label><input id="ca-d" name="date_debut" type="date"></div>
+          <div class="field"><label for="ca-f">Fin</label><input id="ca-f" name="date_fin" type="date"></div>
+        </div>
+        <div class="field"><label for="ca-k">KPI visés</label><input id="ca-k" name="kpi_vises" type="text" maxlength="2000" placeholder="Ex. : 20 rendez-vous, 1 500 visites, 4 % de conversion"></div>
+        <div class="actions"><button class="btn btn--accent" type="submit">Créer la campagne</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="cr-cont-new">
+      <h2 id="cr-cont-new">Nouveau contenu</h2>
+      <form class="form" data-api="/api/admin/croissance/contenus" data-ok="Contenu ajouté.">
+        <div class="field"><label for="co-t">Titre</label><input id="co-t" name="titre" type="text" maxlength="300" required></div>
+        <div class="form-row">
+          <div class="field"><label for="co-ca">Campagne</label><select id="co-ca" name="campagne_id"><option value="">Hors campagne</option><% c.campagnes.forEach(function (x) { %><option value="<%= x.id %>"><%= x.nom %></option><% }) %></select></div>
+          <div class="field"><label for="co-cn">Canal</label><select id="co-cn" name="canal"><% Object.keys(c.canaux).forEach(function (k) { %><option value="<%= k %>"><%= c.canaux[k].label %></option><% }) %></select></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="co-f">Format</label><input id="co-f" name="format" type="text" maxlength="60" placeholder="Ex. : article, carrousel, vidéo 30 s"></div>
+          <div class="field"><label for="co-d">Date prévue</label><input id="co-d" name="date_prevue" type="date"></div>
+        </div>
+        <div class="field"><label for="co-x">Texte</label><textarea id="co-x" name="texte" maxlength="20000" rows="4" data-dictee></textarea></div>
+        <div class="actions"><button class="btn" type="submit">Ajouter au calendrier</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="cr-camp-liste">
+    <div class="panel-head"><h2 id="cr-camp-liste">Campagnes</h2><a href="/api/admin/croissance/export?table=campagnes">Exporter (CSV)</a></div>
+    <% if (!c.campagnes.length) { %><p class="empty">Aucune campagne.</p><% } else { %>
+    <ul class="items">
+      <% c.campagnes.forEach(function (x) { const j = c.campagneJobs[x.id]; %>
+      <li class="item">
+        <div class="item-head"><h3><%= x.nom %></h3><span class="cr-pill cr-pill--<%= x.statut %>"><%= c.labels.campagneStatuts[x.statut] || x.statut %></span></div>
+        <div class="item-meta">
+          <span class="num"><%= fmt.jour(x.date_debut) %> → <%= fmt.jour(x.date_fin) %></span>
+          <% if (x.budget !== null && x.budget !== undefined) { %> · <span class="money"><%= fmt.money(Number(x.budget)) %></span><% } %>
+          <% if (x.canaux && x.canaux.length) { %> · <%= x.canaux.map(canalLabel).join(', ') %><% } %>
+        </div>
+        <% if (x.objectif) { %><p><%= x.objectif %></p><% } %>
+        <dl class="cr-dl cr-dl--inline">
+          <div><dt>Cible</dt><dd><%= x.cible || '—' %></dd></div>
+          <div><dt>KPI visés</dt><dd><%= x.kpi_vises || '—' %></dd></div>
+          <div><dt>KPI réels</dt><dd><%= x.kpi_reels || 'à mesurer' %></dd></div>
+        </dl>
+        <% if (x.decision) { %><div class="cr-decision"><strong>Décision du Conseil :</strong> <%= x.decision %></div><% } %>
+        <div class="actions">
+          <form data-api="/api/admin/croissance/campagnes/<%= x.id %>/generer" data-ok="Le Conseil marketing délibère." data-confirm="Lancer un Conseil des agents marketing pour cette campagne ? (coût en jetons)">
+            <button class="btn btn--accent btn--sm" type="submit">🧠 Générer la campagne</button><span class="status" data-status role="status"></span>
+          </form>
+        </div>
+        <% if (j) { %><%- include('_job', { j: j, c: c, importLabel: '📥 Créer les contenus en brouillon' }) %><% } %>
+        <details class="reveal">
+          <summary class="btn btn--ghost btn--sm">Modifier</summary>
+          <form class="form" data-api="/api/admin/croissance/campagnes/<%= x.id %>" data-method="PATCH" data-ok="Campagne mise à jour.">
+            <div class="form-row">
+              <div class="field"><label for="cs-<%= x.id %>">Statut</label><select id="cs-<%= x.id %>" name="statut"><% Object.keys(c.labels.campagneStatuts).forEach(function (s) { %><option value="<%= s %>"<% if (s === x.statut) { %> selected<% } %>><%= c.labels.campagneStatuts[s] %></option><% }) %></select></div>
+              <div class="field"><label for="cb-<%= x.id %>">Budget ($ CA)</label><input id="cb-<%= x.id %>" name="budget" type="number" min="0" step="50" value="<%= x.budget === null || x.budget === undefined ? '' : x.budget %>"></div>
+            </div>
+            <div class="form-row">
+              <div class="field"><label for="cd-<%= x.id %>">Début</label><input id="cd-<%= x.id %>" name="date_debut" type="date" value="<%= x.date_debut || '' %>"></div>
+              <div class="field"><label for="cf-<%= x.id %>">Fin</label><input id="cf-<%= x.id %>" name="date_fin" type="date" value="<%= x.date_fin || '' %>"></div>
+            </div>
+            <div class="field"><label for="ck-<%= x.id %>">KPI visés</label><input id="ck-<%= x.id %>" name="kpi_vises" type="text" maxlength="2000" value="<%= x.kpi_vises || '' %>"></div>
+            <div class="field"><label for="cr-<%= x.id %>">KPI réels</label><input id="cr-<%= x.id %>" name="kpi_reels" type="text" maxlength="2000" value="<%= x.kpi_reels || '' %>"></div>
+            <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
+          </form>
+          <form data-api="/api/admin/croissance/campagnes/<%= x.id %>" data-method="DELETE" data-confirm="Supprimer cette campagne ? Ses contenus restent, hors campagne.">
+            <button class="btn btn--danger btn--sm" type="submit">Supprimer la campagne</button><span class="status" data-status role="status"></span>
+          </form>
+        </details>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+
+  <section class="panel" aria-labelledby="cr-cont-liste">
+    <div class="panel-head"><h2 id="cr-cont-liste">Contenus · <span class="cr-cap"><%= cal.label %></span></h2><a href="/api/admin/croissance/export?table=contenus">Exporter (CSV)</a></div>
+    <p class="dim">La publication est <strong>manuelle</strong> : publie toi-même sur le canal, puis marque le contenu « Publié ».</p>
+    <% const liste = duMois.concat(cal.sansDate); %>
+    <% if (!liste.length) { %><p class="empty">Aucun contenu ce mois-ci.</p><% } else { %>
+    <ul class="items">
+      <% liste.forEach(function (x) { %>
+      <li class="item" id="contenu-<%= x.id %>">
+        <div class="item-head"><h3><%= x.titre %></h3><span class="cr-pill cr-pill--<%= x.statut %>"><%= c.labels.contenuStatuts[x.statut] || x.statut %></span></div>
+        <div class="item-meta"><%= canalLabel(x.canal) %><% if (x.format) { %> · <%= x.format %><% } %> · <span class="num"><%= x.date_prevue ? fmt.jour(x.date_prevue) : 'sans date' %></span><% if (x.campagne_id && c.campagneNom[x.campagne_id]) { %> · <%= c.campagneNom[x.campagne_id] %><% } %></div>
+        <details class="reveal">
+          <summary class="btn btn--ghost btn--sm">Ouvrir</summary>
+          <form class="form" data-api="/api/admin/croissance/contenus/<%= x.id %>" data-method="PATCH" data-ok="Contenu enregistré.">
+            <div class="field"><label for="ct-<%= x.id %>">Titre</label><input id="ct-<%= x.id %>" name="titre" type="text" maxlength="300" value="<%= x.titre %>" required></div>
+            <div class="form-row">
+              <div class="field"><label for="cdp-<%= x.id %>">Date prévue</label><input id="cdp-<%= x.id %>" name="date_prevue" type="date" value="<%= x.date_prevue || '' %>"></div>
+              <div class="field"><label for="cst-<%= x.id %>">Statut</label><select id="cst-<%= x.id %>" name="statut"><% Object.keys(c.labels.contenuStatuts).forEach(function (s) { %><option value="<%= s %>"<% if (s === x.statut) { %> selected<% } %>><%= c.labels.contenuStatuts[s] %></option><% }) %></select></div>
+            </div>
+            <div class="field"><label for="ctx-<%= x.id %>">Texte</label><textarea id="ctx-<%= x.id %>" name="texte" maxlength="20000" rows="6" data-dictee><%= x.texte || '' %></textarea></div>
+            <div class="field"><label for="cmu-<%= x.id %>">Média (https://)</label><input id="cmu-<%= x.id %>" name="media_url" type="url" pattern="https://.*" value="<%= x.media_url || '' %>"></div>
+            <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
+          </form>
+          <form data-api="/api/admin/croissance/contenus/<%= x.id %>" data-method="DELETE" data-confirm="Supprimer ce contenu ?">
+            <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+          </form>
+        </details>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+</div>

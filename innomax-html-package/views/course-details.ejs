@@ -5,10 +5,9 @@
     <base href="/" />
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Détails du cours sur D. School">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/seo-head', { seoPage: 'cours-detail', seoExtra: { course: data } }) %>
 
     <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
 
@@ -728,7 +727,7 @@
             <!-- main area end  -->
 
             <!-- Le pied de page est préservé mais adapté au style sombre -->
-            <%-include('partials/footer')%>
+            <%- include('partials/aeo-bloc', { aeoPage: 'cours-detail' }) %><%-include('partials/footer')%>
         </div>
 
         <!-- Modal pour la prise de rendez-vous -->
@@ -1115,7 +1114,7 @@ function createTeacherAvailabilityCard(teacher, container) {
 
     teacherSlot.innerHTML = `
         <div class="teacher-header">
-            <img class="teacher-avatar" src="${teacher.avatar}" alt="${teacher.username}">
+            <img loading="lazy" decoding="async" class="teacher-avatar" src="${teacher.avatar}" alt="${teacher.username}">
             <span class="teacher-name">${teacher.username}</span>
         </div>
         <div class="teacher-times"></div>

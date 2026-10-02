@@ -1,0 +1,13 @@
+<%# En-tête des pages publiques au style Panda (/faq, /presse) : indexables, contrairement à partials/pilotage/head.ejs. locals : seoPage, seoExtra (facultatif). -%>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+<%- include('seo-head', { seoPage: seoPage, seoExtra: typeof seoExtra !== 'undefined' ? seoExtra : null }) %>
+    <link rel="icon" href="/assets/img/logo/cropped-LogoPB512gold-1.webp" type="image/webp">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400..800&family=Unbounded:wght@500..800&display=swap">
+    <link rel="stylesheet" href="/assets/css/pilotage.css">
+    <link rel="stylesheet" href="/assets/css/croissance.css">
+    <script src="/assets/js/theme.js"></script>
+    <script src="/assets/js/reflets.js" defer></script>

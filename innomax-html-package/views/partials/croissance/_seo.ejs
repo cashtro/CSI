@@ -1,0 +1,85 @@
+<%# Croissance · SEO : audit automatique des pages publiques et corrections par Racine (agent SEO). %>
+<div class="pl-stack">
+  <section class="panel" aria-labelledby="cr-audit">
+    <div class="panel-head">
+      <h2 id="cr-audit">Audit SEO des pages publiques</h2>
+      <% if (c.audit) { %><span class="tag">Moyenne <strong class="num"><%= c.audit.moyenne %> / 100</strong></span><% } %>
+    </div>
+    <p class="dim cr-lead-sm">Chaque page est rendue comme un visiteur la voit, puis vérifiée : titre, description, H1, texte alternatif, canonique, JSON-LD, longueur, mots-clés cibles et liens internes. « Faire corriger par Racine » demande des textes à l’agent SEO ; rien ne change sur le site avant ta relecture.</p>
+    <% if (!c.audit) { %><p class="status is-error">Audit indisponible.</p><% } else { %>
+    <div class="table-wrap">
+      <table class="grid stack cr-audit-table">
+        <thead><tr><th>Page</th><th>Score</th><th>Titre</th><th>Description</th><th>Corrections</th></tr></thead>
+        <tbody>
+          <% c.audit.pages.forEach(function (p) { %>
+          <tr>
+            <td data-label="Page"><a href="#seo-<%= p.id %>"><%= p.label %></a> <span class="dim mono"><%= p.path %></span></td>
+            <td data-label="Score"><span class="cr-score"><meter min="0" max="100" low="60" high="85" optimum="100" value="<%= p.score %>"><%= p.score %></meter><span class="num"><%= p.score %></span></span></td>
+            <td data-label="Titre" class="num"><%= p.title.length %> car.</td>
+            <td data-label="Description" class="num"><%= p.description.length %> car.</td>
+            <td data-label="Corrections" class="num"><%= p.corrections.length %></td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
+    </div>
+    <% } %>
+  </section>
+
+  <% if (c.audit) { c.audit.pages.forEach(function (p) { const j = c.lastSeo[p.id]; const prop = j && j.proposal; const editable = c.pages.some(function (x) { return x.id === p.id; }); %>
+  <section class="panel" id="seo-<%= p.id %>" aria-labelledby="seo-h-<%= p.id %>">
+    <div class="panel-head">
+      <h2 id="seo-h-<%= p.id %>"><%= p.label %></h2>
+      <span class="cr-score cr-score--lg"><meter min="0" max="100" low="60" high="85" optimum="100" value="<%= p.score %>"><%= p.score %></meter><span class="num"><%= p.score %> / 100</span></span>
+    </div>
+    <dl class="cr-dl">
+      <div><dt>Titre</dt><dd><%= p.title || '—' %></dd></div>
+      <div><dt>Description</dt><dd><%= p.description || '—' %></dd></div>
+      <div><dt>H1</dt><dd><%= p.h1 || '—' %></dd></div>
+    </dl>
+    <ul class="cr-checks">
+      <% p.checks.forEach(function (k) { %>
+      <li class="<%= k.ok ? 'is-ok' : 'is-ko' %>"><span aria-hidden="true"><%= k.ok ? '✅' : '⚠️' %></span> <strong><%= k.label %></strong> <span class="dim">· <%= k.detail %> · <span class="num"><%= k.points %>/<%= k.max %></span></span></li>
+      <% }) %>
+    </ul>
+    <% if (p.corrections.length) { %>
+    <h3 class="cr-h3">Corrections proposées</h3>
+    <ol class="cr-fixes"><% p.corrections.forEach(function (f) { %><li><%= f %></li><% }) %></ol>
+    <% } %>
+
+    <% if (editable) { %>
+    <div class="actions">
+      <form data-api="/api/admin/croissance/seo/racine" data-ok="Demande envoyée à Racine.">
+        <input type="hidden" name="page" value="<%= p.id %>">
+        <button class="btn btn--accent btn--sm" type="submit">🌱 Faire corriger par Racine</button>
+        <span class="status" data-status role="status"></span>
+      </form>
+    </div>
+    <% } else { %>
+    <p class="dim">Page de cours : son titre et sa description viennent du cours lui-même (nom et description).</p>
+    <% } %>
+
+    <% if (j) { %><%- include('_job', { j: j, c: c, importLabel: null }) %><% } %>
+    <% if (j && j.job && j.job.status === 'done' && !prop) { %><p class="status is-error">Réponse de Racine illisible : relance la demande.</p><% } %>
+    <% if (prop && !j.importe_le) { %>
+    <div class="cr-proposal">
+      <h3 class="cr-h3">Proposition de Racine, à relire</h3>
+      <% if (prop.justification) { %><p class="dim"><%= prop.justification %></p><% } %>
+      <form class="form" data-api="/api/admin/croissance/seo/appliquer" data-ok="Appliqué au site (CMS).">
+        <input type="hidden" name="page" value="<%= p.id %>">
+        <input type="hidden" name="job_id" value="<%= j.job_id %>">
+        <div class="field"><label for="st-<%= p.id %>">Nouveau titre <span class="dim">(<%= prop.title.length %> car., idéal 30 à 65)</span></label><input id="st-<%= p.id %>" name="title" type="text" maxlength="70" value="<%= prop.title %>" required></div>
+        <div class="field"><label for="sd-<%= p.id %>">Nouvelle description <span class="dim">(<%= prop.description.length %> car., idéal 70 à 160)</span></label><textarea id="sd-<%= p.id %>" name="description" maxlength="170" rows="3" required><%= prop.description %></textarea></div>
+        <% if (prop.faq.length) { %>
+        <details class="reveal"><summary class="btn btn--ghost btn--sm">Questions suggérées (<%= prop.faq.length %>)</summary>
+          <ul class="cr-faq-sugg"><% prop.faq.forEach(function (x) { %><li><strong><%= x.q %></strong> <%= x.r %></li><% }) %></ul>
+          <p class="dim">À ajouter, après relecture, dans la section AEO.</p>
+        </details>
+        <% } %>
+        <div class="actions"><button class="btn btn--accent" type="submit">✅ Appliquer au CMS</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </div>
+    <% } %>
+  </section>
+  <% }) } %>
+</div>

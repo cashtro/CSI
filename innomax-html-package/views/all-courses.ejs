@@ -4,10 +4,9 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Tous les cours - D. School">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/seo-head', { seoPage: 'cours' }) %>
 
     <link rel="shortcut icon" href="assets/img/logo/cropped-LogoPB512gold-1.webp" type="images/x-icon" />
 
@@ -425,7 +424,7 @@
             </section>
         </main>
 
-        <%-include('partials/footer')%>
+        <%- include('partials/aeo-bloc', { aeoPage: 'cours' }) %><%-include('partials/footer')%>
     </div>
 
     <!-- Scripts -->

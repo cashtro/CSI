@@ -1,0 +1,28 @@
+<%#
+  Onglet 📣 Croissance de /admin/console (CROISSANCE.md). locals : c (utils/croissance.loadPage), fmt.
+  Formulaires : data-api (assets/js/espace.js, jeton CSRF), aucun script ni style en ligne.
+  Rien n'est publié ni envoyé d'ici : les agents proposent, l'admin relit et applique.
+%>
+<%
+  const sousOnglets = [
+    { id: 'tableau', emoji: '📊', label: 'Tableau de bord' },
+    { id: 'seo', emoji: '🔍', label: 'SEO' },
+    { id: 'aeo', emoji: '💬', label: 'AEO' },
+    { id: 'backlinks', emoji: '🔗', label: 'Backlinks' },
+    { id: 'campagnes', emoji: '🗓️', label: 'Campagnes' },
+    { id: 'medias', emoji: '📰', label: 'Médias' },
+  ];
+%>
+<div class="cr">
+  <nav class="cr-subnav" aria-label="Sections de Croissance">
+    <% sousOnglets.forEach(function (o) { %>
+    <a href="/admin/console?vue=croissance&amp;section=<%= o.id %>"<% if (c.section === o.id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= o.emoji %></span> <%= o.label %></a>
+    <% }) %>
+  </nav>
+
+  <% c.errors.forEach(function (e) { %><p class="status is-error cr-alert"><%= e %></p><% }) %>
+
+  <%- include('_' + c.section, { c: c }) %>
+
+  <p class="cr-rappel dim">🛡️ Aucune publication ni aucun envoi automatique. Loi 96 : le français d’abord. LCAP : aucun courriel commercial sans consentement.</p>
+</div>

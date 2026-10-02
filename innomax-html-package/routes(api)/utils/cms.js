@@ -62,6 +62,9 @@ const REGISTRY = [
   { key: 'contact.hero.description', section: 'Contact · Bandeau', label: 'Texte de présentation', type: 'texte', fallback: "Ready to start your next project with us? Get in touch today and let's create something amazing together. Our team is here to help you with any questions or inquiries." },
 ];
 
+// SEO and AEO zones of the public pages (utils/seo-data.js, CROISSANCE.md).
+REGISTRY.push(...require('./seo-data').cmsZones());
+
 let cache = new Map(); // `${lang}:${key}` -> { type, value }
 let loadedAt = 0;
 let failedAt = 0;
