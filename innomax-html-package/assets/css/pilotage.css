@@ -1,7 +1,7 @@
 /* ==========================================================================
    Pandora · espace entreprises (/espace) et console admin (/admin/console)
-   Base blanche, filets fins, reflets d'accent en mouvement. « Tout est en
-   mouvement », mais calmement. Fichier statique : aucun style en ligne,
+   Direction « Aurora » : base blanche, filets fins encre, reflet holographique
+   en mouvement, avec parcimonie. « Tout est en mouvement », mais calmement. Fichier statique : aucun style en ligne,
    compatible avec une CSP stricte. Les animations ne touchent que transform,
    opacity et background-position.
 
@@ -29,67 +29,82 @@
 
 
 /* 0. BLOC MARQUE ----------------------------------------------------------- */
-/* Accent TEMPORAIRE (indigo + cyan) en attendant le choix du rebranding.
-   --bg, --surface    fonds de page et de cartes
-   --ink, --muted     texte principal et secondaire (AA sur --bg et --surface)
-   --line             filet fin des cartes (1 px)
-   --line-strong      filet d'appui (en-tête, en-têtes de tableau)
-   --accent           couleur de marque (aplats, reflets)
-   --accent-2         second ton des reflets animés
-   --accent-ink       accent utilisé comme texte (AA sur --surface)
-   --on-accent        texte posé sur un aplat d'accent (AA)
-   --ok, --warn, --bad  succès, attention, erreur (texte, AA)               */
+/* Direction 3 « Aurora ». Seul bloc à remplacer pour changer de marque.
+   --bg, --surface        fonds de page et de cartes
+   --ink, --muted         texte principal et secondaire (AA sur --bg et --surface)
+   --line                 filet doux (1 px)
+   --line-strong          filet des éléments principaux (1 px)
+   --accent … --accent-4  reflet holographique (dans cet ordre), --accent en aplat
+   --accent-ink           accent utilisé comme texte (AA sur --surface)
+   --on-accent            texte posé sur l'accent ou le reflet (ici encre :
+                          le blanc sur #7C5CFF ne fait que 4,35:1, l'encre 4,56:1)
+   --ok, --on-ok, --ok-ink  succès : fond menthe, texte posé dessus, texte seul
+   --bad                  alerte et erreur (texte, AA)
+   --font-title, --font-text, --radius  polices (chargées dans head.ejs) et rayon
+   Le logotype vient de la variable EJS brandName (voir partials/pilotage/head.ejs). */
 
 :root {
   --bg: #ffffff;
   --surface: #ffffff;
-  --ink: #111318;
-  --muted: #5b6270;
-  --line: #c0c4cc;
-  --line-strong: #111318;
-  --accent: #4f46e5;
-  --accent-2: #06b6d4;
-  --accent-ink: #4338ca;
-  --on-accent: #ffffff;
-  --ok: #047857;
-  --warn: #92400e;
-  --bad: #b91c1c;
+  --ink: #0a0a0a;
+  --muted: #4f5058;
+  --line: #e7e7ea;
+  --line-strong: #0a0a0a;
+  --accent: #7c5cff;
+  --accent-2: #22d3ee;
+  --accent-3: #ff6ad5;
+  --accent-4: #5eead4;
+  --accent-ink: #5b3df5;
+  --on-accent: #0a0a0a;
+  --ok: #5eead4;
+  --on-ok: #0a0a0a;
+  --ok-ink: #0f766e;
+  --bad: #e11d48;
+  --font-title: 'Unbounded', 'Segoe UI', system-ui, sans-serif;
+  --font-text: 'DM Sans', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --radius: 18px;
   color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme='light']) {
-    --bg: #0f1115;
-    --surface: #161a20;
-    --ink: #e8eaed;
-    --muted: #a3a9b3;
-    --line: #2f353e;
-    --line-strong: #c0c4cc;
-    --accent: #818cf8;
+    --bg: #0a0a0b;
+    --surface: #141418;
+    --ink: #f4f4f6;
+    --muted: #a1a1aa;
+    --line: #2a2a31;
+    --line-strong: #3a3a43;
+    --accent: #7c5cff;
     --accent-2: #22d3ee;
-    --accent-ink: #a5b4fc;
-    --on-accent: #0f1115;
-    --ok: #34d399;
-    --warn: #fbbf24;
-    --bad: #f87171;
+    --accent-3: #ff6ad5;
+    --accent-4: #5eead4;
+    --accent-ink: #b4a2ff;
+    --on-accent: #0a0a0a;
+    --ok: #5eead4;
+    --on-ok: #0a0a0a;
+    --ok-ink: #5eead4;
+    --bad: #fb7185;
     color-scheme: dark;
   }
 }
 
 :root[data-theme='dark'] {
-  --bg: #0f1115;
-  --surface: #161a20;
-  --ink: #e8eaed;
-  --muted: #a3a9b3;
-  --line: #2f353e;
-  --line-strong: #c0c4cc;
-  --accent: #818cf8;
+  --bg: #0a0a0b;
+  --surface: #141418;
+  --ink: #f4f4f6;
+  --muted: #a1a1aa;
+  --line: #2a2a31;
+  --line-strong: #3a3a43;
+  --accent: #7c5cff;
   --accent-2: #22d3ee;
-  --accent-ink: #a5b4fc;
-  --on-accent: #0f1115;
-  --ok: #34d399;
-  --warn: #fbbf24;
-  --bad: #f87171;
+  --accent-3: #ff6ad5;
+  --accent-4: #5eead4;
+  --accent-ink: #b4a2ff;
+  --on-accent: #0a0a0a;
+  --ok: #5eead4;
+  --on-ok: #0a0a0a;
+  --ok-ink: #5eead4;
+  --bad: #fb7185;
   color-scheme: dark;
 }
 
@@ -104,17 +119,14 @@
   --line-soft: color-mix(in srgb, var(--line) 50%, var(--surface));
   --accent-soft: color-mix(in srgb, var(--accent) 8%, var(--surface));
   --accent-line: color-mix(in srgb, var(--accent) 40%, var(--surface));
-  --accent-mid: color-mix(in srgb, var(--accent) 65%, var(--accent-2));
-  --accent-deep: color-mix(in srgb, var(--accent) 80%, var(--ink));
-  --ok-soft: color-mix(in srgb, var(--ok) 12%, var(--surface));
-  --warn-soft: color-mix(in srgb, var(--warn) 12%, var(--surface));
   --bad-soft: color-mix(in srgb, var(--bad) 10%, var(--surface));
+  --line-input: color-mix(in srgb, var(--line-strong) 30%, var(--line));
   --focus: var(--accent);
 
   /* reflets animés (background-size 200 %, background-position en boucle) */
-  --liquid: linear-gradient(110deg, var(--accent) 0%, var(--accent-2) 25%, var(--accent) 50%, var(--accent-2) 75%, var(--accent) 100%);
-  --liquid-btn: linear-gradient(110deg, var(--accent) 0%, var(--accent-mid) 25%, var(--accent) 50%, var(--accent-deep) 75%, var(--accent) 100%);
-  --foil: linear-gradient(110deg, var(--accent-ink) 0%, var(--accent) 25%, var(--accent-mid) 50%, var(--accent) 75%, var(--accent-ink) 100%);
+  /* reflet holographique : background-size 300 %, une période en 14 s */
+  --holo: linear-gradient(110deg, var(--accent) 0%, var(--accent-2) 25%, var(--accent-3) 50%, var(--accent-4) 75%, var(--accent) 100%);
+  --holo-speed: 14s;
   --sheen: linear-gradient(105deg, transparent 38%, color-mix(in srgb, var(--accent-2) 20%, transparent) 50%, transparent 62%);
   --brushed: repeating-linear-gradient(90deg, color-mix(in srgb, var(--surface) 55%, transparent) 0 1px, color-mix(in srgb, var(--ink) 2.5%, transparent) 1px 3px), linear-gradient(180deg, var(--surface), var(--surface-2));
   --header-bg: radial-gradient(90% 160% at 100% 0%, color-mix(in srgb, var(--accent-2) 9%, transparent), transparent 60%), linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface)), var(--surface));
@@ -136,8 +148,6 @@
   --s-8: 64px;
 
   /* typographie */
-  --font-title: 'Syne', 'Segoe UI', system-ui, sans-serif;
-  --font-text: 'Manrope', 'Segoe UI', system-ui, -apple-system, sans-serif;
   --fs-xs: 0.78rem;
   --fs-sm: 0.875rem;
   --fs-base: 1rem;
@@ -149,12 +159,11 @@
 
   /* formes */
   --r-sm: 8px;
-  --r-md: 14px;
-  --r-lg: 20px;
+  --r-md: calc(var(--radius) - 4px);
+  --r-lg: var(--radius);
   --r-pill: 999px;
   --tap: 44px;
   --wrap: 1200px;
-  --liquid-speed: 8s;
 }
 
 
@@ -204,19 +213,9 @@ body.pl {
 }
 .skip:focus { top: var(--s-2); }
 
-/* Texte « feuille » d'accent : le dégradé coule lentement dans les lettres. */
-.foil { color: var(--accent-ink); }
-@supports ((-webkit-background-clip: text) or (background-clip: text)) {
-  .foil {
-    background: var(--foil);
-    background-size: 200% 100%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-    animation: pl-liquid var(--liquid-speed) linear infinite;
-  }
-}
+/* Titres et logotype : encre pure. Le reflet est réservé au logo, aux boutons
+   principaux, aux étapes et au filet sous l'en-tête. */
+.foil { color: var(--ink); }
 
 
 /* 3. Mise en page ---------------------------------------------------------- */
@@ -231,12 +230,12 @@ body.pl {
 
 .topbar {
   /* couche 1 : filet d'accent animé (1 px) ; couche 2 : fond blanc teinté */
-  background: var(--liquid) left bottom / 200% 1px repeat-x, var(--header-bg);
+  background: var(--holo) left bottom / 300% 1px repeat-x, var(--header-bg);
   color: var(--ink);
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  animation: pl-filet 10s linear infinite;
+  animation: pl-filet var(--holo-speed) linear infinite;
 }
 .topbar::before {
   /* reflet d'accent qui glisse lentement sur l'en-tête */
@@ -303,24 +302,21 @@ body.pl {
   color: var(--muted);
 }
 
-/* Logo : boîte de Pandora, couvercle entrouvert, étincelle. */
+/* Logo : boîte ouverte d'où sort une lumière holographique, et une étincelle. */
 .pb-mark { width: 44px; height: 44px; flex: none; overflow: visible; }
-.pb-s-light { stop-color: var(--accent-2); }
-.pb-s-mid { stop-color: var(--accent); }
-.pb-s-deep { stop-color: var(--accent-deep); }
-.pb-s-shine { stop-color: var(--surface); }
-.pb-s-glow { stop-color: var(--accent-2); }
-.pb-band { fill: var(--accent-deep); opacity: 0.55; }
-.pb-edge { fill: none; stroke: var(--accent-deep); stroke-width: 0.8; }
-.pb-edge-fill { stroke: var(--accent-deep); stroke-width: 0.8; }
-.pb-lock { fill: color-mix(in srgb, var(--accent-deep) 55%, black); }
-.pb-knob { fill: var(--accent-2); stroke: var(--accent-deep); stroke-width: 0.6; }
-.pb-spark { fill: var(--accent-2); stroke: var(--accent); stroke-width: 0.7; stroke-linejoin: round; }
+.pb-s-1 { stop-color: var(--accent); }
+.pb-s-2 { stop-color: var(--accent-2); }
+.pb-s-3 { stop-color: var(--accent-3); }
+.pb-s-4 { stop-color: var(--accent-4); }
+.pb-body { fill: var(--ink); }
+.pb-edge { fill: none; stroke-width: 1; }
+.pb-lock { fill: var(--surface); }
+.pb-spark { stroke: var(--surface); stroke-width: 0.6; stroke-linejoin: round; }
+.pb-holo-run { animation: pb-holo-run 6s linear infinite; }
 
-.pb-lid { transform-box: fill-box; transform-origin: 2% 100%; transform: rotate(-9deg); animation: pb-lid-open 2.2s cubic-bezier(0.34, 1.3, 0.5, 1) 0.2s both; }
+.pb-lid { transform-box: fill-box; transform-origin: 2% 100%; transform: rotate(-28deg); animation: pb-lid-open 2.2s cubic-bezier(0.34, 1.3, 0.5, 1) 0.2s both; }
 .pb-spark { transform-box: fill-box; transform-origin: 50% 50%; opacity: 0.95; transform: translateY(0) scale(0.75) rotate(90deg); animation: pb-spark-out 2.2s ease-out 0.2s both, pb-twinkle 3.2s ease-in-out 2.6s infinite; }
 .pb-glow { opacity: 0.85; animation: pb-glow 2.2s ease-out 0.2s both; }
-.pb-sheen { transform: translateX(-30px) skewX(-18deg); animation: pb-sheen 7s ease-in-out 1.2s infinite; }
 .pb-mark.is-replay-a .pb-lid { animation-name: pb-lid-open-a; }
 .pb-mark.is-replay-b .pb-lid { animation-name: pb-lid-open-b; }
 .pb-mark.is-replay-a .pb-spark { animation-name: pb-spark-out-a, pb-twinkle; }
@@ -404,11 +400,9 @@ body.pl {
   left: var(--s-3);
   right: var(--s-3);
   bottom: -1px;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: var(--liquid);
-  background-size: 200% 100%;
-  animation: pl-liquid var(--liquid-speed) linear infinite;
+  height: 2px;
+  border-radius: 2px 2px 0 0;
+  background: var(--ink);
 }
 .count {
   display: inline-grid;
@@ -417,8 +411,8 @@ body.pl {
   height: 22px;
   padding: 0 6px;
   border-radius: var(--r-pill);
-  background: var(--accent);
-  color: var(--on-accent);
+  background: var(--ink);
+  color: var(--surface);
   font-size: var(--fs-xs);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
@@ -429,7 +423,7 @@ body.pl {
 
 .panel {
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-strong);
   border-radius: var(--r-lg);
   padding: var(--s-5);
   box-shadow: var(--shadow-1);
@@ -510,7 +504,7 @@ body.pl {
   top: 50%;
   width: 200%;
   aspect-ratio: 1;
-  background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--line), var(--accent), var(--accent-2), var(--line), var(--accent));
+  background: conic-gradient(from 0deg, var(--accent), var(--accent-2), var(--accent-3), var(--accent-4), var(--accent));
   transform: translate(-50%, -50%) rotate(0deg);
   animation: pl-spin 9s linear infinite;
   z-index: -2;
@@ -542,9 +536,9 @@ body.pl {
   color: var(--accent-ink);
   box-shadow: inset 0 0 0 1px var(--accent-line);
 }
-.badge--approuve, .badge--termine, .badge--paye { background: var(--ok-soft); color: var(--ok); box-shadow: none; }
-.badge--modification_demandee, .badge--en_pause { background: var(--warn-soft); color: var(--warn); box-shadow: none; }
-.badge--annule { background: var(--bad-soft); color: var(--bad); box-shadow: none; }
+.badge--approuve, .badge--termine, .badge--paye { background: var(--ok); color: var(--on-ok); box-shadow: none; }
+.badge--modification_demandee, .badge--en_pause { background: var(--surface); color: var(--ink); box-shadow: inset 0 0 0 1px var(--line-strong); }
+.badge--annule { background: var(--surface); color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad); }
 
 .steps {
   list-style: none;
@@ -590,19 +584,19 @@ body.pl {
 }
 .steps li.is-done .dot { filter: none; opacity: 1; border-color: var(--accent-line); background: var(--accent-soft); }
 .steps li.is-done::after {
-  background: var(--liquid);
-  background-size: 200% 100%;
-  animation: pl-liquid var(--liquid-speed) linear infinite;
+  background: var(--holo);
+  background-size: 300% 100%;
+  animation: pl-holo var(--holo-speed) linear infinite;
 }
 .steps li.is-current { color: var(--ink); }
 .steps li.is-current .dot {
   filter: none;
   opacity: 1;
   border: 0;
-  background: var(--liquid);
-  background-size: 200% 100%;
+  background: var(--holo);
+  background-size: 300% 100%;
   box-shadow: 0 0 0 4px var(--accent-soft), var(--shadow-accent);
-  animation: pl-liquid var(--liquid-speed) linear infinite, pl-bob 2.6s ease-in-out infinite;
+  animation: pl-holo var(--holo-speed) linear infinite, pl-bob 2.6s ease-in-out infinite;
 }
 .steps-label { display: none; margin: var(--s-2) 0 0; font-weight: 800; color: var(--ink); font-size: var(--fs-sm); }
 
@@ -661,7 +655,7 @@ table.grid td.right, table.grid th.right { text-align: right; }
   padding: var(--s-2) var(--s-3);
   color: var(--ink);
   background: var(--surface);
-  border: 1px solid var(--line);
+  border: 1px solid var(--line-input);
   border-radius: var(--r-sm);
   font: inherit;
 }
@@ -675,7 +669,7 @@ table.grid td.right, table.grid th.right { text-align: right; }
 
 .status { min-height: 1.4em; margin: 0; font-size: var(--fs-sm); font-weight: 700; color: var(--muted); }
 .status.is-error { color: var(--bad); }
-.status.is-ok { color: var(--ok); }
+.status.is-ok { color: var(--ok-ink); }
 
 
 /* 9. Boutons --------------------------------------------------------------- */
@@ -709,14 +703,14 @@ table.grid td.right, table.grid th.right { text-align: right; }
 .btn[disabled] { opacity: 0.55; cursor: wait; transform: none; }
 
 .pl .btn--accent {
-  background: var(--liquid-btn);
-  background-size: 200% 100%;
-  border-color: transparent;
+  background: var(--holo);
+  background-size: 300% 100%;
+  border-color: var(--line-strong);
   color: var(--on-accent);
   box-shadow: var(--shadow-accent);
-  animation: pl-liquid var(--liquid-speed) linear infinite;
+  animation: pl-holo var(--holo-speed) linear infinite;
 }
-.pl .btn--ghost { background: transparent; color: var(--ink); border-color: var(--line); box-shadow: none; }
+.pl .btn--ghost { background: transparent; color: var(--ink); border-color: var(--line-strong); box-shadow: none; }
 .pl .btn--ghost:hover { background: var(--brushed); border-color: var(--line-strong); }
 .pl .btn--danger { background: transparent; color: var(--bad); border-color: currentColor; box-shadow: none; }
 .pl .btn--danger:hover { background: var(--bad-soft); }
@@ -783,9 +777,9 @@ details.reveal[open] summary { margin-bottom: var(--s-4); }
   animation: pl-fall 1.8s cubic-bezier(0.25, 0.6, 0.4, 1) forwards;
 }
 .confetti i:nth-child(4n + 1) { background: var(--accent-2); }
-.confetti i:nth-child(4n + 2) { background: var(--accent-mid); border-radius: 50%; width: 10px; height: 10px; }
-.confetti i:nth-child(4n + 3) { background: var(--line); }
-.confetti i:nth-child(5n) { background: var(--ok); width: 7px; height: 18px; }
+.confetti i:nth-child(4n + 2) { background: var(--accent-3); border-radius: 50%; width: 10px; height: 10px; }
+.confetti i:nth-child(4n + 3) { background: var(--ink); }
+.confetti i:nth-child(5n) { background: var(--accent-4); width: 7px; height: 18px; }
 .confetti i:nth-child(1) { left: 6%; animation-delay: 0s; }
 .confetti i:nth-child(2) { left: 14%; animation-delay: 0.15s; }
 .confetti i:nth-child(3) { left: 22%; animation-delay: 0.05s; }
@@ -826,9 +820,9 @@ details.reveal[open] summary { margin-bottom: var(--s-4); }
 /* 13. Mouvement (images clés) ---------------------------------------------- */
 /* Seulement transform, opacity et background-position. */
 
-/* reflet liquide : le dégradé (200 %) coule d'une longueur complète, en boucle */
-@keyframes pl-liquid { from { background-position: 0% 50%; } to { background-position: 200% 50%; } }
-@keyframes pl-filet { from { background-position: 0% 100%, 0 0; } to { background-position: 200% 100%, 0 0; } }
+/* reflet holographique : à 300 %, une période complète vaut une position de 150 % */
+@keyframes pl-holo { from { background-position: 0% 50%; } to { background-position: 150% 50%; } }
+@keyframes pl-filet { from { background-position: 0% 100%, 0 0; } to { background-position: 150% 100%, 0 0; } }
 @keyframes pl-glide {
   0%, 15% { transform: translateX(-110%) skewX(-12deg); }
   70%, 100% { transform: translateX(260%) skewX(-12deg); }
@@ -845,9 +839,9 @@ details.reveal[open] summary { margin-bottom: var(--s-4); }
 
 /* Logo : trois copies des mêmes images clés (chargement, survol A, survol B),
    pour que reflets.js relance l'ouverture à chaque survol. */
-@keyframes pb-lid-open   { 0% { transform: rotate(0deg); } 35% { transform: rotate(-24deg); } 60% { transform: rotate(-20deg); } 100% { transform: rotate(-9deg); } }
-@keyframes pb-lid-open-a { 0% { transform: rotate(0deg); } 35% { transform: rotate(-24deg); } 60% { transform: rotate(-20deg); } 100% { transform: rotate(-9deg); } }
-@keyframes pb-lid-open-b { 0% { transform: rotate(0deg); } 35% { transform: rotate(-24deg); } 60% { transform: rotate(-20deg); } 100% { transform: rotate(-9deg); } }
+@keyframes pb-lid-open   { 0% { transform: rotate(0deg); } 40% { transform: rotate(-34deg); } 65% { transform: rotate(-25deg); } 100% { transform: rotate(-28deg); } }
+@keyframes pb-lid-open-a { 0% { transform: rotate(0deg); } 40% { transform: rotate(-34deg); } 65% { transform: rotate(-25deg); } 100% { transform: rotate(-28deg); } }
+@keyframes pb-lid-open-b { 0% { transform: rotate(0deg); } 40% { transform: rotate(-34deg); } 65% { transform: rotate(-25deg); } 100% { transform: rotate(-28deg); } }
 @keyframes pb-spark-out   { 0%, 20% { opacity: 0; transform: translateY(12px) scale(0.2) rotate(0deg); } 55% { opacity: 1; transform: translateY(-2px) scale(1.2) rotate(45deg); } 100% { opacity: 0.95; transform: translateY(0) scale(0.75) rotate(90deg); } }
 @keyframes pb-spark-out-a { 0%, 20% { opacity: 0; transform: translateY(12px) scale(0.2) rotate(0deg); } 55% { opacity: 1; transform: translateY(-2px) scale(1.2) rotate(45deg); } 100% { opacity: 0.95; transform: translateY(0) scale(0.75) rotate(90deg); } }
 @keyframes pb-spark-out-b { 0%, 20% { opacity: 0; transform: translateY(12px) scale(0.2) rotate(0deg); } 55% { opacity: 1; transform: translateY(-2px) scale(1.2) rotate(45deg); } 100% { opacity: 0.95; transform: translateY(0) scale(0.75) rotate(90deg); } }
@@ -855,7 +849,7 @@ details.reveal[open] summary { margin-bottom: var(--s-4); }
 @keyframes pb-glow-a { 0%, 15% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0.85; } }
 @keyframes pb-glow-b { 0%, 15% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0.85; } }
 @keyframes pb-twinkle { 0%, 100% { opacity: 0.95; transform: translateY(0) scale(0.75) rotate(90deg); } 50% { opacity: 0.55; transform: translateY(-1px) scale(0.6) rotate(135deg); } }
-@keyframes pb-sheen { 0%, 55% { transform: translateX(-30px) skewX(-18deg); } 85%, 100% { transform: translateX(60px) skewX(-18deg); } }
+@keyframes pb-holo-run { from { transform: translateX(0); } to { transform: translateX(16px); } }
 
 
 /* 14. Petits écrans (390 px) ----------------------------------------------- */

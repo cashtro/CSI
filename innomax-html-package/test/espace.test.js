@@ -353,7 +353,7 @@ describe('cheerful theme', () => {
   });
 
   // Rebranding: every colour lives in one brand block at the top of the file.
-  const TOKENS = ['--bg', '--surface', '--ink', '--muted', '--line', '--line-strong', '--accent', '--accent-2', '--accent-ink', '--on-accent', '--ok', '--warn', '--bad'];
+  const TOKENS = ['--bg', '--surface', '--ink', '--muted', '--line', '--line-strong', '--accent', '--accent-2', '--accent-3', '--accent-4', '--accent-ink', '--on-accent', '--ok', '--on-ok', '--ok-ink', '--bad'];
   const start = css.indexOf('/* 0. BLOC MARQUE');
   const end = css.indexOf('/* FIN DU BLOC MARQUE');
   const block = css.slice(start, end);
@@ -394,5 +394,16 @@ describe('cheerful theme', () => {
     expect(res.text).toContain('<script src="/assets/js/reflets.js" defer></script>');
     expect(res.text.match(/kpi--vedette/g)).toHaveLength(1);
     expect(res.text).toMatch(/<span class="hero-emoji">🏠<\/span><span class="foil">Aperçu<\/span>/);
+  });
+
+  it('takes the logotype and tab title from one brandName variable, Pandora by default', async () => {
+    const ejs = require('ejs');
+    const res = await request(app).get('/espace').set('Cookie', cookies('tok-a'));
+    expect(res.text).toContain('<span class="foil">Pandora</span>');
+    expect(res.text).toContain('· Pandora</title>');
+    const views = path.join(__dirname, '..', 'views', 'partials', 'pilotage');
+    const locals = { brandName: 'Nova', title: 'X', sousTitre: 's', email: null, badge: null, salut: '', titre: 'T', intro: null, cta: null, nav: [], vue: null, base: '/' };
+    expect(await ejs.renderFile(path.join(views, 'topbar.ejs'), locals)).toContain('<span class="foil">Nova</span>');
+    expect(await ejs.renderFile(path.join(views, 'head.ejs'), locals)).toContain('<title>X · Nova</title>');
   });
 });
