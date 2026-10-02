@@ -20,22 +20,23 @@
   const aValiderRobots = data.livrables.filter(function (l) { return l.statut === 'a_valider'; }).length;
   const actifs = data.mandats.filter(function (m) { return m.statut === 'actif'; }).length;
   const revenus = data.paiements.reduce(function (s, p) { return s + (p.statut === 'Payé' && p.montant ? p.montant : 0); }, 0);
+  // Three groups (topbar.ejs): Entreprise, Agents, Croissance.
   const nav = [
-    { id: 'apercu', emoji: '🏠', label: 'Aperçu' },
-    { id: 'entreprises', emoji: '🏢', label: 'Entreprises', count: data.entreprises.length },
-    { id: 'clients', emoji: '👥', label: 'Clients', count: data.clients.length },
-    { id: 'paiements', emoji: '💳', label: 'Paiements' },
-    { id: 'finances', emoji: '💰', label: 'Finances' },
-    { id: 'mandats', emoji: '🗂️', label: 'Mandats', count: actifs },
-    { id: 'livrables', emoji: '📦', label: 'Livrables', count: enAttente },
-    { id: 'robots', emoji: '⚡', label: 'Robots', count: aValiderRobots },
-    { id: 'cms', emoji: '✏️', label: 'Contenu du site' },
-    { id: 'agents', emoji: '🤖', label: 'Agents' },
-    { id: 'conseil', emoji: '🧠', label: 'Conseil' },
-    { id: 'travail', emoji: '🗂️', label: 'Travail' },
-    { id: 'recherche', emoji: '🔎', label: 'Recherche' },
-    { id: 'reglages-agents', emoji: '⚙️', label: 'Réglages agents' },
-    { id: 'croissance', emoji: '📣', label: 'Croissance' },
+    { id: 'apercu', emoji: '🏠', label: 'Aperçu', groupe: 'Entreprise' },
+    { id: 'entreprises', emoji: '🏢', label: 'Entreprises', count: data.entreprises.length, groupe: 'Entreprise' },
+    { id: 'clients', emoji: '👥', label: 'Clients', count: data.clients.length, groupe: 'Entreprise' },
+    { id: 'paiements', emoji: '💳', label: 'Paiements', groupe: 'Entreprise' },
+    { id: 'finances', emoji: '💰', label: 'Finances', groupe: 'Entreprise' },
+    { id: 'mandats', emoji: '🗂️', label: 'Mandats', count: actifs, groupe: 'Entreprise' },
+    { id: 'livrables', emoji: '📦', label: 'Livrables', count: enAttente, groupe: 'Entreprise' },
+    { id: 'agents', emoji: '🤖', label: 'Agents', groupe: 'Agents' },
+    { id: 'conseil', emoji: '🧠', label: 'Conseil', groupe: 'Agents' },
+    { id: 'travail', emoji: '🧾', label: 'Travail', groupe: 'Agents' },
+    { id: 'recherche', emoji: '🔎', label: 'Recherche', groupe: 'Agents' },
+    { id: 'robots', emoji: '⚡', label: 'Robots', count: aValiderRobots, groupe: 'Agents' },
+    { id: 'reglages-agents', emoji: '⚙️', label: 'Réglages', groupe: 'Agents' },
+    { id: 'croissance', emoji: '📣', label: 'Croissance', groupe: 'Croissance' },
+    { id: 'cms', emoji: '✏️', label: 'Contenu du site', groupe: 'Croissance' },
   ];
   const introAgents = {
     agents: 'Tes agents en direct : qui travaille, le réseau, le journal et les ordres.',

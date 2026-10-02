@@ -1,6 +1,8 @@
 <%#
   Shared header of /espace and /admin/console.
-  locals: sousTitre, email, badge, salut, titre, intro, cta {href,label}, nav [{id,label,emoji,count}], vue, base
+  locals: sousTitre, email, badge, salut, titre, intro, cta {href,label}, nav [{id,label,emoji,count,groupe}], vue, base
+  When nav items carry a « groupe », the tabs are shown in labelled groups
+  (console admin), and on phones as a « Menu » that unfolds (details, no JS).
   Logo : partial logo.ejs (panda provisoire, remplaçable seul). Nom et slogan :
   marque.ejs et slogan.ejs, seules sources (variables EJS brandName et
   brandTagline, à définir une fois via app.locals ou res.render).
@@ -40,7 +42,42 @@
     </div>
     <% if (cta) { %><a class="btn btn--accent" href="<%= cta.href %>"><%= cta.label %></a><% } %>
   </div>
-  <% if (nav && nav.length) { %>
+  <% const groupes = (nav || []).reduce(function (acc, n) {
+       if (!n.groupe) return acc;
+       let g = acc.find(function (x) { return x.nom === n.groupe; });
+       if (!g) { g = { nom: n.groupe, items: [] }; acc.push(g); }
+       g.items.push(n);
+       return acc;
+     }, []);
+     const lien = function (n) { return base + '?vue=' + n.id; };
+     const ici = (nav || []).find(function (n) { return n.id === vue; }); %>
+  <% if (groupes.length) { %>
+  <nav class="wrap tabs-groupes" aria-label="Sections">
+    <% groupes.forEach(function (g, i) { %>
+    <div class="tab-group<% if (g.items.some(function (n) { return n.id === vue; })) { %> is-current<% } %>" role="group" aria-labelledby="tg-<%= i %>">
+      <span class="tab-group-label" id="tg-<%= i %>"><%= g.nom %></span>
+      <div class="tab-group-links">
+        <% g.items.forEach(function (n) { %>
+        <a href="<%= lien(n) %>"<% if (vue === n.id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= n.emoji %></span><%= n.label %><% if (n.count) { %><span class="count"><%= n.count %></span><% } %></a>
+        <% }) %>
+      </div>
+    </div>
+    <% }) %>
+  </nav>
+  <details class="wrap tabs-menu">
+    <summary><span class="tabs-menu-label">Menu</span><span class="tabs-menu-ici"><% if (ici) { %><span aria-hidden="true"><%= ici.emoji %></span> <%= ici.label %><% } %></span></summary>
+    <nav aria-label="Sections">
+      <% groupes.forEach(function (g) { %>
+      <p class="tab-group-label"><%= g.nom %></p>
+      <ul>
+        <% g.items.forEach(function (n) { %>
+        <li><a href="<%= lien(n) %>"<% if (vue === n.id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= n.emoji %></span><%= n.label %><% if (n.count) { %><span class="count"><%= n.count %></span><% } %></a></li>
+        <% }) %>
+      </ul>
+      <% }) %>
+    </nav>
+  </details>
+  <% } else if (nav && nav.length) { %>
   <nav class="wrap tabs" aria-label="Sections">
     <% nav.forEach(function (n) { %>
     <a href="<%= base %>?vue=<%= n.id %>"<% if (vue === n.id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= n.emoji %></span><%= n.label %><% if (n.count) { %><span class="count"><%= n.count %></span><% } %></a>

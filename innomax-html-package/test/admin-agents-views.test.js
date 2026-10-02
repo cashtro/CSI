@@ -121,6 +121,21 @@ describe('agent tabs of the admin console', () => {
     }
   });
 
+  it('groups the admin tabs in Entreprise, Agents and Croissance, with a phone menu', async () => {
+    const res = await request(app).get('/admin/console?vue=recherche').set('Cookie', adminCookie);
+    const desk = res.text.slice(res.text.indexOf('class="wrap tabs-groupes"'), res.text.indexOf('class="wrap tabs-menu"'));
+    const groups = [...desk.matchAll(/<span class="tab-group-label" id="tg-\d">([^<]+)<\/span>([\s\S]*?)<\/div>\s*<\/div>/g)]
+      .map((m) => [m[1], [...m[2].matchAll(/\?vue=([a-z-]+)/g)].map((x) => x[1])]);
+    expect(groups).toEqual([
+      ['Entreprise', ['apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables']],
+      ['Agents', ['agents', 'conseil', 'travail', 'recherche', 'robots', 'reglages-agents']],
+      ['Croissance', ['croissance', 'cms']],
+    ]);
+    expect(res.text).toMatch(/<details class="wrap tabs-menu">/);
+    expect(res.text).toMatch(/tab-group is-current" role="group" aria-labelledby="tg-1"/);
+    expect((res.text.match(/href="\/admin\/console\?vue=recherche" aria-current="page"/g) || []).length).toBe(2);
+  });
+
   it('other tabs do not load the agent script', async () => {
     const res = await request(app).get('/admin/console?vue=mandats').set('Cookie', adminCookie);
     expect(res.status).toBe(200);
