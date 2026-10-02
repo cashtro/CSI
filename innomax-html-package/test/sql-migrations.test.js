@@ -7,7 +7,7 @@ const DIR = path.join(__dirname, '..', '..', 'db');
 const read = (f) => fs.readFileSync(path.join(DIR, f), 'utf8');
 // SQL without "--" comments, to check what actually runs.
 const code = (f) => read(f).replace(/--.*$/gm, '');
-const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql'];
+const FILES = ['001_fulfillments.sql', '002_espace_entreprises.sql', '003_moteur_agents.sql', '004_protection_comptes.sql'];
 
 describe('SQL migrations', () => {
   it('002 and 003 state the mandatory order 001, 002, 003', () => {
@@ -58,5 +58,15 @@ describe('SQL migrations', () => {
 
   it('no policy writes on behalf of the browser', () => {
     for (const f of FILES) expect(code(f)).not.toMatch(/for (insert|update|delete|all) to (anon|authenticated|public)/);
+  });
+
+  it('004 stops an account from granting itself admin and locks server-only tables', () => {
+    const sql = code('004_protection_comptes.sql');
+    expect(sql).toMatch(/create trigger proteger_roles_users before insert or update on public\."Users"/);
+    expect(sql).toMatch(/new\."isAdmin" := false/);
+    expect(sql).toMatch(/isAdmin ne peut etre modifie que par le serveur/);
+    expect(sql).toMatch(/'Users_2fa', 'temp_sessions', 'fulfillments'/);
+    expect(sql).toMatch(/revoke all on public\.%I from anon, authenticated/);
+    expect(read('004_protection_comptes.sql')).toMatch(/003_moteur_agents\.sql, puis ce fichier \(004\)/);
   });
 });
