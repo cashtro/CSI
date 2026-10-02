@@ -2,6 +2,10 @@
 <html lang="fr">
 <head>
   <%- include('partials/pilotage/head', { title: 'Console admin' }) %>
+  <% if (typeof agentVue !== 'undefined' && agentVue) { %>
+  <link rel="stylesheet" href="/assets/css/agents-console.css">
+  <script src="/assets/js/agents-console.js" defer></script>
+  <% } %>
 </head>
 <%
   const enAttente = data.livrables.filter(function (l) { return l.statut === 'en_attente'; }).length;
@@ -15,7 +19,19 @@
     { id: 'mandats', emoji: '🗂️', label: 'Mandats', count: actifs },
     { id: 'livrables', emoji: '📦', label: 'Livrables', count: enAttente },
     { id: 'cms', emoji: '✏️', label: 'Contenu du site' },
+    { id: 'agents', emoji: '🤖', label: 'Agents' },
+    { id: 'conseil', emoji: '🧠', label: 'Conseil' },
+    { id: 'travail', emoji: '🗂️', label: 'Travail' },
+    { id: 'recherche', emoji: '🔎', label: 'Recherche' },
+    { id: 'reglages-agents', emoji: '⚙️', label: 'Réglages agents' },
   ];
+  const introAgents = {
+    agents: 'Tes agents en direct : qui travaille, le réseau, le journal et les ordres.',
+    conseil: 'Une grosse décision ? Les agents proposent, se contredisent et votent jusqu’au consensus.',
+    travail: 'Tous les travaux des agents, leurs résultats et les tâches à valider.',
+    recherche: 'Pose une question : un agent cherche sur le web et cite ses sources.',
+    'reglages-agents': 'Marche, arrêt, budget, modèles et agents.',
+  };
   const ici = nav.find(function (n) { return n.id === vue; });
   const titreMandat = {};
   data.mandats.forEach(function (m) { titreMandat[m.id] = m.titre; });
@@ -27,7 +43,7 @@
   badge: '🔐 2FA active',
   salut: fmt.salut() + ', chef !',
   titre: ici.emoji + ' ' + ici.label,
-  intro: vue === 'apercu' ? 'Toute l’activité de Pandora en un coup d’œil.' : null,
+  intro: vue === 'apercu' ? 'Toute l’activité de Pandora en un coup d’œil.' : (introAgents[vue] || null),
   cta: null,
   nav: nav,
   vue: vue,
@@ -35,6 +51,10 @@
 }) %>
 
 <main class="wrap main" id="contenu">
+
+    <% if (typeof agentVue !== 'undefined' && agentVue) { %>
+      <%- include('partials/agents/' + vue) %>
+    <% } %>
 
     <% if (vue === 'apercu') { %>
     <div class="pl-stack">

@@ -1,0 +1,79 @@
+<%#
+  ?vue=agents · Console: KPIs, live network, rooms, live log, orders.
+  Rendered empty; assets/js/agents-console.js fills it from /api/admin/agents.
+%>
+<div class="ag pl-stack" data-agents-vue="agents">
+  <%- include('_absent') %>
+  <p class="ag-banner" data-engine-state role="status" hidden></p>
+
+  <div class="kpis" aria-live="polite">
+    <div class="panel kpi kpi--gold"><span class="emoji" aria-hidden="true">🔥</span><span class="label">Agents au travail</span><span class="value num" data-kpi="working">—</span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">🚦</span><span class="label">Travaux en cours</span><span class="value num" data-kpi="running">—</span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">⏳</span><span class="label">En file</span><span class="value num" data-kpi="queued">—</span></div>
+    <div class="panel kpi"><span class="emoji" aria-hidden="true">🤝</span><span class="label">Consensus atteints</span><span class="value num" data-kpi="consensus">—</span></div>
+  </div>
+
+  <section class="panel ag-net" aria-labelledby="ag-net-titre">
+    <div class="panel-head">
+      <h2 id="ag-net-titre">Réseau des agents · en direct</h2>
+      <span class="ag-live" data-live-state>Connexion…</span>
+    </div>
+    <ul class="ag-legend" aria-label="Équipes">
+      <% teams.forEach(function (t) { %><li class="ag-t-<%= t.key %>"><i aria-hidden="true"></i><%= t.emoji %> <%= t.short %></li><% }) %>
+      <li class="ag-legend-work"><i aria-hidden="true"></i>au travail</li>
+    </ul>
+    <div class="ag-stage">
+      <canvas data-net tabindex="0" role="img" aria-label="Carte des équipes d’agents. Flèches pour parcourir les agents, Entrée pour en ouvrir un."></canvas>
+      <div class="ag-tip" data-net-tip hidden aria-hidden="true"></div>
+    </div>
+    <p class="dim ag-note">Chaque pastille est un agent, relié au moyeu de son équipe ; les salles de délibération sont près du noyau. Les paquets circulent quand un agent travaille.</p>
+  </section>
+
+  <div class="ag-console">
+    <div class="ag-col">
+      <section class="panel" aria-labelledby="ag-salles-prod">
+        <div class="panel-head"><h2 id="ag-salles-prod">Salles de production</h2><span class="tag" data-count="prod"></span></div>
+        <div class="ag-rooms" data-rooms="prod"><p class="empty">Chargement des agents…</p></div>
+      </section>
+      <section class="panel" aria-labelledby="ag-salles-delib">
+        <div class="panel-head"><h2 id="ag-salles-delib">Salles de délibération</h2><span class="tag">planifient, contredisent, tranchent</span></div>
+        <div class="ag-rooms" data-rooms="delib"></div>
+      </section>
+      <section class="panel ag-agent" data-agent-panel hidden aria-live="polite"></section>
+    </div>
+
+    <div class="ag-col">
+      <section class="panel" aria-labelledby="ag-ordre-titre">
+        <div class="panel-head"><h2 id="ag-ordre-titre">🚦 Donner un ordre</h2></div>
+        <form class="form" data-ag-form="order" novalidate>
+          <div class="field">
+            <label for="ag-o-who">Qui travaille</label>
+            <select id="ag-o-who" name="who" required>
+              <%- include('_options-agents', { selected: null, withTeams: true }) %>
+            </select>
+          </div>
+          <div class="field">
+            <label for="ag-o-client">Pour qui (facultatif)</label>
+            <select id="ag-o-client" name="entreprise_id"><%- include('_options-clients') %></select>
+          </div>
+          <div class="field">
+            <label for="ag-o-text">Quoi faire (écris ou dicte 🎤)</label>
+            <textarea id="ag-o-text" name="instruction" rows="4" maxlength="8000" required data-dictee placeholder="Ex. Écris la page d’accueil en français pour la clinique, avec un bouton de réservation."></textarea>
+          </div>
+          <div class="actions"><button class="btn btn--gold" type="submit">Envoyer l’ordre</button><span class="status" data-status role="status"></span></div>
+          <p class="dim ag-note">L’agent écrit un texte ; rien ne part chez un client sans toi. Un ordre à une équipe crée un ordre par agent.</p>
+        </form>
+      </section>
+
+      <section class="panel" aria-labelledby="ag-journal-titre">
+        <div class="panel-head"><h2 id="ag-journal-titre">📡 Journal en direct</h2><span class="tag" data-feed-count></span></div>
+        <ol class="ag-feed" data-feed aria-live="polite" aria-relevant="additions"><li class="empty">En attente des évènements…</li></ol>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="ag-ordres-titre">
+    <div class="panel-head"><h2 id="ag-ordres-titre">🧾 Ordres récents</h2><a href="/admin/console?vue=travail">Tout le travail →</a></div>
+    <div class="ag-list" data-orders><p class="empty">Chargement…</p></div>
+  </section>
+</div>

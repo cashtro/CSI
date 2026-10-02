@@ -1,0 +1,30 @@
+<%# ?vue=recherche · web research by an agent (read only), results with sources, history. %>
+<div class="ag pl-stack" data-agents-vue="recherche">
+  <%- include('_absent') %>
+  <section class="panel" aria-labelledby="ag-r-titre">
+    <div class="panel-head"><h2 id="ag-r-titre">🔎 Demander une recherche web</h2><span class="tag">lecture du web seulement</span></div>
+    <form class="form" data-ag-form="research" role="search" novalidate>
+      <div class="field">
+        <label for="ag-r-q">Ta question (écris ou dicte 🎤)</label>
+        <input id="ag-r-q" name="question" type="search" maxlength="2000" required data-dictee autocomplete="off" placeholder="Ex. Quels concurrents québécois vendent des agents IA aux PME, et à quel prix ?">
+      </div>
+      <div class="form-row">
+        <div class="field"><label for="ag-r-agent">Agent</label>
+          <select id="ag-r-agent" name="agent_id"><%- include('_options-agents', { selected: defaultResearchAgent, withTeams: false }) %></select></div>
+        <div class="field"><label for="ag-r-client">Pour qui (facultatif)</label>
+          <select id="ag-r-client" name="entreprise_id"><%- include('_options-clients') %></select></div>
+        <div class="field"><label for="ag-r-max">Recherches au plus</label>
+          <select id="ag-r-max" name="max_uses"><option value="1">1</option><option value="3">3</option><option value="5" selected>5</option></select></div>
+      </div>
+      <div class="actions"><button class="btn btn--gold" type="submit">Lancer la recherche</button><span class="status" data-status role="status"></span></div>
+      <p class="dim ag-note">L’agent lit des pages web et rédige une synthèse en français avec ses sources. Il n’envoie rien et ne remplit aucun formulaire. Chaque recherche web coûte environ 0,01 $ en plus des jetons (prix à vérifier).</p>
+    </form>
+  </section>
+
+  <section class="panel ag-result" data-research-current aria-live="polite" hidden></section>
+
+  <section class="panel" aria-labelledby="ag-rh-titre">
+    <div class="panel-head"><h2 id="ag-rh-titre">🕘 Historique des recherches</h2><span class="ag-live" data-live-state>Connexion…</span></div>
+    <ul class="items" data-research-history><li class="empty">Chargement…</li></ul>
+  </section>
+</div>

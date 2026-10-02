@@ -251,6 +251,42 @@ router.get('/agents', async (req, res) => {
   res.json({ teams: catalog.TEAMS, agents: data || [] });
 });
 
+// Console KPIs: agents at work, jobs running / queued, Councils that reached
+// consensus.
+router.get('/summary', async (req, res) => {
+  const count = (status) => db().from('agent_jobs').select('id', { count: 'exact', head: true }).eq('status', status);
+  const [running, queued, agents, debates] = await Promise.all([
+    count('running'),
+    count('queued'),
+    db().from('agents').select('id, status, active'),
+    db().from('agent_jobs').select('result').eq('kind', 'debate').eq('status', 'done').order('created_at', { ascending: false }).limit(500),
+  ]);
+  if (running.error || queued.error || agents.error || debates.error) return res.status(500).json({ error: 'Lecture impossible' });
+  const list = agents.data || [];
+  res.json({
+    agents: list.filter((a) => a.active !== false).length,
+    working: list.filter((a) => a.status === 'working').length,
+    running: running.count || 0,
+    queued: queued.count || 0,
+    consensus: (debates.data || []).filter((d) => d.result && d.result.consensus === true).length,
+  });
+});
+
+// Emergency stop: engine off and every queued or running job cancelled (a
+// running job stops at its next step, see the worker).
+router.post('/emergency-stop', async (req, res) => {
+  const now = new Date().toISOString();
+  const { error: e1 } = await db().from('agent_settings').upsert({ id: 1, enabled: false, updated_at: now, updated_by: req.user.id }).select('id').single();
+  if (e1) return res.status(500).json({ error: 'Arrêt impossible' });
+  const { data, error: e2 } = await db().from('agent_jobs')
+    .update({ status: 'cancelled', finished_at: now, updated_at: now }).in('status', ['queued', 'running']).select('id');
+  if (e2) return res.status(500).json({ error: 'Moteur arrêté, mais les travaux n’ont pas pu être annulés' });
+  const cancelled = (data || []).length;
+  logger.warn(`[agents] emergency stop by ${req.user.id}: ${cancelled} job(s) cancelled`);
+  await store.logActivity(db(), { kind: 'emergency_stop', message: `Arrêt d’urgence : moteur coupé, ${cancelled} travail(s) annulé(s)` });
+  res.json({ enabled: false, cancelled });
+});
+
 // Polling fallback of the live stream: activity after the given id.
 router.get('/activity', async (req, res) => {
   const after = parseInt(req.query.after, 10);

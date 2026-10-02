@@ -1,0 +1,43 @@
+<%# ?vue=travail · every job with filters, the detail of one job, cancellation, Council tasks. %>
+<div class="ag pl-stack" data-agents-vue="travail">
+  <%- include('_absent') %>
+  <section class="panel" aria-labelledby="ag-w-titre">
+    <div class="panel-head"><h2 id="ag-w-titre">🗂️ Travaux des agents</h2><span class="ag-live" data-live-state>Connexion…</span></div>
+    <form class="ag-filters" data-ag-form="filters" role="search">
+      <div class="field"><label for="ag-f-status">Statut</label>
+        <select id="ag-f-status" name="status">
+          <option value="">Tous</option>
+          <option value="queued">⏳ En file</option>
+          <option value="running">🔥 En cours</option>
+          <option value="done">✅ Terminé</option>
+          <option value="error">⚠️ Erreur</option>
+          <option value="cancelled">✖️ Annulé</option>
+          <option value="budget_refused">💸 Refusé (budget)</option>
+        </select></div>
+      <div class="field"><label for="ag-f-kind">Type</label>
+        <select id="ag-f-kind" name="kind">
+          <option value="">Tous</option>
+          <option value="order">🚦 Ordre</option>
+          <option value="debate">🧠 Conseil</option>
+          <option value="research">🔎 Recherche</option>
+        </select></div>
+      <div class="field"><label for="ag-f-agent">Agent</label>
+        <select id="ag-f-agent" name="agent_id"><option value="">Tous</option><%- include('_options-agents', { selected: null, withTeams: false }) %></select></div>
+      <div class="field"><label for="ag-f-client">Client</label>
+        <select id="ag-f-client" name="entreprise_id"><option value="">Tous</option><% data.entreprises.forEach(function (e) { %><option value="<%= e.id %>"><%= e.nom %></option><% }) %></select></div>
+    </form>
+    <div class="table-wrap">
+      <table class="grid ag-jobs">
+        <thead><tr><th scope="col">Quand</th><th scope="col">Type</th><th scope="col">Sujet</th><th scope="col">Statut</th><th scope="col" class="right">Coût</th></tr></thead>
+        <tbody data-jobs><tr><td colspan="5" class="empty">Chargement…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="panel ag-detail" data-job-detail hidden aria-live="polite" tabindex="-1"></section>
+
+  <section class="panel" aria-labelledby="ag-t-titre">
+    <div class="panel-head"><h2 id="ag-t-titre">✅ Tâches créées par le Conseil</h2><span class="tag">chaque tâche se valide par un humain</span></div>
+    <ul class="items" data-tasks><li class="empty">Chargement…</li></ul>
+  </section>
+</div>

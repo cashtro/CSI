@@ -6,6 +6,8 @@ const express = require('express');
 const cms = require('./utils/cms');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { requireMember, requireAdmin, noStore, loadEspace, loadAdmin, fmt, ETAPES, STATUTS_MANDAT } = require('./utils/espace');
+const logger = require('./utils/logger');
+const catalog = require('../agents/catalog');
 
 const router = express.Router();
 
@@ -18,7 +20,21 @@ function allowMicrophone(req, res, next) {
   next();
 }
 
-const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'mandats', 'livrables', 'cms'];
+// Agent tabs (views/partials/agents/*.ejs, assets/js/agents-console.js): the
+// page renders the forms; the script reads /api/admin/agents for live data.
+const AGENT_VUES = ['agents', 'conseil', 'travail', 'recherche', 'reglages-agents'];
+const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'mandats', 'livrables', 'cms', ...AGENT_VUES];
+
+// Agents for the forms' selects. A missing table (db/003 not run) shows a
+// message instead of failing the page.
+async function loadAgentsForForms(admin) {
+  const { data, error } = await admin.from('agents').select('id, name, team, role, engine, active').order('team').order('name');
+  if (error) {
+    logger.warn('[admin] agents unreadable:', error.message);
+    return { agents: [], agentsError: 'La table agents est introuvable : exécutez db/003_moteur_agents.sql puis db/004_recherche_agents.sql.' };
+  }
+  return { agents: data || [], agentsError: null };
+}
 const CLIENT_VUES = ['apercu', 'mandats', 'livrables', 'achats', 'nouveau'];
 
 router.get('/espace', noStore, allowMicrophone, requireMember({ page: true }), async (req, res) => {
@@ -39,7 +55,13 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
     cmsError = 'La table site_content est introuvable : exécutez db/002_espace_entreprises.sql.';
   }
   const langue = req.query.langue === 'en' ? 'en' : 'fr';
-  res.render('admin-console', { vue, data, site, cmsError, langue, fmt, etapes: ETAPES, statuts: STATUTS_MANDAT, email: req.user.email || '' });
+  const agentVue = AGENT_VUES.includes(vue);
+  const agentData = agentVue ? await loadAgentsForForms(admin) : { agents: [], agentsError: null };
+  res.render('admin-console', {
+    vue, data, site, cmsError, langue, fmt, etapes: ETAPES, statuts: STATUTS_MANDAT, email: req.user.email || '',
+    agentVue, agents: agentData.agents, agentsError: agentData.agentsError, teams: catalog.TEAMS, defaultResearchAgent: catalog.DEFAULT_RESEARCH_AGENT,
+  });
 });
 
 module.exports = router;
+module.exports.AGENT_VUES = AGENT_VUES;

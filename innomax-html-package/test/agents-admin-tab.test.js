@@ -54,6 +54,8 @@ describe('research route: access', () => {
     ['get', '/api/admin/agents/agents'],
     ['get', '/api/admin/agents/activity'],
     ['post', '/api/admin/agents/seed'],
+    ['get', '/api/admin/agents/summary'],
+    ['post', '/api/admin/agents/emergency-stop'],
   ];
   it.each(routes)('%s %s refuses visitors, non-admins and an admin without the 2FA proof', async (method, url) => {
     expect((await request(app)[method](url).send({})).status).toBe(401);
@@ -130,6 +132,34 @@ describe('agents tab reads', () => {
     expect(await ids(`entreprise_id=${ENT}`)).toEqual(['a', 'c']);
     expect((await request(app).get('/api/admin/agents/jobs?kind=autre').set(admin)).status).toBe(400);
     expect((await request(app).get('/api/admin/agents/jobs?entreprise_id=x').set(admin)).status).toBe(400);
+  });
+});
+
+describe('console summary and emergency stop', () => {
+  it('counts agents at work, running and queued jobs and consensus', async () => {
+    mockDb.tables.agent_jobs.push(
+      { id: 'a', kind: 'order', status: 'running', payload: {} },
+      { id: 'b', kind: 'order', status: 'queued', payload: {} },
+      { id: 'c', kind: 'debate', status: 'done', payload: {}, result: { consensus: true } },
+      { id: 'd', kind: 'debate', status: 'done', payload: {}, result: { consensus: false } },
+    );
+    const res = await request(app).get('/api/admin/agents/summary').set(admin);
+    expect(res.body).toEqual({ agents: 2, working: 1, running: 1, queued: 1, consensus: 1 });
+  });
+
+  it('turns the engine off and cancels queued and running jobs', async () => {
+    mockDb.tables.agent_settings[0].enabled = true;
+    mockDb.tables.agent_jobs.push(
+      { id: 'a', kind: 'order', status: 'running', payload: {} },
+      { id: 'b', kind: 'research', status: 'queued', payload: {} },
+      { id: 'c', kind: 'order', status: 'done', payload: {} },
+    );
+    const res = await request(app).post('/api/admin/agents/emergency-stop').set(admin);
+    expect(res.status).toBe(200);
+    expect(res.body).toEqual({ enabled: false, cancelled: 2 });
+    expect(mockDb.tables.agent_settings[0].enabled).toBe(false);
+    expect(mockDb.tables.agent_jobs.map((j) => j.status)).toEqual(['cancelled', 'cancelled', 'done']);
+    expect(mockDb.tables.agent_activity.some((a) => a.kind === 'emergency_stop')).toBe(true);
   });
 });
 
