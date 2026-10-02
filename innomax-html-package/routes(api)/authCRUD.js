@@ -3,7 +3,7 @@ const logger = require('./utils/logger');
 const router = express.Router();
 const { authenticator } = require('otplib');
 const qrcode = require('qrcode');
-const { authenticateUser, setAuthCookies, clearAuthCookies, setMfaProof, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
+const { authenticateUser, getValidUser, setAuthCookies, clearAuthCookies, setMfaProof, twoFaLimiter, authLimiter } = require('./utils/auth-middleware');
 const { loginValidation, registrationValidation, validatePassword } = require('./utils/validation-middleware');
 const { storeTempSession, getAndValidateSession } = require('./utils/supabaseSessionStore');
 const { createSupabaseClient, createSupabaseAdmin } = require('./utils/supabaseUtil');
@@ -208,22 +208,25 @@ router.post('/register', authLimiter, registrationValidation, async (req, res) =
     }
 });
 
-// Déconnexion
-router.post('/logout', authenticateUser, async (req, res) => {
+// Déconnexion. Always clears every auth cookie (including the 'mfa' 2FA
+// proof), even when the session is already expired or invalid: refusing with
+// 401 used to leave those cookies in the browser.
+router.post('/logout', async (req, res) => {
     try {
-        // Revoke this session's refresh token. The stateless anon client holds
-        // no session, so its signOut() was a no-op that left the token valid.
-        const { error: logoutError } = await supabaseAdmin.auth.admin.signOut(req.accessToken, 'local');
-        if (logoutError) logger.warn('Logout revoke failed:', logoutError.message);
-
-        // Clear cookies with the same attributes they were set with.
-        clearAuthCookies(res);
-
-        return res.status(200).json({ message: "Déconnexion réussie !" });
+        const { user, token } = await getValidUser(req, res);
+        if (user && token) {
+            // Revoke this session's refresh token. The stateless anon client holds
+            // no session, so its signOut() was a no-op that left the token valid.
+            const { error: logoutError } = await supabaseAdmin.auth.admin.signOut(token, 'local');
+            if (logoutError) logger.warn('Logout revoke failed:', logoutError.message);
+        }
     } catch (error) {
-        logger.error(error);
-        return res.status(500).json({ message: "Erreur lors de la déconnexion" });
+        logger.warn('Logout revoke failed:', error.message);
     }
+    // Clear cookies with the same attributes they were set with.
+    clearAuthCookies(res);
+    res.set('Cache-Control', 'no-store');
+    return res.status(200).json({ message: "Déconnexion réussie !" });
 });
 
 // Route pour la connexion

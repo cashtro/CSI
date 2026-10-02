@@ -65,6 +65,8 @@ jest.mock('../routes(api)/utils/auth-middleware', () => ({
     req.user = { id: req.headers['x-test-user'] };
     next();
   },
+  getValidUser: jest.fn(async (req) => (req.headers['x-test-user']
+    ? { user: { id: req.headers['x-test-user'] }, token: 'at-x' } : { user: null, token: null })),
   setAuthCookies: jest.fn(),
   setMfaProof: jest.fn(),
   clearAuthCookies: jest.fn(),
@@ -93,7 +95,7 @@ jest.mock('../routes(api)/utils/supabaseUtil', () => {
 
 jest.mock('../routes(api)/utils/emailService', () => ({ sendEmail: jest.fn() }));
 
-const { setAuthCookies, setMfaProof } = require('../routes(api)/utils/auth-middleware');
+const { setAuthCookies, setMfaProof, clearAuthCookies } = require('../routes(api)/utils/auth-middleware');
 const authRoutes = require('../routes(api)/authCRUD');
 
 const app = express();
@@ -265,5 +267,14 @@ describe('second-factor proof cookie', () => {
     expect(verifyMfaProof(signMfaProof('u1', Date.now() - 1), 'u1')).toBe(false);
     expect(verifyMfaProof(`${later}.${'0'.repeat(64)}`, 'u1')).toBe(false);
     expect(verifyMfaProof(undefined, 'u1')).toBe(false);
+  });
+});
+
+describe('logout', () => {
+  it('clears every auth cookie even without a valid session', async () => {
+    clearAuthCookies.mockClear();
+    const res = await request(app).post('/api/auth/logout');
+    expect(res.status).toBe(200);
+    expect(clearAuthCookies).toHaveBeenCalledTimes(1);
   });
 });
