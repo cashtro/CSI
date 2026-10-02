@@ -13,7 +13,7 @@ Elle y trouve cinq onglets :
 | Onglet | Ce qu'elle voit ou fait |
 | --- | --- |
 | Aperçu | Total payé, mandats actifs, livrables à approuver, abonnements |
-| Mandats | Ses projets, avec une barre d'étapes : Réception → Analyse → Production → Révision → Livraison |
+| Mandats | Ses projets, avec une barre d'étapes : 📝 Reçu → 🔍 Diagnostic → 🛠️ En production → 🔁 Révision → ✅ Livré |
 | Livrables | Ce que vos agents ont produit, avec un lien, et les boutons **Approuver** et **Demander une modification** (un commentaire est alors obligatoire) |
 | Achats et factures | Ses paiements Stripe déjà enregistrés (table `bills`) : date, type (achat ou abonnement), montant, référence |
 | Nouveau mandat | Un formulaire : titre, besoin, budget indicatif, échéance |
@@ -40,19 +40,37 @@ Les liens « Espace entreprise » et « Console de pilotage » ont été ajouté
 ### 3. Le CMS (contenu du site)
 
 - Chaque zone modifiable a une clé, par exemple `home.hero.title`.
-- **Tant que vous n'avez rien modifié, le site affiche exactement le même texte qu'avant.** Le rendu de la page d'accueil a été comparé avant et après : il est identique.
-- Zones déjà branchées sur la page d'accueil :
-  - le grand titre ;
-  - les deux lignes du sous-titre ;
-  - le bouton « Live Consultation » ;
-  - l'image du bandeau ;
-  - le titre de la section « Our work » ;
-  - les 5 offres (titre et liste de points).
+- **Tant que vous n'avez rien modifié, le site affiche exactement le même texte qu'avant.** Le rendu des quatre pages a été comparé avant et après : il est identique.
+- Zones déjà branchées (36 au total) :
+  - **Accueil** : le grand titre, les deux lignes du sous-titre, le bouton « Live Consultation », l'image du bandeau, le titre de la section « Our work » et les 5 offres (titre et liste de points) ;
+  - **Marketing** (`/marketing`) : le titre du bandeau (trois parties), le sous-titre, le surtitre et le titre de la section services ;
+  - **Tech & IA** (`/TechAi`) : le titre du bandeau, son texte et son slogan, puis le titre, le texte et le slogan du bloc « Smarter Future » ;
+  - **Contact** (`/contact`) : le titre et le texte de présentation.
 - Les images s'envoient depuis la console. Elles sont stockées dans Supabase Storage (bucket `site-content`). Seules les images JPEG, PNG, WebP, GIF et AVIF sont acceptées, jusqu'à 5 Mo. Les SVG sont refusés.
 - Le bouton « Rétablir » remet le texte d'origine.
 - Une modification est visible tout de suite sur le serveur où elle a été faite. Si un jour plusieurs serveurs tournent en parallèle, les autres la verront dans les 5 minutes au plus.
 
-### 4. Dictée vocale
+### 4. L'ambiance
+
+Les deux espaces reprennent les couleurs du site :
+
+- marine `#212877` ;
+- bleu royal `#1438bc` / `#0f55dc` pour les boutons ;
+- or `#E6C373` / `#ffd277` (et `#855e1b` pour les montants sur fond clair) ;
+- crème et gris clairs.
+
+Le ton est chaleureux et le rendu reste professionnel :
+
+- **Thème** : clair par défaut. Le bouton 🌙 / ☀️ en haut à droite passe au thème sombre marine. Le choix est mémorisé dans le navigateur. Sans choix, le thème suit le réglage de l'appareil.
+- **Polices** : titres en Bricolage Grotesque, texte en Nunito Sans (Google Fonts).
+- **Accueil personnalisé** : un salut selon l'heure du Québec (☀️ Bonjour, 🌤️ Bon après-midi, 🌙 Bonsoir).
+- **Émojis** : sur les étapes des mandats, les statuts et les tuiles de chiffres.
+- **Approbation** : quand un client approuve un livrable, des confettis tombent et un message 🎉 s'affiche.
+- **Mouvement réduit** : si l'appareil demande moins d'animations, les confettis et les petits mouvements sont coupés, et seul le message reste.
+- **Accessibilité** : cibles tactiles d'au moins 44 px, focus visible au clavier, lien « Aller au contenu ».
+- **Mise en page** : centrée, 1200 px au maximum. Sur téléphone (390 px), les tableaux deviennent des fiches et les onglets défilent sur le côté.
+
+### 5. Dictée vocale
 
 Un bouton **Dicter** apparaît sous les grands champs de texte :
 
@@ -69,7 +87,7 @@ Si le navigateur ne gère pas la dictée, ou si le micro est refusé, un message
 
 La dictée vocale du navigateur est surtout fiable dans Chrome, Edge et Safari.
 
-### 5. Sécurité
+### 6. Sécurité
 
 - **Admin** : le serveur vérifie `Users.isAdmin` avec la clé service à chaque requête. Il exige aussi que ce navigateur ait passé la **double authentification (2FA)**.
   - Après le code 2FA, le serveur pose un cookie signé `mfa`.
@@ -79,7 +97,7 @@ La dictée vocale du navigateur est surtout fiable dans Chrome, Edge et Safari.
 - **Affichage** : toutes les valeurs sont échappées.
   - Les liens de livrables doivent commencer par `https://`.
   - Les images du CMS doivent être en `https://` ou se trouver sous `assets/`.
-- **CSP** : aucun style ni script en ligne. Le CSS est dans `assets/css/pilotage.css`, le JS dans `assets/js/espace.js` et `assets/js/dictee.js`.
+- **CSP** : aucun style ni script en ligne. Le CSS est dans `assets/css/pilotage.css`, le JS dans `assets/js/espace.js`, `assets/js/dictee.js` et `assets/js/theme.js`. Les confettis sont placés par des règles CSS, pas par du style en ligne.
 - **Pages privées** : elles ne sont jamais mises en cache (`Cache-Control: no-store`) et ne sont pas indexées.
 - **Journal** : chaque action importante est notée dans le logger (création, décision, refus d'accès), sans données personnelles.
 - **Base de données** : la RLS de Supabase protège aussi les tables si quelqu'un appelle Supabase directement. Un membre ne peut que **lire** les lignes de son entreprise. Toutes les écritures passent par le serveur.
@@ -126,10 +144,10 @@ La dictée vocale du navigateur est surtout fiable dans Chrome, Edge et Safari.
 ## Ce qui reste à faire
 
 - **Test en vrai** : se connecter avec un compte admin (2FA) et un compte client sur un environnement de test Supabase. Les tests automatiques utilisent une fausse base en mémoire.
-- **Autres pages** : seule la page d'accueil est branchée sur le CMS. Pour une autre page, il suffit d'appeler `content('cle', 'texte actuel')` dans la vue et d'ajouter la zone dans `REGISTRY` (`routes(api)/utils/cms.js`) pour qu'elle apparaisse dans la console. Les pages TechAi, Marketing et Education sont les prochaines candidates.
+- **Autres pages** : l'accueil, Marketing, Tech & IA et Contact sont branchés sur le CMS. Pour une autre page, il suffit d'appeler `content('cle', 'texte actuel')` dans la vue et d'ajouter la zone dans `REGISTRY` (`routes(api)/utils/cms.js`) pour qu'elle apparaisse dans la console. Un test vérifie que chaque zone du registre est bien branchée avec le même texte. Education et NFT sont les prochaines candidates.
 - **Notifications par courriel** (SendGrid) : prévenir le client quand un livrable est déposé, et vous prévenir quand un mandat est créé ou qu'une modification est demandée.
 - **Invitation de clients** : aujourd'hui, le client doit s'inscrire avant d'être rattaché. Un lien d'invitation serait plus simple pour lui.
 - **Factures Stripe en PDF** : la liste montre les paiements enregistrés, sans lien vers la facture Stripe. On pourrait ajouter un lien vers le portail client Stripe.
 - **Dépôt de fichiers** pour les livrables : si vous le voulez, il faudra un bucket privé et des liens signés à durée limitée.
 - **Historique des modifications du CMS** : seule la dernière version est gardée, avec qui l'a faite et quand.
-- **Polices** : elles viennent de Google Fonts. Si la CSP devient bloquante un jour, il faudra garder `fonts.googleapis.com` et `fonts.gstatic.com` dans la liste autorisée (c'est déjà le cas dans `utils/csp.js`).
+- **Polices** : elles viennent de Google Fonts. La CSP actuelle (`utils/csp.js`, en mode rapport) autorise déjà `fonts.googleapis.com` et `fonts.gstatic.com` : rien n'a eu à changer. Si la CSP devient bloquante un jour, il faudra garder ces deux domaines.
