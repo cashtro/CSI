@@ -231,7 +231,16 @@ function createLLM(opts = {}) {
       }
 
       if (res.ok) {
-        const data = await res.json();
+        let data;
+        try {
+          data = await res.json();
+        } catch (err) {
+          // A cut-off body must count as a failed attempt: escaping here left
+          // a half-open breaker's trial flag set, blocking every later call.
+          lastErr = new LLMError('Réponse illisible de l’API Anthropic', { code: 'bad_response', retryable: true });
+          if (i < maxRetries) { await sleep(backoff(i, null)); continue; }
+          break;
+        }
         if (data.stop_reason === 'refusal') {
           breaker.success(); // the API works; the request was declined
           throw new LLMError('Le modèle a refusé la demande.', { code: 'refusal' });

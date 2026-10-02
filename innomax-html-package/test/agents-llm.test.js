@@ -31,6 +31,31 @@ function make(responses, extra = {}) {
 
 const req = { tier: 'default', system: 's', messages: [{ role: 'user', content: 'x' }] };
 
+describe('agents/llm unreadable responses', () => {
+  it('retries a 200 whose body is not JSON, and the half-open breaker recovers', async () => {
+    let t = 0;
+    const breaker = createBreaker({ threshold: 1, cooldownMs: 10, now: () => t });
+    breaker.failure(); // open
+    t = 20; // half-open: the next call is the trial
+    const broken = { ok: true, status: 200, headers: { get: () => null }, json: async () => { throw new SyntaxError('Unexpected end'); } };
+    const { llm } = make([broken, reply(200, okBody())], { breaker, now: () => t });
+    await expect(llm.complete(req)).resolves.toMatchObject({ text: 'Bonjour' });
+    expect(breaker.state).toBe('closed');
+  });
+
+  it('a body that never parses fails the call and releases the trial', async () => {
+    let t = 0;
+    const breaker = createBreaker({ threshold: 1, cooldownMs: 10, now: () => t });
+    breaker.failure();
+    t = 20;
+    const broken = () => ({ ok: true, status: 200, headers: { get: () => null }, json: async () => { throw new SyntaxError('x'); } });
+    const { llm } = make([broken(), broken()], { breaker, now: () => t, env: { AGENTS_LLM_MAX_RETRIES: '1' } });
+    await expect(llm.complete(req)).rejects.toMatchObject({ code: 'bad_response' });
+    t = 40; // after the cooldown a new trial is allowed again (not stuck)
+    expect(() => breaker.before()).not.toThrow();
+  });
+});
+
 describe('agents/llm retries and backoff', () => {
   it('retries 529 / 500 / 429 with exponential backoff, then succeeds', async () => {
     const { llm, fetchImpl, delays } = make([reply(529), reply(500), reply(429), reply(200, okBody())]);
