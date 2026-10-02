@@ -2,8 +2,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <meta name="color-scheme" content="light dark">
-<%# Nom de marque : variable EJS brandName, « Pandora » par défaut (voir topbar.ejs). %>
-<title><%= title %> · <%= (typeof brandName === 'string' && brandName.trim()) || 'Pandora' %></title>
+<%# Nom de marque : partial marque.ejs (variable brandName, Panda par défaut). %>
+<title><%= title %> · <%= include('marque') %></title>
 <link rel="icon" href="/assets/img/logo/cropped-LogoPB512gold-1.webp" type="image/webp">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

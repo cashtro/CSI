@@ -34,7 +34,7 @@
   <% if (!data) { %>
     <section class="panel">
       <h2>🕐 Compte pas encore rattaché</h2>
-      <p>Votre compte n'est relié à aucune entreprise pour l'instant. Dès que l'équipe Pandora l'aura rattaché, vous verrez ici vos mandats, vos livrables et vos factures.</p>
+      <p>Votre compte n'est relié à aucune entreprise pour l'instant. Dès que l'équipe <%= include('partials/pilotage/marque') %> l'aura rattaché, vous verrez ici vos mandats, vos livrables et vos factures.</p>
       <div class="actions"><a class="btn btn--accent" href="/contact">💬 Nous écrire</a></div>
     </section>
   <% } else { %>
@@ -181,7 +181,7 @@
 
     <% if (vue === 'nouveau') { %>
     <section class="panel" aria-labelledby="nouveau-titre">
-      <div class="panel-head"><h2 id="nouveau-titre">Nouveau mandat</h2><span class="tag">Transmis à l'équipe Pandora</span></div>
+      <div class="panel-head"><h2 id="nouveau-titre">Nouveau mandat</h2><span class="tag">Transmis à l'équipe <%= include('partials/pilotage/marque') %></span></div>
       <form class="form" data-api="/api/espace/mandats" data-ok="🎉 Mandat envoyé. Merci !" data-next="/espace?vue=mandats">
         <div class="field">
           <label for="titre">Titre du projet</label>
@@ -208,5 +208,6 @@
     <% } %>
   <% } %>
 </main>
+<%- include('partials/pilotage/footer') %>
 </body>
 </html>
