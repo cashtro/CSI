@@ -11,6 +11,7 @@ const express = require('express');
 const logger = require('./utils/logger');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { requireCsrf } = require('./utils/csrf');
+const notifications = require('./utils/notifications');
 const { requireAdmin, noStore, isUuid, text } = require('./utils/espace');
 const robots = require('./utils/robots');
 
@@ -82,6 +83,12 @@ router.post('/livrables/:id/validation', async (req, res) => {
   if (error) return failed(res, 'validation du livrable', error);
   if (!data || !data.length) return res.status(409).json({ error: 'Ce livrable n’est plus à valider.' });
   logger.info(`[admin robots] livrable ${id} ${patch.statut} by ${req.user.id}`);
+  if (patch.statut === 'en_attente') {
+    // Push to the client (PWA.md): the deliverable is now visible to them.
+    const admin = createSupabaseAdmin();
+    notifications.enArrierePlan(admin.from('livrables').select('entreprise_id, titre').eq('id', id).maybeSingle()
+      .then(({ data: l }) => l && notifications.livrablePublie(admin, l)));
+  }
   res.json({ statut: patch.statut });
 });
 

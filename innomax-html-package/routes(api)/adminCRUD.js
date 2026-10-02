@@ -6,6 +6,7 @@ const crypto = require('crypto');
 const logger = require('./utils/logger');
 const upload = require('./utils/multerConfig');
 const cms = require('./utils/cms');
+const notifications = require('./utils/notifications');
 const { createSupabaseAdmin } = require('./utils/supabaseUtil');
 const { requireCsrf } = require('./utils/csrf');
 const {
@@ -139,6 +140,8 @@ router.post('/livrables', async (req, res) => {
     .single();
   if (error) return failed(res, 'dépôt du livrable', error);
   logger.info(`[admin] livrable ${data.id} deposited for entreprise ${b.entreprise_id}`);
+  // Push to the client (PWA.md).
+  notifications.enArrierePlan(notifications.livrablePublie(admin, { entreprise_id: b.entreprise_id, titre }));
   res.status(201).json({ id: data.id });
 });
 

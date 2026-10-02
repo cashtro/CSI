@@ -298,6 +298,14 @@ async function grantRobot(admin, session) {
     undo = () => admin.from('robots_actifs').delete().eq('id', id);
   }
   await orUndo(() => insertBill(admin, UUID_RE.test(String(userId)) ? userId : null, `robot:${robot}`, session), undo);
+  // Push to the admins (PWA.md): a new paying client. Never blocks the grant.
+  if (!vivant) {
+    const notifications = require('./notifications');
+    notifications.enArrierePlan((async () => {
+      const { data: ent } = await admin.from('entreprises').select('nom').eq('id', entrepriseId).maybeSingle();
+      return notifications.robotActive(admin, { robot, entreprise: ent && ent.nom });
+    })());
+  }
   return { status: 'granted', id };
 }
 

@@ -19,6 +19,7 @@ const { createBudget, meteredLLM, BudgetExceededError } = require('./budget');
 const { runOrder, runResearch, runCouncil, CancelledError } = require('./protocol');
 const store = require('./store');
 const { livrableDepuisJob } = require('./robots');
+const notifications = require('../routes(api)/utils/notifications');
 
 const STALE_MINUTES = 15;
 const KIND_LABEL = { order: 'Ordre', debate: 'Conseil', research: 'Recherche' };
@@ -113,11 +114,18 @@ function createWorker({
       if (job.robot || (job.payload && job.payload.robot)) {
         try {
           const livrableId = await livrableDepuisJob(db, job, result);
-          if (livrableId) await store.logActivity(db, { job_id: job.id, kind: 'livrable_a_valider', message: 'Livrable du robot à valider par PBTM' });
+          if (livrableId) {
+            await store.logActivity(db, { job_id: job.id, kind: 'livrable_a_valider', message: 'Livrable du robot à valider par PBTM' });
+            notifications.enArrierePlan(notifications.livrableAValider(db, { id: livrableId, titre: job.payload && job.payload.client && job.payload.client.demande }));
+          }
         } catch (err) {
           logger.error(`[agents] job ${job.id}: livrable not created:`, err.message);
           await store.logActivity(db, { job_id: job.id, kind: 'livrable_error', message: 'Le livrable du robot n’a pas pu être créé : déposez-le à la main.' });
         }
+      }
+      // Push to the admins when the Council reached a consensus (PWA.md).
+      if (job.kind === 'debate' && result && result.consensus === true) {
+        notifications.enArrierePlan(notifications.conseilConsensus(db, { question: job.payload && job.payload.sujet, accord: result.accord }));
       }
       return 'done';
     } catch (err) {
