@@ -266,6 +266,16 @@ const handleLotteryPayment = async (req, res) => {
 
     if (error) throw new Error('Lottery not found');
 
+    // Never charge for a draw that is closed: fulfilment would refuse the
+    // entries afterwards and the payment would need a manual refund.
+    if (!lotteryData.isActive || !(new Date(lotteryData.lotteryTime) > new Date())) {
+      return res.status(409).json({ success: false, error: 'Ce tirage est terminé.' });
+    }
+    const quantity = parseInt(entryQuantity, 10);
+    if (!Number.isInteger(quantity) || quantity < 1 || quantity > 100) {
+      return res.status(400).json({ success: false, error: 'Invalid entry quantity' });
+    }
+
     // Ensure entryCost is a valid number
     const entryCost = Number(lotteryData.entrieCost);
     if (isNaN(entryCost)) {
@@ -280,19 +290,19 @@ const handleLotteryPayment = async (req, res) => {
         price_data: {
           currency: 'cad',
           product_data: { 
-            name: `Lottery Entries (${entryQuantity} tickets)`,
+            name: `Lottery Entries (${quantity} tickets)`,
             description: `Entry for ${lotteryData.nomProduit}`
           },
           unit_amount: Math.round(entryCost * 100), // Convert to cents
         },
-        quantity: parseInt(entryQuantity),
+        quantity,
       }],
       mode: 'payment',
       metadata: {
         type: 'lottery_entry',
         lotteryId,
         userId,
-        entryQuantity,
+        entryQuantity: String(quantity),
         entryCost,
         
       },
