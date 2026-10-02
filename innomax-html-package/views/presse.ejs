@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<%- include('partials/public-head', { seoPage: 'presse' }) %>
+</head>
+<body class="pl">
+<%
+  const logo = content('presse.logo', 'assets/img/logo/cropped-LogoPB512gold-1.webp');
+  const logoSrc = /^https:\/\//.test(logo) || logo.charAt(0) === '/' ? logo : '/' + logo;
+  const courriel = content('presse.courriel', '');
+  const courrielOk = /^[^\s@<>"']+@[^\s@<>"']+\.[a-z]{2,}$/i.test(courriel);
+  const contactNom = content('presse.contact_nom', '');
+  const telephone = content('presse.telephone', '');
+  const telOk = /^[+0-9 ().-]{7,25}$/.test(telephone);
+%>
+<%- include('partials/pilotage/topbar', {
+  sousTitre: null, email: null, badge: null,
+  salut: '🐼 ' + include('partials/pilotage/marque'),
+  titre: '📰 Kit média',
+  intro: 'Tout ce qu’il faut pour parler de PBTM : description officielle, logo et coordonnées des relations de presse.',
+  cta: null, nav: null, vue: null, base: '/'
+}) %>
+<%- include('partials/public-nav', { ici: '/presse' }) %>
+<main class="wrap main" id="contenu">
+  <div class="pl-stack">
+    <div class="pl-cols">
+      <section class="panel" aria-labelledby="presse-qui">
+        <h2 id="presse-qui">Qui sommes-nous ?</h2>
+        <p class="cr-lead"><%= content('presse.description', orgDescription) %></p>
+        <dl class="cr-facts">
+          <div><dt>Nom</dt><dd>PBTM (Panda Business Tech &amp; Marketing)</dd></div>
+          <div><dt>Région</dt><dd>Québec, Canada</dd></div>
+          <div><dt>Langues</dt><dd>Français d’abord, anglais sur demande</dd></div>
+          <div><dt>Domaines</dt><dd>IA et agents IA, marketing numérique, formation en ligne, NFT</dd></div>
+        </dl>
+      </section>
+      <section class="panel" aria-labelledby="presse-logo">
+        <h2 id="presse-logo">Logo officiel</h2>
+        <div class="cr-logo"><img src="<%= logoSrc %>" alt="Logo de PBTM" width="160" height="160"></div>
+        <p><a class="btn btn--sm" href="<%= logoSrc %>" download>Télécharger le logo</a></p>
+        <p class="dim">Merci de ne pas déformer ni recolorer le logo.</p>
+      </section>
+    </div>
+    <section class="panel panel--accent" aria-labelledby="presse-contact">
+      <h2 id="presse-contact">Relations de presse</h2>
+      <% if (contactNom || courrielOk || telOk) { %>
+      <ul class="cr-contact">
+        <% if (contactNom) { %><li><strong><%= contactNom %></strong></li><% } %>
+        <% if (courrielOk) { %><li><a href="mailto:<%= courriel %>"><%= courriel %></a></li><% } %>
+        <% if (telOk) { %><li><a href="tel:<%= telephone.replace(/[^+0-9]/g, '') %>"><%= telephone %></a></li><% } %>
+      </ul>
+      <% } else { %>
+      <p>Écrivez-nous par la <a href="/contact">page Contact</a> en précisant « Demande média » : nous répondons rapidement.</p>
+      <% } %>
+    </section>
+  </div>
+</main>
+<%- include('partials/pilotage/footer') %>
+</body>
+</html>

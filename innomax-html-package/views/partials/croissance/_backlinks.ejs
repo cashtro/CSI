@@ -1,0 +1,87 @@
+<%# Croissance · backlinks : opportunités (recherche web), suivi, courriels d'approche rédigés par Tribune. Aucun envoi automatique. %>
+<%
+  const jobsRecherche = c.jobs.filter(function (j) { return j.type === 'backlinks'; }).slice(0, 4);
+  const compte = {};
+  c.backlinks.forEach(function (b) { compte[b.statut] = (compte[b.statut] || 0) + 1; });
+%>
+<div class="pl-stack">
+  <div class="kpis">
+    <% Object.keys(c.labels.backlinkStatuts).forEach(function (s) { %>
+    <div class="panel kpi<%= s === 'obtenu' ? ' kpi--accent' : '' %>"><span class="label"><%= c.labels.backlinkStatuts[s] %></span><span class="value"><%= compte[s] || 0 %></span></div>
+    <% }) %>
+  </div>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="cr-bl-trouver">
+      <h2 id="cr-bl-trouver">Trouver des opportunités</h2>
+      <p class="cr-lead-sm">Racine cherche sur le web : annuaires d’affaires du Québec, chambres de commerce, médias tech québécois, balados. Chaque source devient une <strong>idée</strong> quand tu l’ajoutes.</p>
+      <form class="form" data-api="/api/admin/croissance/backlinks/opportunites" data-ok="Recherche lancée.">
+        <div class="field"><label for="bl-zone">Priorité (facultatif)</label><input id="bl-zone" name="zone" type="text" maxlength="200" placeholder="Ex. : Montréal, IA, formation"></div>
+        <div class="actions"><button class="btn btn--accent" type="submit">🔎 Trouver des opportunités</button><span class="status" data-status role="status"></span></div>
+      </form>
+      <% if (jobsRecherche.length) { %><div class="cr-jobs"><% jobsRecherche.forEach(function (j) { %><%- include('_job', { j: j, c: c, importLabel: '📥 Ajouter comme idées' }) %><% }) %></div><% } %>
+    </section>
+
+    <section class="panel" aria-labelledby="cr-bl-ajout">
+      <h2 id="cr-bl-ajout">Ajouter un backlink</h2>
+      <form class="form" data-api="/api/admin/croissance/backlinks" data-ok="Ajouté.">
+        <div class="form-row">
+          <div class="field"><label for="bl-c">Site ou page</label><input id="bl-c" name="cible" type="text" maxlength="200" required placeholder="Ex. : Chambre de commerce de Laval"></div>
+          <div class="field"><label for="bl-u">Adresse</label><input id="bl-u" name="url" type="url" placeholder="https://"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="bl-t">Type</label><select id="bl-t" name="type"><% Object.keys(c.labels.backlinkTypes).forEach(function (t) { %><option value="<%= t %>"><%= c.labels.backlinkTypes[t] %></option><% }) %></select></div>
+          <div class="field"><label for="bl-a">Autorité estimée (0 à 100)</label><input id="bl-a" name="autorite" type="number" min="0" max="100"></div>
+        </div>
+        <div class="field"><label for="bl-n">Note</label><input id="bl-n" name="note" type="text" maxlength="4000"></div>
+        <div class="actions"><button class="btn" type="submit">Ajouter</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="cr-bl-liste">
+    <div class="panel-head"><h2 id="cr-bl-liste">Suivi des backlinks</h2><a href="/api/admin/croissance/export?table=backlinks">Exporter (CSV)</a></div>
+    <% if (!c.backlinks.length) { %><p class="empty">Aucun backlink. Lance une recherche ou ajoutes-en un.</p><% } else { %>
+    <ul class="items">
+      <% c.backlinks.forEach(function (b) { const ap = c.approches[b.id]; %>
+      <li class="item">
+        <div class="item-head">
+          <h3><% if (b.url && /^https?:\/\//.test(b.url)) { %><a href="<%= b.url %>" target="_blank" rel="noopener noreferrer nofollow"><%= b.cible %></a><% } else { %><%= b.cible %><% } %></h3>
+          <span class="cr-pill cr-pill--<%= b.statut %>"><%= c.labels.backlinkStatuts[b.statut] || b.statut %></span>
+        </div>
+        <div class="item-meta"><%= c.labels.backlinkTypes[b.type] || b.type %><% if (b.domaine) { %> · <span class="mono"><%= b.domaine %></span><% } %><% if (b.autorite !== null && b.autorite !== undefined) { %> · autorité <span class="num"><%= b.autorite %></span><% } %><% if (b.date_suivi) { %> · suivi <span class="num"><%= fmt.jour(b.date_suivi) %></span><% } %></div>
+        <% if (b.source) { %><p class="dim">Source : <%= b.source %></p><% } %>
+        <% if (b.note) { %><p><%= b.note %></p><% } %>
+        <form class="form" data-api="/api/admin/croissance/backlinks/<%= b.id %>" data-method="PATCH" data-ok="Mis à jour.">
+          <div class="form-row">
+            <div class="field"><label for="bs-<%= b.id %>">Statut</label><select id="bs-<%= b.id %>" name="statut"><% Object.keys(c.labels.backlinkStatuts).forEach(function (s) { %><option value="<%= s %>"<% if (s === b.statut) { %> selected<% } %>><%= c.labels.backlinkStatuts[s] %></option><% }) %></select></div>
+            <div class="field"><label for="bd-<%= b.id %>">Date de suivi</label><input id="bd-<%= b.id %>" name="date_suivi" type="date" value="<%= b.date_suivi || '' %>"></div>
+            <div class="field"><label for="ba-<%= b.id %>">Autorité</label><input id="ba-<%= b.id %>" name="autorite" type="number" min="0" max="100" value="<%= b.autorite === null || b.autorite === undefined ? '' : b.autorite %>"></div>
+          </div>
+          <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
+        </form>
+        <details class="reveal">
+          <summary class="btn btn--ghost btn--sm">✉️ Courriel d’approche<% if (b.courriel_approche) { %> (brouillon prêt)<% } %></summary>
+          <div class="cr-approche">
+            <p class="cr-lcap">🛡️ <strong>Rien n’est envoyé par la console.</strong> Avant d’envoyer toi-même : l’adresse doit être publiée à des fins professionnelles et le message lié à la fonction de la personne (consentement tacite, LCAP), ou la personne a consenti. Identifie-toi et offre de ne plus écrire.</p>
+            <% if (b.courriel_approche) { %>
+            <form class="form" data-api="/api/admin/croissance/backlinks/<%= b.id %>" data-method="PATCH" data-ok="Brouillon enregistré.">
+              <div class="field"><label for="bc-<%= b.id %>">Brouillon (à copier dans ta messagerie)</label><textarea id="bc-<%= b.id %>" name="courriel_approche" rows="10" maxlength="8000"><%= b.courriel_approche %></textarea></div>
+              <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer le brouillon</button><span class="status" data-status role="status"></span></div>
+            </form>
+            <% } %>
+            <form data-api="/api/admin/croissance/backlinks/<%= b.id %>/approche" data-ok="Tribune rédige le courriel.">
+              <button class="btn btn--sm btn--accent" type="submit">📝 <%= b.courriel_approche ? 'Faire réécrire par Tribune' : 'Faire rédiger par Tribune' %></button><span class="status" data-status role="status"></span>
+            </form>
+            <% if (ap) { %><%- include('_job', { j: ap, c: c, importLabel: '📥 Recevoir le brouillon' }) %><% } %>
+          </div>
+        </details>
+        <form data-api="/api/admin/croissance/backlinks/<%= b.id %>" data-method="DELETE" data-confirm="Supprimer ce backlink ?">
+          <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+        </form>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+</div>

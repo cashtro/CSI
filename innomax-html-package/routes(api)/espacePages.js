@@ -27,8 +27,24 @@ function allowMicrophone(req, res, next) {
 // Agent tabs (views/partials/agents/*.ejs, assets/js/agents-console.js): the
 // page renders the forms; the script reads /api/admin/agents for live data.
 const AGENT_VUES = ['agents', 'conseil', 'travail', 'recherche', 'reglages-agents'];
-const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables', 'robots', 'cms', ...AGENT_VUES];
+const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables', 'robots', 'cms', ...AGENT_VUES, 'croissance'];
 const ROBOTS_ABSENT = 'Les tables des robots sont introuvables : exécutez db/006_robots.sql.';
+
+// Croissance tab (CROISSANCE.md): SEO audit, AEO, backlinks, campaigns, media.
+async function loadCroissance(admin, query) {
+  const croissance = require('./utils/croissance');
+  const section = croissance.SECTIONS.includes(query.section) ? query.section : 'tableau';
+  let audit = null;
+  if (section === 'tableau' || section === 'seo') {
+    try {
+      audit = await require('./croissanceAdmin').runAudit(admin);
+    } catch (err) {
+      logger.warn('[admin] seo audit failed:', err.message);
+    }
+  }
+  const mois = typeof query.mois === 'string' ? query.mois : '';
+  return croissance.loadPage(admin, { section, mois, audit });
+}
 
 // Agents for the forms' selects. A missing table (db/003 not run) shows a
 // message instead of failing the page.
@@ -118,9 +134,11 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
       fmtMoney: (c) => fmt.money(c / 100),
     })
     : null;
+  const croissance = vue === 'croissance' ? await loadCroissance(admin, req.query) : null;
   res.render('admin-console', {
     vue, data, site, cmsError, langue, fmt, etapes: ETAPES, statuts: STATUTS_MANDAT, email: req.user.email || '',
     robotsAdmin, robotsError, fournisseurs: cx.FOURNISSEURS,
+    croissance,
     fin, categories: finances.CATEGORIES, categorieLabel: finances.CATEGORIE_LABEL,
     agentVue, agents: agentData.agents, agentsError: agentData.agentsError, teams: catalog.TEAMS, defaultResearchAgent: catalog.DEFAULT_RESEARCH_AGENT,
   });

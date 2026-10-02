@@ -1,0 +1,87 @@
+<%# Croissance · médias et communication : communiqués rédigés par Tribune, liste de médias (avec le consentement LCAP), kit média /presse. %>
+<div class="pl-stack">
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="cr-cp-new">
+      <h2 id="cr-cp-new">Nouveau communiqué</h2>
+      <p class="cr-lead-sm">Donne le titre et les faits : Tribune (agent RP) rédige un brouillon structuré. Tu le relis, tu l’approuves, puis tu le diffuses toi-même.</p>
+      <form class="form" data-api="/api/admin/croissance/communiques/rediger" data-ok="Tribune rédige le communiqué.">
+        <div class="field"><label for="cp-t">Titre</label><input id="cp-t" name="titre" type="text" maxlength="300" required placeholder="Ex. : PBTM lance ses agents IA pour les PME du Québec"></div>
+        <div class="field"><label for="cp-s">Faits à inclure (qui, quoi, quand, où, pourquoi)</label><textarea id="cp-s" name="sujet" maxlength="4000" rows="4" data-dictee></textarea></div>
+        <div class="actions"><button class="btn btn--accent" type="submit">📝 Faire rédiger par Tribune</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="cr-kit">
+      <h2 id="cr-kit">Kit média</h2>
+      <p class="cr-lead-sm">La page publique <a href="/presse">/presse</a> montre le logo, la description et les contacts médias. Ses textes se modifient dans <a href="/admin/console?vue=cms">Contenu du site</a>, section « Presse · Kit média ».</p>
+      <div class="actions"><a class="btn btn--sm" href="/presse" target="_blank" rel="noopener">Voir /presse</a><a class="btn btn--ghost btn--sm" href="/admin/console?vue=cms">Modifier les textes</a></div>
+    </section>
+  </div>
+
+  <section class="panel" aria-labelledby="cr-cp-liste">
+    <div class="panel-head"><h2 id="cr-cp-liste">Communiqués</h2><a href="/api/admin/croissance/export?table=communiques">Exporter (CSV)</a></div>
+    <% if (!c.communiques.length) { %><p class="empty">Aucun communiqué.</p><% } else { %>
+    <ul class="items">
+      <% c.communiques.forEach(function (x) { const j = c.communiqueJobs[x.id]; %>
+      <li class="item">
+        <div class="item-head"><h3><%= x.titre %></h3><span class="cr-pill cr-pill--<%= x.statut %>"><%= c.labels.communiqueStatuts[x.statut] || x.statut %></span></div>
+        <div class="item-meta">Créé le <span class="num"><%= fmt.jour(x.created_at) %></span><% if (x.date_diffusion) { %> · diffusion <span class="num"><%= fmt.jour(x.date_diffusion) %></span><% } %></div>
+        <% if (j) { %><%- include('_job', { j: j, c: c, importLabel: '📥 Recevoir le texte de Tribune' }) %><% } %>
+        <details class="reveal"<% if (x.statut === 'brouillon') { %> open<% } %>>
+          <summary class="btn btn--ghost btn--sm">Relire et modifier</summary>
+          <form class="form" data-api="/api/admin/croissance/communiques/<%= x.id %>" data-method="PATCH" data-ok="Communiqué enregistré.">
+            <div class="field"><label for="cpt-<%= x.id %>">Titre</label><input id="cpt-<%= x.id %>" name="titre" type="text" maxlength="300" value="<%= x.titre %>" required></div>
+            <div class="field"><label for="cpx-<%= x.id %>">Texte</label><textarea id="cpx-<%= x.id %>" class="cr-long" name="texte" maxlength="20000" rows="14"><%= x.texte || '' %></textarea></div>
+            <div class="form-row">
+              <div class="field"><label for="cps-<%= x.id %>">Statut</label><select id="cps-<%= x.id %>" name="statut"><% ['brouillon', 'approuve', 'diffuse'].forEach(function (s) { %><option value="<%= s %>"<% if (s === x.statut) { %> selected<% } %>><%= c.labels.communiqueStatuts[s] %></option><% }) %></select></div>
+              <div class="field"><label for="cpd-<%= x.id %>">Date de diffusion</label><input id="cpd-<%= x.id %>" name="date_diffusion" type="date" value="<%= x.date_diffusion || '' %>"></div>
+            </div>
+            <div class="actions"><button class="btn btn--sm" type="submit">Enregistrer</button><span class="status" data-status role="status"></span></div>
+          </form>
+          <form data-api="/api/admin/croissance/communiques/<%= x.id %>" data-method="DELETE" data-confirm="Supprimer ce communiqué ?">
+            <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+          </form>
+        </details>
+      </li>
+      <% }) %>
+    </ul>
+    <% } %>
+  </section>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="cr-md-new">
+      <h2 id="cr-md-new">Ajouter un média</h2>
+      <form class="form" data-api="/api/admin/croissance/medias" data-ok="Média ajouté.">
+        <div class="form-row">
+          <div class="field"><label for="md-n">Nom du média</label><input id="md-n" name="nom" type="text" maxlength="200" required></div>
+          <div class="field"><label for="md-c">Contact</label><input id="md-c" name="contact" type="text" maxlength="200"></div>
+        </div>
+        <div class="form-row">
+          <div class="field"><label for="md-e">Courriel</label><input id="md-e" name="courriel" type="email" maxlength="320"></div>
+          <div class="field"><label for="md-s">Site</label><input id="md-s" name="site" type="url" placeholder="https://"></div>
+        </div>
+        <div class="field"><label for="md-t">Sujets couverts</label><input id="md-t" name="sujets" type="text" maxlength="1000" placeholder="Ex. : IA, PME, techno québécoise"></div>
+        <div class="field"><label for="md-k">Consentement (LCAP)</label><select id="md-k" name="consentement"><% Object.keys(c.labels.consentements).forEach(function (k) { %><option value="<%= k %>"><%= c.labels.consentements[k] %></option><% }) %></select></div>
+        <div class="actions"><button class="btn" type="submit">Ajouter</button><span class="status" data-status role="status"></span></div>
+      </form>
+    </section>
+
+    <section class="panel" aria-labelledby="cr-md-liste">
+      <div class="panel-head"><h2 id="cr-md-liste">Médias</h2><a href="/api/admin/croissance/export?table=medias">Exporter (CSV)</a></div>
+      <% if (!c.medias.length) { %><p class="empty">Aucun média.</p><% } else { %>
+      <ul class="items">
+        <% c.medias.forEach(function (m) { %>
+        <li class="item">
+          <div class="item-head"><h3><% if (m.site && /^https?:\/\//.test(m.site)) { %><a href="<%= m.site %>" target="_blank" rel="noopener noreferrer"><%= m.nom %></a><% } else { %><%= m.nom %><% } %></h3><span class="cr-pill cr-pill--<%= m.consentement === 'aucun' ? 'refuse' : 'obtenu' %>"><%= m.consentement === 'aucun' ? '🚫 Pas de courriel' : '✅ Contact permis' %></span></div>
+          <div class="item-meta"><%= m.contact || '—' %><% if (m.courriel) { %> · <span class="mono"><%= m.courriel %></span><% } %></div>
+          <% if (m.sujets) { %><p class="dim"><%= m.sujets %></p><% } %>
+          <form data-api="/api/admin/croissance/medias/<%= m.id %>" data-method="DELETE" data-confirm="Supprimer ce média ?">
+            <button class="btn btn--danger btn--sm" type="submit">Supprimer</button><span class="status" data-status role="status"></span>
+          </form>
+        </li>
+        <% }) %>
+      </ul>
+      <% } %>
+    </section>
+  </div>
+</div>

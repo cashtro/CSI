@@ -1,0 +1,31 @@
+/* Bloc AEO des pages publiques (views/partials/aeo-bloc.ejs).
+   Chargé seulement quand la page a une réponse courte ou une FAQ dans le CMS.
+   Aucune couleur : le bloc hérite des couleurs de la page (texte, liens) et
+   trace ses filets avec currentColor, pour s'intégrer à chaque gabarit. */
+
+.aeo { padding: 64px 16px; }
+.aeo-wrap { max-width: 860px; margin: 0 auto; }
+.aeo-titre { margin: 0 0 24px; line-height: 1.2; }
+.aeo-bref {
+  margin: 0 0 32px;
+  padding: 20px 24px;
+  border-left: 4px solid currentColor;
+  border-radius: 12px;
+  font-size: 1.125rem;
+  line-height: 1.6;
+}
+.aeo-q {
+  border-top: 1px solid color-mix(in srgb, currentColor 25%, transparent);
+  padding: 16px 0;
+}
+.aeo-q:last-of-type { border-bottom: 1px solid color-mix(in srgb, currentColor 25%, transparent); }
+.aeo-q summary { cursor: pointer; font-weight: 700; font-size: 1.05rem; line-height: 1.5; }
+.aeo-q summary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; }
+.aeo-q p { margin: 12px 0 0; line-height: 1.7; }
+.aeo-plus { margin: 24px 0 0; }
+.aeo-plus a { text-decoration: underline; text-underline-offset: 3px; }
+
+@media (max-width: 760px) {
+  .aeo { padding: 48px 16px; }
+  .aeo-bref { padding: 16px 18px; font-size: 1rem; }
+}

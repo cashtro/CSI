@@ -6,10 +6,9 @@
     <!--========= Required meta tags =========-->
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Pandora Business Technology & Marketing is your all-in-one partner for digital growth. We create innovative marketing campaigns, build cutting-edge technology solutions, empower education, showcase a portfolio of success, and pioneer NFT projects with exclusive real-world benefits. Our Lucky Draw lets businesses promote their products for free marketing, while participants win incredible prizes. Discover how we help you scale, engage audiences, and unlock crypto rewards — all while saving on marketing, tech, and custom varsity jackets. Contact us today!">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/seo-head', { seoPage: 'accueil' }) %>
 
     <%- include('partials/metaPixel', { pixelId: pixelId }) %>
 
@@ -503,12 +502,12 @@
                                     <div class="cs-service-item mt-30">
                                         <div class="xb-item--inner">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/airdrop-white.svg" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/airdrop-white.svg" alt="">
                                             </div>
                                             <h3 class="xb-item--title"><%= content('home.services.tech.title', 'Tech & A.I') %></h3>
                                             <ul class="xb-item--item list-unstyled">
                                                 <% content('home.services.tech.items', ['Artificial intelligence for smart businesses', 'Automate tasks with intelligent systems', 'Data turned into smart insights', 'Scalable custom AI-driven solutions', 'Predictive analysis boosts performance']).forEach(function (item) { %>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <li><img loading="lazy" decoding="async" src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
                                                 <% }) %>
                                             </ul>
                                         </div>
@@ -571,12 +570,12 @@
                                     <div class="cs-service-item mt-30">
                                         <div class="xb-item--inner">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/finger-scan.svg" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/finger-scan.svg" alt="">
                                             </div>
                                             <h3 class="xb-item--title"><%= content('home.services.education.title', 'Education') %></h3>
                                             <ul class="xb-item--item list-unstyled education-list">
                                                 <% content('home.services.education.items', ['Learn anytime, anywhere, any device', 'Expert-led courses with certifications', 'Interactive lessons for deeper understanding', 'Track progress with smart analytics', 'Affordable education for every learner']).forEach(function (item) { %>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <li><img loading="lazy" decoding="async" src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
                                                 <% }) %>
                                             </ul>
                                         </div>
@@ -641,12 +640,12 @@
                                     <div class="cs-service-item mt-30">
                                         <div class="xb-item--inner">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/cloud-add.svg" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/cloud-add.svg" alt="">
                                             </div>
                                             <h3 class="xb-item--title"><%= content('home.services.marketing.title', 'Marketing Digital') %></h3>
                                             <ul class="xb-item--item list-unstyled">
                                                 <% content('home.services.marketing.items', ['Targeted ads for higher conversions', 'SEO strategies to increase visibility', 'Social media growth with analytics', 'Email campaigns that drive engagement', 'Data-driven digital marketing results']).forEach(function (item) { %>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <li><img loading="lazy" decoding="async" src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
                                                 <% }) %>
                                             </ul>
                                         </div>
@@ -711,12 +710,12 @@
                                     <div class="cs-service-item mt-30">
                                         <div class="xb-item--inner">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/check02.svg" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/check02.svg" alt="">
                                             </div>
                                             <h3 class="xb-item--title"><%= content('home.services.nft.title', 'NFT') %></h3>
                                             <ul class="xb-item--item list-unstyled">
                                                 <% content('home.services.nft.items', ['Unique digital assets for collectors', 'Verified ownership through blockchain tech', 'Mint, sell, and trade NFTs', 'NFT drops with limited editions', 'Community-driven Web3 art platform']).forEach(function (item) { %>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <li><img loading="lazy" decoding="async" src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
                                                 <% }) %>
                                             </ul>
                                         </div>
@@ -779,12 +778,12 @@
                                     <div class="cs-service-item mt-30">
                                         <div class="xb-item--inner">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/ranking.svg" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/ranking.svg" alt="">
                                             </div>
                                             <h3 class="xb-item--title"><%= content('home.services.lottery.title', 'Lottery Draw') %></h3>
                                             <ul class="xb-item--item list-unstyled raffle-list">
                                                 <% content('home.services.lottery.items', ['Enter raffles to win big', 'Fair draws with verified winners', 'Instant notifications for lucky entries', 'Transparent process, secure digital tickets', 'Exciting prizes updated every week']).forEach(function (item) { %>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <li><img loading="lazy" decoding="async" src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
                                                 <% }) %>
                                             </ul>
                                         </div>
@@ -847,7 +846,7 @@
                                 </div>
                             </div>
                             <div class="cs-ser_shape">
-                                <img src="assets/img/logo/cropped-LogoPB512gold-1.webp" alt="">
+                                <img loading="lazy" decoding="async" src="assets/img/logo/cropped-LogoPB512gold-1.webp" alt="">
                             </div>
                         </div>
                     </div>
@@ -859,7 +858,7 @@
                     <div class="container">
                         <div class="sec-title--two sec-title--three text-center mb-60">
                 
-                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img src="assets/img/icon/bill.svg"
+                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img loading="lazy" decoding="async" src="assets/img/icon/bill.svg"
                                     alt=""><span>Participate for exciting prizes</span></span>
                 
                             <h2 class="title">Current <span style="color: #E6C373;">Lotteries</span></h2>
@@ -904,7 +903,7 @@
                     <div class="container">
                         <div class="sec-title--two sec-title--three text-center mb-60">
                 
-                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img src="assets/img/icon/edit.svg"
+                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img loading="lazy" decoding="async" src="assets/img/icon/edit.svg"
                                     alt=""><span>Our popular courses</span></span>
                             <h2 class="title">Featured <span style="color: #E6C373;">Courses</span></h2>
                         </div>
@@ -1026,7 +1025,7 @@
                 <section class="blog pt-60 pb-20">
                     <div class="container">
                         <div class="sec-title--two sec-title--three text-center mb-60">
-                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img src="assets/img/icon/blg-cap.svg"
+                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img loading="lazy" decoding="async" src="assets/img/icon/blg-cap.svg"
                                     alt=""><span>Our NFT collection</span></span>
                             <h2 class="title wow fadeInDown" data-wow-duration="600ms">Discover our latest <span
                                     style="color: #E6C373;">NFTs</span></h2>
@@ -1040,8 +1039,8 @@
                                             <video width="100%" autoplay loop muted playsinline>
                                                 <source src="assets/mp4/nft kobe ad.mp4" type="video/mp4">
                                             </video>
-                                            <div class="xb-item--circle-arrow"><img src="assets/img/icon/arrow-white.webp" alt=""></div>
-                                            <div class="xb-item--line"><img src="assets/img/shape/blg-line.webp" alt="">
+                                            <div class="xb-item--circle-arrow"><img loading="lazy" decoding="async" src="assets/img/icon/arrow-white.webp" alt=""></div>
+                                            <div class="xb-item--line"><img loading="lazy" decoding="async" src="assets/img/shape/blg-line.webp" alt="">
                                             </div>
                                         </a>
                                     </div>
@@ -1049,9 +1048,9 @@
                                             Collection</a></h2>
                                     <p class="text-center"><strong>Kobe Legend NFT</strong></p>
                                     <ul class="xb-item--meta list-unstyled ul_li">
-                                        <li><span><img src="assets/img/icon/profile-circle.webp" alt=""></span>Posted By
+                                        <li><span><img loading="lazy" decoding="async" src="assets/img/icon/profile-circle.webp" alt=""></span>Posted By
                                             Johnson</li>
-                                        <li><span><img src="assets/img/icon/menu-board.webp" alt=""></span>11/12/2024
+                                        <li><span><img loading="lazy" decoding="async" src="assets/img/icon/menu-board.webp" alt=""></span>11/12/2024
                                         </li>
                                     </ul>
                                 </div>
@@ -1064,8 +1063,8 @@
                                             <video width="100%" autoplay loop muted playsinline>
                                                 <source src="assets/mp4/Muhammad Ali Nft.mp4" type="video/mp4">
                                             </video>
-                                            <div class="xb-item--circle-arrow"><img src="assets/img/icon/arrow-white.webp" alt=""></div>
-                                            <div class="xb-item--line"><img src="assets/img/shape/blg-line.webp" alt="">
+                                            <div class="xb-item--circle-arrow"><img loading="lazy" decoding="async" src="assets/img/icon/arrow-white.webp" alt=""></div>
+                                            <div class="xb-item--line"><img loading="lazy" decoding="async" src="assets/img/shape/blg-line.webp" alt="">
                                             </div>
                                         </a>
                                     </div>
@@ -1073,9 +1072,9 @@
                                             Time NFT Series</a></h2>
                                     <p class="text-center"><strong>Ali GOAT NFT</strong></p>
                                     <ul class="xb-item--meta list-unstyled ul_li">
-                                        <li><span><img src="assets/img/icon/profile-circle.webp" alt=""></span>Posted By
+                                        <li><span><img loading="lazy" decoding="async" src="assets/img/icon/profile-circle.webp" alt=""></span>Posted By
                                             Anderson</li>
-                                        <li><span><img src="assets/img/icon/menu-board.webp" alt=""></span>18/12/2024
+                                        <li><span><img loading="lazy" decoding="async" src="assets/img/icon/menu-board.webp" alt=""></span>18/12/2024
                                         </li>
                                     </ul>
                                 </div>
@@ -1088,8 +1087,8 @@
                                             <video width="100%" autoplay loop muted playsinline>
                                                 <source src="assets/mp4/Pele Nft ad.mp4" type="video/mp4">
                                             </video>
-                                            <div class="xb-item--circle-arrow"><img src="assets/img/icon/arrow-white.webp" alt=""></div>
-                                            <div class="xb-item--line"><img src="assets/img/shape/blg-line.webp" alt="">
+                                            <div class="xb-item--circle-arrow"><img loading="lazy" decoding="async" src="assets/img/icon/arrow-white.webp" alt=""></div>
+                                            <div class="xb-item--line"><img loading="lazy" decoding="async" src="assets/img/shape/blg-line.webp" alt="">
                                             </div>
                                         </a>
                                     </div>
@@ -1097,9 +1096,9 @@
                                             Edition</a></h2>
                                     <p class="text-center"><strong>Pelé Icon NFT</strong></p>
                                     <ul class="xb-item--meta list-unstyled ul_li">
-                                        <li><span><img src="assets/img/icon/profile-circle.webp" alt=""></span>Posted By
+                                        <li><span><img loading="lazy" decoding="async" src="assets/img/icon/profile-circle.webp" alt=""></span>Posted By
                                             Martinez</li>
-                                        <li><span><img src="assets/img/icon/menu-board.webp" alt=""></span>27/12/2024
+                                        <li><span><img loading="lazy" decoding="async" src="assets/img/icon/menu-board.webp" alt=""></span>27/12/2024
                                         </li>
                                     </ul>
                                 </div>
@@ -1134,19 +1133,19 @@
                                         data-wow-duration="600ms">
                                         <div class="xb-item--ineer">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/work-icon01.webp" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/work-icon01.webp" alt="">
                                             </div>
                                             <h4 class="xb-item--title">Risk Assessment & Consultation</h4>
                                         </div>
                                         <div class="xb-img">
-                                            <img src="assets/img/work/img01.webp" alt="">
+                                            <img loading="lazy" decoding="async" src="assets/img/work/img01.webp" alt="">
                                         </div>
                                         <div class="xb-item--content" style="margin-left: 0% !important;">
-                                            <div class="xb-item--line"><img src="assets/img/icon/das-linee01.webp"
+                                            <div class="xb-item--line"><img loading="lazy" decoding="async" src="assets/img/icon/das-linee01.webp"
                                                     alt=""></div>
                                             <span class="xb-item--number">01</span>
                                         </div>
-                                        <div class="xb-item--arrow"><img src="assets/img/icon/right-arrow.webp" alt="">
+                                        <div class="xb-item--arrow"><img loading="lazy" decoding="async" src="assets/img/icon/right-arrow.webp" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -1154,19 +1153,19 @@
                                     <div class="xb-work-item xb-work-item--middle pos-rel">
                                         <div class="xb-item--ineer">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/work-icon02.webp" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/work-icon02.webp" alt="">
                                             </div>
                                             <h4 class="xb-item--title">Solution Design and Implementation</h4>
                                         </div>
                                         <div class="xb-img">
-                                            <img src="assets/img/imgs/image (10) blanc.webp" alt="">
+                                            <img loading="lazy" decoding="async" src="assets/img/imgs/image (10) blanc.webp" alt="">
                                         </div>
                                         <div class="xb-item--content" style="margin-left: 0% !important;">
-                                            <div class="xb-item--line"><img src="assets/img/icon/das-linee01.webp"
+                                            <div class="xb-item--line"><img loading="lazy" decoding="async" src="assets/img/icon/das-linee01.webp"
                                                     alt=""></div>
                                             <span class="xb-item--number">02</span>
                                         </div>
-                                        <div class="xb-item--arrow"><img src="assets/img/icon/right-arrow.webp" alt="">
+                                        <div class="xb-item--arrow"><img loading="lazy" decoding="async" src="assets/img/icon/right-arrow.webp" alt="">
                                         </div>
                                     </div>
                                 </div>
@@ -1175,15 +1174,15 @@
                                         data-wow-duration="600ms">
                                         <div class="xb-item--ineer">
                                             <div class="xb-item--icon">
-                                                <img src="assets/img/icon/work-icon03.webp" alt="">
+                                                <img loading="lazy" decoding="async" src="assets/img/icon/work-icon03.webp" alt="">
                                             </div>
                                             <h4 class="xb-item--title">Monitoring and Support</h4>
                                         </div>
                                         <div class="xb-img">
-                                            <img src="assets/img/work/img03.webp" alt="">
+                                            <img loading="lazy" decoding="async" src="assets/img/work/img03.webp" alt="">
                                         </div>
                                         <div class="xb-item--content" style="margin-left: 0% !important;">
-                                            <div class="xb-item--line"><img src="assets/img/icon/das-linee01.webp"
+                                            <div class="xb-item--line"><img loading="lazy" decoding="async" src="assets/img/icon/das-linee01.webp"
                                                     alt=""></div>
                                             <span class="xb-item--number">03</span>
                                         </div>
@@ -1200,7 +1199,7 @@
                     <div class="container">
                         <div class="sec-title--two text-center mb-60">
                             <div class="sec-title--two sec-title--three text-center mb-60">
-                                <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img src="assets/img/icon/work.svg"
+                                <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img loading="lazy" decoding="async" src="assets/img/icon/work.svg"
                                         alt=""><span>Connect</span></span>
                                 <h2 class="title wow fadeInDown" data-wow-duration="600ms"><span
                                         style="color: #E6C373;">Connecting</span> You Globally</h2>
@@ -1215,7 +1214,7 @@
                                             <source src="assets/img/video/marketing.mp4" type="video/mp4">
                                         </video>
                                     </div>
-                                    <div class="process_shape" style="width: 80px;"><img src="assets/img/shape/pattern.webp" alt="">
+                                    <div class="process_shape" style="width: 80px;"><img loading="lazy" decoding="async" src="assets/img/shape/pattern.webp" alt="">
                                     </div>
                                 </div>
                             </div>
@@ -1223,7 +1222,7 @@
                                 <div class="sa-process_left compact-process">
                                     <div class="process-item compact-item process-item--one">
                                         <div class="xb-item--icon">
-                                            <img src="assets/img/icon/search01.svg" alt="" width="36">
+                                            <img loading="lazy" decoding="async" src="assets/img/icon/search01.svg" alt="" width="36">
                                         </div>
                                         <div class="compact-content">
                                             <h4 class="xb-item--title" style="color: black; font-size: 1.1rem; margin-bottom: 8px;">
@@ -1237,7 +1236,7 @@
                                     </div>
                                     <div class="process-item compact-item process-item--two">
                                         <div class="xb-item--icon">
-                                            <img src="assets/img/icon/user-icon.webp" alt="" width="36">
+                                            <img loading="lazy" decoding="async" src="assets/img/icon/user-icon.webp" alt="" width="36">
                                         </div>
                                         <div class="compact-content">
                                             <h4 class="xb-item--title" style="color: black; font-size: 1.1rem; margin-bottom: 8px;">
@@ -1252,7 +1251,7 @@
                                     </div>
                                     <div class="process-item compact-item process-item--three">
                                         <div class="xb-item--icon">
-                                            <img src="assets/img/icon/clipboar02.svg" alt="" width="36">
+                                            <img loading="lazy" decoding="async" src="assets/img/icon/clipboar02.svg" alt="" width="36">
                                         </div>
                                         <div class="compact-content">
                                             <h4 class="xb-item--title" style="color: black; font-size: 1.1rem; margin-bottom: 8px;">
@@ -1266,7 +1265,7 @@
                                     </div>
                                     <div class="process-item compact-item process-item--four">
                                         <div class="xb-item--icon">
-                                            <img src="assets/img/icon/medal-star.svg" alt="" width="36">
+                                            <img loading="lazy" decoding="async" src="assets/img/icon/medal-star.svg" alt="" width="36">
                                         </div>
                                         <div class="compact-content">
                                             <h4 class="xb-item--title" style="color: black; font-size: 1.1rem; margin-bottom: 8px;">
@@ -1944,20 +1943,20 @@
                             </div>
                             <div class="row" style="margin: 40px; padding: 50px; justify-content: center;">
                                 <div class="card-3d">
-                                    <div><img src="assets/img/Portfolio/belle pro.png" alt="BelleProvince"></div>                                   
-                                    <div><img src="assets/img\Portfolio/305260375_495746609229098_5419589155267613159_n.jpg" alt="Prolifik"></div>
-                                    <div><img src="assets/img\Portfolio/asfdadsfdasfg.jpg" alt="NoeudPapillon"></div>
-                                    <div><img src="assets/img\Portfolio/kdy legal.jpg" alt="KDY"></div>
-                                    <div><img src="assets/img/Portfolio/sleek.png" alt="Sleek"></div>
-                                    <div><img src="assets/img/Portfolio/Screenshot 2025-03-31 095751.png" alt="Projet Synoptech"></div>
-                                    <div><img src="assets/img/Portfolio/blkbox media.png" alt="BlackBox Media"></div>
-                                    <div><img src="assets/img/Portfolio/casacrypto.png" alt="CasaCrypto"></div>
-                                    <div><img src="assets/img/Portfolio/2.0evolujeunes.png" alt="EvoluJeunes"></div>
-                                    <div><img  src="assets/img/Portfolio/fctbackrounremoved copy.png" alt="Freedom"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img/Portfolio/belle pro.png" alt="BelleProvince"></div>                                   
+                                    <div><img loading="lazy" decoding="async" src="assets/img\Portfolio/305260375_495746609229098_5419589155267613159_n.jpg" alt="Prolifik"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img\Portfolio/asfdadsfdasfg.jpg" alt="NoeudPapillon"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img\Portfolio/kdy legal.jpg" alt="KDY"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img/Portfolio/sleek.png" alt="Sleek"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img/Portfolio/Screenshot 2025-03-31 095751.png" alt="Projet Synoptech"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img/Portfolio/blkbox media.png" alt="BlackBox Media"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img/Portfolio/casacrypto.png" alt="CasaCrypto"></div>
+                                    <div><img loading="lazy" decoding="async" src="assets/img/Portfolio/2.0evolujeunes.png" alt="EvoluJeunes"></div>
+                                    <div><img loading="lazy" decoding="async"  src="assets/img/Portfolio/fctbackrounremoved copy.png" alt="Freedom"></div>
                                     
                                     <!--
-                                    <div><img src="image1.jpg" alt=""></div>
-                                    <div><img src="image2.jpg" alt=""></div>
+                                    <div><img loading="lazy" decoding="async" src="image1.jpg" alt=""></div>
+                                    <div><img loading="lazy" decoding="async" src="image2.jpg" alt=""></div>
                                     -->
 
                                 </div>
@@ -1997,7 +1996,7 @@
                                 <!-- Carte 1 -->
                                 <div class="col">
                                     <div class="award-item wow fadeInUp" data-wow-delay="000ms" data-wow-duration="600ms">
-                                        <div class="xb-img" style="margin-top: 21% !important;"><img src="assets/img/imgs/award1.webp"
+                                        <div class="xb-img" style="margin-top: 21% !important;"><img loading="lazy" decoding="async" src="assets/img/imgs/award1.webp"
                                                 alt=""></div>
                                         <span class="xb-title">Youtube Music Certification</span>
                                     </div>
@@ -2005,7 +2004,7 @@
                                 <!-- Carte 2 -->
                                 <div class="col">
                                     <div class="award-item wow fadeInUp" data-wow-delay="000ms" data-wow-duration="600ms">
-                                        <div class="xb-img" style="margin-top: 21% !important;"><img src="assets/img/imgs/award2.webp"
+                                        <div class="xb-img" style="margin-top: 21% !important;"><img loading="lazy" decoding="async" src="assets/img/imgs/award2.webp"
                                                 alt=""></div>
                                         <span class="xb-title">Google My Business</span>
                                     </div>
@@ -2013,7 +2012,7 @@
                                 <!-- Carte 3 -->
                                 <div class="col">
                                     <div class="award-item wow fadeInUp" data-wow-delay="000ms" data-wow-duration="600ms">
-                                        <div class="xb-img" style="margin-top: 21% !important;"><img src="assets/img/imgs/award3.webp"
+                                        <div class="xb-img" style="margin-top: 21% !important;"><img loading="lazy" decoding="async" src="assets/img/imgs/award3.webp"
                                                 alt=""></div>
                                         <span class="xb-title">Google Analytics Individual Qualification</span>
                                     </div>
@@ -2021,7 +2020,7 @@
                                 <!-- Carte 4 -->
                                 <div class="col">
                                     <div class="award-item wow fadeInUp" data-wow-delay="000ms" data-wow-duration="600ms">
-                                        <div class="xb-img" style="margin-top: 21% !important;"><img src="assets/img/imgs/award4.webp"
+                                        <div class="xb-img" style="margin-top: 21% !important;"><img loading="lazy" decoding="async" src="assets/img/imgs/award4.webp"
                                                 alt=""></div>
                                         <span class="xb-title">Google Ads Search Certification</span>
                                     </div>
@@ -2029,7 +2028,7 @@
                                 <!-- Carte 5 -->
                                 <div class="col">
                                     <div class="award-item wow fadeInUp" data-wow-delay="000ms" data-wow-duration="600ms">
-                                        <div class="xb-img" style="margin-top: 21% !important;"><img src="assets/img/imgs/awsAward.webp"
+                                        <div class="xb-img" style="margin-top: 21% !important;"><img loading="lazy" decoding="async" src="assets/img/imgs/awsAward.webp"
                                                 alt="">
                                         </div>
                                         <span class="xb-title">Aws Cloud Foundation</span>
@@ -2072,7 +2071,7 @@
                 <section class="about pt-60 pb-20">
                     <div class="container">
                         <div class="tes-heading text-center mb-40 sec-title--two sec-title--three text-center mb-10">
-                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img src="assets/img/icon/like-tag.svg"
+                            <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img loading="lazy" decoding="async" src="assets/img/icon/like-tag.svg"
                                     alt=""><span>Customer stories</span></span>
                             <h2 class="title wow fadeInDown" data-wow-delay="100ms" data-wow-duration="600ms"
                                 style="font-size: 1.8rem;">The customer experience</h2>
@@ -2082,15 +2081,15 @@
                                 <div class="xb-item--img">
                                     <div class="xb-item--author">
                                         <div class="author-images">
-                                            <img src="assets/img/icon/syno.webp" alt="" class="company-logo">
-                                            <img src="assets/img/testimonial/phillips.webp" alt="" class="author-avatar">
+                                            <img loading="lazy" decoding="async" src="assets/img/icon/syno.webp" alt="" class="company-logo">
+                                            <img loading="lazy" decoding="async" src="assets/img/testimonial/phillips.webp" alt="" class="author-avatar">
                                         </div>                                       
                                     </div>
                                 </div>
-                                <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon01.webp" alt=""></span>Alex Phillips Paquet 
+                                <h3 class="xb-item--heading"><span><img loading="lazy" decoding="async" src="assets/img/icon/about-icon01.webp" alt=""></span>Alex Phillips Paquet 
                                 </h3>
                                 <div class="xb-item--holder">
-                                    <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon01.webp" alt=""></span>Co-Founder, COO Synoptech Inc.
+                                    <h3 class="xb-item--title"><span><img loading="lazy" decoding="async" src="assets/img/icon/about-icon01.webp" alt=""></span>Co-Founder, COO Synoptech Inc.
                                     </h3>
                                     <p class="xb-item--content" style="margin-top: 0% !important ;">
                                         "Very professional, we
@@ -2103,14 +2102,14 @@
                             <div class="about-item mt-30 xb-mouseenter wow fadeInUp" data-wow-delay="150ms" data-wow-duration="600ms">
                                 <div class="xb-item--img">
                                     <div class="author-images">
-                                        <img src="assets/img/icon/erl.webp" alt="" class="company-logo">
-                                        <img src="assets/img/icon/ger.webp" alt="" class="author-avatar">
+                                        <img loading="lazy" decoding="async" src="assets/img/icon/erl.webp" alt="" class="company-logo">
+                                        <img loading="lazy" decoding="async" src="assets/img/icon/ger.webp" alt="" class="author-avatar">
                                     </div>
                                 </div>
-                                <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon02.webp" alt=""></span>Gerthie Erlande Chery
+                                <h3 class="xb-item--heading"><span><img loading="lazy" decoding="async" src="assets/img/icon/about-icon02.webp" alt=""></span>Gerthie Erlande Chery
                                 </h3>
                                 <div class="xb-item--holder">
-                                    <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon02.webp" alt=""></span>CEO and Founder of EcLux Fitness</h3>
+                                    <h3 class="xb-item--title"><span><img loading="lazy" decoding="async" src="assets/img/icon/about-icon02.webp" alt=""></span>CEO and Founder of EcLux Fitness</h3>
                                     <p class="xb-item--content" style="margin-top: 0% !important ;">
                                         "Professional team work with
                                         their clients. Am
@@ -2125,14 +2124,14 @@
                                 data-wow-duration="600ms">
                                 <div class="xb-item--img">
                                     <div class="author-images">
-                                        <img src="assets/img/icon/fct.webp" alt="" class="company-logo">
-                                        <img src="assets/img/testimonial/patrick.webp" alt="" class="author-avatar">
+                                        <img loading="lazy" decoding="async" src="assets/img/icon/fct.webp" alt="" class="company-logo">
+                                        <img loading="lazy" decoding="async" src="assets/img/testimonial/patrick.webp" alt="" class="author-avatar">
                                     </div>
                                 </div>
-                                <h3 class="xb-item--heading"><span><img src="assets/img/icon/about-icon03.webp" alt=""></span>Patrick King
+                                <h3 class="xb-item--heading"><span><img loading="lazy" decoding="async" src="assets/img/icon/about-icon03.webp" alt=""></span>Patrick King
                                 </h3>
                                 <div class="xb-item--holder">
-                                    <h3 class="xb-item--title"><span><img src="assets/img/icon/about-icon03.webp" alt=""></span>Leader of the Freedom convoy</h3>
+                                    <h3 class="xb-item--title"><span><img loading="lazy" decoding="async" src="assets/img/icon/about-icon03.webp" alt=""></span>Leader of the Freedom convoy</h3>
                                     <p class="xb-item--content" style="margin-top: 0% !important ;">
                                         "Great people to work with.
                                         Amazing designs"
@@ -2216,11 +2215,11 @@
                                                 <div class="col-lg-7 wow fadeInUp d-flex justify-content-center" data-wow-delay=".9s">
                                                     <button type="submit" class="theme-btn" style="margin-left: -40% !important; margin-top: -5% !important;">
                                                         <span class="icon-1">
-                                                            <img src="assets/img/icon/10.svg" alt="img">
+                                                            <img loading="lazy" decoding="async" src="assets/img/icon/10.svg" alt="img">
                                                         </span>
                                                         Submit request
                                                         <span class="icon-2">
-                                                            <img src="assets/img/icon/11.svg" alt="img">
+                                                            <img loading="lazy" decoding="async" src="assets/img/icon/11.svg" alt="img">
                                                         </span>
                                                     </button>
                                                 </div>
@@ -2239,7 +2238,7 @@
                 
         <!-- footer start -->
                 
-        <%- include('partials/footer') %>
+        <%- include('partials/aeo-bloc', { aeoPage: 'accueil' }) %><%- include('partials/footer') %>
                 
         <!-- footer end -->
                 

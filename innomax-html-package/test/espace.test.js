@@ -351,7 +351,13 @@ describe('voice dictation', () => {
 describe('CMS registry matches the templates', () => {
   const fs = require('fs');
   const PAGES = { home: 'home4', marketing: 'marketing', techai: 'TechAndAi', contact: 'contact' };
-  it.each(cms.REGISTRY.map((z) => [z.key, z]))('%s is wired with the same fallback', (key, zone) => {
+  // SEO, AEO and press zones (seo.*, aeo.*, faq.*, presse.*) are printed by
+  // utils/seo.js, not by a content() call: see test/croissance-seo.test.js.
+  const inTemplates = cms.REGISTRY.filter((z) => PAGES[z.key.split('.')[0]]);
+  it('every template zone is checked', () => {
+    expect(inTemplates.length + require('../routes(api)/utils/seo-data').cmsZones().length).toBe(cms.REGISTRY.length);
+  });
+  it.each(inTemplates.map((z) => [z.key, z]))('%s is wired with the same fallback', (key, zone) => {
     const src = fs.readFileSync(path.join(__dirname, '..', 'views', `${PAGES[key.split('.')[0]]}.ejs`), 'utf8');
     if (zone.type === 'json') {
       expect(src).toContain(`content('${key}', [`);

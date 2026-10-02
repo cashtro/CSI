@@ -1,0 +1,19 @@
+<%# Bloc AEO d'une page publique : réponse courte en tête, puis questions fréquentes (CMS : aeo.<page>.reponse et faq.<page>). CMS vide : rien n'est rendu, la page reste identique. Usage : include('partials/aeo-bloc', { aeoPage: 'accueil' }). -%>
+<% var a = typeof aeoFor === 'function' ? aeoFor(aeoPage) : null; -%>
+<% if (a && (a.reponse || a.faq.length)) { -%>
+<section class="aeo" aria-labelledby="aeo-titre-<%= aeoPage %>">
+  <div class="aeo-wrap">
+    <h2 class="aeo-titre" id="aeo-titre-<%= aeoPage %>">Questions fréquentes</h2>
+<% if (a.reponse) { -%>
+    <p class="aeo-bref"><strong>En bref :</strong> <%= a.reponse %></p>
+<% } -%>
+<% a.faq.forEach(function (x) { -%>
+    <details class="aeo-q">
+      <summary><%= x.q %></summary>
+      <p><%= x.r %></p>
+    </details>
+<% }) -%>
+    <p class="aeo-plus"><a href="/faq">Toutes les questions fréquentes</a></p>
+  </div>
+</section>
+<% } -%>

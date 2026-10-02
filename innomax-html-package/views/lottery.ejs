@@ -6,12 +6,11 @@
     <!--========= Required meta tags =========-->
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <meta name="description" content="Pandora Brains Lucky Draw helps companies promote their products or services by offering them as raffle prizes — and we provide FREE digital marketing! Participants enter to win amazing prizes, while your brand gets promoted.">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="rocket-loader" content="manual">
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js" async></script>
 
-    <title>Pandora Business Technology & Marketing</title>
+    <%- include('partials/seo-head', { seoPage: 'tirage' }) %>
     <%- include('partials/metaPixel', { pixelId: pixelId }) %>
 
 
@@ -193,7 +192,7 @@
     <!-- main area end -->
     
     <!-- footer start -->
-    <%- include('partials/footer') %>
+    <%- include('partials/aeo-bloc', { aeoPage: 'tirage' }) %><%- include('partials/footer') %>
     <!-- footer end -->
 
 </div>

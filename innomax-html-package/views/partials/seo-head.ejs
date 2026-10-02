@@ -1,0 +1,32 @@
+<%# Balises SEO d'une page publique (utils/seo.js, CROISSANCE.md) : title, description, canonical, Open Graph, Twitter, hreflang et JSON-LD. Usage : include('partials/seo-head', { seoPage: 'accueil' }) ; page de cours : { seoPage: 'cours-detail', seoExtra: { course: data } }. Les JSON-LD sont des blocs de données (non exécutés), échappés par seo.ldJson. -%>
+<% var s = typeof seoFor === 'function' ? seoFor(seoPage, typeof seoExtra !== 'undefined' && seoExtra ? seoExtra : {}) : null; -%>
+<% if (!s) { -%>
+    <title>PBTM</title>
+<% } else { -%>
+    <title><%= s.title %></title>
+    <meta name="description" content="<%= s.description %>">
+    <link rel="canonical" href="<%= s.canonical %>">
+<% s.alternates.forEach(function (a) { -%>
+    <link rel="alternate" hreflang="<%= a.hreflang %>" href="<%= a.href %>">
+<% }) -%>
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="<%= s.siteName %>">
+    <meta property="og:locale" content="<%= s.locale %>">
+<% if (s.localeAlternate) { -%>
+    <meta property="og:locale:alternate" content="<%= s.localeAlternate %>">
+<% } -%>
+    <meta property="og:title" content="<%= s.title %>">
+    <meta property="og:description" content="<%= s.description %>">
+    <meta property="og:url" content="<%= s.canonical %>">
+    <meta property="og:image" content="<%= s.image %>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<%= s.title %>">
+    <meta name="twitter:description" content="<%= s.description %>">
+    <meta name="twitter:image" content="<%= s.image %>">
+<% if (s.aeo.reponse || s.aeo.faq.length) { -%>
+    <link rel="stylesheet" href="/assets/css/aeo.css">
+<% } -%>
+<% s.jsonld.forEach(function (j) { -%>
+    <script type="application/ld+json"><%- j %></script>
+<% }) -%>
+<% } -%>

@@ -1,0 +1,16 @@
+<%# État d'un travail d'agent lié à Croissance, avec le bouton d'import quand il est terminé. locals : j (lien croissance_jobs + job), c, importLabel. %>
+<% if (j) { const st = j.job ? j.job.status : 'error'; %>
+<div class="cr-job">
+  <span class="cr-pill cr-pill--<%= st %>"><%= c.labels.jobStatuts[st] || st %></span>
+  <span class="dim"><%= j.label %> · <span class="num"><%= fmt.jour(j.created_at) %></span></span>
+  <% if (j.importe_le) { %>
+    <span class="cr-pill cr-pill--done">📥 Importé</span>
+  <% } else if (st === 'done' && typeof importLabel === 'string' && importLabel) { %>
+    <form data-api="/api/admin/croissance/jobs/<%= j.job_id %>/importer" data-ok="Importé.">
+      <button class="btn btn--sm btn--accent" type="submit"><%= importLabel %></button>
+      <span class="status" data-status role="status"></span>
+    </form>
+  <% } %>
+  <% if (st === 'error' && j.job && j.job.error) { %><span class="status is-error"><%= String(j.job.error).slice(0, 200) %></span><% } %>
+</div>
+<% } %>

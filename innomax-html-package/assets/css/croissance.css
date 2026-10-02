@@ -1,0 +1,277 @@
+/* ==========================================================================
+   PBTM · onglet 📣 Croissance de la console (/admin/console?vue=croissance)
+   et pages publiques au style Panda (/faq, /presse).
+   Complète pilotage.css. Aucune couleur en dur : tout vient du BLOC MARQUE
+   de pilotage.css et de ses jetons dérivés (--surface-2, --accent-soft…).
+
+   1. Sous-onglets et messages     5. Calendrier éditorial
+   2. Pastilles et travaux         6. Formulaires
+   3. Scores et audit              7. Pages publiques (/faq, /presse)
+   4. Listes et définitions        8. Petits écrans (390 px)
+   ========================================================================== */
+
+
+/* 1. Sous-onglets et messages ---------------------------------------------- */
+
+.cr { display: grid; gap: var(--s-6); }
+.cr-subnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s-2);
+  padding: var(--s-2);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  background: var(--surface);
+}
+.cr-subnav a {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: var(--s-2) var(--s-4);
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.cr-subnav a:hover { background: var(--surface-2); }
+.cr-subnav a[aria-current='page'] { background: var(--neon-panel); color: var(--on-neon); }
+.cr-subnav a:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cr-alert { margin: 0; }
+.cr-rappel { margin: 0; text-align: center; font-size: var(--fs-sm); }
+.cr-lead-sm { margin: 0 0 var(--s-4); max-width: 70ch; line-height: var(--lh); }
+.cr-h3 { margin: var(--s-5) 0 var(--s-3); font-size: var(--fs-base); }
+.cr-cap::first-letter { text-transform: uppercase; }
+
+
+/* 2. Pastilles et travaux -------------------------------------------------- */
+
+.cr-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-1);
+  padding: 2px var(--s-3);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.cr-pill--done, .cr-pill--obtenu, .cr-pill--publie, .cr-pill--publiee, .cr-pill--diffuse, .cr-pill--active, .cr-pill--terminee {
+  background: var(--ok); color: var(--on-ok); box-shadow: none;
+}
+.cr-pill--running, .cr-pill--queued, .cr-pill--suggeree, .cr-pill--en_redaction, .cr-pill--contacte, .cr-pill--en_attente, .cr-pill--planifiee, .cr-pill--redige {
+  background: var(--accent-soft); color: var(--accent-ink); box-shadow: inset 0 0 0 1px var(--accent-line);
+}
+.cr-pill--validee, .cr-pill--approuve { background: var(--surface); color: var(--ok-ink); box-shadow: inset 0 0 0 1px var(--ok-ink); }
+.cr-pill--error, .cr-pill--refuse, .cr-pill--annulee, .cr-pill--budget_refused, .cr-pill--cancelled {
+  background: var(--bad-soft); color: var(--bad); box-shadow: inset 0 0 0 1px var(--bad);
+}
+
+.cr-jobs { display: grid; gap: var(--s-2); margin-top: var(--s-4); }
+.cr-job {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-2) var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  margin-top: var(--s-3);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  border: 1px dashed var(--line-input);
+  font-size: var(--fs-sm);
+}
+.cr-jobs .cr-job { margin-top: 0; }
+.cr-job form { display: inline-flex; align-items: center; gap: var(--s-2); }
+
+
+/* 3. Scores et audit ------------------------------------------------------- */
+
+.cr-score { display: inline-flex; align-items: center; gap: var(--s-2); font-weight: 800; }
+.cr-score meter { width: 96px; height: 10px; }
+.cr-score--lg meter { width: 140px; height: 12px; }
+.cr-score meter::-webkit-meter-bar { background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--r-pill); }
+.cr-score meter::-webkit-meter-optimum-value { background: var(--ok); border-radius: var(--r-pill); }
+.cr-score meter::-webkit-meter-suboptimum-value { background: var(--or); border-radius: var(--r-pill); }
+.cr-score meter::-webkit-meter-even-less-good-value { background: var(--bad); border-radius: var(--r-pill); }
+.cr-score meter::-moz-meter-bar { background: var(--accent); border-radius: var(--r-pill); }
+.cr-score meter:-moz-meter-optimum::-moz-meter-bar { background: var(--ok); }
+.cr-score meter:-moz-meter-sub-optimum::-moz-meter-bar { background: var(--or); }
+.cr-score meter:-moz-meter-sub-sub-optimum::-moz-meter-bar { background: var(--bad); }
+
+.cr-audit-table td { vertical-align: middle; }
+.cr-checks { list-style: none; margin: var(--s-4) 0 0; padding: 0; display: grid; gap: var(--s-2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); }
+.cr-checks li { padding: var(--s-2) var(--s-3); border-radius: var(--r-sm); background: var(--surface-2); font-size: var(--fs-sm); }
+.cr-checks li.is-ko { background: var(--bad-soft); }
+.cr-fixes { margin: 0; padding-left: var(--s-5); display: grid; gap: var(--s-2); line-height: var(--lh); }
+.cr-proposal {
+  margin-top: var(--s-5);
+  padding: var(--s-5);
+  border-radius: var(--r-md);
+  border: 1px solid var(--accent-line);
+  background: var(--accent-soft);
+}
+.cr-proposal .cr-h3 { margin-top: 0; }
+.cr-faq-sugg { margin: var(--s-3) 0; padding-left: var(--s-5); display: grid; gap: var(--s-2); }
+
+.cr-steps { list-style: none; margin: 0 0 var(--s-4); padding: 0; display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.cr-steps li { display: inline-flex; align-items: center; gap: var(--s-2); padding: var(--s-1) var(--s-3) var(--s-1) var(--s-1); border-radius: var(--r-pill); background: var(--surface-2); font-size: var(--fs-sm); font-weight: 700; }
+.cr-steps .num { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; background: var(--neon-panel); color: var(--on-neon); font-size: var(--fs-xs); }
+
+
+/* 4. Listes et définitions ------------------------------------------------- */
+
+.cr-dl { margin: var(--s-4) 0 0; display: grid; gap: var(--s-3); }
+.cr-dl > div { display: grid; grid-template-columns: 120px 1fr; gap: var(--s-3); }
+.cr-dl dt { font-weight: 800; color: var(--muted); font-size: var(--fs-sm); }
+.cr-dl dd { margin: 0; overflow-wrap: anywhere; }
+.cr-dl--inline { grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+.cr-dl--inline > div { grid-template-columns: 1fr; gap: var(--s-1); }
+.cr-decision { margin-top: var(--s-4); padding: var(--s-4); border-radius: var(--r-md); background: var(--surface-2); border-left: 4px solid var(--accent); line-height: var(--lh); }
+.cr-approche { display: grid; gap: var(--s-4); margin-top: var(--s-4); }
+.cr-lcap { margin: 0; padding: var(--s-3) var(--s-4); border-radius: var(--r-md); background: var(--surface-2); font-size: var(--fs-sm); line-height: var(--lh); }
+.item .actions + .actions, .item .reveal + form, .item .reveal { margin-top: var(--s-3); }
+
+
+/* 5. Calendrier éditorial -------------------------------------------------- */
+
+.cr-cal-head { align-items: center; }
+.cr-cal-nav { display: inline-flex; gap: var(--s-2); }
+.cr-cal { display: grid; gap: var(--s-2); }
+.cr-cal-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--s-2); }
+.cr-cal-days span { text-align: center; font-size: var(--fs-xs); font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+.cr-cal-cell {
+  min-height: 112px;
+  padding: var(--s-2);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-1);
+  min-width: 0;
+}
+.cr-cal-cell.is-out { border-style: dashed; background: transparent; }
+.cr-cal-cell.is-today { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.cr-cal-num { font-weight: 800; font-size: var(--fs-sm); }
+.cr-cal-wd { display: none; }
+.cr-chip {
+  display: block;
+  padding: 3px var(--s-2);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--ink);
+  background: var(--surface-2);
+  border-left: 3px solid var(--line-strong);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+a.cr-chip:hover { background: var(--accent-soft); }
+.cr-chip-canal { color: var(--muted); font-weight: 800; }
+.cr-chip--idee { border-left-color: var(--line-input); }
+.cr-chip--redige { border-left-color: var(--accent); }
+.cr-chip--approuve { border-left-color: var(--ok-ink); }
+.cr-chip--publie { border-left-color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, var(--surface)); }
+.cr-legend { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-4) 0 0; }
+.cr-legend .cr-chip { display: inline-block; }
+
+
+/* 6. Formulaires ----------------------------------------------------------- */
+
+.cr-canaux { border: 1px solid var(--line); border-radius: var(--r-md); padding: var(--s-3) var(--s-4); margin: 0; display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+.cr-canaux legend { padding: 0 var(--s-2); font-weight: 700; font-size: var(--fs-sm); }
+.cr-check { display: inline-flex; align-items: center; gap: var(--s-2); font-size: var(--fs-sm); cursor: pointer; }
+.cr-check input { width: 18px; height: 18px; accent-color: var(--accent); }
+.cr-long { min-height: 320px; line-height: var(--lh); }
+
+
+/* 7. Pages publiques (/faq, /presse) --------------------------------------- */
+
+.cr-public-nav { margin-top: var(--s-3); }
+.cr-lead { margin: 0 0 var(--s-5); font-size: var(--fs-md); line-height: var(--lh); max-width: 70ch; }
+.cr-search label { display: block; font-weight: 700; margin-bottom: var(--s-2); }
+.cr-search-row { display: flex; gap: var(--s-2); }
+.cr-search-row input { flex: 1 1 auto; min-width: 0; }
+.cr-faq { display: grid; }
+.cr-faq-q { border-top: 1px solid var(--line); padding: var(--s-4) 0; }
+.cr-faq-q:last-child { border-bottom: 1px solid var(--line); }
+.cr-faq-q summary { cursor: pointer; font-weight: 800; font-size: var(--fs-md); line-height: 1.4; }
+.cr-faq-q summary:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; border-radius: var(--r-sm); }
+.cr-faq-q p { margin: var(--s-3) 0 0; line-height: var(--lh); max-width: 72ch; }
+.cr-facts { margin: 0; display: grid; gap: var(--s-3); }
+.cr-facts > div { display: grid; grid-template-columns: 110px 1fr; gap: var(--s-3); }
+.cr-facts dt { font-weight: 800; color: var(--muted); }
+.cr-facts dd { margin: 0; }
+.cr-logo { display: grid; place-items: center; padding: var(--s-6); border-radius: var(--r-md); background: var(--surface-2); margin-bottom: var(--s-4); }
+.cr-logo img { width: 160px; height: 160px; object-fit: contain; }
+.cr-contact { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-2); font-size: var(--fs-md); }
+.panel--accent .cr-contact a, .panel--accent a { color: inherit; }
+
+
+/* 8. Petits écrans (390 px) ------------------------------------------------ */
+
+@media (max-width: 760px) {
+  .cr { gap: var(--s-5); }
+  .cr-subnav { border-radius: var(--r-md); flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .cr-subnav::-webkit-scrollbar { display: none; }
+  .cr-subnav a { white-space: nowrap; }
+  .cr-dl > div, .cr-facts > div { grid-template-columns: 1fr; gap: 2px; }
+  .cr-proposal { padding: var(--s-4); }
+  .cr-search-row { flex-direction: column; }
+
+  /* le calendrier devient une liste des jours qui ont des contenus */
+  .cr-cal-days { display: none; }
+  .cr-cal-row { grid-template-columns: 1fr; gap: var(--s-2); }
+  .cr-cal-cell { min-height: 0; }
+  .cr-cal-cell.is-out, .cr-cal-cell:not(.has-items):not(.is-today) { display: none; }
+  .cr-cal-wd { display: inline; }
+  .cr-chip { white-space: normal; font-size: var(--fs-sm); padding: var(--s-2) var(--s-3); }
+  .cr-cal-head { flex-direction: column; align-items: flex-start; }
+}
+
+/* 9. Détail des pages de l'audit (repliable) ------------------------------- */
+
+.cr-page { padding: 0; }
+.cr-page > :not(summary) { margin-left: var(--s-5); margin-right: var(--s-5); }
+.cr-page > :last-child { margin-bottom: var(--s-5); }
+.cr-page-sum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding: var(--s-4) var(--s-5);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--r-lg);
+}
+.cr-page-sum::-webkit-details-marker { display: none; }
+.cr-page-sum::before { content: '▸'; color: var(--muted); transition: transform 0.2s ease; }
+.cr-page[open] > .cr-page-sum::before { transform: rotate(90deg); }
+.cr-page-sum:hover { background: var(--surface-2); }
+.cr-page-sum:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+.cr-page-titre { flex: 1 1 auto; font-family: var(--font-title); font-weight: 700; font-size: var(--fs-md); }
+.cr-page-meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--s-2) var(--s-3); }
+@media (max-width: 760px) {
+  .cr-page-sum { padding: var(--s-4); }
+  .cr-page > :not(summary) { margin-left: var(--s-4); margin-right: var(--s-4); }
+  .cr-score--lg meter { width: 96px; }
+}
+
+/* Champ de recherche de /faq (hors .field). */
+.cr-search input {
+  font: inherit;
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line-input);
+  border-radius: var(--r-pill);
+  padding: var(--s-3) var(--s-5);
+}
+.cr-search input:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-color: var(--accent); }

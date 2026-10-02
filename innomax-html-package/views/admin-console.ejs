@@ -11,6 +11,9 @@
   <link rel="stylesheet" href="/assets/css/finances.css">
   <script src="/assets/js/finances.js" defer></script>
   <% } %>
+  <% if (vue === 'croissance') { %>
+  <link rel="stylesheet" href="/assets/css/croissance.css">
+  <% } %>
 </head>
 <%
   const enAttente = data.livrables.filter(function (l) { return l.statut === 'en_attente'; }).length;
@@ -32,6 +35,7 @@
     { id: 'travail', emoji: '🗂️', label: 'Travail' },
     { id: 'recherche', emoji: '🔎', label: 'Recherche' },
     { id: 'reglages-agents', emoji: '⚙️', label: 'Réglages agents' },
+    { id: 'croissance', emoji: '📣', label: 'Croissance' },
   ];
   const introAgents = {
     agents: 'Tes agents en direct : qui travaille, le réseau, le journal et les ordres.',
@@ -41,6 +45,7 @@
     'reglages-agents': 'Marche, arrêt, budget, modèles et agents.',
     robots: 'Le catalogue des robots, les abonnements, le revenu récurrent et les livrables à valider.',
     finances: 'L’argent de toute l’entreprise : revenus, dépenses, marge, taxes et objectifs.',
+    croissance: 'SEO, réponses aux moteurs IA, backlinks, campagnes et presse. Les agents proposent, tu relis et tu publies.',
   };
   const ici = nav.find(function (n) { return n.id === vue; });
   const titreMandat = {};
@@ -69,6 +74,9 @@
     <% if (vue === 'robots') { %><%- include('partials/robots/admin-robots') %><% } %>
     <% if (vue === 'finances' && typeof fin !== 'undefined' && fin) { %>
       <%- include('partials/finances/finances') %>
+    <% } %>
+    <% if (vue === 'croissance' && typeof croissance !== 'undefined' && croissance) { %>
+      <%- include('partials/croissance/croissance', { c: croissance }) %>
     <% } %>
 
     <% if (vue === 'apercu') { %>
