@@ -1,4 +1,7 @@
 const express = require('express');
+// Route handlers are async; without this a rejected promise skips Express's
+// error handling and an unhandled rejection takes the whole process down.
+require('express-async-errors');
 const path = require('path');
 const bodyParser = require('body-parser');
 const { createClient } = require('@supabase/supabase-js');
@@ -18,6 +21,10 @@ const helmet = require('helmet');
 const app = express();
 app.disable("x-powered-by");
 const PORT = process.env.PORT || 3000; //le env à revoir pour le deploiement
+// Pages that render API data call this server over loopback. The Host header
+// is client-controlled, so building the URL from it allowed SSRF and let a
+// forged Host crash the process.
+const SELF_URL = `http://127.0.0.1:${PORT}`;
 
 //const authroutes = require('./routes(api)/exempl'); //EXEMPLE
 const authRoutes = require('./routes(api)/authCRUD.js'); // Adjust the path if necessary
@@ -195,7 +202,7 @@ app.get('/nft', (req, res) => {
 
 app.get('/education', async (req, res) => {
   try {
-    const apiUrl = `${req.protocol}://${req.get('host')}/api/course/all-courses`;
+    const apiUrl = `${SELF_URL}/api/course/all-courses`;
     
     const response = await fetch(apiUrl);
     if (!response.ok) {
@@ -243,7 +250,7 @@ app.get('/signup', (req, res) => {
 
 app.get('/portfolio', async (req, res) => {
 
-  const apiUrl = `${req.protocol}://${req.get('host')}/api/portfolio/portfolio`;
+  const apiUrl = `${SELF_URL}/api/portfolio/portfolio`;
 
 
   const response = await fetch(apiUrl);
@@ -269,7 +276,7 @@ app.get('/oauth-callback', (req, res) => {
 // Route dynamique pour afficher un cours spécifique
 app.get('/course-details/:courseId', async (req, res) => {
   const courseId = req.params.courseId;
-  const apiUrl = `${req.protocol}://${req.get('host')}/api/course/course-details/${courseId}`
+  const apiUrl = `${SELF_URL}/api/course/course-details/${courseId}`
 
   const response = await fetch(apiUrl);
   const course = await response.json();
@@ -283,7 +290,7 @@ app.get('/course-details/:courseId', async (req, res) => {
 
 // Route pour afficher tous les cours
 app.get('/all-courses', async (req, res) => {
-  const apiUrl = `${req.protocol}://${req.get('host')}/api/course/all-courses`;
+  const apiUrl = `${SELF_URL}/api/course/all-courses`;
 
 
   const response = await fetch(apiUrl);
@@ -302,7 +309,7 @@ app.get('/all-courses', async (req, res) => {
 app.get('/luckydraw', async (req, res) => {
   try {
     // Create absolute URL using request's protocol and host
-    const apiUrl = `${req.protocol}://${req.get('host')}/api/lottery/lotteryDataluckydraw`;
+    const apiUrl = `${SELF_URL}/api/lottery/lotteryDataluckydraw`;
 
     // Fetch data using absolute URL
     const response = await fetch(apiUrl);
@@ -462,7 +469,7 @@ app.get('/subscription', (req, res) => {
  //Route pour afficher les achats dans achats.ejs
   app.get('/achats', async (req, res) => {
   try {
-    const apiUrl = `${req.protocol}://${req.get('host')}/api/achats`;
+    const apiUrl = `${SELF_URL}/api/achats`;
     const response = await fetch(apiUrl);
     if (!response.ok) throw new Error('Erreur lors de la récupération des produits');
       const productsData = await response.json();
@@ -586,6 +593,21 @@ app.use('/api',swaggerUi.serve,swaggerUi.setup(swaggerDocument));
 
 app.get('*', (req, res) => {
   res.status(404).render('404', { currentPage: req.originalUrl });
+});
+
+// Last-resort error handler: log server-side, never send stack traces.
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  console.error(`[error] ${req.method} ${req.originalUrl}:`, err);
+  if (res.headersSent) return;
+  const status = err.status || err.statusCode || 500;
+  if (req.originalUrl.startsWith('/api/')) return res.status(status).json({ error: status >= 500 ? 'Internal server error' : err.message });
+  res.status(status).send(status >= 500 ? 'Une erreur est survenue. Veuillez réessayer.' : err.message);
+});
+
+// Background work (lottery draws, timers) must not kill the web process either.
+process.on('unhandledRejection', (reason) => {
+  console.error('[unhandledRejection]', reason);
 });
 
 // Démarrer le serveur sec change to ,'0.0.0.0'
