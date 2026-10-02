@@ -189,7 +189,8 @@ router.post('/register', authLimiter, registrationValidation, async (req, res) =
 
         if (insertError) {
             console.error('Database Insert Error:', insertError);
-            await supabase.auth.admin.deleteUser(data.user.id);
+            // Needs the service client; the anon client can never delete users.
+            await supabaseAdmin.auth.admin.deleteUser(data.user.id);
             throw insertError;
         }
 
@@ -209,9 +210,10 @@ router.post('/register', authLimiter, registrationValidation, async (req, res) =
 // Déconnexion
 router.post('/logout', authenticateUser, async (req, res) => {
     try {
-        // Log out from Supabase
-        const { error: logoutError } = await supabase.auth.signOut();
-        if (logoutError) throw logoutError;
+        // Revoke this session's refresh token. The stateless anon client holds
+        // no session, so its signOut() was a no-op that left the token valid.
+        const { error: logoutError } = await supabaseAdmin.auth.admin.signOut(req.accessToken, 'local');
+        if (logoutError) console.warn('Logout revoke failed:', logoutError.message);
 
         // Clear cookies with the same attributes they were set with.
         clearAuthCookies(res);
