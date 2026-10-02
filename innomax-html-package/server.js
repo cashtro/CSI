@@ -311,7 +311,7 @@ app.get('/oauth-callback', (req, res) => {
 // Route dynamique pour afficher un cours spécifique
 app.get('/course-details/:courseId', async (req, res) => {
   const courseId = req.params.courseId;
-  const apiUrl = `${SELF_URL}/api/course/course-details/${courseId}`
+  const apiUrl = require('./routes(api)/utils/selfUrl').selfApiUrl(SELF_URL, '/api/course/course-details/', courseId);
 
   const response = await fetch(apiUrl);
   const course = await response.json();
