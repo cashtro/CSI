@@ -107,6 +107,9 @@ app.use(issueCsrfCookie);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+// Site CMS: exposes content(key, fallback) to every template (utils/cms).
+app.use(require('./routes(api)/utils/cms').middleware);
+
 // Configurer le middleware CSRF avec les cookies
 const csrfProtection = csrf({
   cookie: {

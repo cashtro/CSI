@@ -107,13 +107,13 @@
                         <div class="hero_wrap pt-90">
                             <div class="xb-hero text-center">
                                 <h1 class="xb-item--title wow skewIn center shadow-2xl" data-wow-delay="000ms" data-wow-duration="900ms" style="margin-top: 0%; text-shadow: 4px 4px 4px rgba(0, 0, 0, 0.4);">
-                                    Pandora
+                                    <%= content('home.hero.title', 'Pandora') %>
                                 </h1>                          
                                 <div class="xb-item--holder wow fadeInUp" data-wow-delay="150ms" data-wow-duration="600ms">
-                                    <p class="xb-item--content" style="font-size: x-large !important; margin-top: 30% !important; text-shadow: 10px 10px 10px rgba(0, 0, 0, 2) !important;">Business Technology <br> & Marketing</p>
+                                    <p class="xb-item--content" style="font-size: x-large !important; margin-top: 30% !important; text-shadow: 10px 10px 10px rgba(0, 0, 0, 2) !important;"><%= content('home.hero.subtitle_l1', 'Business Technology') %> <br> <%= content('home.hero.subtitle_l2', '& Marketing') %></p>
                                     <div class="btn">
                                         <!-- Bouton normal avec sa structure d'origine -->
-                                        <button id="mainCalendarButton" class="Btn1" style="margin-top: 160%; margin-left: 0%;">Live Consultation</button>
+                                        <button id="mainCalendarButton" class="Btn1" style="margin-top: 160%; margin-left: 0%;"><%= content('home.hero.cta', 'Live Consultation') %></button>
                                     </div>
                                 </div>
                             </div>
@@ -131,7 +131,7 @@
                             <img src="assets/img/shape/black.webp" alt="">
                         </div>
                         <div class="shape shape--two" style="margin-bottom: 0% !important;">
-                            <img src="assets/img/shape/logogo.webp" alt="">
+                            <img src="<%= content('home.hero.image', 'assets/img/shape/logogo.webp') %>" alt="">
                         </div>
                     </div>
                 </div>
@@ -494,8 +494,8 @@
                         <div class="cd-service_wrap pos-rel">
                             <div class="sec-title--two sec-title--three text-center mb-30">
                                 <span class="sub-title wow fadeInDown" data-wow-duration="600ms"><img
-                                        src="assets/img/icon/ser_layer.svg" alt=""><span>Missions</span></span>
-                                <h2 class="title wow fadeInDown" data-wow-duration="600ms" id="about-our-work">Our <span style="color: #E6C373;">work</span>
+                                        src="assets/img/icon/ser_layer.svg" alt=""><span><%= content('home.services.kicker', 'Missions') %></span></span>
+                                <h2 class="title wow fadeInDown" data-wow-duration="600ms" id="about-our-work"><%= content('home.services.title_a', 'Our') %> <span style="color: #E6C373;"><%= content('home.services.title_b', 'work') %></span>
                                 </h2>
                             </div>
                             <div class="row">
@@ -505,13 +505,11 @@
                                             <div class="xb-item--icon">
                                                 <img src="assets/img/icon/airdrop-white.svg" alt="">
                                             </div>
-                                            <h3 class="xb-item--title">Tech & A.I</h3>
+                                            <h3 class="xb-item--title"><%= content('home.services.tech.title', 'Tech & A.I') %></h3>
                                             <ul class="xb-item--item list-unstyled">
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Artificial intelligence for smart businesses</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Automate tasks with intelligent systems</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Data turned into smart insights</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Scalable custom AI-driven solutions</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Predictive analysis boosts performance</li>
+                                                <% content('home.services.tech.items', ['Artificial intelligence for smart businesses', 'Automate tasks with intelligent systems', 'Data turned into smart insights', 'Scalable custom AI-driven solutions', 'Predictive analysis boosts performance']).forEach(function (item) { %>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <% }) %>
                                             </ul>
                                         </div>
                                         <div class="border-bg1">
@@ -575,13 +573,11 @@
                                             <div class="xb-item--icon">
                                                 <img src="assets/img/icon/finger-scan.svg" alt="">
                                             </div>
-                                            <h3 class="xb-item--title">Education</h3>
+                                            <h3 class="xb-item--title"><%= content('home.services.education.title', 'Education') %></h3>
                                             <ul class="xb-item--item list-unstyled education-list">
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Learn anytime, anywhere, any device</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Expert-led courses with certifications</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Interactive lessons for deeper understanding</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Track progress with smart analytics</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Affordable education for every learner</li>
+                                                <% content('home.services.education.items', ['Learn anytime, anywhere, any device', 'Expert-led courses with certifications', 'Interactive lessons for deeper understanding', 'Track progress with smart analytics', 'Affordable education for every learner']).forEach(function (item) { %>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <% }) %>
                                             </ul>
                                         </div>
                                         <div class="border-bg1">
@@ -647,13 +643,11 @@
                                             <div class="xb-item--icon">
                                                 <img src="assets/img/icon/cloud-add.svg" alt="">
                                             </div>
-                                            <h3 class="xb-item--title">Marketing Digital</h3>
+                                            <h3 class="xb-item--title"><%= content('home.services.marketing.title', 'Marketing Digital') %></h3>
                                             <ul class="xb-item--item list-unstyled">
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Targeted ads for higher conversions</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> SEO strategies to increase visibility</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Social media growth with analytics</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Email campaigns that drive engagement</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Data-driven digital marketing results</li>
+                                                <% content('home.services.marketing.items', ['Targeted ads for higher conversions', 'SEO strategies to increase visibility', 'Social media growth with analytics', 'Email campaigns that drive engagement', 'Data-driven digital marketing results']).forEach(function (item) { %>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <% }) %>
                                             </ul>
                                         </div>
                                         <div class="border-bg1">
@@ -719,13 +713,11 @@
                                             <div class="xb-item--icon">
                                                 <img src="assets/img/icon/check02.svg" alt="">
                                             </div>
-                                            <h3 class="xb-item--title">NFT</h3>
+                                            <h3 class="xb-item--title"><%= content('home.services.nft.title', 'NFT') %></h3>
                                             <ul class="xb-item--item list-unstyled">
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Unique digital assets for collectors</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Verified ownership through blockchain tech</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Mint, sell, and trade NFTs</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> NFT drops with limited editions</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Community-driven Web3 art platform</li>
+                                                <% content('home.services.nft.items', ['Unique digital assets for collectors', 'Verified ownership through blockchain tech', 'Mint, sell, and trade NFTs', 'NFT drops with limited editions', 'Community-driven Web3 art platform']).forEach(function (item) { %>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <% }) %>
                                             </ul>
                                         </div>
                                         <div class="border-bg1">
@@ -789,13 +781,11 @@
                                             <div class="xb-item--icon">
                                                 <img src="assets/img/icon/ranking.svg" alt="">
                                             </div>
-                                            <h3 class="xb-item--title">Lottery Draw</h3>
+                                            <h3 class="xb-item--title"><%= content('home.services.lottery.title', 'Lottery Draw') %></h3>
                                             <ul class="xb-item--item list-unstyled raffle-list">
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Enter raffles to win big</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Fair draws with verified winners</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Instant notifications for lucky entries</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Transparent process, secure digital tickets</li>
-                                                <li><img src="assets/img/icon/plus.svg" alt=""> Exciting prizes updated every week</li>
+                                                <% content('home.services.lottery.items', ['Enter raffles to win big', 'Fair draws with verified winners', 'Instant notifications for lucky entries', 'Transparent process, secure digital tickets', 'Exciting prizes updated every week']).forEach(function (item) { %>
+                                                <li><img src="assets/img/icon/plus.svg" alt=""> <%= item %></li>
+                                                <% }) %>
                                             </ul>
                                         </div>
                                         <div class="border-bg1">
