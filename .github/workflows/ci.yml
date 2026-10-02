@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
       - name: Syntax check server code
         run: |
-          for f in server.js $(git ls-files 'routes(api)/*.js' 'routes(api)/utils/*.js'); do node --check "$f"; done
+          for f in server.js $(git ls-files 'routes(api)/*.js' 'routes(api)/utils/*.js' 'agents/*.js' 'scripts/*.js'); do node --check "$f"; done
       - run: npm test
         env:
           NODE_ENV: test

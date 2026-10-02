@@ -39,6 +39,10 @@ const swaggerUi = require('swagger-ui-express');
 const swaggerSpec = require('./docs');
 const achatRoutes = require('./routes(api)/achatsCRUD.js');
 const teacherRoutes = require('./routes(api)/demandCRUD.js')
+const agentsAdminRoutes = require('./routes(api)/agentsAdmin.js');
+const agentsClientRoutes = require('./routes(api)/agentsClient.js');
+const { healthHandler } = require('./agents/health');
+const { createSupabaseAdmin } = require('./routes(api)/utils/supabaseUtil');
 
 
 const { authenticateUser, setAuthCookies } = require('./routes(api)/utils/auth-middleware.js');
@@ -60,6 +64,11 @@ app.use(helmet({
   crossOriginEmbedderPolicy: false,
 }));
 
+
+// Liveness for monitoring: db ok/ko, queue sizes, last worker heartbeat.
+// Nothing else (no error text, no config state).
+let healthDb;
+app.get('/healthz', healthHandler(() => (healthDb = healthDb || createSupabaseAdmin())));
 
 // Configurer le moteur de template EJS
 app.set('view engine', 'ejs');
@@ -155,6 +164,9 @@ app.use('/api/portfolio',portfolioRoutes )
 app.use('/api/dispo',dispoRoutes )
 app.use('/api/teacher',teacherRoutes)
 app.use('/api/achats', achatRoutes);
+// Agent engine (agents/, MOTEUR-AGENTS.md): admin + 2FA, and client read-only.
+app.use('/api/admin/agents', agentsAdminRoutes);
+app.use('/api/agents', agentsClientRoutes);
 // Espace entreprises (client space) and the admin console. Each router checks
 // membership / admin + 2FA on the server and requires the CSRF header.
 app.use('/api/espace', require('./routes(api)/espaceCRUD.js'));
