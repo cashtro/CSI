@@ -1,0 +1,38 @@
+<%#
+  Barre d'onglets du bas du cockpit (téléphone et app installée), PWA.md.
+  locals : vue (vue courante de /admin/console), nav (onglets de la console : id, emoji, label, count).
+  Accueil, Agents et Croissance sont des liens ; Ventes et Plus ouvrent une feuille (details, sans JS).
+-%>
+<% var par = {}; (nav || []).forEach(function (n) { par[n.id] = n; });
+   var lien = function (id) { return '/admin/console?vue=' + id; };
+   var VENTES = ['robots', 'paiements', 'finances'];
+   var AGENTS = ['agents', 'conseil', 'travail', 'recherche', 'reglages-agents'];
+   var CROISSANCE = ['croissance', 'cms'];
+   var PLUS = (nav || []).map(function (n) { return n.id; }).filter(function (id) { return id !== 'accueil' && id !== 'agents' && id !== 'croissance' && VENTES.indexOf(id) === -1; });
+   var dans = function (liste) { return liste.indexOf(vue) !== -1; };
+   var compte = function (ids) { return ids.reduce(function (s, id) { return s + ((par[id] && par[id].count) || 0); }, 0); }; -%>
+<nav class="pwa-onglets pwa-onglets--cockpit" aria-label="Cockpit">
+  <a class="pwa-onglet" href="<%= lien('accueil') %>"<% if (vue === 'accueil') { %> aria-current="page"<% } %>><span class="pwa-onglet-emoji" aria-hidden="true">🔔</span><span class="pwa-onglet-nom">Accueil</span></a>
+  <a class="pwa-onglet" href="<%= lien('agents') %>"<% if (dans(AGENTS) && vue !== 'reglages-agents') { %> aria-current="page"<% } %>><span class="pwa-onglet-emoji" aria-hidden="true">🤖</span><span class="pwa-onglet-nom">Agents</span></a>
+  <details class="pwa-feuille" data-feuille>
+    <summary class="pwa-onglet<% if (dans(VENTES)) { %> is-current<% } %>"><span class="pwa-onglet-emoji" aria-hidden="true">💳</span><span class="pwa-onglet-nom">Ventes</span><% var nv = compte(VENTES); if (nv) { %><span class="count"><%= nv %></span><% } %></summary>
+    <div class="pwa-feuille-corps" role="group" aria-label="Ventes">
+      <p class="pwa-feuille-titre">Ventes</p>
+      <% VENTES.forEach(function (id) { var n = par[id]; if (!n) return; %>
+      <a href="<%= lien(id) %>"<% if (vue === id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= n.emoji %></span> <%= n.label %><% if (n.count) { %><span class="count"><%= n.count %></span><% } %></a>
+      <% }) %>
+    </div>
+  </details>
+  <a class="pwa-onglet" href="<%= lien('croissance') %>"<% if (dans(CROISSANCE)) { %> aria-current="page"<% } %>><span class="pwa-onglet-emoji" aria-hidden="true">📣</span><span class="pwa-onglet-nom">Croissance</span></a>
+  <details class="pwa-feuille" data-feuille>
+    <summary class="pwa-onglet<% if (PLUS.indexOf(vue) !== -1 && vue !== 'cms') { %> is-current<% } %>"><span class="pwa-onglet-emoji" aria-hidden="true">☰</span><span class="pwa-onglet-nom">Plus</span></summary>
+    <div class="pwa-feuille-corps" role="group" aria-label="Plus">
+      <p class="pwa-feuille-titre">Tout le cockpit</p>
+      <% PLUS.forEach(function (id) { var n = par[id]; %>
+      <a href="<%= lien(id) %>"<% if (vue === id) { %> aria-current="page"<% } %>><span aria-hidden="true"><%= n.emoji %></span> <%= n.label %><% if (n.count) { %><span class="count"><%= n.count %></span><% } %></a>
+      <% }) %>
+      <a href="/"><span aria-hidden="true">🛍️</span> Voir la vitrine</a>
+      <a href="/login" data-logout><span aria-hidden="true">🚪</span> Déconnexion</a>
+    </div>
+  </details>
+</nav>

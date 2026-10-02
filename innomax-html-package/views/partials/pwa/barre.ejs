@@ -1,0 +1,31 @@
+<%#
+  Barre de l'app sous l'en-tête (PWA.md) : le sélecteur de section et le bouton d'installation.
+  locals : ici ('vitrine' | 'cockpit' | 'espace'), pwaRole ('admin' | 'client' | null).
+  Le sélecteur n'existe que pour un compte connecté : l'admin voit Vitrine et Mon cockpit,
+  un client voit Vitrine et Mon espace, un visiteur ne voit que la vitrine (pas de sélecteur).
+-%>
+<% var role = typeof pwaRole === 'string' ? pwaRole : null; var lieu = typeof ici === 'string' ? ici : 'vitrine'; -%>
+<div class="wrap pwa-barre">
+<% if (role === 'admin' || role === 'client') { -%>
+  <nav class="pwa-sections" aria-label="Changer de section" data-sections="<%= role %>">
+    <a class="pwa-section" href="/"<% if (lieu === 'vitrine') { %> aria-current="page"<% } %>><span aria-hidden="true">🛍️</span> Vitrine</a>
+<% if (role === 'admin') { -%>
+    <a class="pwa-section" href="/admin/console"<% if (lieu === 'cockpit') { %> aria-current="page"<% } %>><span aria-hidden="true">🎛️</span> Mon cockpit</a>
+<% } else { -%>
+    <a class="pwa-section" href="/espace"<% if (lieu === 'espace') { %> aria-current="page"<% } %>><span aria-hidden="true">🏢</span> Mon espace</a>
+<% } -%>
+  </nav>
+<% } -%>
+  <button type="button" class="pwa-installer" data-installer hidden><span aria-hidden="true">📲</span> Installer l’app PBTM</button>
+</div>
+<div class="wrap pwa-aide-ios" data-aide-ios hidden>
+  <div class="pwa-aide-ios-carte" role="region" aria-labelledby="pwa-aide-ios-titre">
+    <p class="pwa-aide-ios-titre" id="pwa-aide-ios-titre"><span aria-hidden="true">📲</span> Installer PBTM sur votre iPhone ou iPad</p>
+    <ol>
+      <li>Touchez <strong>Partager</strong> <span class="pwa-ios-icone" aria-hidden="true">⬆︎</span> dans la barre de Safari.</li>
+      <li>Choisissez <strong>Sur l’écran d’accueil</strong>.</li>
+      <li>Touchez <strong>Ajouter</strong> : l’icône PBTM apparaît avec vos apps.</li>
+    </ol>
+    <button type="button" class="btn btn--ghost btn--sm" data-aide-ios-fermer>J’ai compris</button>
+  </div>
+</div>

@@ -127,13 +127,14 @@ describe('agent tabs of the admin console', () => {
     const groups = [...desk.matchAll(/<span class="tab-group-label" id="tg-\d">([^<]+)<\/span>([\s\S]*?)<\/div>\s*<\/div>/g)]
       .map((m) => [m[1], [...m[2].matchAll(/\?vue=([a-z-]+)/g)].map((x) => x[1])]);
     expect(groups).toEqual([
-      ['Entreprise', ['apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables']],
+      ['Entreprise', ['accueil', 'apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables']],
       ['Agents', ['agents', 'conseil', 'travail', 'recherche', 'robots', 'reglages-agents']],
       ['Croissance', ['croissance', 'cms']],
     ]);
     expect(res.text).toMatch(/<details class="wrap tabs-menu">/);
     expect(res.text).toMatch(/tab-group is-current" role="group" aria-labelledby="tg-1"/);
-    expect((res.text.match(/href="\/admin\/console\?vue=recherche" aria-current="page"/g) || []).length).toBe(2);
+    // Desktop groups, phone menu, and the « Plus » sheet of the bottom tab bar (PWA.md).
+    expect((res.text.match(/href="\/admin\/console\?vue=recherche" aria-current="page"/g) || []).length).toBe(3);
   });
 
   it('other tabs do not load the agent script', async () => {

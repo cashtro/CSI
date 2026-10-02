@@ -12,6 +12,9 @@ const robots = require('./utils/robots');
 const cx = require('./utils/connexions');
 const finances = require('./utils/finances');
 const { fetchStripeFinance } = require('./utils/finances-stripe');
+const cockpit = require('./utils/cockpit');
+const notifications = require('./utils/notifications');
+const webpush = require('./utils/webpush');
 
 const router = express.Router();
 
@@ -27,7 +30,7 @@ function allowMicrophone(req, res, next) {
 // Agent tabs (views/partials/agents/*.ejs, assets/js/agents-console.js): the
 // page renders the forms; the script reads /api/admin/agents for live data.
 const AGENT_VUES = ['agents', 'conseil', 'travail', 'recherche', 'reglages-agents'];
-const ADMIN_VUES = ['apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables', 'robots', 'cms', ...AGENT_VUES, 'croissance'];
+const ADMIN_VUES = ['accueil', 'apercu', 'entreprises', 'clients', 'paiements', 'finances', 'mandats', 'livrables', 'robots', 'cms', ...AGENT_VUES, 'croissance'];
 const ROBOTS_ABSENT = 'Les tables des robots sont introuvables : exécutez db/006_robots.sql.';
 
 // Croissance tab (CROISSANCE.md): SEO audit, AEO, backlinks, campaigns, media.
@@ -98,11 +101,13 @@ router.get('/espace', noStore, allowMicrophone, requireMember({ page: true }), a
     vue, data, fmt, etapes: ETAPES, email: req.user.email || '',
     robotsData, connexions, robotsError, flash, bienvenue,
     proprietaire: Boolean(req.membership && req.membership.role === 'proprietaire'),
+    pushActif: webpush.actif(), pwaRole: 'client', pwaIci: 'espace',
   });
 });
 
 router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true }), async (req, res) => {
-  const vue = ADMIN_VUES.includes(req.query.vue) ? req.query.vue : 'apercu';
+  // The cockpit opens on « Ce qui demande mon attention » (PWA.md).
+  const vue = ADMIN_VUES.includes(req.query.vue) ? req.query.vue : 'accueil';
   const admin = createSupabaseAdmin();
   const data = await loadAdmin(admin);
   let site = { zones: [], extra: [] };
@@ -114,7 +119,8 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
   }
   const langue = req.query.langue === 'en' ? 'en' : 'fr';
   const agentVue = AGENT_VUES.includes(vue);
-  const agentData = agentVue ? await loadAgentsForForms(admin) : { agents: [], agentsError: null };
+  // The agents feed the agent tabs and the quick order button (⚡) of every view.
+  const agentData = await loadAgentsForForms(admin);
   let robotsAdmin = null;
   let robotsError = null;
   if (vue === 'robots') {
@@ -134,11 +140,13 @@ router.get('/admin/console', noStore, allowMicrophone, requireAdmin({ page: true
       fmtMoney: (c) => fmt.money(c / 100),
     })
     : null;
+  if (fin) notifications.enArrierePlan(notifications.alertesFinances(admin, fin.alerts, fin.periode && fin.periode.mois));
   const croissance = vue === 'croissance' ? await loadCroissance(admin, req.query) : null;
+  const attention = vue === 'accueil' ? await cockpit.attention(admin, { livrables: data.livrables, entreprises: data.entreprises }) : null;
   res.render('admin-console', {
     vue, data, site, cmsError, langue, fmt, etapes: ETAPES, statuts: STATUTS_MANDAT, email: req.user.email || '',
     robotsAdmin, robotsError, fournisseurs: cx.FOURNISSEURS,
-    croissance,
+    croissance, attention, pushActif: webpush.actif(), pwaRole: 'admin', pwaIci: 'cockpit',
     fin, categories: finances.CATEGORIES, categorieLabel: finances.CATEGORIE_LABEL,
     agentVue, agents: agentData.agents, agentsError: agentData.agentsError, teams: catalog.TEAMS, defaultResearchAgent: catalog.DEFAULT_RESEARCH_AGENT,
     seedCount: agentVue ? catalog.seedCount() : 0,

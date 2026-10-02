@@ -1,0 +1,56 @@
+<%#
+  Écran d'accueil du cockpit : « Ce qui demande mon attention » (utils/cockpit.js, PWA.md).
+  locals : attention { groupes [{ id, emoji, titre, total, items [{ titre, detail, action { href, label } }] }], total, erreurs, jours }, pushActif.
+-%>
+<div class="pl-stack pwa-attention">
+  <section class="panel pwa-attention-tete" aria-labelledby="att-titre">
+    <div class="panel-head">
+      <h2 id="att-titre"><span aria-hidden="true">🔔</span> Ce qui demande mon attention</h2>
+      <span class="tag"><%= attention.total ? attention.total + ' élément(s) · ' + attention.jours + ' derniers jours' : 'Tout est à jour' %></span>
+    </div>
+    <div class="kpis pwa-attention-kpis">
+<% attention.groupes.forEach(function (g) { -%>
+      <a class="panel kpi pwa-kpi-lien<% if (g.total) { %> kpi--accent<% } %>" href="#att-<%= g.id %>"><span class="emoji" aria-hidden="true"><%= g.emoji %></span><span class="label"><%= g.titre %></span><span class="value"><%= g.total %></span></a>
+<% }) -%>
+    </div>
+<% attention.erreurs.forEach(function (e) { -%>
+    <p class="dim"><%= e %></p>
+<% }) -%>
+  </section>
+
+<% if (!attention.total) { -%>
+  <p class="empty"><span aria-hidden="true">🎉</span> Rien ne presse : aucun livrable à valider, aucune alerte. Profitez-en pour donner un ordre à un agent avec le bouton ⚡.</p>
+<% } -%>
+
+<% attention.groupes.filter(function (g) { return g.items.length; }).forEach(function (g) { -%>
+  <section class="panel" id="att-<%= g.id %>" aria-labelledby="att-<%= g.id %>-t">
+    <div class="panel-head"><h2 id="att-<%= g.id %>-t"><span aria-hidden="true"><%= g.emoji %></span> <%= g.titre %></h2><% if (g.total > g.items.length) { %><span class="tag"><%= g.items.length %> sur <%= g.total %></span><% } %></div>
+    <ul class="items pwa-attention-liste">
+<% g.items.forEach(function (it) { -%>
+      <li class="item pwa-attention-item">
+        <div class="pwa-attention-texte">
+          <h3><%= it.titre %></h3>
+          <div class="item-meta"><%= it.detail %></div>
+        </div>
+        <a class="btn btn--accent btn--sm pwa-attention-action" href="<%= it.action.href %>"><%= it.action.label %></a>
+      </li>
+<% }) -%>
+    </ul>
+  </section>
+<% }) -%>
+
+  <div class="pl-cols">
+    <section class="panel" aria-labelledby="att-raccourcis">
+      <div class="panel-head"><h2 id="att-raccourcis"><span aria-hidden="true">🚀</span> Raccourcis</h2></div>
+      <div class="pwa-raccourcis">
+        <a class="pwa-raccourci" href="/admin/console?vue=agents"><span aria-hidden="true">🤖</span> Agents en direct</a>
+        <a class="pwa-raccourci" href="/admin/console?vue=conseil"><span aria-hidden="true">🧠</span> Lancer un Conseil</a>
+        <a class="pwa-raccourci" href="/admin/console?vue=finances"><span aria-hidden="true">💰</span> Finances</a>
+        <a class="pwa-raccourci" href="/admin/console?vue=croissance"><span aria-hidden="true">📣</span> Croissance</a>
+        <a class="pwa-raccourci" href="/admin/console?vue=apercu"><span aria-hidden="true">🏠</span> Aperçu complet</a>
+        <a class="pwa-raccourci" href="/"><span aria-hidden="true">🛍️</span> Ma vitrine</a>
+      </div>
+    </section>
+    <%- include('notifications', { pushActif: pushActif, pour: 'admin' }) %>
+  </div>
+</div>

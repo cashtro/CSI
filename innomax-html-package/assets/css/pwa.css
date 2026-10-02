@@ -1,0 +1,454 @@
+/* ==========================================================================
+   PBTM — couche « app » (PWA.md), chargée après pilotage.css.
+   Sélecteur Vitrine / Cockpit, bouton d'installation, aide iOS, barres
+   d'onglets du bas, bouton d'action rapide ⚡, toast de mise à jour,
+   notifications, écran « Ce qui demande mon attention », pages hors ligne,
+   zones sûres (encoche, barre d'accueil) et transitions entre les pages.
+
+   Aucune couleur en dur : uniquement les jetons du BLOC MARQUE (pilotage.css).
+   Les animations ne touchent que transform, opacity et background-position.
+
+   1. Zones sûres
+   2. Barre de l'app (sélecteur, installation, aide iOS)
+   3. Barres d'onglets du bas
+   4. Action rapide ⚡
+   5. Toast de mise à jour
+   6. Cockpit : ce qui demande mon attention
+   7. Pages hors ligne
+   8. Transitions entre les pages
+   9. Mouvement réduit
+   ========================================================================== */
+
+:root {
+  --pwa-onglets-h: 62px;
+  --pwa-bas: env(safe-area-inset-bottom, 0px);
+}
+
+
+/* 1. Zones sûres ----------------------------------------------------------- */
+/* viewport-fit=cover : le contenu passe sous l'encoche, on le décale. */
+
+.topbar, .rb-top { padding-top: env(safe-area-inset-top, 0px); }
+@supports (padding: max(0px)) {
+  .wrap {
+    padding-left: max(var(--s-5), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--s-5), env(safe-area-inset-right, 0px));
+  }
+  @media (max-width: 760px) {
+    .wrap {
+      padding-left: max(var(--s-4), env(safe-area-inset-left, 0px));
+      padding-right: max(var(--s-4), env(safe-area-inset-right, 0px));
+    }
+  }
+}
+.pl-footer { padding-bottom: calc(var(--s-5) + var(--pwa-bas)); }
+.topbar-link { white-space: nowrap; }
+
+
+/* 2. Barre de l'app ------------------------------------------------------- */
+
+.pwa-barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-3);
+  padding-bottom: var(--s-4);
+}
+.pwa-barre:not(:has(.pwa-sections, .pwa-installer:not([hidden]))) { display: none; }
+
+.pwa-sections {
+  display: inline-flex;
+  gap: 3px;
+  padding: 3px;
+  border: 1px solid var(--frame-ink);
+  border-radius: var(--r-pill);
+  background: var(--frame);
+}
+.pl .pwa-section {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  border-radius: var(--r-pill);
+  color: var(--frame-ink);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+.pl .pwa-section:hover { background: var(--frame-hover); }
+.pl .pwa-section[aria-current='page'] { background: var(--frame-ink); color: var(--frame); box-shadow: var(--shadow-neon); }
+
+.pwa-installer {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-pill);
+  background: var(--frame);
+  color: var(--frame-ink);
+  font: inherit;
+  font-weight: 800;
+  font-size: var(--fs-sm);
+  cursor: pointer;
+  box-shadow: var(--neon-glow);
+  transition: transform 0.2s ease;
+}
+.pwa-installer:hover { transform: translateY(-2px); }
+.pwa-installer[hidden] { display: none; }
+.pwa-installee .pwa-installer { display: none; }
+
+.pwa-aide-ios { padding-bottom: var(--s-4); }
+.pwa-aide-ios[hidden] { display: none; }
+.pwa-aide-ios-carte {
+  padding: var(--s-4) var(--s-5);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-lg);
+  background: var(--neon-panel);
+  color: var(--on-neon);
+  box-shadow: var(--neon-glow);
+}
+.pwa-aide-ios-titre { margin: 0 0 var(--s-2); font-weight: 800; }
+.pwa-aide-ios-carte ol { margin: 0 0 var(--s-3); padding-left: 1.3em; display: grid; gap: var(--s-1); }
+.pwa-ios-icone {
+  display: inline-grid;
+  place-items: center;
+  width: 1.6em;
+  height: 1.6em;
+  border: 1px solid var(--on-neon);
+  border-radius: var(--r-sm);
+}
+.pl .pwa-aide-ios-carte .btn--ghost { color: var(--on-neon); border-color: var(--on-neon); }
+
+
+/* 3. Barres d'onglets du bas ---------------------------------------------- */
+/* Sur téléphone et dans l'app installée. Ventes et Plus ouvrent une feuille. */
+
+.pwa-onglets { display: none; }
+
+@media (max-width: 760px) {
+  .pwa-onglets { display: grid; }
+}
+@media (display-mode: standalone) {
+  .pwa-onglets { display: grid; }
+}
+
+.pwa-onglets {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 45;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  justify-content: center;
+  padding: 0 env(safe-area-inset-right, 0px) var(--pwa-bas) env(safe-area-inset-left, 0px);
+  background: var(--frame);
+  border-top: 1px solid var(--frame-line);
+  box-shadow: 0 -8px 24px color-mix(in srgb, var(--panda-black) 10%, transparent);
+  view-transition-name: pwa-onglets;
+}
+@media (min-width: 761px) {
+  .pwa-onglets { grid-template-columns: repeat(5, minmax(0, 132px)); }
+}
+
+@media (max-width: 760px) {
+  body:has(.pwa-onglets) { padding-bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas)); }
+  body:has(.pwa-onglets) .pl-footer { padding-bottom: var(--s-5); }
+  body:has(.pwa-onglets) .rb-sticky { bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas)); padding-bottom: var(--s-3); }
+}
+@media (display-mode: standalone) {
+  body:has(.pwa-onglets) { padding-bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas)); }
+  body:has(.pwa-onglets) .rb-sticky { bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas)); padding-bottom: var(--s-3); }
+}
+
+.pl .pwa-onglet {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: var(--pwa-onglets-h);
+  padding: var(--s-1) 2px;
+  color: var(--frame-muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  line-height: 1.1;
+  text-decoration: none;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.pwa-onglet::-webkit-details-marker { display: none; }
+.pwa-onglet-emoji { font-size: 1.3rem; line-height: 1; transition: transform 0.2s ease; }
+.pwa-onglet-nom { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl .pwa-onglet:hover, .pl .pwa-onglet[aria-current='page'], .pl .pwa-onglet.is-current, .pwa-feuille[open] > .pwa-onglet { color: var(--frame-ink); }
+.pwa-onglet[aria-current='page']::before, .pwa-onglet.is-current::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 26%;
+  right: 26%;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--neon-bar);
+  background-size: 300% 100%;
+  animation: pl-flow var(--neon-speed) linear infinite;
+}
+.pwa-onglet[aria-current='page'] .pwa-onglet-emoji, .pwa-onglet.is-current .pwa-onglet-emoji { transform: translateY(-1px) scale(1.08); }
+.pwa-onglet .count { position: absolute; top: 6px; left: calc(50% + 6px); min-width: 18px; height: 18px; font-size: 0.66rem; padding: 0 4px; }
+
+.pwa-feuille { display: block; min-width: 0; }
+.pwa-feuille > summary { height: 100%; }
+.pwa-feuille-corps {
+  position: fixed;
+  left: var(--s-3);
+  right: var(--s-3);
+  bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas) + var(--s-2));
+  z-index: 46;
+  display: grid;
+  gap: var(--s-1);
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: var(--s-3);
+  border: 1px solid var(--frame-line);
+  border-radius: var(--r-lg);
+  background: var(--frame);
+  box-shadow: var(--shadow-2), var(--neon-glow);
+  animation: pwa-monte 0.22s ease both;
+}
+@media (min-width: 761px) {
+  .pwa-feuille-corps { left: auto; right: max(var(--s-4), calc(50% - 330px)); width: 340px; }
+}
+.pwa-feuille-titre {
+  margin: 0;
+  padding: var(--s-1) var(--s-3);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--frame-muted);
+}
+.pl .pwa-feuille-corps a {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  color: var(--frame-ink);
+  font-weight: 700;
+  text-decoration: none;
+}
+.pl .pwa-feuille-corps a:hover { background: var(--frame-hover); }
+.pl .pwa-feuille-corps a[aria-current='page'] { background: var(--frame-ink); color: var(--frame); }
+.pwa-feuille-corps .count { margin-left: auto; }
+
+
+/* 4. Action rapide ⚡ ------------------------------------------------------ */
+
+.pl .pwa-fab {
+  position: fixed;
+  right: max(var(--s-5), calc(env(safe-area-inset-right, 0px) + var(--s-4)));
+  bottom: calc(var(--s-5) + var(--pwa-bas));
+  z-index: 44;
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--neon-btn);
+  background-size: 300% 100%;
+  color: var(--on-accent);
+  font-size: 1.7rem;
+  text-decoration: none;
+  box-shadow: var(--shadow-neon), var(--shadow-2);
+  animation: pl-flow var(--neon-speed) linear infinite;
+  transition: transform 0.2s ease;
+}
+.pl .pwa-fab:hover { transform: scale(1.06) rotate(-8deg); }
+@media (max-width: 760px) {
+  .pl .pwa-fab { right: max(var(--s-4), calc(env(safe-area-inset-right, 0px) + var(--s-3))); bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas) + var(--s-3)); }
+}
+@media (display-mode: standalone) {
+  .pl .pwa-fab { bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas) + var(--s-3)); }
+}
+
+.pwa-ordre {
+  width: min(560px, calc(100% - 2 * var(--s-4)));
+  max-height: calc(100% - 2 * var(--s-4));
+  padding: var(--s-5);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--neon-glow), var(--shadow-2);
+}
+.pwa-ordre::backdrop { background: color-mix(in srgb, var(--panda-black) 55%, transparent); }
+.pwa-ordre-tete { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3); }
+.pwa-ordre-tete h2 { margin: 0; }
+.pwa-ordre[open] { animation: pwa-monte 0.22s ease both; }
+
+
+/* 5. Toast de mise à jour ------------------------------------------------- */
+
+.pwa-toast {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--s-5) + var(--pwa-bas));
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: max-content;
+  max-width: calc(100% - 2 * var(--s-4));
+  padding: var(--s-2) var(--s-2) var(--s-2) var(--s-5);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-pill);
+  background: var(--frame-ink);
+  color: var(--frame);
+  box-shadow: var(--shadow-2), var(--shadow-neon);
+  transform: translateX(-50%);
+  animation: pwa-toast 0.3s ease both;
+}
+.pwa-toast p { margin: 0; font-weight: 700; font-size: var(--fs-sm); }
+.pwa-toast-fermer {
+  width: var(--tap);
+  height: var(--tap);
+  flex: none;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+@media (max-width: 760px) {
+  body:has(.pwa-onglets) .pwa-toast { bottom: calc(var(--pwa-onglets-h) + var(--pwa-bas) + var(--s-3)); }
+}
+
+
+/* 6. Cockpit : ce qui demande mon attention ------------------------------- */
+
+.pl .pwa-kpi-lien { color: var(--ink); text-decoration: none; }
+.pl .pwa-kpi-lien.kpi--accent { color: var(--on-neon); }
+.pwa-attention-item { display: flex; align-items: center; justify-content: space-between; gap: var(--s-3) var(--s-4); }
+.pwa-attention-texte { min-width: 0; }
+.pwa-attention-texte h3 { margin: 0; overflow-wrap: anywhere; }
+.pwa-attention-action { flex: none; white-space: nowrap; min-height: var(--tap); }
+.pwa-raccourcis { display: grid; gap: var(--s-2); grid-template-columns: repeat(auto-fill, minmax(min(100%, 170px), 1fr)); }
+.pl .pwa-raccourci {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--tap);
+  padding: 0 var(--s-4);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-pill);
+  color: var(--ink);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  text-decoration: none;
+  transition: transform 0.2s ease;
+}
+.pl .pwa-raccourci:hover { transform: translateY(-2px); box-shadow: var(--shadow-1); }
+.pwa-push .actions { margin-bottom: var(--s-2); }
+@media (max-width: 760px) {
+  .pwa-attention-item { flex-direction: column; align-items: stretch; }
+  .pwa-attention-action { width: 100%; }
+  .pwa-attention-kpis .kpi .value { font-size: var(--fs-xl); }
+}
+
+
+/* 7. Pages hors ligne ----------------------------------------------------- */
+
+.pwa-hl-main { display: grid; place-items: center; }
+.pwa-hl-carte {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  width: 100%;
+  max-width: 640px;
+  padding: var(--s-7) var(--s-6);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-lg);
+  background: var(--neon-panel);
+  color: var(--on-neon);
+  box-shadow: var(--neon-glow);
+  text-align: center;
+}
+.pwa-hl-carte::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -140px;
+  top: -160px;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: var(--neon-halos);
+  background-size: 100% 100%, 0 0;
+  background-repeat: no-repeat;
+  pointer-events: none;
+  animation: pl-drift 12s ease-in-out infinite;
+}
+.pl .pwa-hl-carte h1 { color: var(--on-neon); font-size: var(--fs-xl); margin: var(--s-3) 0; }
+.pwa-hl-texte { color: var(--on-neon-muted); max-width: 46ch; margin: 0 auto var(--s-5); }
+.pwa-hl-actions { justify-content: center; }
+.pl .pwa-hl-carte .btn--ghost { color: var(--on-neon); border-color: var(--on-neon); }
+.pwa-hl-liste { list-style: none; margin: var(--s-5) 0 0; padding: var(--s-4) 0 0; display: grid; gap: var(--s-2); border-top: 1px solid color-mix(in srgb, var(--on-neon) 20%, transparent); font-size: var(--fs-sm); color: var(--on-neon-muted); text-align: left; }
+
+.ho-illu { width: min(240px, 70%); height: auto; overflow: visible; }
+.ho-halo { fill: color-mix(in srgb, var(--on-neon) 6%, transparent); stroke: url(#ho-neon); stroke-width: 2; stroke-dasharray: 6 10; transform-box: fill-box; transform-origin: 50% 50%; animation: pl-spin-self 30s linear infinite; }
+.ho-onde { fill: none; stroke: var(--on-neon); stroke-width: 7; stroke-linecap: round; opacity: 0.35; }
+.ho-onde--1 { animation: pwa-onde 2.4s ease-in-out infinite; }
+.ho-onde--2 { animation: pwa-onde 2.4s ease-in-out 0.3s infinite; }
+.ho-onde--3 { animation: pwa-onde 2.4s ease-in-out 0.6s infinite; }
+.ho-barre { fill: none; stroke: var(--magenta); stroke-width: 7; stroke-linecap: round; }
+.ho-oreille { fill: var(--panda-black); stroke: url(#ho-neon); stroke-width: 2; }
+.ho-tete { fill: var(--panda-white); stroke: var(--panda-black); stroke-width: 3; }
+.ho-tache, .ho-nez { fill: var(--panda-black); }
+.ho-oeil { fill: none; stroke: var(--panda-white); stroke-width: 3; stroke-linecap: round; }
+.ho-bouche { fill: none; stroke: var(--panda-black); stroke-width: 2.4; stroke-linecap: round; }
+.ho-zzz text { fill: var(--cyan-neon); font-family: var(--font-title); font-weight: 800; font-size: 18px; }
+.ho-zzz text:nth-child(2) { font-size: 22px; }
+.ho-zzz text:nth-child(3) { font-size: 28px; }
+.ho-zzz { animation: pwa-flotte 3s ease-in-out infinite; }
+
+@media (max-width: 760px) {
+  .pwa-hl-carte { padding: var(--s-6) var(--s-4); }
+  .pwa-hl-actions .btn { flex: 1 1 100%; }
+}
+
+
+/* 8. Transitions entre les pages ------------------------------------------ */
+/* View Transitions API entre documents (navigateurs qui la gèrent). */
+
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-old(root) { animation: 0.18s ease both pwa-sort; }
+  ::view-transition-new(root) { animation: 0.24s ease both pwa-entre; }
+}
+
+@keyframes pwa-sort { to { opacity: 0; transform: translateY(-6px); } }
+@keyframes pwa-entre { from { opacity: 0; transform: translateY(8px); } }
+@keyframes pwa-monte { from { opacity: 0; transform: translateY(12px); } }
+@keyframes pwa-toast { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+@keyframes pwa-onde { 0%, 100% { opacity: 0.2; } 50% { opacity: 0.6; } }
+@keyframes pwa-flotte { 0%, 100% { transform: translateY(0); opacity: 0.85; } 50% { transform: translateY(-6px); opacity: 1; } }
+
+
+/* 9. Mouvement réduit ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+  .pwa-onglet::before, .pl .pwa-fab, .ho-halo, .ho-onde, .ho-zzz, .pwa-hl-carte::before { animation: none; }
+  .pwa-feuille-corps, .pwa-ordre[open], .pwa-toast { animation: none; }
+  .pwa-installer, .pl .pwa-fab, .pl .pwa-raccourci, .pwa-onglet-emoji { transition: none; }
+}

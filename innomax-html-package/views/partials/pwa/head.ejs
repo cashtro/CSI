@@ -1,0 +1,16 @@
+<%# Balises de la PWA (PWA.md) : manifeste, couleurs de la barre du téléphone (cadre du BLOC MARQUE, clair et sombre), réglages iOS, icônes, styles et script de l'app. Incluses par pilotage/head, public-head et robots/head. -%>
+<link rel="manifest" href="/manifest.webmanifest">
+<% if (typeof pwaCouleurs !== 'undefined' && pwaCouleurs) { -%>
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="<%= pwaCouleurs.barreClaire %>">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="<%= pwaCouleurs.barreSombre %>">
+<% } -%>
+<meta name="application-name" content="PBTM">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PBTM">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/img/pwa/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/img/pwa/icone-192.png">
+<link rel="stylesheet" href="/assets/css/pwa.css">
+<script src="/assets/js/pwa/pwa.js" defer></script>

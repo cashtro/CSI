@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<title>Hors ligne · PBTM</title>
+<link rel="stylesheet" href="/assets/css/pilotage.css">
+<%- include('partials/pwa/head') %>
+<script src="/assets/js/theme.js"></script>
+</head>
+<%# Page hors ligne de la PWA (PWA.md), gardée par le service worker. Rien de personnel : elle est téléchargée sans cookie. -%>
+<body class="pl pwa-hl" data-hors-ligne>
+<header class="topbar">
+  <div class="wrap topbar-row">
+    <a class="brand" href="/"><%- include('partials/pilotage/logo') %></a>
+  </div>
+</header>
+<main class="wrap main pwa-hl-main" id="contenu">
+  <section class="pwa-hl-carte" aria-labelledby="hl-titre">
+    <%- include('partials/pwa/illustration-hors-ligne') %>
+    <h1 id="hl-titre">Vous êtes hors ligne</h1>
+    <p class="pwa-hl-texte">Le panda attend le réseau. Les pages de la vitrine que vous avez déjà ouvertes restent disponibles ; le reste revient dès que la connexion revient.</p>
+    <div class="actions pwa-hl-actions">
+      <a class="btn btn--accent" href="" data-reessayer><span aria-hidden="true">🔄</span> Réessayer</a>
+      <a class="btn btn--ghost" href="/"><span aria-hidden="true">🏠</span> Accueil</a>
+    </div>
+    <ul class="pwa-hl-liste">
+      <li><span aria-hidden="true">✅</span> Les pages de la vitrine déjà visitées</li>
+      <li><span aria-hidden="true">🔐</span> Le cockpit, votre espace et les paiements demandent une connexion : ils ne sont jamais gardés sur l’appareil.</li>
+    </ul>
+  </section>
+</main>
+<%- include('partials/pilotage/footer') %>
+<%- include('partials/pwa/onglets-vitrine', { onglet: '' }) %>
+</body>
+</html>

@@ -46,7 +46,8 @@ function seed(siteContent = []) {
 }
 beforeEach(() => seed());
 
-const LEGACY = seo.PAGES.filter((p) => !['faq', 'presse'].includes(p.id)).concat([seo.COURSE_PAGE]);
+// The new home (views/accueil.ejs) is a PBTM page like /faq and /presse: test/pwa.test.js checks its SEO.
+const LEGACY = seo.PAGES.filter((p) => !['faq', 'presse', 'accueil'].includes(p.id)).concat([seo.COURSE_PAGE]);
 const jsonLd = (html) => [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => m[1]);
 const body = (html) => html.slice(html.search(/<body[\s>]/i));
 const head = (html) => html.slice(0, html.search(/<\/head>/i));

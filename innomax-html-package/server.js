@@ -127,6 +127,11 @@ app.use(express.json());
 app.use(require('./routes(api)/utils/cms').middleware);
 // SEO/AEO: seoFor(page) and aeoFor(page) for the templates (utils/seo, CROISSANCE.md).
 app.use(require('./routes(api)/utils/seo').middleware);
+// PWA (PWA.md): manifest, /sw.js, offline pages, push API, and the visitor's
+// role for the Vitrine / Cockpit switch.
+const pwaRoutes = require('./routes(api)/pwaRoutes.js');
+app.use(pwaRoutes.middleware);
+app.use(pwaRoutes);
 
 // Configurer le middleware CSRF avec les cookies
 const csrfProtection = csrf({
@@ -200,37 +205,8 @@ app.use(require('./routes(api)/seoRoutes.js'));
 //swaggerConfig(app);
 
 
-app.get('/', async (req, res) => {
-  try {
-    const { data: courses, error: courseError } = await supabase
-      .from('cours')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .limit(3);
-
-    const { data: lotteries, error: lotteryError } = await supabase
-      .from('Lottery')
-      .select('*')
-      .gt('lotteryTime', new Date().toISOString())
-      .order('created_at', { ascending: true })
-      .limit(3);
-
-  
-
-    res.render('home4', {
-      currentPage: '/',
-      courses: courses || [],
-      lotteries: lotteries || []
-    });
-  } catch (error) {
-    logger.error('Error fetching data:', error);
-    res.render('home4', {
-      currentPage: '/',
-      courses: [],
-      lotteries: []
-    });
-  }
-});
+// Public home of PBTM (views/accueil.ejs); the old home4 stays on /ancien-accueil.
+app.use(require('./routes(api)/vitrinePages.js'));
 
 // Plus besoin d'utiliser :access_token
 app.get('/reset-password', (req, res) => {

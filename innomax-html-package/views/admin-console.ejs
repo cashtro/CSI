@@ -22,6 +22,7 @@
   const revenus = data.paiements.reduce(function (s, p) { return s + (p.statut === 'Payé' && p.montant ? p.montant : 0); }, 0);
   // Three groups (topbar.ejs): Entreprise, Agents, Croissance.
   const nav = [
+    { id: 'accueil', emoji: '🔔', label: 'Mon attention', count: typeof attention !== 'undefined' && attention ? attention.total : 0, groupe: 'Entreprise' },
     { id: 'apercu', emoji: '🏠', label: 'Aperçu', groupe: 'Entreprise' },
     { id: 'entreprises', emoji: '🏢', label: 'Entreprises', count: data.entreprises.length, groupe: 'Entreprise' },
     { id: 'clients', emoji: '👥', label: 'Clients', count: data.clients.length, groupe: 'Entreprise' },
@@ -39,6 +40,7 @@
     { id: 'cms', emoji: '✏️', label: 'Contenu du site', groupe: 'Croissance' },
   ];
   const introAgents = {
+    accueil: 'Ce qui demande ton attention, avec une action en un tap. Le bouton ⚡ donne un ordre à un agent.',
     agents: 'Tes agents en direct : qui travaille, le réseau, le journal et les ordres.',
     conseil: 'Une grosse décision ? Les agents proposent, se contredisent et votent jusqu’au consensus.',
     travail: 'Tous les travaux des agents, leurs résultats et les tâches à valider.',
@@ -78,6 +80,10 @@
     <% } %>
     <% if (vue === 'croissance' && typeof croissance !== 'undefined' && croissance) { %>
       <%- include('partials/croissance/croissance', { c: croissance }) %>
+    <% } %>
+
+    <% if (vue === 'accueil' && typeof attention !== 'undefined' && attention) { %>
+      <%- include('partials/pwa/cockpit-accueil') %>
     <% } %>
 
     <% if (vue === 'apercu') { %>
@@ -404,5 +410,7 @@
     <% } %>
 </main>
 <%- include('partials/pilotage/footer') %>
+<%- include('partials/pwa/ordre-rapide', { agents: typeof agents !== 'undefined' ? agents : [] }) %>
+<%- include('partials/pwa/onglets-cockpit', { nav: nav, vue: vue }) %>
 </body>
 </html>

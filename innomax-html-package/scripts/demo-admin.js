@@ -2,7 +2,8 @@
 // Local demo of the admin tabs (Agents, Robots, Finances, Croissance), for the founder.
 //
 //   DEMO_MODE=true node scripts/demo-admin.js
-//   then open http://127.0.0.1:3999/demo/connexion (admin; add ?vue=finances or
+//   then open http://127.0.0.1:3999/ (the public home, Vitrine of the app),
+//   http://127.0.0.1:3999/demo/connexion (admin; add ?vue=finances or
 //   ?vue=croissance to land on those tabs, example data)
 //   or http://127.0.0.1:3999/demo/client (a client, owner of the demo clinic),
 //   and http://127.0.0.1:3999/robots (the public robots page); /faq, /presse,
@@ -95,6 +96,7 @@ const { createWorker } = require('../agents/worker');
 const { createFakeAnthropic } = require('./demo/fake-anthropic');
 const { seedDemo, ADMIN_ID } = require('./demo/data');
 const { seedCroissance } = require('./demo/croissance-data');
+const { seedVitrine } = require('./demo/vitrine-data');
 const seo = require('../routes(api)/utils/seo');
 
 const PORT = parseInt(process.env.DEMO_PORT, 10) || 3999;
@@ -104,6 +106,7 @@ async function main() {
   await seedDemo(db);
   seedRobotsDemo(db);
   seedCroissance(db, ADMIN_ID);
+  seedVitrine(db);
 
   const app = express();
   app.disable('x-powered-by');
@@ -120,7 +123,7 @@ async function main() {
   app.use(seo.middleware);
 
   // Demo sign-in: an admin session with the 2FA proof, no password.
-  app.get(['/', '/demo/connexion'], (req, res) => {
+  app.get('/demo/connexion', (req, res) => {
     const token = crypto.randomBytes(24).toString('hex');
     sessions[token] = { id: ADMIN_ID, email: 'fondateur@demo.local' };
     const opts = { httpOnly: true, sameSite: 'lax', secure: false, path: '/' };
@@ -141,7 +144,13 @@ async function main() {
   app.get('/demo/stripe/:id', (req, res) => res.redirect(`/robots/merci?session_id=${encodeURIComponent(req.params.id)}`));
   app.get('/demo/stripe-portail', (req, res) => res.type('text').send('Démo : ici s’ouvrirait le portail client de Stripe (carte, factures, annulation). Revenez à /espace?vue=robots.'));
   app.get('/login', (req, res) => res.type('text').send('Démo : ouvrez /demo/client (client) ou /demo/connexion (admin) pour vous connecter.'));
-  app.post('/api/auth/logout', (req, res) => { res.clearCookie('accessToken'); res.clearCookie(MFA_COOKIE); res.json({ ok: true }); });
+  app.post('/api/auth/logout', (req, res) => { res.clearCookie('accessToken'); res.clearCookie(MFA_COOKIE); res.set('Clear-Site-Data', '"cache"'); res.json({ ok: true }); });
+  // PWA (PWA.md): manifest, service worker, offline pages, push (disabled in
+  // the demo: no VAPID key), and the public home on /.
+  const pwaRoutes = require('../routes(api)/pwaRoutes');
+  app.use(pwaRoutes.middleware);
+  app.use(pwaRoutes);
+  app.use(require('../routes(api)/vitrinePages'));
 
   app.use('/api/admin/agents', require('../routes(api)/agentsAdmin'));
   app.use('/api/admin/robots', require('../routes(api)/adminRobots'));

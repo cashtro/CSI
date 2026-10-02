@@ -1,0 +1,33 @@
+<%#
+  Bouton d'action rapide « ⚡ » du cockpit (PWA.md) : donner un ordre à un agent, au clavier ou au micro.
+  Sans JS, le bouton mène à l'onglet Agents. Le formulaire est envoyé par espace.js (data-api, CSRF).
+  locals : agents [{ id, name, team, active }].
+-%>
+<% var actifs = (agents || []).filter(function (a) { return a.active !== false; }); -%>
+<a class="pwa-fab" href="/admin/console?vue=agents" data-ordre-ouvrir aria-label="Action rapide : donner un ordre"><span aria-hidden="true">⚡</span></a>
+<dialog class="pwa-ordre" data-ordre aria-labelledby="pwa-ordre-titre">
+  <form class="form" data-api="/api/admin/agents/jobs/order" data-ok="Ordre envoyé : l’agent s’y met." data-next="/admin/console?vue=agents">
+    <div class="pwa-ordre-tete">
+      <h2 id="pwa-ordre-titre"><span aria-hidden="true">⚡</span> Donner un ordre</h2>
+      <button type="button" class="icon-btn" data-ordre-fermer aria-label="Fermer">✕</button>
+    </div>
+<% if (!actifs.length) { -%>
+    <p class="empty">Aucun agent actif. Importez les agents de départ dans <a href="/admin/console?vue=reglages-agents">⚙️ Réglages</a>.</p>
+<% } else { -%>
+    <div class="field">
+      <label for="pwa-ordre-agent">À quel agent ?</label>
+      <select id="pwa-ordre-agent" name="agent_id" required>
+<% actifs.forEach(function (a) { -%>
+        <option value="<%= a.id %>"><%= a.name %><% if (a.role) { %> · <%= a.role %><% } %></option>
+<% }) -%>
+      </select>
+    </div>
+    <div class="field">
+      <label for="pwa-ordre-texte">L’ordre</label>
+      <textarea id="pwa-ordre-texte" name="instruction" rows="4" maxlength="8000" required data-dictee placeholder="Ex. Prépare 3 idées de publication LinkedIn pour la semaine."></textarea>
+    </div>
+    <div class="actions"><button class="btn btn--accent" type="submit"><span aria-hidden="true">⚡</span> Envoyer l’ordre</button></div>
+    <p class="status" data-status role="status"></p>
+<% } -%>
+  </form>
+</dialog>

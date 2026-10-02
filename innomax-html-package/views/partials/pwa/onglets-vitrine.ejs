@@ -1,0 +1,16 @@
+<%# Barre d'onglets du bas de la vitrine (téléphone et app installée). locals : onglet ('accueil' | 'robots' | 'formations' | 'boutique' | 'compte'), pwaRole. -%>
+<% var role = typeof pwaRole === 'string' ? pwaRole : null;
+   var cur = typeof onglet === 'string' ? onglet : '';
+   var compte = role === 'admin' ? '/admin/console' : (role === 'client' ? '/espace' : '/login');
+   var tabs = [
+     ['accueil', '/', '🏠', 'Accueil'],
+     ['robots', '/robots', '⚡', 'Robots'],
+     ['formations', '/education', '🎓', 'Formations'],
+     ['boutique', '/achats', '🛍️', 'Boutique'],
+     ['compte', compte, role === 'admin' ? '🎛️' : '👤', role === 'admin' ? 'Cockpit' : 'Compte']
+   ]; -%>
+<nav class="pwa-onglets pwa-onglets--vitrine" aria-label="Vitrine">
+<% tabs.forEach(function (t) { -%>
+  <a class="pwa-onglet" href="<%= t[1] %>"<% if (cur === t[0]) { %> aria-current="page"<% } %>><span class="pwa-onglet-emoji" aria-hidden="true"><%= t[2] %></span><span class="pwa-onglet-nom"><%= t[3] %></span></a>
+<% }) -%>
+</nav>

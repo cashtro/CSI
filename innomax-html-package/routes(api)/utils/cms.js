@@ -24,6 +24,38 @@ const RETRY_MS = 60 * 1000;
 // Zones wired in the templates, listed in the admin console. `fallback` must
 // match the value written in the template.
 const REGISTRY = [
+  // Nouvelle page d'accueil publique (views/accueil.ejs, PWA.md).
+  { key: 'accueil.hero.kicker', section: 'Accueil PBTM · Bandeau', label: 'Surtitre', type: 'texte', fallback: 'Panda Business Tech & Marketing' },
+  { key: 'accueil.hero.titre', section: 'Accueil PBTM · Bandeau', label: 'Grand titre néon', type: 'texte', fallback: 'PBTM' },
+  { key: 'accueil.hero.sous_titre', section: 'Accueil PBTM · Bandeau', label: 'Sous-titre', type: 'texte', fallback: 'Des robots IA, des formations et du marketing pour faire grandir votre PME.' },
+  { key: 'accueil.hero.texte', section: 'Accueil PBTM · Bandeau', label: 'Texte', type: 'texte', fallback: 'Vous dirigez, nos robots préparent le travail, notre équipe le vérifie. En français d’abord, conforme à la Loi 25, annulable en tout temps.' },
+  { key: 'accueil.hero.cta', section: 'Accueil PBTM · Bandeau', label: 'Bouton principal', type: 'texte', fallback: '⚡ Activer un robot' },
+  { key: 'accueil.robots.titre', section: 'Accueil PBTM · Robots IA', label: 'Titre', type: 'texte', fallback: 'Un robot qui travaille pour vous' },
+  { key: 'accueil.robots.texte', section: 'Accueil PBTM · Robots IA', label: 'Texte', type: 'texte', fallback: 'Chaque robot est une petite équipe d’agents IA spécialisés. Il prépare, nous vérifions, vous approuvez.' },
+  { key: 'accueil.formations.titre', section: 'Accueil PBTM · Formations', label: 'Titre', type: 'texte', fallback: 'Apprenez l’IA et le marketing' },
+  { key: 'accueil.formations.texte', section: 'Accueil PBTM · Formations', label: 'Texte', type: 'texte', fallback: 'Des cours en ligne concrets, à suivre à votre rythme, sur l’IA, la technologie et le marketing numérique.' },
+  { key: 'accueil.services.titre', section: 'Accueil PBTM · Marketing et Tech', label: 'Titre', type: 'texte', fallback: 'Nos services pour les PME' },
+  { key: 'accueil.services.texte', section: 'Accueil PBTM · Marketing et Tech', label: 'Texte', type: 'texte', fallback: 'Une équipe québécoise qui combine marketing, technologie et intelligence artificielle, avec des résultats mesurés.' },
+  { key: 'accueil.nft.titre', section: 'Accueil PBTM · Galerie NFT', label: 'Titre', type: 'texte', fallback: 'Des œuvres numériques de collection' },
+  { key: 'accueil.nft.texte', section: 'Accueil PBTM · Galerie NFT', label: 'Texte', type: 'texte', fallback: 'Des créations numériques signées PBTM, à collectionner pour le plaisir de l’œuvre. Aucune promesse de rendement ni de revente.' },
+  { key: 'accueil.boutique.titre', section: 'Accueil PBTM · Boutique', label: 'Titre', type: 'texte', fallback: 'Prêt à commander' },
+  { key: 'accueil.boutique.texte', section: 'Accueil PBTM · Boutique', label: 'Texte', type: 'texte', fallback: 'Des produits et des forfaits simples, payés en ligne de façon sécurisée.' },
+  { key: 'accueil.preuves.titre', section: 'Accueil PBTM · Preuves', label: 'Titre', type: 'texte', fallback: 'Ce que nos clients en disent' },
+  { key: 'accueil.preuves.texte', section: 'Accueil PBTM · Preuves', label: 'Texte', type: 'texte', fallback: 'Emplacements réservés aux témoignages et aux résultats de nos premiers clients.' },
+  { key: 'accueil.concours.titre', section: 'Accueil PBTM · Concours', label: 'Titre', type: 'texte', fallback: 'Concours (bientôt)' },
+  { key: 'accueil.concours.texte', section: 'Accueil PBTM · Concours', label: 'Texte', type: 'texte', fallback: 'Un concours gratuit arrive bientôt. Aucun achat requis : le règlement complet sera publié avant le lancement.' },
+  { key: 'accueil.faq.titre', section: 'Accueil PBTM · FAQ', label: 'Titre', type: 'texte', fallback: 'Questions fréquentes' },
+  { key: 'accueil.contact.titre', section: 'Accueil PBTM · Contact', label: 'Titre', type: 'texte', fallback: 'Parlons de votre projet' },
+  { key: 'accueil.contact.texte', section: 'Accueil PBTM · Contact', label: 'Texte', type: 'texte', fallback: 'Une question, un mandat sur mesure ? Écrivez-nous : nous répondons en français ou en anglais.' },
+  {
+    key: 'accueil.services.items', section: 'Accueil PBTM · Marketing et Tech', label: 'Services (liste JSON [{"emoji", "titre", "texte", "lien"}])', type: 'json',
+    fallback: [
+      { emoji: '📣', titre: 'Marketing numérique', texte: 'SEO, publicité, réseaux sociaux et courriel, mesurés chaque mois.', lien: '/marketing' },
+      { emoji: '🧠', titre: 'IA sur mesure', texte: 'Agents IA et automatisations branchés sur vos outils, avec validation humaine.', lien: '/TechAi' },
+      { emoji: '🛠️', titre: 'Sites et applications', texte: 'Des sites rapides, bilingues et conformes à la Loi 25, pensés pour vendre.', lien: '/TechAi' },
+      { emoji: '🎯', titre: 'Stratégie de marque', texte: 'Positionnement, messages et contenus en français du Québec.', lien: '/contact' },
+    ],
+  },
   { key: 'home.hero.title', section: 'Accueil · Bandeau', label: 'Grand titre', type: 'texte', fallback: 'Pandora' },
   { key: 'home.hero.subtitle_l1', section: 'Accueil · Bandeau', label: 'Sous-titre, ligne 1', type: 'texte', fallback: 'Business Technology' },
   { key: 'home.hero.subtitle_l2', section: 'Accueil · Bandeau', label: 'Sous-titre, ligne 2', type: 'texte', fallback: '& Marketing' },

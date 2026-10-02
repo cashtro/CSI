@@ -34,6 +34,7 @@
       <% if (email) { %><a class="topbar-link" href="/login" data-logout>Déconnexion</a><% } %>
     </div>
   </div>
+  <%- include('../pwa/barre', { ici: typeof pwaIci === 'string' ? pwaIci : 'vitrine' }) %>
   <div class="wrap hero">
     <div>
       <p class="greet"><%= salut %></p>

@@ -1,0 +1,19 @@
+<%#
+  Panneau « Notifications » (Web Push, PWA.md). locals : pushActif (bool), pour ('admin' | 'client').
+  Sans clés VAPID, le panneau l'explique et n'offre aucun bouton.
+-%>
+<% var cible = typeof pour === 'string' ? pour : 'client'; -%>
+<section class="panel pwa-push" aria-labelledby="pwa-push-titre" data-push="<%= pushActif ? 'actif' : 'inactif' %>">
+  <div class="panel-head"><h2 id="pwa-push-titre"><span aria-hidden="true">🔔</span> Notifications</h2></div>
+<% if (!pushActif) { -%>
+  <p class="dim">Les notifications ne sont pas encore activées sur le serveur : il manque les clés VAPID (<span class="mono">VAPID_PUBLIC_KEY</span>, <span class="mono">VAPID_PRIVATE_KEY</span>, <span class="mono">VAPID_SUBJECT</span>). La marche à suivre est dans PWA.md.</p>
+<% } else { -%>
+  <p class="dim"><%= cible === 'admin' ? 'Recevez une alerte sur ce téléphone ou cet ordinateur quand un livrable est à valider, qu’un robot est activé, que le Conseil a tranché ou qu’une alerte finance se déclenche.' : 'Recevez une alerte sur ce téléphone ou cet ordinateur quand un nouveau livrable est prêt pour vous.' %></p>
+  <div class="actions">
+    <button type="button" class="btn btn--accent" data-push-activer><span aria-hidden="true">🔔</span> Activer sur cet appareil</button>
+    <button type="button" class="btn btn--ghost" data-push-test hidden>Envoyer un essai</button>
+    <button type="button" class="btn btn--ghost" data-push-desactiver hidden>Désactiver</button>
+  </div>
+  <p class="status" data-push-statut role="status"></p>
+<% } -%>
+</section>

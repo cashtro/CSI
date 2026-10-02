@@ -350,7 +350,7 @@ describe('voice dictation', () => {
 
 describe('CMS registry matches the templates', () => {
   const fs = require('fs');
-  const PAGES = { home: 'home4', marketing: 'marketing', techai: 'TechAndAi', contact: 'contact' };
+  const PAGES = { home: 'home4', accueil: 'accueil', marketing: 'marketing', techai: 'TechAndAi', contact: 'contact' };
   // SEO, AEO and press zones (seo.*, aeo.*, faq.*, presse.*) are printed by
   // utils/seo.js, not by a content() call: see test/croissance-seo.test.js.
   const inTemplates = cms.REGISTRY.filter((z) => PAGES[z.key.split('.')[0]]);
@@ -430,7 +430,7 @@ describe('cheerful theme', () => {
   });
 
   it('renders the replaceable panda logo and loads the motion script deferred', async () => {
-    const res = await request(app).get('/admin/console').set('Cookie', adminCookies());
+    const res = await request(app).get('/admin/console?vue=apercu').set('Cookie', adminCookies());
     expect(res.text).toContain('class="pb-mark" data-brand-mark');
     expect(res.text).toContain('<script src="/assets/js/reflets.js" defer></script>');
     expect(res.text.match(/kpi--vedette/g)).toHaveLength(1);
@@ -445,7 +445,7 @@ describe('cheerful theme', () => {
     expect(client.text).toContain("Transmis à l'équipe PBTM");
     expect(client.text).toContain('class="pl-footer"');
     expect(client.text).not.toContain('Pandora');
-    const admin = await request(app).get('/admin/console').set('Cookie', adminCookies());
+    const admin = await request(app).get('/admin/console?vue=apercu').set('Cookie', adminCookies());
     expect(admin.text).toContain('Toute l’activité de PBTM en un coup d’œil.');
     expect(admin.text).not.toContain('Pandora');
     const views = path.join(__dirname, '..', 'views', 'partials', 'pilotage');

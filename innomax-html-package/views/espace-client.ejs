@@ -50,6 +50,7 @@
         <div class="panel kpi"><span class="emoji" aria-hidden="true">👀</span><span class="label">Livrables à approuver</span><span class="value"><%= t.enAttente %></span></div>
         <div class="panel panel--accent kpi kpi--accent"><span class="emoji" aria-hidden="true">🔁</span><span class="label">Abonnements</span><span class="value"><%= t.abonnements %></span></div>
       </div>
+      <%- include('partials/pwa/notifications', { pushActif: typeof pushActif !== 'undefined' && pushActif, pour: 'client' }) %>
 
       <div class="pl-cols">
         <section class="panel" aria-labelledby="a-faire">
@@ -216,5 +217,6 @@
   <% } %>
 </main>
 <%- include('partials/pilotage/footer') %>
+<%- include('partials/pwa/onglets-vitrine', { onglet: 'compte', pwaRole: 'client' }) %>
 </body>
 </html>

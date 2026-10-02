@@ -226,6 +226,9 @@ router.post('/logout', async (req, res) => {
     // Clear cookies with the same attributes they were set with.
     clearAuthCookies(res);
     res.set('Cache-Control', 'no-store');
+    // PWA (PWA.md): the browser drops its HTTP cache of this site; the service
+    // worker empties its page copies on the same click.
+    res.set('Clear-Site-Data', '"cache"');
     return res.status(200).json({ message: "Déconnexion réussie !" });
 });
 

@@ -11,7 +11,7 @@ const ORG_DESCRIPTION = 'PBTM (Panda Business Tech & Marketing) est une entrepri
 // target keywords checked by the SEO audit.
 const PAGES = [
   {
-    id: 'accueil', path: '/', view: 'home4', label: 'Accueil', priority: '1.0', changefreq: 'weekly',
+    id: 'accueil', path: '/', view: 'accueil', label: 'Accueil', priority: '1.0', changefreq: 'weekly',
     title: 'PBTM | IA, agents IA et marketing pour les PME du Québec',
     description: 'PBTM aide les PME du Québec à croître : solutions d’intelligence artificielle, agents IA, marketing numérique, formations en ligne, NFT et boutique.',
     motsCles: ['IA', 'marketing', 'Québec', 'PME'],

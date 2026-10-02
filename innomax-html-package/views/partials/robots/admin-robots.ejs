@@ -49,7 +49,7 @@
     <% if (!R.aValider.length) { %><p class="empty">🌴 Aucun livrable de robot en attente.</p><% } else { %>
     <ul class="items">
       <% R.aValider.forEach(function (l) { %>
-      <li class="item item--accent">
+      <li class="item item--accent" id="livrable-<%= l.id %>">
         <div class="item-head"><h3><%= l.titre %></h3><span class="badge badge--a_valider"><%= fmt.statut.a_valider %></span></div>
         <div class="item-meta"><%= l.entreprise %> · <%= l.offre ? l.offre.nom : l.robot %> · <span class="num"><%= fmt.jour(l.created_at) %></span><% if (l.produit_par) { %> · <%= l.produit_par %><% } %></div>
         <% if (l.description) { %><p><%= l.description %></p><% } %>

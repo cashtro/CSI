@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="color-scheme" content="light dark">
+<title>Connexion requise · PBTM</title>
+<link rel="stylesheet" href="/assets/css/pilotage.css">
+<%- include('partials/pwa/head') %>
+<script src="/assets/js/theme.js"></script>
+</head>
+<%# Affichée hors ligne à la place d'une page privée (/admin, /espace, paiements…), PWA.md. Les pages privées ne sont jamais gardées sur l'appareil. -%>
+<body class="pl pwa-hl" data-hors-ligne>
+<header class="topbar">
+  <div class="wrap topbar-row">
+    <a class="brand" href="/"><%- include('partials/pilotage/logo') %></a>
+  </div>
+</header>
+<main class="wrap main pwa-hl-main" id="contenu">
+  <section class="pwa-hl-carte" aria-labelledby="cr-titre">
+    <%- include('partials/pwa/illustration-hors-ligne') %>
+    <h1 id="cr-titre"><span aria-hidden="true">🔐</span> Connexion requise</h1>
+    <p class="pwa-hl-texte">Cette page est privée. Pour protéger vos données, elle n’est jamais gardée sur l’appareil : reconnectez-vous à Internet pour l’ouvrir.</p>
+    <div class="actions pwa-hl-actions">
+      <a class="btn btn--accent" href="" data-reessayer><span aria-hidden="true">🔄</span> Réessayer</a>
+      <a class="btn btn--ghost" href="/"><span aria-hidden="true">🛍️</span> La vitrine</a>
+    </div>
+  </section>
+</main>
+<%- include('partials/pilotage/footer') %>
+</body>
+</html>

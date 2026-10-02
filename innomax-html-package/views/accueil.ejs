@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="fr-CA">
+<head>
+<%- include('partials/public-head', { seoPage: 'accueil', seoExtra: { faq: vitrine.faq } }) %>
+    <link rel="stylesheet" href="/assets/css/vitrine.css">
+</head>
+<%#
+  Nouvelle page d'accueil publique de PBTM (PWA.md), section « Vitrine » de l'app.
+  locals : vitrine { offres, deFrom, cours, produits, faq }, fmt, content(), pwaRole.
+  Textes : content('accueil.*', repli) — éditables dans l'onglet « Contenu du site » ; le repli est le texte affiché.
+  Aucun tirage payant : l'emplacement « Concours » est gratuit et sans achat (voir PWA.md, conformité).
+-%>
+<%
+  var prixCours = function (p) { return typeof p === 'number' ? (p > 0 ? fmt.prix(p) : 'Gratuit') : null; };
+  var services = content('accueil.services.items', [
+    { emoji: '📣', titre: 'Marketing numérique', texte: 'SEO, publicité, réseaux sociaux et courriel, mesurés chaque mois.', lien: '/marketing' },
+    { emoji: '🧠', titre: 'IA sur mesure', texte: 'Agents IA et automatisations branchés sur vos outils, avec validation humaine.', lien: '/TechAi' },
+    { emoji: '🛠️', titre: 'Sites et applications', texte: 'Des sites rapides, bilingues et conformes à la Loi 25, pensés pour vendre.', lien: '/TechAi' },
+    { emoji: '🎯', titre: 'Stratégie de marque', texte: 'Positionnement, messages et contenus en français du Québec.', lien: '/contact' }
+  ]).filter(function (s) { return s && typeof s.titre === 'string'; });
+  var lienSur = function (l) { return typeof l === 'string' && /^\/(?![\/\\])/.test(l) ? l : '/contact'; };
+  var courriel = content('presse.courriel', '');
+%>
+<body class="pl vt">
+<a class="skip" href="#contenu">Aller au contenu</a>
+<header class="topbar vt-top">
+  <div class="wrap topbar-row">
+    <a class="brand" href="/"><%- include('partials/pilotage/logo') %></a>
+    <nav class="vt-nav" aria-label="Site">
+      <a href="#robots">Robots IA</a>
+      <a href="#formations">Formations</a>
+      <a href="#services">Services</a>
+      <a href="#boutique">Boutique</a>
+      <a href="/faq">FAQ</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <div class="topbar-actions">
+      <button type="button" class="icon-btn" data-theme-toggle hidden aria-label="Changer de thème">🌙</button>
+      <% if (typeof pwaRole === 'string' && pwaRole) { %>
+      <a class="topbar-link" href="<%= pwaRole === 'admin' ? '/admin/console' : '/espace' %>"><%= pwaRole === 'admin' ? 'Mon cockpit' : 'Mon espace' %></a>
+      <% } else { %>
+      <a class="topbar-link" href="/login">Se connecter</a>
+      <% } %>
+    </div>
+  </div>
+  <%- include('partials/pwa/barre', { ici: 'vitrine' }) %>
+</header>
+
+<main id="contenu" class="vt-main">
+  <section class="vt-hero" aria-labelledby="vt-hero-titre">
+    <div class="wrap vt-hero-grille">
+      <div class="vt-hero-texte">
+        <p class="vt-kicker"><span aria-hidden="true">🐼</span> <%= content('accueil.hero.kicker', 'Panda Business Tech & Marketing') %></p>
+        <h1 id="vt-hero-titre" class="vt-hero-h1"><span class="neon-text"><%= content('accueil.hero.titre', 'PBTM') %></span></h1>
+        <p class="vt-hero-sous"><%= content('accueil.hero.sous_titre', 'Des robots IA, des formations et du marketing pour faire grandir votre PME.') %></p>
+        <p class="vt-lead"><%= content('accueil.hero.texte', 'Vous dirigez, nos robots préparent le travail, notre équipe le vérifie. En français d’abord, conforme à la Loi 25, annulable en tout temps.') %></p>
+        <div class="actions">
+          <a class="btn btn--accent vt-cta" href="/robots"><%= content('accueil.hero.cta', '⚡ Activer un robot') %></a>
+          <a class="btn vt-cta vt-cta--clair" href="#formations">🎓 Voir les formations</a>
+        </div>
+        <ul class="vt-points">
+          <li>Validation humaine</li>
+          <li>Loi 25</li>
+          <li>Sans contrat</li>
+          <% if (vitrine.deFrom !== null) { %><li>Robots dès <%= fmt.prix(vitrine.deFrom) %>/mois</li><% } %>
+        </ul>
+      </div>
+      <nav class="vt-hero-carte" aria-label="Ce que fait PBTM">
+        <a href="#robots"><span aria-hidden="true">🤖</span><strong>Robots IA</strong><small>Ils travaillent pendant que vous dirigez</small></a>
+        <a href="#formations"><span aria-hidden="true">🎓</span><strong>Formations</strong><small>IA, tech et marketing à votre rythme</small></a>
+        <a href="#services"><span aria-hidden="true">📣</span><strong>Marketing et Tech</strong><small>SEO, pub, sites, IA sur mesure</small></a>
+        <a href="#nft"><span aria-hidden="true">🖼️</span><strong>Galerie NFT</strong><small>Des œuvres numériques de collection</small></a>
+        <a href="#boutique"><span aria-hidden="true">🛍️</span><strong>Boutique</strong><small>Produits et services prêts à commander</small></a>
+      </nav>
+    </div>
+  </section>
+
+  <div class="wrap vt-sections">
+    <section class="vt-section" id="robots" aria-labelledby="vt-robots-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">⚡</span> Robots IA</p>
+          <h2 id="vt-robots-titre"><%= content('accueil.robots.titre', 'Un robot qui travaille pour vous') %></h2>
+          <p><%= content('accueil.robots.texte', 'Chaque robot est une petite équipe d’agents IA spécialisés. Il prépare, nous vérifions, vous approuvez.') %></p>
+        </div>
+        <a class="vt-tout" href="/robots">Tous les robots →</a>
+      </header>
+      <% if (!vitrine.offres.length) { %>
+      <p class="empty">Les robots arrivent bientôt. <a href="#contact">Écrivez-nous</a> pour être averti.</p>
+      <% } else { %>
+      <div class="vt-grille">
+        <% vitrine.offres.forEach(function (o) { %>
+        <article class="vt-carte vt-carte--robot" aria-labelledby="vt-r-<%= o.slug %>">
+          <div class="vt-carte-tete"><span class="vt-emoji" aria-hidden="true"><%= o.emoji %></span><h3 id="vt-r-<%= o.slug %>"><%= o.nom %></h3></div>
+          <p><%= o.pitch %></p>
+          <p class="vt-prix"><span class="money"><%= fmt.prix(o.prix_mensuel) %></span> <small>/ mois</small></p>
+          <a class="btn btn--accent btn--sm" href="/robots/<%= o.slug %>/activer">⚡ Activer</a>
+        </article>
+        <% }) %>
+      </div>
+      <% } %>
+    </section>
+
+    <section class="vt-section" id="formations" aria-labelledby="vt-formations-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">🎓</span> Formations</p>
+          <h2 id="vt-formations-titre"><%= content('accueil.formations.titre', 'Apprenez l’IA et le marketing') %></h2>
+          <p><%= content('accueil.formations.texte', 'Des cours en ligne concrets, à suivre à votre rythme, sur l’IA, la technologie et le marketing numérique.') %></p>
+        </div>
+        <a class="vt-tout" href="/all-courses">Tous les cours →</a>
+      </header>
+      <% if (!vitrine.cours.length) { %>
+      <p class="empty">Les prochaines formations arrivent bientôt. <a href="/education">Voir l’espace Éducation</a></p>
+      <% } else { %>
+      <div class="vt-grille">
+        <% vitrine.cours.forEach(function (c) { %>
+        <article class="vt-carte vt-carte--cours" aria-labelledby="vt-c-<%= c.id %>">
+          <% if (c.image) { %><img class="vt-image" src="<%= c.image %>" alt="" loading="lazy" width="400" height="225"><% } else { %><div class="vt-image vt-image--vide" aria-hidden="true">🎓</div><% } %>
+          <h3 id="vt-c-<%= c.id %>"><%= c.nom %></h3>
+          <p class="vt-meta"><% if (c.niveau) { %><span><%= c.niveau %></span><% } %><% if (c.heures) { %><span><%= c.heures %> h</span><% } %><% if (prixCours(c.prix)) { %><span class="money"><%= prixCours(c.prix) %></span><% } %></p>
+          <a class="btn btn--ghost btn--sm" href="/course-details/<%= encodeURIComponent(c.id) %>">Voir le cours</a>
+        </article>
+        <% }) %>
+      </div>
+      <% } %>
+    </section>
+
+    <section class="vt-section" id="services" aria-labelledby="vt-services-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">📣</span> Marketing et Tech</p>
+          <h2 id="vt-services-titre"><%= content('accueil.services.titre', 'Nos services pour les PME') %></h2>
+          <p><%= content('accueil.services.texte', 'Une équipe québécoise qui combine marketing, technologie et intelligence artificielle, avec des résultats mesurés.') %></p>
+        </div>
+      </header>
+      <div class="vt-grille vt-grille--4">
+        <% services.forEach(function (s) { %>
+        <a class="vt-carte vt-carte--service" href="<%= lienSur(s.lien) %>">
+          <span class="vt-emoji" aria-hidden="true"><%= s.emoji || '✨' %></span>
+          <h3><%= s.titre %></h3>
+          <p><%= s.texte || '' %></p>
+        </a>
+        <% }) %>
+      </div>
+    </section>
+
+    <section class="vt-section" id="nft" aria-labelledby="vt-nft-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">🖼️</span> Galerie NFT</p>
+          <h2 id="vt-nft-titre"><%= content('accueil.nft.titre', 'Des œuvres numériques de collection') %></h2>
+          <p><%= content('accueil.nft.texte', 'Des créations numériques signées PBTM, à collectionner pour le plaisir de l’œuvre. Aucune promesse de rendement ni de revente.') %></p>
+        </div>
+        <a class="vt-tout" href="/nft">Voir la galerie →</a>
+      </header>
+      <div class="vt-grille vt-grille--nft">
+        <% [['Panda néon', 'nft-1'], ['Circuit indigo', 'nft-2'], ['Aube cyan', 'nft-3']].forEach(function (n) { %>
+        <figure class="vt-nft">
+          <div class="vt-nft-art vt-<%= n[1] %>" aria-hidden="true"><span>🐼</span></div>
+          <figcaption><strong><%= n[0] %></strong><span class="vt-exemple">Exemple</span></figcaption>
+        </figure>
+        <% }) %>
+      </div>
+      <p class="vt-note">Objets de collection numériques. Ce ne sont pas des placements : leur valeur peut être nulle.</p>
+    </section>
+
+    <section class="vt-section" id="boutique" aria-labelledby="vt-boutique-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">🛍️</span> Boutique</p>
+          <h2 id="vt-boutique-titre"><%= content('accueil.boutique.titre', 'Prêt à commander') %></h2>
+          <p><%= content('accueil.boutique.texte', 'Des produits et des forfaits simples, payés en ligne de façon sécurisée.') %></p>
+        </div>
+        <a class="vt-tout" href="/achats">Toute la boutique →</a>
+      </header>
+      <% if (!vitrine.produits.length) { %>
+      <p class="empty">La boutique se remplit bientôt. <a href="#contact">Dites-nous ce qui vous intéresse.</a></p>
+      <% } else { %>
+      <div class="vt-grille">
+        <% vitrine.produits.forEach(function (p) { %>
+        <article class="vt-carte vt-carte--produit" aria-labelledby="vt-p-<%= p.id %>">
+          <% if (p.image) { %><img class="vt-image" src="<%= p.image %>" alt="" loading="lazy" width="400" height="225"><% } else { %><div class="vt-image vt-image--vide" aria-hidden="true">🛍️</div><% } %>
+          <h3 id="vt-p-<%= p.id %>"><%= p.nom %></h3>
+          <% if (p.description) { %><p><%= p.description %></p><% } %>
+          <p class="vt-prix"><% if (typeof p.prix === 'number') { %><span class="money"><%= fmt.prix(p.prix) %></span><% } %></p>
+          <a class="btn btn--ghost btn--sm" href="/achats">Commander</a>
+        </article>
+        <% }) %>
+      </div>
+      <% } %>
+    </section>
+
+    <section class="vt-section" id="preuves" aria-labelledby="vt-preuves-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">⭐</span> Preuves</p>
+          <h2 id="vt-preuves-titre"><%= content('accueil.preuves.titre', 'Ce que nos clients en disent') %></h2>
+          <p><%= content('accueil.preuves.texte', 'Emplacements réservés aux témoignages et aux résultats de nos premiers clients.') %></p>
+        </div>
+      </header>
+      <div class="vt-grille">
+        <figure class="vt-preuve">
+          <span class="vt-exemple">Exemple</span>
+          <blockquote>« Le robot prépare nos réponses du soir. Le matin, je n’ai qu’à approuver. »</blockquote>
+          <figcaption>Témoignage d’exemple · Clinique (à remplacer)</figcaption>
+        </figure>
+        <figure class="vt-preuve">
+          <span class="vt-exemple">Exemple</span>
+          <blockquote>« Notre trafic a doublé en six mois grâce au SEO et aux articles. »</blockquote>
+          <figcaption>Témoignage d’exemple · Commerce (à remplacer)</figcaption>
+        </figure>
+        <figure class="vt-preuve">
+          <span class="vt-exemple">Exemple</span>
+          <blockquote>« La formation IA a changé notre façon de travailler en équipe. »</blockquote>
+          <figcaption>Témoignage d’exemple · Firme de services (à remplacer)</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="vt-section vt-concours" id="concours" aria-labelledby="vt-concours-titre">
+      <div class="vt-concours-carte">
+        <span class="vt-emoji" aria-hidden="true">🎁</span>
+        <div>
+          <h2 id="vt-concours-titre"><%= content('accueil.concours.titre', 'Concours (bientôt)') %></h2>
+          <p><%= content('accueil.concours.texte', 'Un concours gratuit arrive bientôt. Aucun achat requis : le règlement complet sera publié avant le lancement.') %></p>
+        </div>
+        <span class="vt-bientot">Bientôt</span>
+      </div>
+    </section>
+
+    <section class="vt-section" id="faq" aria-labelledby="vt-faq-titre">
+      <header class="vt-section-tete">
+        <div>
+          <p class="vt-surtitre"><span aria-hidden="true">❓</span> FAQ</p>
+          <h2 id="vt-faq-titre"><%= content('accueil.faq.titre', 'Questions fréquentes') %></h2>
+        </div>
+        <a class="vt-tout" href="/faq">Toutes les questions →</a>
+      </header>
+      <div class="cr-faq vt-faq">
+        <% vitrine.faq.forEach(function (x) { %>
+        <details class="cr-faq-q">
+          <summary><%= x.q %></summary>
+          <p><%= x.r %></p>
+        </details>
+        <% }) %>
+      </div>
+    </section>
+
+    <section class="vt-section vt-contact" id="contact" aria-labelledby="vt-contact-titre">
+      <div class="vt-contact-carte">
+        <div>
+          <h2 id="vt-contact-titre"><%= content('accueil.contact.titre', 'Parlons de votre projet') %></h2>
+          <p><%= content('accueil.contact.texte', 'Une question, un mandat sur mesure ? Écrivez-nous : nous répondons en français ou en anglais.') %></p>
+          <% if (courriel) { %><p><a class="vt-courriel" href="mailto:<%= courriel %>"><%= courriel %></a></p><% } %>
+        </div>
+        <div class="actions">
+          <a class="btn btn--accent" href="/contact">✉️ Nous écrire</a>
+          <a class="btn vt-cta--clair" href="/robots">⚡ Activer un robot</a>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<%- include('partials/pilotage/footer') %>
+<%- include('partials/pwa/onglets-vitrine', { onglet: 'accueil' }) %>
+</body>
+</html>

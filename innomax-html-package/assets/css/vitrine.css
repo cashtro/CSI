@@ -1,0 +1,325 @@
+/* ==========================================================================
+   PBTM — couche « Vitrine » (views/accueil.ejs, PWA.md), après pilotage.css
+   et pwa.css. Cadre noir et blanc, intérieur néon, formes rondes.
+   Aucune couleur en dur : uniquement les jetons du BLOC MARQUE.
+
+   1. En-tête
+   2. Héros néon
+   3. Sections et cartes
+   4. Galerie NFT
+   5. Preuves, concours, contact
+   6. Petits écrans
+   7. Mouvement réduit
+   ========================================================================== */
+
+
+/* 1. En-tête --------------------------------------------------------------- */
+
+.vt-nav { display: flex; gap: var(--s-1); }
+.pl .vt-nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--tap);
+  padding: 0 var(--s-3);
+  border-radius: var(--r-pill);
+  color: var(--frame-ink);
+  font-weight: 700;
+  font-size: var(--fs-sm);
+  text-decoration: none;
+}
+.pl .vt-nav a:hover { background: var(--frame-hover); }
+@media (max-width: 1020px) {
+  .vt-nav { display: none; }
+}
+
+
+/* 2. Héros néon ------------------------------------------------------------ */
+
+.vt-main { flex: 1 0 auto; }
+.vt-hero { padding: var(--s-2) 0 var(--s-4); }
+.vt-hero-grille {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--s-6);
+  padding: var(--s-7);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-lg);
+  background: var(--neon-panel);
+  box-shadow: var(--neon-glow);
+  color: var(--on-neon);
+}
+@supports (padding: max(0px)) {
+  .vt-hero > .vt-hero-grille { width: calc(100% - 2 * var(--s-5)); }
+}
+.vt-hero-grille::before, .vt-hero-grille::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  pointer-events: none;
+  background: var(--neon-halos);
+  background-repeat: no-repeat;
+}
+.vt-hero-grille::before { right: -140px; top: -220px; background-size: 100% 100%, 0 0; animation: pl-drift 12s ease-in-out infinite; }
+.vt-hero-grille::after { left: -160px; bottom: -260px; background-size: 0 0, 100% 100%; animation: pl-drift 14s ease-in-out -5s infinite reverse; }
+
+.vt-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  margin: 0 0 var(--s-3);
+  padding: var(--s-1) var(--s-3);
+  border: 1px solid color-mix(in srgb, var(--on-neon) 35%, transparent);
+  border-radius: var(--r-pill);
+  font-size: var(--fs-xs);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--on-neon);
+}
+.pl .vt-hero-h1 {
+  margin: 0;
+  font-size: clamp(4rem, 11vw, 8rem);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  color: var(--on-neon);
+}
+.vt-hero-h1 .neon-text { display: inline-block; padding-bottom: 0.06em; }
+.vt-hero-sous { margin: var(--s-3) 0 var(--s-2); font-family: var(--font-title); font-weight: 700; font-size: var(--fs-lg); line-height: 1.25; color: var(--on-neon); }
+.pl .vt-lead { margin: 0 0 var(--s-5); color: var(--on-neon-muted); max-width: 56ch; }
+.pl .vt-cta--clair { background: transparent; color: var(--on-neon); border-color: color-mix(in srgb, var(--on-neon) 70%, transparent); box-shadow: none; }
+.pl .vt-cta--clair:hover { background: color-mix(in srgb, var(--on-neon) 10%, transparent); }
+.vt-points { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: var(--s-5) 0 0; padding: 0; list-style: none; }
+.vt-points li {
+  padding: var(--s-1) var(--s-3);
+  border-radius: var(--r-pill);
+  background: color-mix(in srgb, var(--on-neon) 10%, transparent);
+  color: var(--on-neon);
+  font-size: var(--fs-xs);
+  font-weight: 700;
+}
+.vt-points li::before { content: '✓ '; color: var(--cyan-neon); }
+
+.vt-hero-carte { display: grid; gap: var(--s-2); }
+.pl .vt-hero-carte a {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0 var(--s-3);
+  padding: var(--s-3) var(--s-4);
+  border: 1px solid color-mix(in srgb, var(--on-neon) 20%, transparent);
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--on-neon) 7%, transparent);
+  color: var(--on-neon);
+  text-decoration: none;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+.pl .vt-hero-carte a:hover { transform: translateX(4px); background: color-mix(in srgb, var(--on-neon) 13%, transparent); }
+.vt-hero-carte span { grid-row: span 2; font-size: 1.6rem; }
+.vt-hero-carte strong { font-family: var(--font-title); font-size: var(--fs-base); }
+.vt-hero-carte small { color: var(--on-neon-muted); font-size: var(--fs-xs); }
+
+
+/* 3. Sections et cartes ---------------------------------------------------- */
+
+.vt-sections { display: grid; gap: var(--s-8); padding-top: var(--s-6); padding-bottom: var(--s-8); }
+.vt-section { min-width: 0; scroll-margin-top: var(--s-5); }
+.vt-section-tete { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: var(--s-3) var(--s-5); margin-bottom: var(--s-5); }
+.vt-section-tete p { margin: 0; color: var(--muted); max-width: 62ch; }
+.pl .vt-section-tete h2 { font-size: var(--fs-xl); margin: 0 0 var(--s-2); }
+.vt-surtitre { margin: 0 0 var(--s-1); font-size: var(--fs-xs); font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent-ink); }
+.vt-section-tete .vt-surtitre { color: var(--accent-ink); }
+.pl .vt-tout { display: inline-flex; align-items: center; min-height: var(--tap); font-weight: 800; color: var(--ink); }
+
+.vt-grille { display: grid; gap: var(--s-4); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+.vt-grille--4 { grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+
+.vt-carte {
+  position: relative;
+  display: grid;
+  gap: var(--s-3);
+  align-content: start;
+  padding: var(--s-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.vt-carte:hover { transform: translateY(-3px); box-shadow: var(--shadow-2); }
+.vt-carte p { margin: 0; }
+.vt-carte h3 { margin: 0; }
+.vt-carte .btn { justify-self: start; }
+.pl a.vt-carte { color: var(--ink); text-decoration: none; }
+.vt-carte-tete { display: flex; align-items: center; gap: var(--s-3); }
+.vt-emoji {
+  display: inline-grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 1.5rem;
+}
+.vt-prix { font-size: var(--fs-md); }
+.vt-prix small { color: var(--muted); font-size: var(--fs-sm); }
+.vt-image { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; border-radius: var(--r-md); border: 1px solid var(--line); }
+.vt-image--vide { display: grid; place-items: center; background: var(--neon-panel); font-size: 2.6rem; border-color: var(--neon-edge); }
+.vt-meta { display: flex; flex-wrap: wrap; gap: var(--s-2); margin: 0; }
+.vt-meta span { padding: 2px var(--s-3); border-radius: var(--r-pill); background: var(--surface-2); border: 1px solid var(--line); font-size: var(--fs-xs); font-weight: 700; }
+.vt-meta .money { color: var(--accent-ink); }
+.vt-carte--robot { border-top: 3px solid var(--accent); }
+
+.vt-exemple {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px var(--s-2);
+  border: 1px dashed var(--line-input);
+  border-radius: var(--r-pill);
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.vt-note { margin: var(--s-3) 0 0; color: var(--muted); font-size: var(--fs-sm); }
+
+
+/* 4. Galerie NFT ----------------------------------------------------------- */
+
+.vt-grille--nft { grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); }
+.vt-nft { margin: 0; display: grid; gap: var(--s-2); }
+.vt-nft figcaption { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); }
+.vt-nft-art {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: var(--r-lg);
+  border: 1px solid var(--neon-edge);
+  box-shadow: var(--neon-glow);
+  font-size: 4rem;
+  background-size: 300% 300%;
+  animation: pl-flow var(--neon-speed) linear infinite;
+}
+.vt-nft-art span { filter: drop-shadow(0 6px 18px color-mix(in srgb, var(--panda-black) 40%, transparent)); }
+.vt-nft-1 { background-image: linear-gradient(135deg, var(--magenta), var(--violet-vif) 40%, var(--cyan-neon) 70%, var(--magenta)); }
+.vt-nft-2 { background-image: repeating-linear-gradient(90deg, color-mix(in srgb, var(--cyan-neon) 30%, transparent) 0 2px, transparent 2px 22px), linear-gradient(160deg, var(--indigo), var(--violet-vif), var(--indigo)); }
+.vt-nft-3 { background-image: radial-gradient(circle at 30% 30%, var(--cyan-neon), transparent 45%), linear-gradient(200deg, var(--indigo-2), var(--violet), var(--indigo)); }
+
+
+/* 5. Preuves, concours, contact -------------------------------------------- */
+
+.vt-preuve {
+  position: relative;
+  margin: 0;
+  padding: var(--s-5);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+}
+.vt-preuve .vt-exemple { position: absolute; top: var(--s-3); right: var(--s-3); }
+.vt-preuve blockquote { margin: var(--s-4) 0 var(--s-3); font-weight: 600; font-size: var(--fs-md); line-height: 1.45; }
+.vt-preuve figcaption { color: var(--muted); font-size: var(--fs-sm); }
+
+.vt-concours-carte {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 2px dashed var(--accent-line);
+  border-radius: var(--r-lg);
+  background: var(--accent-soft);
+}
+.vt-concours-carte > div { flex: 1 1 280px; }
+.vt-concours-carte h2, .vt-concours-carte p { margin: 0; }
+.vt-concours-carte p { margin-top: var(--s-2); color: var(--muted); }
+.vt-bientot {
+  padding: var(--s-1) var(--s-4);
+  border-radius: var(--r-pill);
+  background: var(--frame-ink);
+  color: var(--frame);
+  font-weight: 800;
+  font-size: var(--fs-sm);
+}
+
+.vt-faq { max-width: 860px; }
+
+.vt-contact-carte {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-5);
+  padding: var(--s-6);
+  border: 1px solid var(--neon-edge);
+  border-radius: var(--r-lg);
+  background: var(--neon-panel);
+  box-shadow: var(--neon-glow);
+  color: var(--on-neon);
+}
+.vt-contact-carte > div:first-child { flex: 1 1 320px; }
+.pl .vt-contact-carte h2 { color: var(--on-neon); font-size: var(--fs-xl); }
+.vt-contact-carte p { color: var(--on-neon-muted); margin: 0; }
+.pl .vt-courriel { color: var(--cyan-neon); font-weight: 800; }
+
+
+/* 6. Petits écrans --------------------------------------------------------- */
+
+@media (max-width: 900px) {
+  .vt-hero-grille { grid-template-columns: 1fr; padding: var(--s-6) var(--s-5); }
+}
+@media (max-width: 760px) {
+  .vt-hero > .vt-hero-grille { width: calc(100% - 2 * var(--s-4)); }
+  .vt-hero-grille { padding: var(--s-5) var(--s-4); gap: var(--s-5); }
+  .pl .vt-hero-h1 { font-size: clamp(3.6rem, 22vw, 5rem); }
+  .vt-hero-sous { font-size: var(--fs-md); }
+  .vt-hero-texte .actions .btn { flex: 1 1 100%; }
+  .vt-hero-carte { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .pl .vt-hero-carte a { grid-template-columns: 1fr; justify-items: start; gap: var(--s-1); min-height: var(--tap); padding: var(--s-3); }
+  .vt-hero-carte span { grid-row: auto; font-size: 1.4rem; }
+  .vt-hero-carte strong { font-size: var(--fs-sm); }
+  .vt-hero-carte small { display: none; }
+  .pl .vt-hero-carte a:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  /* Cartes : carrousel horizontal à défilement aimanté (la page, elle, ne défile pas de côté). */
+  .vt-grille, .vt-grille--4, .vt-grille--nft {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 82%;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scroll-padding: 0 var(--s-4);
+    margin: 0 calc(-1 * var(--s-4));
+    padding: var(--s-1) var(--s-4) var(--s-3);
+    scrollbar-width: none;
+  }
+  .vt-grille::-webkit-scrollbar { display: none; }
+  .vt-grille > * { scroll-snap-align: start; }
+  .vt-grille--nft { grid-auto-columns: 64%; }
+  .vt-carte:hover { transform: none; }
+  .vt-sections { gap: var(--s-7); padding-top: var(--s-5); }
+  .pl .vt-section-tete h2 { font-size: var(--fs-lg); }
+  .vt-carte, .vt-preuve { padding: var(--s-4); }
+  .vt-contact-carte { padding: var(--s-5) var(--s-4); }
+  .vt-contact-carte .actions .btn { flex: 1 1 100%; }
+  .vt-carte .btn { justify-self: stretch; }
+}
+
+
+/* 7. Mouvement réduit ------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .vt-hero-grille::before, .vt-hero-grille::after, .vt-nft-art { animation: none; }
+  .vt-carte, .pl .vt-hero-carte a { transition: none; }
+}

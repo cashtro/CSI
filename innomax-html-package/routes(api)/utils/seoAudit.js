@@ -20,8 +20,10 @@ const KNOWN_ROUTES = new Set([
   '/contact', '/subscription', '/achats', '/dashboard', '/reset-password', '/oauth-callback', '/signup-callback',
   '/email-confirmed-callback', '/Purchase-Lottery-Tickets', '/espace', '/admin/console', '/faq', '/presse',
   '/sitemap.xml', '/robots.txt', '/llms.txt', '/healthz',
+  // PWA and the public home (PWA.md).
+  '/robots', '/ancien-accueil', '/hors-ligne', '/connexion-requise', '/manifest.webmanifest', '/sw.js',
 ]);
-const KNOWN_PATTERNS = [/^\/course-details\/[^/]+$/, /^\/api\//];
+const KNOWN_PATTERNS = [/^\/course-details\/[^/]+$/, /^\/api\//, /^\/robots\/[a-z0-9-]+\/activer$/];
 
 const TITLE_RANGE = [30, 65];
 const DESCRIPTION_RANGE = [70, 160];
@@ -29,10 +31,11 @@ const MIN_WORDS = 300;
 
 // Data each view needs to render (empty lists: the audit never reads the
 // database except for one course, passed in by the caller).
-function viewLocals(page, { course } = {}) {
+function viewLocals(page, { course, content = (k, f) => f } = {}) {
   const base = { currentPage: page.path, pixelId: '', stripePublicKey: '' };
   switch (page.view) {
     case 'home4': return { ...base, courses: [], lotteries: [] };
+    case 'accueil': return { ...base, vitrine: require('./vitrine').vide(content), fmt: require('./espace').fmt };
     case 'education': return { ...base, courses: [] };
     case 'all-courses': return { ...base, currentPage: '/education', data: { courses: [] } };
     case 'course-details': return { ...base, currentPage: '/education', data: course };
@@ -53,7 +56,7 @@ function faqLocals(content) {
 // Renders one page as a visitor would get it (CMS content of `lang`).
 async function renderPage(page, { content = (k, f) => f, lang = 'fr', course = null, viewsDir = VIEWS_DIR } = {}) {
   const locals = {
-    ...viewLocals(page, { course }),
+    ...viewLocals(page, { course, content }),
     ...(page.view === 'faq' ? faqLocals(content) : {}),
     content,
     lang,
