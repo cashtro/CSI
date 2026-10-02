@@ -10,12 +10,15 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const { createMockDb } = require('./helpers/mock-supabase');
 
-const USERS = { admin2fa: 'u-admin', 'admin-no2fa': 'u-admin2', client: 'u-client' };
+const USERS = { admin2fa: 'u-admin', 'admin-no2fa': 'u-admin2', client: 'u-client', 'member-a': 'u-member-a', 'member-b': 'u-member-b' };
+const ENT_A = '44444444-4444-4444-8444-444444444444';
+const ENT_B = '55555555-5555-4555-8555-555555555555';
 let mockDb;
 function mockReset() {
   mockDb = createMockDb({
     Users: [{ userId: 'u-admin', isAdmin: true }, { userId: 'u-admin2', isAdmin: true }, { userId: 'u-client', isAdmin: false }],
     Users_2fa: [{ userId: 'u-admin', enabled: true, secret: 's' }],
+    membres: [{ entreprise_id: ENT_A, user_id: 'u-member-a', role: 'proprietaire' }, { entreprise_id: ENT_B, user_id: 'u-member-b', role: 'proprietaire' }],
     agents: [{ id: 'redac', name: 'Rédactrice' }, { id: 'strat', name: 'Stratège' }],
     agent_jobs: [], agent_activity: [], agent_settings: [{ id: 1, enabled: false, monthly_budget_usd: 60, concurrency: 2 }], agent_usage: [], agent_tasks: [], agent_workers: [],
   });
@@ -205,11 +208,34 @@ describe('client read routes', () => {
     expect((await request(app).get('/api/agents/jobs')).status).toBe(401);
   });
 
-  it('show nothing until entreprise membership exists (TODO), even for a known job id', async () => {
+  it('show nothing to a user who belongs to no entreprise, even for a known job id', async () => {
     const id = '33333333-3333-4333-8333-333333333333';
-    mockDb.tables.agent_jobs.push({ id, kind: 'order', status: 'done', entreprise_id: '44444444-4444-4444-8444-444444444444', result: { texte: 'secret' } });
+    mockDb.tables.agent_jobs.push({ id, kind: 'order', status: 'done', entreprise_id: ENT_A, result: { texte: 'secret' } });
     expect((await request(app).get('/api/agents/jobs').set(as('client'))).body).toEqual([]);
     expect((await request(app).get(`/api/agents/jobs/${id}`).set(as('client'))).status).toBe(404);
+  });
+
+  it('isolation: a member of entreprise A never sees a job of entreprise B', async () => {
+    const jobA = '66666666-6666-4666-8666-66666666666a';
+    const jobB = '66666666-6666-4666-8666-66666666666b';
+    const jobNone = '66666666-6666-4666-8666-66666666666c';
+    mockDb.tables.agent_jobs.push(
+      { id: jobA, kind: 'order', status: 'done', entreprise_id: ENT_A, result: { texte: 'livrable A' }, created_at: '2026-10-01' },
+      { id: jobB, kind: 'order', status: 'done', entreprise_id: ENT_B, result: { texte: 'secret B' }, cost_usd: 9, created_at: '2026-10-02' },
+      { id: jobNone, kind: 'order', status: 'done', entreprise_id: null, result: { texte: 'interne' }, created_at: '2026-10-03' },
+    );
+    const listA = await request(app).get('/api/agents/jobs').set(as('member-a'));
+    expect(listA.status).toBe(200);
+    expect(listA.body.map((j) => j.id)).toEqual([jobA]);
+    expect(JSON.stringify(listA.body)).not.toMatch(/secret B|interne/);
+    expect((await request(app).get(`/api/agents/jobs/${jobA}`).set(as('member-a'))).body.livrable).toBe('livrable A');
+    expect((await request(app).get(`/api/agents/jobs/${jobB}`).set(as('member-a'))).status).toBe(404);
+    expect((await request(app).get(`/api/agents/jobs/${jobNone}`).set(as('member-a'))).status).toBe(404);
+    // And the other way round.
+    const listB = await request(app).get('/api/agents/jobs').set(as('member-b'));
+    expect(listB.body.map((j) => j.id)).toEqual([jobB]);
+    expect(listB.body[0]).not.toHaveProperty('cost_usd');
+    expect((await request(app).get(`/api/agents/jobs/${jobA}`).set(as('member-b'))).status).toBe(404);
   });
 
   it('canReadJob matches only the member entreprises', () => {
