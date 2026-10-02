@@ -19,7 +19,7 @@ toutes ses clés comme connues de tous.
       **limite de dépense** mensuelle sur le compte.
 - [ ] Notez les nouvelles clés dans un gestionnaire de mots de passe, **jamais** dans le dépôt.
 
-## 2. Base de données : les fichiers SQL 001 à 008
+## 2. Base de données : les fichiers SQL 001 à 009
 
 Supabase → SQL Editor. Collez un fichier, cliquez sur **Run**, passez au suivant. **L'ordre est
 obligatoire.** Chaque fichier peut être relancé sans danger.
@@ -32,6 +32,7 @@ obligatoire.** Chaque fichier peut être relancé sans danger.
 - [ ] `db/006_robots.sql` (robots clients, connexions : voir ROBOTS.md)
 - [ ] `db/007_finances.sql` (dépenses et objectifs : voir FINANCES.md)
 - [ ] `db/008_croissance.sql` (SEO, campagnes, presse : voir CROISSANCE.md)
+- [ ] `db/009_pwa.sql` (abonnements aux notifications de l'app : voir PWA.md)
 - [ ] Supabase → Authentication → Policies : vérifiez que `anon` et `authenticated` ne peuvent
       **pas écrire** dans `Entry`, `cours_students`, `rendez_vous`, `disponibilites`, `bills`,
       `Lottery`, `Achat`.
@@ -87,6 +88,15 @@ Pour fabriquer une clé au hasard : `openssl rand -hex 32`.
 | `SHOPIFY_API_KEY`, `SHOPIFY_API_SECRET` | Connexion Shopify. |
 
 `TOTP_ENC_KEY` est aussi **obligatoire** pour connecter des outils : elle chiffre leurs jetons.
+
+**Notifications de l'app PBTM** (facultatives : sans elles, les notifications sont désactivées et l'app
+le dit ; voir PWA.md). Pour les fabriquer : `cd innomax-html-package && npm run pwa:vapid`.
+
+| Variable | À quoi elle sert |
+| --- | --- |
+| `VAPID_PUBLIC_KEY` | Clé publique des notifications (donnée aux navigateurs). |
+| `VAPID_PRIVATE_KEY` | Clé privée qui signe les notifications. Secrète. **À ne jamais changer** (les abonnements tomberaient). |
+| `VAPID_SUBJECT` | `mailto:votre@adresse`, pour que les services de push puissent vous joindre. |
 
 **Facultatives**
 
@@ -163,6 +173,10 @@ Relancer l'import ne crée pas de doublon : il ajoute seulement les agents manqu
 - [ ] Faites un **achat test** par type (loterie, cours, rendez-vous, produit, boutique) avec la
       carte de test Stripe, puis rechargez la page de succès : rien ne doit être livré deux fois.
 - [ ] Testez l'espace client `/espace` avec un compte rattaché à une entreprise.
+- [ ] **App PBTM** (PWA.md) : `https://pandorabrains.com/manifest.webmanifest` et `/sw.js` répondent ;
+      installez l'app sur votre téléphone (iPhone : Partager → Sur l'écran d'accueil ; Android : 📲 Installer) ;
+      dans le cockpit → 🔔 Mon attention → Notifications : **Activer sur cet appareil**, puis **Envoyer un essai**.
+- [ ] Mode avion sur le téléphone : la vitrine déjà visitée s'affiche, le cockpit affiche « Connexion requise ».
 - [ ] Tout va bien : ajoutez `CSRF_ENFORCE=true` au `.env`, puis `pm2 restart pandorabrains.com`.
 
 ## En cas de problème

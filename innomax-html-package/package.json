@@ -7,7 +7,9 @@
     "devcomment": "echo \"This is a comment to let you know that npm start was node server.js\" && exit 0",
     "test": "jest",
     "start": "nodemon server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "pwa:vapid": "node -e \"const k=require('./routes(api)/utils/webpush').genererCles();console.log('VAPID_PUBLIC_KEY='+k.publicKey+'\\nVAPID_PRIVATE_KEY='+k.privateKey+'\\nVAPID_SUBJECT=mailto:vous@pandorabrains.com')\"",
+    "pwa:icones": "node scripts/pwa-icones.js"
   },
   "repository": {
     "type": "git",
