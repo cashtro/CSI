@@ -7,7 +7,7 @@ const mockSignIn = {
 jest.mock('@supabase/supabase-js', () => ({
   createClient: () => ({
     auth: { signInWithPassword: jest.fn(() => Promise.resolve(mockSignIn)), getUser: jest.fn(), admin: {} },
-    from: () => ({ select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: { enabled: true, secret: 's' }, error: null }) }) }) }),
+    from: () => ({ select: () => ({ eq: () => ({ single: () => Promise.resolve({ data: { enabled: false, secret: 's' }, error: null }) }) }) }),
   }),
 }));
 jest.mock('../routes(api)/utils/auth-middleware', () => ({
@@ -17,7 +17,7 @@ jest.mock('../routes(api)/utils/validation-middleware', () => ({
   loginValidation: (q, s, n) => n(), registrationValidation: (q, s, n) => n(), validatePassword: () => ({ isValid: true }),
 }));
 jest.mock('../routes(api)/utils/supabaseSessionStore', () => ({ storeTempSession: jest.fn(), getAndValidateSession: jest.fn() }));
-jest.mock('../routes(api)/utils/supabaseUtil', () => ({ createSupabaseAdmin: () => ({ auth: { admin: {} } }), createSupabaseClient: () => ({}) }));
+jest.mock('../routes(api)/utils/supabaseUtil', () => ({ createSupabaseAdmin: () => ({ auth: { admin: {} } }), createSupabaseClient: () => require('@supabase/supabase-js').createClient() }));
 jest.mock('../routes(api)/utils/emailService', () => ({ sendEmail: jest.fn() }));
 
 const request = require('supertest');
