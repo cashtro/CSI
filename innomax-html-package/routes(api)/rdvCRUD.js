@@ -74,7 +74,7 @@ router.get('/all', async (req, res) => {
   const { userId } = req.query; //Can be buyer or seller ID
 
   try {
-    const { data, error } = supabase.rpc('get_all_rendez_vous', {user_id: userId });
+    const { data, error } = await supabase.rpc('get_all_rendez_vous', { user_id: userId });
     // await supabase
       //.from('rendez_vous')
       //.select('*,disponibilites:disponibilite_id (id_prof)')

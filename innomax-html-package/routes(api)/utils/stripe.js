@@ -60,8 +60,9 @@ const handleRDVPayment = async (req, res, next) => {
     // 3.Store session reference
     req.stripeSession = session;
     req.accessToken = accessToken; 
-    res.json({ id: session.id }); //Skibidi ohio sigma among rizzy drip fr fr
-    next();
+    // Terminal response for the /create flow. Do NOT call next() after sending
+    // a response (that was a double-response bug).
+    res.json({ id: session.id });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
