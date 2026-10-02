@@ -80,6 +80,10 @@ app.post('/webhook', express.raw({ type: 'application/json' }), stripeWebhookHan
 const { cspReportOnly } = require('./routes(api)/utils/csp');
 app.use(cspReportOnly);
 app.post('/api/csp-report', express.json({ type: ['application/json', 'application/csp-report', 'application/reports+json'] }), (req, res) => res.sendStatus(204));
+// Unified double-submit CSRF. issueCsrfCookie always sets a readable XSRF-TOKEN;
+// csrfGuard only ENFORCES when CSRF_ENFORCE=true (safe dark rollout).
+const { issueCsrfCookie, csrfGuard } = require('./routes(api)/utils/csrf');
+app.use(issueCsrfCookie);
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
@@ -119,6 +123,8 @@ app.get('/api/csrf-token', csrfProtection, (req, res) => {
 
 // app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 //ROUTE AUTHENTIFICATION authCRUD
+// CSRF guard for all /api routes (no-op unless CSRF_ENFORCE=true).
+app.use('/api', csrfGuard);
 app.use('/api/auth', authRoutes);
 app.use('/api/course', courseRoutes);
 app.use('/api/lottery', lotteryRoutes);
