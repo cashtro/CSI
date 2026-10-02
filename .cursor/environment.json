@@ -1,0 +1,17 @@
+{
+  "name": "Pandora (pandorabrains.com)",
+  "install": "cd innomax-html-package && npm install",
+  "terminals": [
+    {
+      "name": "server",
+      "command": "cd innomax-html-package && npm start",
+      "description": "Express + EJS dev server (nodemon) for pandorabrains.com. Serves on http://localhost:3000. Reads Supabase/Stripe/SendGrid credentials from injected Secrets (or ../.env if present)."
+    }
+  ],
+  "ports": [
+    {
+      "name": "web",
+      "port": 3000
+    }
+  ]
+}
